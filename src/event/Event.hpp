@@ -39,6 +39,8 @@ void EventDoMessageLoop();
 
 void EventInitialize(int32_t threadCount, int32_t netServer);
 
+void EventInitiateShutdown();
+
 int32_t EventIsControlKeyDown();
 
 int32_t EventIsKeyDown(KEY key);

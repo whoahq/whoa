@@ -1,4 +1,5 @@
 #include "event/Input.hpp"
+#include "event/Event.hpp"
 #include "event/EvtContext.hpp"
 #include "event/Queue.hpp"
 #include "gx/Window.hpp"
@@ -63,6 +64,10 @@ void PostChar(EvtContext* context, int32_t ch, int32_t repeat) {
     data.repeat = repeat;
 
     IEvtQueueDispatch(context, EVENT_ID_CHAR, &data);
+}
+
+void PostClose() {
+    EventInitiateShutdown();
 }
 
 void PostKeyDown(EvtContext* context, int32_t key, int32_t repeat, int32_t time) {
@@ -202,7 +207,10 @@ void ProcessInput(const int32_t param[], OSINPUT id, int32_t* shutdown, EvtConte
             break;
 
         case OS_INPUT_CLOSE:
-            // TODO
+            // TODO ConfirmClose()
+            PostClose();
+            *shutdown = 1;
+
             break;
 
         case OS_INPUT_FOCUS:
