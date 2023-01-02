@@ -1,5 +1,6 @@
 #include "app/mac/MainApp.h"
 #include "event/Event.hpp"
+#include "event/Input.hpp"
 #include "event/Scheduler.hpp"
 #include "os/Compat.hpp"
 
@@ -29,8 +30,7 @@
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
-    // TODO
-    // OsQueuePut(5, 0, 0, 0, 0);
+    OsQueuePut(OS_INPUT_CLOSE, 0, 0, 0, 0);
 
     return NSTerminateCancel;
 }
