@@ -169,11 +169,8 @@ void PostSize(EvtContext* context, int32_t w, int32_t h) {
 }
 
 void ProcessInput(const int32_t param[], OSINPUT id, int32_t* shutdown, EvtContext* context) {
-    if (!context) {
-        // TODO
-        // nullsub_3();
-        // SErrSetLastError(0x57u);
-    }
+    STORM_ASSERT(context);
+    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER);
 
     switch (id) {
         case OS_INPUT_CAPTURE_CHANGED:
@@ -421,27 +418,19 @@ void IEvtInputInitialize() {
 }
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
-    if (context) {
-        // TODO
-        // nullsub_3();
+    STORM_ASSERT(context);
+    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER, 0);
 
-        int32_t v4 = 0;
-        OSINPUT id;
-        int32_t param[4];
+    int32_t v4 = 0;
+    OSINPUT id;
+    int32_t param[4];
 
-        while (OsInputGet(&id, &param[0], &param[1], &param[2], &param[3])) {
-            v4 = 1;
-            ProcessInput(param, id, shutdown, context);
-        }
-
-        return v4;
-    } else {
-        // TODO
-        // nullsub_3();
-        // SErrSetLastError(0x57u);
-
-        return 0;
+    while (OsInputGet(&id, &param[0], &param[1], &param[2], &param[3])) {
+        v4 = 1;
+        ProcessInput(param, id, shutdown, context);
     }
+
+    return v4;
 }
 
 const char* KeyCodeToString(KEY key) {
