@@ -4,15 +4,15 @@
 #include <cstdint>
 #include <AppKit/AppKit.h>
 
-void MacOnKeyDown(NSEvent*);
+void MacOnKeyDown(NSEvent* event);
 
-void MacOnKeyUp(NSEvent*);
+void MacOnKeyUp(NSEvent* event);
 
-void MacOnMouseDown(int16_t, int32_t, int32_t);
+void MacOnMouseDown(int16_t button, int32_t x, int32_t y);
 
-void MacOnMouseMoved(int32_t, int32_t);
+void MacOnMouseMoved(int32_t x, int32_t y);
 
-void MacOnMouseUp(int16_t, int32_t, int32_t);
+void MacOnMouseUp(int16_t button, int32_t x, int32_t y);
 
 void MacOnResized(int32_t width, int32_t height, bool a3);
 

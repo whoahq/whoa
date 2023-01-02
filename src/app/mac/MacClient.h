@@ -18,13 +18,13 @@ class MacClient {
         static KEY s_specialKeyConversion[128];
         static KEY s_keyConversion[128];
 
-        static void CheckKeyboardLayout(void);
-        static double GetMouseSpeed(void);
-        static bool GetTextInputEnabled(void);
-        static void InitializeKeyConversion(void);
-        static bool IsUsingGLLayer(void);
-        static void PostClipboardKeyEvents(MacClient::ClipboardAction);
-        static void SetMouseCoalescingEnabled(bool);
+        static void CheckKeyboardLayout();
+        static double GetMouseSpeed();
+        static bool GetTextInputEnabled();
+        static void InitializeKeyConversion();
+        static bool IsUsingGLLayer();
+        static void PostClipboardKeyEvents(ClipboardAction action);
+        static void SetMouseCoalescingEnabled(bool enabled);
 };
 
 #endif
