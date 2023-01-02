@@ -5,8 +5,8 @@
 
 struct GLWindowCallbacks;
 
-void AssignEngineViewCallbacks(GLWindowCallbacks*);
+void AssignEngineViewCallbacks(GLWindowCallbacks* callbacks);
 
-Class GetEngineViewClass(void);
+Class GetEngineViewClass();
 
 #endif
