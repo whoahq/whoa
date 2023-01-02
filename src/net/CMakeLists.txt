@@ -17,3 +17,11 @@ target_link_libraries(net
         common
         storm
 )
+
+if(WHOA_SYSTEM_WIN)
+    target_link_libraries(net
+        PUBLIC
+            ws2_32
+            wsock32
+    )
+endif()

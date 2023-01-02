@@ -70,17 +70,27 @@ uint32_t CGxDevice::s_texFormatBytesPerBlock[] = {
     4       // GxTex_D24X8
 };
 
-CGxDevice* CGxDevice::NewGLL() {
-    #if defined(WHOA_SYSTEM_MAC)
-        void* m = SMemAlloc(sizeof(CGxDeviceGLL), __FILE__, __LINE__, 0);
-
-        if (m) {
-            return new (m) CGxDeviceGLL();
-        } else {
-            return nullptr;
-        }
-    #endif
+CGxDevice* CGxDevice::NewD3d() {
+    // TODO
+    return nullptr;
 }
+
+CGxDevice* CGxDevice::NewD3d9Ex() {
+    // TODO
+    return nullptr;
+}
+
+#if defined(WHOA_SYSTEM_MAC)
+CGxDevice* CGxDevice::NewGLL() {
+    void* m = SMemAlloc(sizeof(CGxDeviceGLL), __FILE__, __LINE__, 0);
+
+    if (m) {
+        return new (m) CGxDeviceGLL();
+    } else {
+        return nullptr;
+    }
+}
+#endif
 
 CGxDevice* CGxDevice::NewOpenGl() {
     // TODO

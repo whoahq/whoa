@@ -1,3 +1,18 @@
+if(WHOA_SYSTEM_WIN)
+    file(GLOB PRIVATE_SOURCES "win/*.cpp")
+
+    add_executable(Whoa ${PRIVATE_SOURCES})
+
+    target_link_libraries(Whoa
+        PRIVATE
+            client
+            event
+            gx
+            net
+            util
+        )
+endif()
+
 if(WHOA_SYSTEM_MAC)
     file(GLOB PRIVATE_SOURCES "mac/*.cpp" "mac/*.mm")
 
@@ -42,7 +57,4 @@ target_include_directories(Whoa
         ${CMAKE_SOURCE_DIR}/src
 )
 
-# Windows executables yet to be done
-if(WHOA_SYSTEM_MAC OR WHOA_SYSTEM_LINUX)
-    install(TARGETS Whoa DESTINATION "bin")
-endif()
+install(TARGETS Whoa DESTINATION "bin")

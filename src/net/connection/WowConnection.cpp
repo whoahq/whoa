@@ -21,6 +21,7 @@
 
 #if defined(WHOA_SYSTEM_WIN)
 #include <winsock2.h>
+#include <ws2tcpip.h>
 #endif
 
 uint64_t WowConnection::s_countTotalBytes;
@@ -108,7 +109,11 @@ void WowConnection::CheckAccept() {
 
             getpeername(sock, reinterpret_cast<sockaddr*>(&verifyAddr), &verifyAddrLen);
             if (!WowConnection::s_verifyAddr(&verifyAddr)) {
+#if defined(WHOA_SYSTEM_WIN)
+                closesocket(sock);
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
                 close(sock);
+#endif
                 continue;
             }
         }
@@ -116,7 +121,12 @@ void WowConnection::CheckAccept() {
         // TODO
         // RegisterSocket(sock);
 
+#if defined(WHOA_SYSTEM_WIN)
+        u_long mode = 1;
+        ioctlsocket(sock, FIONBIO, &mode);
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
         fcntl(sock, F_SETFL, O_NONBLOCK);
+#endif
 
         auto connMem = SMemAlloc(sizeof(WowConnection), __FILE__, __LINE__, 0x0);
         auto conn = new (connMem) WowConnection(sock, reinterpret_cast<sockaddr_in*>(&addr), this->m_response);
@@ -147,7 +157,7 @@ void WowConnection::CheckAccept() {
 void WowConnection::CheckConnect() {
     int32_t err;
     socklen_t errLen = sizeof(err);
-    if (getsockopt(this->m_sock, SOL_SOCKET, SO_ERROR, &err, &errLen)) {
+    if (getsockopt(this->m_sock, SOL_SOCKET, SO_ERROR, reinterpret_cast<char*>(&err), &errLen)) {
         return;
     }
 
@@ -193,9 +203,7 @@ void WowConnection::CheckConnect() {
 void WowConnection::CloseSocket(int32_t sock) {
 #if defined(WHOA_SYSTEM_WIN)
     closesocket(sock);
-#endif
-
-#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
     close(sock);
 #endif
 
@@ -334,11 +342,15 @@ void WowConnection::DoReads() {
 void WowConnection::DoStreamReads() {
     uint32_t startTime = OsGetAsyncTimeMsPrecise();
     uint8_t buf[4096];
-    uint32_t bytesRead;
+#if defined(WHOA_SYSTEM_WIN)
+    int32_t bytesRead;
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+    ssize_t bytesRead;
+#endif
 
     while (1) {
         while (1) {
-            bytesRead = recv(this->m_sock, buf, sizeof(buf), 0);
+            bytesRead = recv(this->m_sock, reinterpret_cast<char*>(buf), sizeof(buf), 0);
 
             if (bytesRead >= 0) {
                 break;
@@ -376,7 +388,7 @@ void WowConnection::DoStreamReads() {
 
     bool shouldDisconnect = false;
 #if defined(WHOA_SYSTEM_WIN)
-    shouldDisconnect = bytesRead >= 0 || WSAGetLastError() != WSAEAGAIN;
+    shouldDisconnect = bytesRead >= 0 || WSAGetLastError() != WSAEWOULDBLOCK;
 #elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
     shouldDisconnect = bytesRead >= 0 || errno != EAGAIN;
 #endif

@@ -25,6 +25,13 @@ jobs:
             cc: clang
             cxx: clang++
 
+          - name: Windows Latest (MSVC)
+            os: windows-latest
+            build_type: Release
+            test_path: Release/WhoaTest
+            cc: cl
+            cxx: cl
+
     steps:
       - uses: actions/checkout@v3
         with:

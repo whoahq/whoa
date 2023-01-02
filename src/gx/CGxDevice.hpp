@@ -46,8 +46,12 @@ class CGxDevice {
         static uint32_t s_texFormatBytesPerBlock[];
 
         // Static functions
-        static CGxDevice* NewGLL(void);
-        static CGxDevice* NewOpenGl(void);
+        static CGxDevice* NewD3d();
+        static CGxDevice* NewD3d9Ex();
+#if defined(WHOA_SYSTEM_MAC)
+        static CGxDevice* NewGLL();
+#endif
+        static CGxDevice* NewOpenGl();
 
         // Member variables
         TSGrowableArray<CGxPushedRenderState> m_pushedStates;

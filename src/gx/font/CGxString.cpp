@@ -602,6 +602,7 @@ void CGxString::SetColor(const CImVector& color) {
 
 int32_t CGxString::SetGradient(int32_t startCharacter, int32_t length) {
     // TODO
+    return 0;
 }
 
 void CGxString::SetStringPosition(const C3Vector& position) {

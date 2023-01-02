@@ -26,17 +26,33 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_BUILD_TYPE Debug)
 
+include(lib/system/cmake/system.cmake)
+
 # Some templates abuse offsetof
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")
+if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")
+endif()
 
 # OS defines
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+if(WHOA_SYSTEM_WIN)
+    # Avoid win32 header hell
+    add_compile_definitions(
+        NOMINMAX
+        WIN32_LEAN_AND_MEAN
+    )
+
+    # Lua uses various "unsafe" C functions
+    add_definitions(
+        -D_CRT_SECURE_NO_WARNINGS
+    )
+endif()
+
+if(WHOA_SYSTEM_MAC)
+    # Suppress OpenGL deprecation warnings
     add_definitions(
         -DGL_SILENCE_DEPRECATION
     )
 endif()
-
-include(lib/system/cmake/system.cmake)
 
 # Threads
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)

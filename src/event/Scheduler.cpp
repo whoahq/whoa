@@ -134,7 +134,7 @@ void IEvtSchedulerProcess() {
     #if defined(WHOA_SYSTEM_WIN)
         Event::s_startEvent.Set();
 
-        SchedulerThreadProc(1);
+        SchedulerThreadProc(reinterpret_cast<void*>(1));
 
         Event::s_mainThread = 0;
     #endif

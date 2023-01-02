@@ -2,6 +2,7 @@
 #include <cstring>
 #include <limits>
 #include <storm/Memory.hpp>
+#include <storm/String.hpp>
 
 // TODO Proper implementation
 int32_t SFile::Close(SFile* file) {
@@ -27,11 +28,11 @@ int32_t SFile::IsStreamingMode() {
 
 // TODO Proper implementation
 int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size_t* bytes, size_t extraBytes, uint32_t flags, SOVERLAPPED* overlapped) {
-    size_t pathlen = strlen(filename);
-    char path[pathlen];
-    strcpy(path, filename);
+    auto pathLen = SStrLen(filename);
+    char path[STORM_MAX_PATH];
+    SStrCopy(path, filename, sizeof(path));
 
-    for (int32_t i = 0; i < pathlen; ++i) {
+    for (int32_t i = 0; i < pathLen; ++i) {
         if (path[i] == '\\') {
             path[i] = '/';
         }
@@ -72,11 +73,11 @@ int32_t SFile::Open(const char* filename, SFile** file) {
 
 // TODO Proper implementation
 int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, SFile** file) {
-    size_t pathlen = strlen(filename);
-    char path[pathlen];
-    strcpy(path, filename);
+    auto pathLen = SStrLen(filename);
+    char path[STORM_MAX_PATH];
+    SStrCopy(path, filename, sizeof(path));
 
-    for (int32_t i = 0; i < pathlen; ++i) {
+    for (int32_t i = 0; i < pathLen; ++i) {
         if (path[i] == '\\') {
             path[i] = '/';
         }
