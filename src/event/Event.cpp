@@ -46,6 +46,10 @@ void EventInitialize(int32_t threadCount, int32_t netServer) {
     // OsInputSetEventPollProc(&sub_47DCA0);
 }
 
+void EventInitiateShutdown() {
+    IEvtSchedulerShutdown();
+}
+
 int32_t EventIsControlKeyDown() {
     return EventIsKeyDown(KEY_LCONTROL) || EventIsKeyDown(KEY_RCONTROL);
 }
