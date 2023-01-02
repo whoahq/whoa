@@ -1,0 +1,12 @@
+[submodule "lib/common"]
+	path = lib/common
+	url = https://github.com/whoahq/common.git
+[submodule "lib/squall"]
+	path = lib/squall
+	url = https://github.com/whoahq/squall.git
+[submodule "lib/typhoon"]
+	path = lib/typhoon
+	url = https://github.com/whoahq/typhoon.git
+[submodule "lib/system"]
+	path = lib/system
+	url = https://github.com/whoahq/system.git

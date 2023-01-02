@@ -1,0 +1,591 @@
+#include "net/connection/WowConnection.hpp"
+#include "net/connection/WowConnectionNet.hpp"
+#include "net/connection/WowConnectionResponse.hpp"
+#include <common/Time.hpp>
+#include <storm/Error.hpp>
+#include <storm/Memory.hpp>
+#include <storm/String.hpp>
+#include <storm/Thread.hpp>
+#include <algorithm>
+#include <new>
+
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+#include <arpa/inet.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#endif
+
+#if defined(WHOA_SYSTEM_WIN)
+#include <winsock2.h>
+#endif
+
+uint64_t WowConnection::s_countTotalBytes;
+int32_t WowConnection::s_destroyed;
+WowConnectionNet* WowConnection::s_network;
+ATOMIC32 WowConnection::s_numWowConnections;
+bool (*WowConnection::s_verifyAddr)(const NETADDR*);
+
+int32_t WowConnection::CreateSocket() {
+    int32_t sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    // TODO
+
+    return sock;
+}
+
+int32_t WowConnection::InitOsNet(bool (*fcn)(const NETADDR*), void (*threadinit)(), int32_t numThreads, bool useEngine) {
+    if (!WowConnection::s_network) {
+        // TODO s_usedSocketBits logic
+        // TODO WDataStore::StaticInitialize();
+
+        WowConnection::s_verifyAddr = fcn;
+        WowConnection::s_destroyed = 0;
+
+        numThreads = std::min(numThreads, 32);
+
+        auto networkMem = SMemAlloc(sizeof(WowConnectionNet), __FILE__, __LINE__, 0x0);
+        auto network = new (networkMem) WowConnectionNet(numThreads, threadinit);
+
+        WowConnection::s_network = network;
+        WowConnection::s_network->PlatformInit(useEngine);
+        WowConnection::s_network->Start();
+    }
+
+    return 1;
+}
+
+WowConnection::WowConnection(WowConnectionResponse* response, void (*func)(void)) {
+    // TODO
+
+    this->Init(response, func);
+
+    this->m_sock = -1;
+}
+
+WowConnection::WowConnection(int32_t sock, sockaddr_in* addr, WowConnectionResponse* response) {
+    // TODO
+
+    this->Init(response, nullptr);
+
+    // TODO
+
+    this->m_sock = sock;
+    this->m_connState = WOWC_CONNECTED;
+}
+
+void WowConnection::AcquireResponseRef() {
+    this->m_responseLock.Enter();
+
+    STORM_ASSERT(this->m_responseRef == 0 || this->GetState() == WOWC_LISTENING);
+
+    this->m_responseRef++;
+    this->m_responseRefThread = SGetCurrentThreadId();
+
+    this->m_responseLock.Leave();
+}
+
+void WowConnection::AddRef() {
+    SInterlockedIncrement(&this->m_refCount);
+}
+
+void WowConnection::CheckAccept() {
+    for (int32_t i = 0; i < 10000; i++) {
+        NETADDR addr;
+        socklen_t addrLen = sizeof(addr);
+
+        int32_t sock = accept(this->m_sock, reinterpret_cast<sockaddr*>(&addr), &addrLen);
+        if (sock < 0) {
+            break;
+        }
+
+        if (WowConnection::s_verifyAddr) {
+            NETADDR verifyAddr;
+            socklen_t verifyAddrLen = sizeof(verifyAddr);
+
+            getpeername(sock, reinterpret_cast<sockaddr*>(&verifyAddr), &verifyAddrLen);
+            if (!WowConnection::s_verifyAddr(&verifyAddr)) {
+                close(sock);
+                continue;
+            }
+        }
+
+        // TODO
+        // RegisterSocket(sock);
+
+        fcntl(sock, F_SETFL, O_NONBLOCK);
+
+        auto connMem = SMemAlloc(sizeof(WowConnection), __FILE__, __LINE__, 0x0);
+        auto conn = new (connMem) WowConnection(sock, reinterpret_cast<sockaddr_in*>(&addr), this->m_response);
+        conn->AddRef();
+
+        this->AddRef();
+        this->AcquireResponseRef();
+
+        this->m_lock.Leave();
+
+        if (this->m_response) {
+            this->m_response->WCConnected(this, conn, OsGetAsyncTimeMs(), &conn->m_peer);
+        }
+
+        WowConnection::s_network->Add(conn);
+        WowConnection::s_network->PlatformChangeState(conn, conn->GetState());
+
+        conn->Release();
+
+        this->m_lock.Enter();
+
+        this->ReleaseResponseRef();
+
+        this->Release();
+    }
+}
+
+void WowConnection::CheckConnect() {
+    int32_t err;
+    socklen_t errLen = sizeof(err);
+    if (getsockopt(this->m_sock, SOL_SOCKET, SO_ERROR, &err, &errLen)) {
+        return;
+    }
+
+    if (err) {
+        WowConnection::s_network->Remove(this);
+
+        WowConnection::CloseSocket(this->m_sock);
+        this->m_sock = -1;
+
+        this->SetState(WOWC_DISCONNECTED);
+        this->AddRef();
+        this->AcquireResponseRef();
+
+        this->m_lock.Leave();
+
+        if (this->m_response) {
+            this->m_response->WCCantConnect(this, OsGetAsyncTimeMsPrecise(), &this->m_peer);
+        }
+    } else {
+        this->SetState(WOWC_CONNECTED);
+        this->AddRef();
+        this->AcquireResponseRef();
+
+        this->m_lock.Leave();
+
+        socklen_t peerLen = sizeof(this->m_peer.peerAddr);
+        getpeername(this->m_sock, reinterpret_cast<sockaddr*>(&this->m_peer.peerAddr), &peerLen);
+
+        socklen_t selfLen = sizeof(this->m_peer.selfAddr);
+        getsockname(this->m_sock, reinterpret_cast<sockaddr*>(&this->m_peer.selfAddr), &selfLen);
+
+        if (this->m_response) {
+            this->m_response->WCConnected(this, nullptr, OsGetAsyncTimeMsPrecise(), &this->m_peer);
+        }
+    }
+
+    this->m_lock.Enter();
+
+    this->ReleaseResponseRef();
+    this->Release();
+}
+
+void WowConnection::CloseSocket(int32_t sock) {
+#if defined(WHOA_SYSTEM_WIN)
+    closesocket(sock);
+#endif
+
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+    close(sock);
+#endif
+
+    if (sock >= 0) {
+        // TODO
+    }
+}
+
+bool WowConnection::Connect(char const* address, int32_t retryMs) {
+    char host[256];
+    auto port = SStrChr(address, ':');
+
+    if (port) {
+        this->m_connectPort = SStrToInt(port + 1);
+
+        size_t portIndex = port - address + 1;
+        portIndex = std::min(portIndex, sizeof(host));
+        SStrCopy(host, address, portIndex);
+    } else {
+        this->m_connectPort = 0;
+
+        SStrCopy(host, address, sizeof(host));
+    }
+
+    this->Connect(host, this->m_connectPort, retryMs);
+
+    return true;
+}
+
+bool WowConnection::Connect(char const* address, uint16_t port, int32_t retryMs) {
+    auto connectAddress = inet_addr(address);
+
+    if (connectAddress == -1 || connectAddress == 0) {
+        auto entry = gethostbyname(address);
+        if (entry) {
+            auto addrs = reinterpret_cast<uint8_t**>(entry->h_addr_list);
+            auto addr0 = addrs[0];
+            this->m_connectAddress = addr0[0]
+                | addr0[1] << 8
+                | addr0[2] << 16
+                | addr0[3] << 24;
+        } else {
+            this->m_connectAddress = 0;
+        }
+    } else {
+        this->m_connectAddress = connectAddress;
+    }
+
+    this->m_connectPort = port;
+
+    this->StartConnect();
+
+    return true;
+}
+
+void WowConnection::Disconnect() {
+    this->m_lock.Enter();
+
+    if (this->m_sock >= 0 && this->GetState() == WOWC_CONNECTED) {
+        this->m_connState = WOWC_DISCONNECTING;
+
+        if (WowConnection::s_network) {
+            WowConnection::s_network->PlatformChangeState(this, WOWC_CONNECTED);
+        }
+    }
+
+    this->m_lock.Leave();
+}
+
+void WowConnection::DoDisconnect() {
+    this->m_lock.Enter();
+
+    if (this->m_sock >= 0) {
+        WowConnection::s_network->Remove(this);
+        this->CloseSocket(this->m_sock);
+    }
+
+    this->SetState(WOWC_DISCONNECTED);
+
+    this->AddRef();
+    this->AcquireResponseRef();
+
+    this->m_lock.Leave();
+
+    if (this->m_response && this->m_sock >= 0) {
+        // TODO
+        // this->m_response->Vfunc4(this, OsGetAsyncTimeMsPrecise());
+    }
+
+    this->m_lock.Enter();
+
+    this->m_sock = -1;
+    this->ReleaseResponseRef();
+
+    this->m_lock.Leave();
+
+    this->Release();
+}
+
+void WowConnection::DoExceptions() {
+    this->AddRef();
+    this->m_lock.Enter();
+
+    if (this->GetState() == WOWC_CONNECTING) {
+        this->CheckConnect();
+    }
+
+    this->m_lock.Leave();
+    this->Release();
+}
+
+void WowConnection::DoMessageReads() {
+    // TODO
+}
+
+void WowConnection::DoReads() {
+    this->AddRef();
+
+    this->m_lock.Enter();
+
+    if (this->m_connState == WOWC_LISTENING) {
+        this->CheckAccept();
+    } else if (this->m_connState == WOWC_CONNECTED) {
+        if (this->m_type == WOWC_TYPE_STREAM) {
+            this->DoStreamReads();
+        } else {
+            this->DoMessageReads();
+        }
+    }
+
+    this->m_lock.Leave();
+
+    this->Release();
+}
+
+void WowConnection::DoStreamReads() {
+    uint32_t startTime = OsGetAsyncTimeMsPrecise();
+    uint8_t buf[4096];
+    uint32_t bytesRead;
+
+    while (1) {
+        while (1) {
+            bytesRead = recv(this->m_sock, buf, sizeof(buf), 0);
+
+            if (bytesRead >= 0) {
+                break;
+            }
+
+#if defined(WHOA_SYSTEM_WIN)
+            if (WSAGetLastError() != WSAEINTR) {
+                break;
+            }
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+            if (errno != EINTR) {
+                break;
+            }
+#endif
+        }
+
+        if (bytesRead == 0) {
+            break;
+        }
+
+        this->AcquireResponseRef();
+        this->m_lock.Leave();
+
+        if (this->m_response) {
+            this->m_response->WCDataReady(this, OsGetAsyncTimeMs(), buf, bytesRead);
+        }
+
+        this->m_lock.Enter();
+        this->ReleaseResponseRef();
+
+        if (this->GetState() == WOWC_DISCONNECTING || (OsGetAsyncTimeMsPrecise() - startTime) >= 5) {
+            return;
+        }
+    }
+
+    bool shouldDisconnect = false;
+#if defined(WHOA_SYSTEM_WIN)
+    shouldDisconnect = bytesRead >= 0 || WSAGetLastError() != WSAEAGAIN;
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+    shouldDisconnect = bytesRead >= 0 || errno != EAGAIN;
+#endif
+
+    if (shouldDisconnect) {
+        this->AcquireResponseRef();
+
+        WowConnection::s_network->Remove(this);
+        this->CloseSocket(this->m_sock);
+        this->SetState(WOWC_DISCONNECTED);
+
+        this->m_lock.Leave();
+
+        if (this->m_response && this->m_sock >= 0) {
+            this->m_response->WCDisconnected(this, OsGetAsyncTimeMs(), &this->m_peer);
+        }
+
+        this->m_lock.Enter();
+
+        this->m_sock = -1;
+
+        this->ReleaseResponseRef();
+    }
+}
+
+void WowConnection::DoWrites() {
+    this->AddRef();
+
+    this->m_lock.Enter();
+
+    if (this->m_connState == WOWC_CONNECTING) {
+        this->CheckConnect();
+    } else {
+        // TODO
+    }
+
+    // TODO
+
+    this->m_lock.Leave();
+
+    this->Release();
+}
+
+WOW_CONN_STATE WowConnection::GetState() {
+    return this->m_connState;
+}
+
+void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
+    SInterlockedIncrement(&WowConnection::s_numWowConnections);
+
+    this->m_refCount = 1;
+    this->m_responseRef = 0;
+
+    // TODO
+
+    this->m_connState = WOWC_UNINITIALIZED;
+
+    // TODO
+
+    this->m_response = response;
+
+    // TODO
+
+    this->m_connectAddress = 0;
+    this->m_connectPort = 0;
+
+    // TODO
+
+    this->m_serviceFlags = 0x0;
+    this->m_serviceCount = 0;
+
+    // TODO
+
+    this->SetState(WOWC_INITIALIZED);
+    this->m_type = WOWC_TYPE_MESSAGES;
+}
+
+void WowConnection::Release() {
+    if (SInterlockedDecrement(&this->m_refCount) <= 0) {
+        if (WowConnection::s_network) {
+            WowConnection::s_network->Delete(this);
+        } else {
+            // TODO SMemFree
+            delete this;
+        }
+    }
+}
+
+void WowConnection::ReleaseResponseRef() {
+    this->m_responseLock.Enter();
+
+    STORM_ASSERT(this->m_responseRef > 0);
+
+    this->m_responseRef--;
+
+    // TODO
+    // dwordD4 = (void *)this->dwordD4;
+    // if (dwordD4) {
+    //     this->m_response = dwordD4;
+    //     this->dwordD4 = 0;
+    // }
+
+    this->m_responseLock.Leave();
+}
+
+WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
+    WowConnection::s_countTotalBytes += len;
+
+    this->m_lock.Enter();
+
+    // TODO
+
+    if (len > 0 && this->m_connState == WOWC_CONNECTED) {
+        STORM_ASSERT(this->m_sock >= 0);
+
+#if defined (WHOA_SYSTEM_WIN)
+        // TODO
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+        if (this->m_sendList.Head()) {
+            // TODO
+        } else {
+            auto written = write(this->m_sock, data, len);
+
+            if (written <= 0) {
+                // TODO
+            } else if (written == len) {
+                this->m_lock.Leave();
+                return WC_SEND_SENT;
+            }
+        }
+#endif
+    }
+
+    this->m_lock.Leave();
+
+    return WC_SEND_ERROR;
+}
+
+void WowConnection::SetState(WOW_CONN_STATE state) {
+    WOW_CONN_STATE oldState = this->m_connState;
+    this->m_connState = state;
+
+    if (WowConnection::s_network) {
+        WowConnection::s_network->PlatformChangeState(this, oldState);
+    }
+}
+
+void WowConnection::SetType(WOWC_TYPE type) {
+    this->m_lock.Enter();
+    this->m_type = type;
+    this->m_lock.Leave();
+}
+
+void WowConnection::StartConnect() {
+    if (this->m_sock >= 0) {
+        if (this->m_netlink.IsLinked()) {
+            WowConnection::s_network->Remove(this);
+        }
+
+        this->CloseSocket(this->m_sock);
+        this->m_sock = -1;
+    }
+
+    this->m_lock.Enter();
+
+    this->m_sock = WowConnection::CreateSocket();
+
+    if (this->m_sock < 0) {
+        this->SetState(WOWC_ERROR);
+        this->m_lock.Leave();
+
+        return;
+    }
+
+#if defined(WHOA_SYSTEM_MAC)
+    fcntl(this->m_sock, F_SETFL, O_NONBLOCK);
+
+    uint32_t opt = 1;
+    setsockopt(this->m_sock, SOL_SOCKET, 4130, &opt, sizeof(opt));
+
+    sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(this->m_connectPort);
+    addr.sin_addr.s_addr = this->m_connectAddress;
+
+    if (!this->m_netlink.IsLinked()) {
+        WowConnection::s_network->Add(this);
+    }
+
+    this->SetState(WOWC_CONNECTING);
+
+    if (connect(this->m_sock, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) >= 0) {
+        this->m_lock.Leave();
+
+        return;
+    }
+
+    if (errno == EAGAIN || errno == EINTR || errno == EINPROGRESS) {
+        this->m_lock.Leave();
+
+        return;
+    }
+
+    WowConnection::s_network->Remove(this);
+    this->CloseSocket(this->m_sock);
+    this->m_sock = -1;
+
+    this->SetState(WOWC_ERROR);
+
+    this->m_lock.Leave();
+#endif
+}

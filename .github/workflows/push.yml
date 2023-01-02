@@ -1,0 +1,38 @@
+name: Push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - name: Ubuntu Latest (GCC)
+          os: ubuntu-latest
+          build_type: Release
+          cc: "gcc"
+          cxx: "g++"
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Prepare
+      run: mkdir build
+
+    - name: Configure
+      run: cd build && cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+
+    - name: Build
+      run: cd build && make install
+
+    - name: Test
+      run: cd build && ./dist/bin/WhoaTest

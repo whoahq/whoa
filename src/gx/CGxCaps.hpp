@@ -1,0 +1,28 @@
+#ifndef GX_C_GX_CAPS_HPP
+#define GX_C_GX_CAPS_HPP
+
+#include "gx/Types.hpp"
+#include <cstdint>
+
+class CGxCaps {
+    public:
+        int32_t m_pixelCenterOnEdge = 0;
+        int32_t m_texelCenterOnEdge = 0;
+        EGxColorFormat m_colorFormat = GxCF_argb;
+        int32_t m_generateMipMaps = 0;
+        uint32_t m_maxTextureSize = 0;
+        int32_t m_texFmtDxt1 = 0;
+        int32_t m_texFmtDxt3 = 0;
+        int32_t m_texFmtDxt5 = 0;
+        EGxShVS m_vertexShaderTarget = GxShVS_none;
+        EGxShPS m_pixelShaderTarget = GxShPS_none;
+        int32_t m_texFilterAnisotropic = 0;
+        uint32_t m_maxTexAnisotropy = 0;
+        int32_t m_texTarget[GxTexTargets_Last];
+        uint32_t m_texMaxSize[GxTexTargets_Last];
+        int32_t int130 = 1;
+        int32_t int134 = 0;
+        int32_t int138 = 0;
+};
+
+#endif

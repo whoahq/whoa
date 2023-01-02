@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="11762" systemVersion="15G19009" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+    <dependencies>
+        <deployment version="1030" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="11762"/>
+    </dependencies>
+    <objects>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="451" id="452"/>
+            </connections>
+        </customObject>
+        <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
+        <customObject id="-3" userLabel="Application"/>
+        <menu title="AMainMenu" systemMenu="main" id="29" userLabel="Main Menu">
+            <items>
+                <menuItem title="World of Warcraft" id="56">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="World of Warcraft" systemMenu="apple" id="57">
+                        <items>
+                            <menuItem title="MENU_ABOUT" id="58">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="orderFrontStandardAboutPanel:" target="-2" id="142"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="236"/>
+                            <menuItem title="MENU_SWITCH_TO_FULLSCREEN" keyEquivalent="m" id="458">
+                                <connections>
+                                    <action selector="toggleFullscreenMode:" target="451" id="460"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="459"/>
+                            <menuItem title="MENU_HIDE" keyEquivalent="h" id="134">
+                                <connections>
+                                    <action selector="hide:" target="-1" id="367"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="MENU_HIDE_OTHERS" keyEquivalent="h" id="145">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="hideOtherApplications:" target="-1" id="368"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="MENU_SHOW_ALL" id="150">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="unhideAllApplications:" target="-1" id="370"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="149"/>
+                            <menuItem title="MENU_QUIT" keyEquivalent="q" id="136">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="terminate:" target="-1" id="369"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="MENU_EDIT" id="217">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="MENU_EDIT" id="205">
+                        <items>
+                            <menuItem title="MENU_UNDO" keyEquivalent="z" id="207">
+                                <connections>
+                                    <action selector="undo:" target="-1" id="223"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="206"/>
+                            <menuItem title="MENU_EDIT_CUT" keyEquivalent="x" id="199">
+                                <connections>
+                                    <action selector="cut:" target="-1" id="228"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="MENU_EDIT_COPY" keyEquivalent="c" id="197">
+                                <connections>
+                                    <action selector="copy:" target="-1" id="224"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="MENU_EDIT_PASTE" keyEquivalent="v" id="203">
+                                <connections>
+                                    <action selector="paste:" target="-1" id="226"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="MENU_EDIT_SELECT_ALL" keyEquivalent="a" id="198">
+                                <connections>
+                                    <action selector="selectAll:" target="-1" id="232"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="MENU_WINDOW" id="19">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="MENU_WINDOW" systemMenu="window" id="24">
+                        <items>
+                            <menuItem title="Show Batch Viewer" id="449">
+                                <connections>
+                                    <action selector="showBatchViewer:" target="451" id="455"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show GL Layer Setup" id="450">
+                                <connections>
+                                    <action selector="showGLLayerSetup:" target="451" id="454"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Capture Frame" keyEquivalent="r" id="461">
+                                <connections>
+                                    <action selector="captureFrame:" target="451" id="463"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+            </items>
+        </menu>
+        <customObject id="451" userLabel="MainApp" customClass="MainApp">
+            <connections>
+                <outlet property="captureFrameMenuItem" destination="461" id="462"/>
+                <outlet property="showBatchViewerMenuItem" destination="449" id="456"/>
+                <outlet property="showGLLayerSetupMenuItem" destination="450" id="457"/>
+            </connections>
+        </customObject>
+    </objects>
+</document>

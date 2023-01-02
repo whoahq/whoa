@@ -1,0 +1,131 @@
+<?xml version="1.0" standalone="yes"?>
+<object class="NSIBObjectData">
+  <object name="rootObject" class="NSCustomObject" id="1">
+  </object>
+  <array count="17" name="allObjects">
+    <object class="IBCarbonMenuItem" id="144">
+      <string name="title">Paste</string>
+      <string name="keyEquivalent">v</string>
+      <ostype name="command">past</ostype>
+    </object>
+    <object class="IBCarbonMenuItem" id="142">
+      <boolean name="separator">TRUE</boolean>
+    </object>
+    <object class="IBCarbonMenuItem" id="149">
+      <string name="title">Copy</string>
+      <string name="keyEquivalent">c</string>
+      <ostype name="command">copy</ostype>
+    </object>
+    <object class="IBCarbonMenuItem" id="183">
+      <string name="title">About World of Warcraft...</string>
+      <int name="keyEquivalentModifier">0</int>
+      <ostype name="command">abou</ostype>
+    </object>
+    <object class="IBCarbonMenu" id="181">
+      <string name="title">World of Warcraft</string>
+      <string name="name">_NSAppleMenu</string>
+      <array count="3" name="items">
+        <reference idRef="183"/>
+        <object class="IBCarbonMenuItem" id="186">
+          <boolean name="separator">TRUE</boolean>
+        </object>
+        <object class="IBCarbonMenuItem" id="187">
+          <string name="title">Switch To Full Screen Mode</string>
+          <string name="keyEquivalent">m</string>
+          <ostype name="command">Full</ostype>
+        </object>
+      </array>
+    </object>
+    <object class="IBCarbonMenuItem" id="152">
+      <string name="title">Edit</string>
+      <object name="submenu" class="IBCarbonMenu" id="147">
+        <string name="title">Edit</string>
+        <int name="menuID">128</int>
+        <array count="6" name="items">
+          <object class="IBCarbonMenuItem" id="141">
+            <string name="title">Undo</string>
+            <string name="keyEquivalent">z</string>
+            <ostype name="command">undo</ostype>
+          </object>
+          <reference idRef="142"/>
+          <object class="IBCarbonMenuItem" id="143">
+            <string name="title">Cut</string>
+            <string name="keyEquivalent">x</string>
+            <ostype name="command">cut </ostype>
+          </object>
+          <reference idRef="149"/>
+          <reference idRef="144"/>
+          <object class="IBCarbonMenuItem" id="148">
+            <string name="title">Select All</string>
+            <string name="keyEquivalent">a</string>
+            <ostype name="command">sall</ostype>
+          </object>
+        </array>
+      </object>
+    </object>
+    <object class="IBCarbonMenu" id="29">
+      <string name="title">Untitled</string>
+      <string name="name">_NSMainMenu</string>
+      <array count="2" name="items">
+        <object class="IBCarbonMenuItem" id="182">
+          <string name="title">World of Warcraft</string>
+          <reference name="submenu" idRef="181"/>
+        </object>
+        <reference idRef="152"/>
+      </array>
+    </object>
+    <reference idRef="141"/>
+    <reference idRef="143"/>
+    <object class="IBCarbonMenuItem" id="198">
+      <string name="title">Show BatchViewer</string>
+      <boolean name="notPreviousAlternate">TRUE</boolean>
+      <ostype name="command">BVwr</ostype>
+    </object>
+    <reference idRef="187"/>
+    <reference idRef="182"/>
+    <object class="IBCarbonMenuItem" id="199">
+      <string name="title">Show GL Layer Setup</string>
+      <boolean name="notPreviousAlternate">TRUE</boolean>
+      <ostype name="command">GLLs</ostype>
+    </object>
+    <object class="IBCarbonMenu" id="197">
+      <string name="title">Batch Viewer</string>
+      <array count="2" name="items">
+        <reference idRef="198"/>
+        <reference idRef="199"/>
+      </array>
+    </object>
+    <reference idRef="186"/>
+    <reference idRef="147"/>
+    <reference idRef="148"/>
+  </array>
+  <array count="17" name="allParents">
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="181"/>
+    <reference idRef="182"/>
+    <reference idRef="29"/>
+    <reference idRef="1"/>
+    <reference idRef="147"/>
+    <reference idRef="147"/>
+    <reference idRef="197"/>
+    <reference idRef="181"/>
+    <reference idRef="29"/>
+    <reference idRef="197"/>
+    <reference idRef="1"/>
+    <reference idRef="181"/>
+    <reference idRef="152"/>
+    <reference idRef="147"/>
+  </array>
+  <dictionary count="3" name="nameTable">
+    <string>BatchViewerMenu</string>
+    <reference idRef="197"/>
+    <string>File&apos;s Owner</string>
+    <reference idRef="1"/>
+    <string>MenuBar</string>
+    <reference idRef="29"/>
+  </dictionary>
+  <string name="targetFramework">IBCarbonFramework</string>
+  <unsigned_int name="nextObjectID">200</unsigned_int>
+</object>
