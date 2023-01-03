@@ -1,7 +1,7 @@
 if(WHOA_SYSTEM_WIN)
     file(GLOB PRIVATE_SOURCES "win/*.cpp")
 
-    add_executable(Whoa ${PRIVATE_SOURCES})
+    add_executable(Whoa WIN32 ${PRIVATE_SOURCES})
 
     target_link_libraries(Whoa
         PRIVATE
