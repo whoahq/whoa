@@ -10,8 +10,10 @@
     #include <atomic>
 #endif
 
-bool Blizzard::System_Thread::s_initialized;
 Blizzard::System_Debug::AssertCallback Blizzard::System_Debug::s_assertCallback = nullptr;
+
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+bool Blizzard::System_Thread::s_initialized;
 Blizzard::Lock::DoOnceData Blizzard::System_Lock::s_initMutexAttrOnce;
 Blizzard::System_Lock::MutexAttr Blizzard::System_Lock::s_mutexattr;
 Blizzard::Thread::ThreadRecord* Blizzard::System_Thread::s_mainThread;
@@ -22,6 +24,7 @@ Blizzard::Thread::TLSSlot Blizzard::System_Thread::s_threadRecordTLS;
 std::map<Blizzard::Thread::ThreadRecord*, Blizzard::Thread::ThreadRecord*>* Blizzard::System_Thread::s_threadRegistry;
 Blizzard::Thread::TLSSlot* Blizzard::System_Thread::s_slotList[128];
 int32_t Blizzard::System_Thread::s_slotListUsed;
+#endif
 
 void Blizzard::Debug::Assert(const char* a1, const char* a2, uint32_t a3) {
     if (System_Debug::s_assertCallback) {
@@ -103,14 +106,17 @@ void Blizzard::String::MemFill(void* a1, uint32_t a2, unsigned char a3) {
 }
 
 void Blizzard::Process::Sleep(uint32_t duration) {
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
     struct timespec request;
 
     request.tv_sec = 0;
     request.tv_nsec = duration * 1000000;
 
     nanosleep(&request, nullptr);
+#endif
 }
 
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
 void Blizzard::Lock::DoOnce(DoOnceData& a1, void (*a2)(void*), void* a3) {
     if (!a1.done) {
         if (Blizzard::Lock::Atomic::Increment(&a1.atomic) == 1) {
@@ -325,3 +331,4 @@ Blizzard::Thread::ThreadRecord* Blizzard::System_Thread::NewThread(uint32_t (*a1
 bool Blizzard::System_Thread::TLSSlotIsAllocated(const Thread::TLSSlot* slot) {
     return slot->allocated;
 }
+#endif

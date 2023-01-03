@@ -5,7 +5,7 @@ bool s_forceOnscreen;
 Rect s_savedWindowRect;
 Rect s_savedWindowZoomedRect;
 
-int32_t OsGetDefaultWindowRect(tagRECT* rect) {
+int32_t OsGetDefaultWindowRect(RECT* rect) {
     auto window = g_theGxDevicePtr->DeviceDefWindow();
 
     rect->left = window.minX;

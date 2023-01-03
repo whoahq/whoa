@@ -1,4 +1,6 @@
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-declarations -Wno-empty-body")
+if(WHOA_SYSTEM_MAC OR WHOA_SYSTEM_LINUX)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-deprecated-declarations -Wno-empty-body")
+endif()
 
 set(FREETYPE_SRC_DIR "./src")
 set(FREETYPE_INCLUDE_DIR "./include")

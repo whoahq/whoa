@@ -19,7 +19,7 @@ if(WHOA_SYSTEM_MAC)
     )
 endif()
 
-if(WHOA_SYSTEM_LINUX)
+if(WHOA_SYSTEM_WIN OR WHOA_SYSTEM_LINUX)
     file(GLOB PRIVATE_SOURCES "Test.cpp" "gx/*.cpp" "util/*.cpp")
 
     add_executable(WhoaTest ${PRIVATE_SOURCES})
@@ -39,7 +39,4 @@ target_include_directories(WhoaTest
         ${CMAKE_SOURCE_DIR}/vendor/catch2-2.13.10
 )
 
-# Windows executables yet to be done
-if(WHOA_SYSTEM_MAC OR WHOA_SYSTEM_LINUX)
-    install(TARGETS WhoaTest DESTINATION "bin")
-endif()
+install(TARGETS WhoaTest DESTINATION "bin")

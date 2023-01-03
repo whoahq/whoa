@@ -34,6 +34,21 @@ namespace Blizzard {
         void Sleep(uint32_t);
     }
 
+    namespace System_Debug {
+        // Types
+        typedef void (*AssertCallback)(const char*, const char*, const char*, uint32_t);
+
+        // Variables
+        extern AssertCallback s_assertCallback;
+    }
+
+    namespace Debug {
+        // Functions
+        void Assert(const char*, const char*, uint32_t);
+        void SetAssertHandler(Blizzard::System_Debug::AssertCallback);
+    }
+
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
     namespace Lock {
         // Types
         typedef pthread_mutex_t Mutex;
@@ -52,20 +67,6 @@ namespace Blizzard {
         namespace Atomic {
             int32_t Increment(volatile int32_t*);
         }
-    }
-
-    namespace System_Debug {
-        // Types
-        typedef void (*AssertCallback)(const char*, const char*, const char*, uint32_t);
-
-        // Variables
-        extern AssertCallback s_assertCallback;
-    }
-
-    namespace Debug {
-        // Functions
-        void Assert(const char*, const char*, uint32_t);
-        void SetAssertHandler(Blizzard::System_Debug::AssertCallback);
     }
 
     namespace System_Lock {
@@ -127,6 +128,7 @@ namespace Blizzard {
         Thread::ThreadRecord* NewThread(uint32_t (*)(void*), void*, const char*);
         bool TLSSlotIsAllocated(const Thread::TLSSlot*);
     };
+#endif
 };
 
 #endif

@@ -9,6 +9,10 @@
 #include <tempest/Rect.hpp>
 #include <tempest/Vector.hpp>
 
+#if defined(WHOA_SYSTEM_WIN)
+#include <windows.h>
+#endif
+
 #if defined(WHOA_SYSTEM_MAC)
     #include "app/mac/MacClient.h"
 #endif
@@ -327,7 +331,7 @@ void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y) {
         }
     }
 
-    tagRECT windowDim;
+    RECT windowDim;
     OsGetDefaultWindowRect(&windowDim);
 
     *x = static_cast<float>(clientx) / static_cast<float>(windowDim.right - windowDim.left);
@@ -565,6 +569,7 @@ const char* KeyCodeToString(KEY key) {
 int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3) {
     #if defined(WHOA_SYSTEM_WIN)
         // TODO
+        return 0;
     #endif
 
     #if defined(WHOA_SYSTEM_MAC)
@@ -592,9 +597,9 @@ int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param
 void OsInputInitialize() {
     #if defined(WHOA_SYSTEM_WIN)
         Input::s_numlockState = GetAsyncKeyState(144);
-        PVOID pvParam = 10;
-        SystemParametersInfoA(SPI_GETMOUSESPEED, 0, &pvParam, 0);
-        Input::s_savedMouseSpeed = pvParam;
+        int32_t mouseSpeed = 10;
+        SystemParametersInfoA(SPI_GETMOUSESPEED, 0, &mouseSpeed, 0);
+        Input::s_savedMouseSpeed = mouseSpeed;
     #endif
 
     #if defined(WHOA_SYSTEM_MAC)

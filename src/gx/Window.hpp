@@ -3,6 +3,10 @@
 
 #include <cstdint>
 
+#if defined(WHOA_SYSTEM_WIN)
+#include <windows.h>
+#endif
+
 #if defined(WHOA_SYSTEM_MAC)
     #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -16,14 +20,16 @@ struct Rect {
 };
 #endif
 
-struct tagRECT {
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+typedef struct tagRECT {
     int32_t left;
     int32_t top;
     int32_t right;
     int32_t bottom;
-};
+} RECT;
+#endif
 
-int32_t OsGetDefaultWindowRect(tagRECT* rect);
+int32_t OsGetDefaultWindowRect(RECT* rect);
 
 Rect* GetSavedWindowBounds();
 
