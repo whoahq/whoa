@@ -190,7 +190,7 @@ int32_t CLayoutFrame::CalculateRect(CRect* rect) {
     return 1;
 }
 
-bool CLayoutFrame::CanBeAnchorFor(CLayoutFrame*) {
+bool CLayoutFrame::CanBeAnchorFor(CLayoutFrame* frame) {
     // TODO
 
     return true;

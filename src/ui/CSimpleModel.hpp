@@ -17,11 +17,11 @@ class CSimpleModel : public CSimpleFrame {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
         static void LightingCallback(CM2Model* model, CM2Lighting* lighting, void* userArg);
         static void ModelLoaded(CM2Model* model, void* arg);
-        static void RegisterScriptMethods(lua_State*);
+        static void RegisterScriptMethods(lua_State* L);
         static void RenderModel(void* arg);
 
         // Member variables
@@ -45,25 +45,25 @@ class CSimpleModel : public CSimpleFrame {
         // Virtual member functions
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
-        virtual int32_t GetScriptMetaTable(void);
-        virtual void LoadXML(XMLNode*, CStatus*);
+        virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual void OnLayerUpdate(float elapsedSec);
         virtual void OnFrameRender(CRenderBatch*, uint32_t);
-        virtual void UpdateModel(void);
+        virtual void UpdateModel();
         virtual void OnModelLoaded(CM2Model* model);
 
         // Member functions
-        CSimpleModel(CSimpleFrame*);
-        CM2Scene* GetScene(void);
+        CSimpleModel(CSimpleFrame* parent);
+        CM2Scene* GetScene();
         void SetCamera(HCAMERA camera);
         void SetCameraByID(uint32_t id);
         void SetCameraByIndex(uint32_t index);
-        void SetFogColor(CImVector&);
-        void SetFogFar(float);
-        void SetFogNear(float);
-        void SetModel(const char*);
-        void SetModel(CM2Model*);
-        void SetScale(float);
+        void SetFogColor(CImVector& fogColor);
+        void SetFogFar(float fogFar);
+        void SetFogNear(float fogNear);
+        void SetModel(const char* sourcefile);
+        void SetModel(CM2Model* model);
+        void SetScale(float scale);
         void SetSequence(uint32_t sequence);
         int32_t SetSequenceTime(uint32_t sequence, int32_t time);
 };

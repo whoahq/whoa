@@ -22,11 +22,11 @@ namespace FrameScript {
 
 // Utility
 
-void CharacterCreateRegisterScriptFunctions(void);
-void CharSelectRegisterScriptFunctions(void);
-void GlueScriptEventsRegisterFunctions(void);
-void RegisterSimpleFrameScriptMethods(void);
-void SystemRegisterFunctions(void);
+void CharacterCreateRegisterScriptFunctions();
+void CharSelectRegisterScriptFunctions();
+void GlueScriptEventsRegisterFunctions();
+void RegisterSimpleFrameScriptMethods();
+void SystemRegisterFunctions();
 
 // Shared
 int32_t Script_GetAccountExpansionLevel(lua_State*);

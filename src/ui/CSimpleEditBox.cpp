@@ -749,14 +749,14 @@ void CSimpleEditBox::MoveForward(int32_t highlight) {
     }
 }
 
-void CSimpleEditBox::OnEnterPressed(void) {
+void CSimpleEditBox::OnEnterPressed() {
     this->RunOnEnterPressedScript();
 
     // TODO
     // - invoke action
 }
 
-void CSimpleEditBox::OnEscapePressed(void) {
+void CSimpleEditBox::OnEscapePressed() {
     // TODO
 }
 

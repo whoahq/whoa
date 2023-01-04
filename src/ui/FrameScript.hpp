@@ -37,7 +37,7 @@ class FrameScript_EventObject : public TSHashObject<FrameScript_EventObject, HAS
 
         // Member functions
         FrameScript_EventObject() : TSHashObject<FrameScript_EventObject, HASHKEY_STRI>() {};
-        const char* GetName(void);
+        const char* GetName();
 };
 
 extern const char* g_glueScriptEvents[41];
@@ -60,48 +60,48 @@ namespace FrameScript {
     extern TSHashTable<FrameScript_EventObject, HASHKEY_STRI> s_scriptEventsHash;
 }
 
-int32_t FrameScript_CompileFunction(const char*, const char*, const char*, CStatus*);
+int32_t FrameScript_CompileFunction(const char* name, const char* wrapper, const char* body, CStatus* status);
 
-void FrameScript_CreateEvents(const char*[], uint32_t);
+void FrameScript_CreateEvents(const char* names[], uint32_t count);
 
-void FrameScript_Destroy(void);
+void FrameScript_Destroy();
 
-void FrameScript_Execute(const char*, const char*, const char*);
+void FrameScript_Execute(const char* source, const char* filename, const char* a3);
 
-void FrameScript_Execute(int32_t, FrameScript_Object*, int32_t, const char*, FrameScript_EventObject*);
+void FrameScript_Execute(int32_t function, FrameScript_Object* objectThis, int32_t argCount, const char* a4, FrameScript_EventObject* event);
 
-int32_t FrameScript_ExecuteBuffer(const char*, size_t, const char*, CStatus*, const char*);
+int32_t FrameScript_ExecuteBuffer(const char* buffer, size_t bufferBytes, const char* bufferName, CStatus* status, const char* a5);
 
-int32_t FrameScript_ExecuteFile(const char*, const char*, MD5_CTX*, CStatus*);
+int32_t FrameScript_ExecuteFile(const char* filePath, const char* a2, MD5_CTX* md5, CStatus* status);
 
-void FrameScript_Flush(void);
+void FrameScript_Flush();
 
 void FrameScript_GetColor(lua_State* L, int32_t idx, CImVector& color);
 
-lua_State* FrameScript_GetContext(void);
+lua_State* FrameScript_GetContext();
 
-const char* FrameScript_GetCurrentObject(lua_State*, int32_t);
+const char* FrameScript_GetCurrentObject(lua_State* L, int32_t a2);
 
-char const* FrameScript_GetText(const char*, int32_t, FRAMESCRIPT_GENDER);
+char const* FrameScript_GetText(const char* a1, int32_t count, FRAMESCRIPT_GENDER gender);
 
-int32_t FrameScript_GetVariable(const char*, const char**);
+int32_t FrameScript_GetVariable(const char* a1, const char** a2);
 
-int32_t FrameScript_HandleError(lua_State*);
+int32_t FrameScript_HandleError(lua_State* L);
 
-int32_t FrameScript_Initialize(int32_t);
+int32_t FrameScript_Initialize(int32_t a1);
 
-void FrameScript_RegisterFunction(const char*, int32_t (*)(lua_State*));
+void FrameScript_RegisterFunction(const char* name, int32_t (*function)(lua_State*));
 
-void FrameScript_RegisterScriptEvent(FrameScript_Object*, FrameScript_EventObject*);
+void FrameScript_RegisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
 
-void FrameScript_SetPluralRule(PLURAL_RULE);
+void FrameScript_SetPluralRule(PLURAL_RULE rule);
 
-void FrameScript_SignalEvent(uint32_t, const char*, ...);
+void FrameScript_SignalEvent(uint32_t index, const char* format, ...);
 
-void FrameScript_UnregisterScriptEvent(FrameScript_Object*, FrameScript_EventObject*);
+void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
 
-void GlueScriptEventsInitialize(void);
+void GlueScriptEventsInitialize();
 
-void ScriptEventsInitialize(void);
+void ScriptEventsInitialize();
 
 #endif

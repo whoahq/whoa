@@ -14,9 +14,9 @@ class CSimpleScrollFrame : public CSimpleFrame {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
         static void RenderScrollChild(void* param);
 
         // Member variables
@@ -29,20 +29,20 @@ class CSimpleScrollFrame : public CSimpleFrame {
         ScriptIx m_onScrollRangeChanged;
 
         // Virtual member functions
-        virtual ScriptIx* GetScriptByName(const char*, ScriptData&);
-        virtual bool IsA(int32_t);
-        virtual int32_t GetScriptMetaTable(void);
-        virtual void LoadXML(XMLNode*, CStatus*);
+        virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
+        virtual bool IsA(int32_t type);
+        virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual int32_t GetBoundsRect(CRect& bounds);
         virtual void OnLayerUpdate(float elapsedSec);
         virtual void OnFrameRender(CRenderBatch* batch, uint32_t layer);
         virtual void OnFrameSizeChanged(float w, float h);
 
         // Member functions
-        CSimpleScrollFrame(CSimpleFrame*);
+        CSimpleScrollFrame(CSimpleFrame* parent);
         void RunOnScrollRangeChangedScript();
         void RunOnVerticalScrollScript();
-        void SetScrollChild(CSimpleFrame*);
+        void SetScrollChild(CSimpleFrame* frame);
         void SetVerticalScroll(float offset);
         void UpdateScrollChild();
         void UpdateScrollChildRect(float w, float h);

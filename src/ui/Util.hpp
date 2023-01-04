@@ -5,12 +5,12 @@
 #include "ui/Types.hpp"
 #include <cstdint>
 
-const char* LanguageProcess(const char*);
+const char* LanguageProcess(const char* string);
 
-int32_t StringToBlendMode(const char*, EGxBlend&);
+int32_t StringToBlendMode(const char* string, EGxBlend& blend);
 
-int32_t StringToFramePoint(const char*, FRAMEPOINT&);
+int32_t StringToFramePoint(const char* string, FRAMEPOINT& point);
 
-int32_t StringToFrameStrata(const char*, FRAME_STRATA&);
+int32_t StringToFrameStrata(const char* string, FRAME_STRATA& strata);
 
 #endif

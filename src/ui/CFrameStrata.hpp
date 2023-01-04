@@ -18,9 +18,9 @@ class CFrameStrataNode {
         STORM_EXPLICIT_LIST(CRenderBatch, renderLink) renderList;
 
         // Member functions
-        int32_t BuildBatches(void);
-        void OnLayerUpdate(float);
-        bool RemoveFrame(CSimpleFrame*);
+        int32_t BuildBatches();
+        void OnLayerUpdate(float elapsedSec);
+        bool RemoveFrame(CSimpleFrame* frame);
 };
 
 class CFrameStrata {
@@ -33,12 +33,12 @@ class CFrameStrata {
 
         // Member functions
         void AddFrame(CSimpleFrame*);
-        int32_t BuildBatches(int32_t);
-        void CheckOcclusion(void);
-        int32_t FrameOccluded(CSimpleFrame*);
-        void OnLayerUpdate(float);
-        void RemoveFrame(CSimpleFrame*);
-        void RenderBatches(void);
+        int32_t BuildBatches(int32_t a2);
+        void CheckOcclusion();
+        int32_t FrameOccluded(CSimpleFrame* frame);
+        void OnLayerUpdate(float elapsedSec);
+        void RemoveFrame(CSimpleFrame* frame);
+        void RenderBatches();
 };
 
 #endif

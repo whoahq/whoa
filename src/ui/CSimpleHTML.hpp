@@ -22,9 +22,9 @@ class CSimpleHTML : public CSimpleHyperlinkedFrame, CSimpleFontedFrame {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         STORM_LIST(CONTENTNODE) m_content;
@@ -34,12 +34,12 @@ class CSimpleHTML : public CSimpleHyperlinkedFrame, CSimpleFontedFrame {
 
         // Virtual member functions
         virtual bool IsA(int32_t type);
-        virtual int32_t GetScriptMetaTable(void);
+        virtual int32_t GetScriptMetaTable();
         virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual void FontUpdated(CSimpleFontedFrameFont* font, int32_t a3);
 
         // Member functions
-        CSimpleHTML(CSimpleFrame*);
+        CSimpleHTML(CSimpleFrame* parent);
         void AddText(const char* text, HTML_TEXT_TYPE type, uint32_t justify);
         void ClearContent();
         void ParseBODY(XMLNode* node, CStatus* status);

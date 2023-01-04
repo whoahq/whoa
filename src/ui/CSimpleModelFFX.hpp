@@ -11,17 +11,17 @@ class CSimpleModelFFX : public CSimpleModel {
         static int32_t s_metatable;
 
         // Static functions
-        static CSimpleFrame* Create(CSimpleFrame*);
-        static void CreateScriptMetaTable(void);
-        static void RegisterScriptMethods(lua_State*);
-        static void Render(void*);
+        static CSimpleFrame* Create(CSimpleFrame* parent);
+        static void CreateScriptMetaTable();
+        static void RegisterScriptMethods(lua_State* L);
+        static void Render(void* arg);
 
         // Virtual member functions
-        virtual int32_t GetScriptMetaTable(void);
-        virtual void OnFrameRender(CRenderBatch*, uint32_t);
+        virtual int32_t GetScriptMetaTable();
+        virtual void OnFrameRender(CRenderBatch* batch, uint32_t layer);
 
         // Member functions
-        CSimpleModelFFX(CSimpleFrame*);
+        CSimpleModelFFX(CSimpleFrame* parent);
 };
 
 #endif

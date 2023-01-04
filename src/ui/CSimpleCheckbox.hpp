@@ -10,18 +10,18 @@ class CSimpleCheckbox : public CSimpleButton {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
 
         // Virtual member functions
-        virtual bool IsA(int32_t);
-        virtual int32_t GetScriptMetaTable(void);
+        virtual bool IsA(int32_t type);
+        virtual int32_t GetScriptMetaTable();
 
         // Member functions
-        CSimpleCheckbox(CSimpleFrame*);
+        CSimpleCheckbox(CSimpleFrame* parent);
 };
 
 #endif

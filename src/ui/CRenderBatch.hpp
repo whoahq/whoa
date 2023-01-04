@@ -39,7 +39,7 @@ class CSimpleBatchedMesh {
         C2Vector atlasOffset;
 
         // Member functions
-        EGxBlend GetAlphaMode(void);
+        EGxBlend GetAlphaMode();
 };
 
 class CRenderBatch {
@@ -52,12 +52,12 @@ class CRenderBatch {
         TSLink<CRenderBatch> renderLink;
 
         // Member functions
-        void Clear(void);
-        void Finish(void);
-        void Queue(CTexture*, EGxBlend, int32_t, const C3Vector*, const C2Vector*, int32_t, const CImVector*, int32_t, const uint16_t*, CGxShader*);
-        void QueueCallback(void (*)(void*), void*);
-        void QueueFontString(CSimpleFontString*);
-        void QueueTexture(CSimpleTexture*);
+        void Clear();
+        void Finish();
+        void Queue(CTexture* texture, EGxBlend alphaMode, int32_t posCount, const C3Vector* position, const C2Vector* texCoord, int32_t colorCount, const CImVector* color, int32_t idx, const uint16_t* indices, CGxShader* shader);
+        void QueueCallback(void (*callback)(void*), void* param);
+        void QueueFontString(CSimpleFontString* string);
+        void QueueTexture(CSimpleTexture* texture);
 };
 
 #endif

@@ -38,7 +38,7 @@ void* luaM_initPool() {
     return pools;
 }
 
-void* luaM_reallocPool(void* ud, void *ptr, size_t osize, size_t nsize) {
+void* luaM_reallocPool(void* ud, void* ptr, size_t osize, size_t nsize) {
     void* result; // eax
     signed int v5; // esi
     signed int v6; // edx

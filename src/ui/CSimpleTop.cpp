@@ -71,12 +71,12 @@ int32_t CSimpleTop::OnDisplaySizeChanged(const EVENT_DATA_SIZE* pSizeData, void*
     return 1;
 }
 
-int32_t CSimpleTop::OnFocusChanged(const void*, void*) {
+int32_t CSimpleTop::OnFocusChanged(const void* a1, void* a2) {
     // TODO
     return 0;
 }
 
-int32_t CSimpleTop::OnIme(const void*, void*) {
+int32_t CSimpleTop::OnIme(const void* a1, void* a2) {
     // TODO
     return 0;
 }
@@ -123,7 +123,7 @@ int32_t CSimpleTop::OnKeyDown(const EVENT_DATA_KEY* pKeyData, void* param) {
     return eaten == 0;
 }
 
-int32_t CSimpleTop::OnKeyDownRepeat(const void*, void*) {
+int32_t CSimpleTop::OnKeyDownRepeat(const void* a1, void* a2) {
     // TODO
     return 0;
 }
@@ -282,7 +282,7 @@ int32_t CSimpleTop::OnMouseMove(const EVENT_DATA_MOUSE* pMouseData, void* param)
     return nextFocus == nullptr;
 }
 
-int32_t CSimpleTop::OnMouseMoveRelative(const EVENT_DATA_MOUSE*, void*) {
+int32_t CSimpleTop::OnMouseMoveRelative(const EVENT_DATA_MOUSE* pMouseData, void* param) {
     // TODO
     return 0;
 }
@@ -325,7 +325,7 @@ int32_t CSimpleTop::OnMouseUp(const EVENT_DATA_MOUSE* pMouseData, void* param) {
     return 0;
 }
 
-int32_t CSimpleTop::OnMouseWheel(const EVENT_DATA_MOUSE*, void*) {
+int32_t CSimpleTop::OnMouseWheel(const EVENT_DATA_MOUSE* pMouseData, void* param) {
     // TODO
     return 0;
 }

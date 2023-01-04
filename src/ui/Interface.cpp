@@ -1,5 +1,5 @@
 #include "ui/Interface.hpp"
 
-void DeleteInterfaceFiles(void) {
+void DeleteInterfaceFiles() {
     // TODO
 }

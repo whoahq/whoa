@@ -21,17 +21,17 @@ class CSimpleFontStringAttributes {
         C2Vector m_shadowOffset;
 
         // Member functions
-        void SetColor(const CImVector&);
-        int32_t SetFont(const char*, float, uint32_t);
-        void SetIndented(bool);
-        void SetJustifyV(uint8_t);
-        void SetJustifyH(uint8_t);
-        void SetNonSpaceWrap(bool);
-        void SetShadow(const CImVector&, const C2Vector&);
-        void SetSpacing(float);
-        void SetStyleFlags(uint32_t);
-        void Update(CSimpleFontString*, uint32_t);
-        void Update(CSimpleFontStringAttributes&, uint32_t);
+        void SetColor(const CImVector& color);
+        int32_t SetFont(const char* fontName, float fontHeight, uint32_t fontFlags);
+        void SetIndented(bool indented);
+        void SetJustifyV(uint8_t justify);
+        void SetJustifyH(uint8_t justify);
+        void SetNonSpaceWrap(bool wrap);
+        void SetShadow(const CImVector& shadowColor, const C2Vector& shadowOffset);
+        void SetSpacing(float spacing);
+        void SetStyleFlags(uint32_t styleFlags);
+        void Update(CSimpleFontString* fontString, uint32_t flags);
+        void Update(CSimpleFontStringAttributes& attributes, uint32_t flags);
 };
 
 #endif

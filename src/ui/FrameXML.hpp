@@ -30,26 +30,26 @@ namespace FrameXML {
     extern TSHashTable<HashedNode, HASHKEY_STRI> s_nodeHash;
 }
 
-XMLNode* FrameXML_AcquireHashNode(const char*, const char*&, bool&);
+XMLNode* FrameXML_AcquireHashNode(const char* name, const char*& tainted, bool& locked);
 
-int32_t FrameXML_CheckSignature(const char*, const char*, const unsigned char*, unsigned char*);
+int32_t FrameXML_CheckSignature(const char* tocPath, const char* a2, const unsigned char* key, unsigned char* digest);
 
-CSimpleFrame* FrameXML_CreateFrame(XMLNode*, CSimpleFrame*, CStatus*);
+CSimpleFrame* FrameXML_CreateFrame(XMLNode* node, CSimpleFrame* parent, CStatus* status);
 
-int32_t FrameXML_CreateFrames(const char*, const char*, MD5_CTX*, CStatus*);
+int32_t FrameXML_CreateFrames(const char* tocPath, const char* a2, MD5_CTX* md5, CStatus* status);
 
-void FrameXML_FreeHashNodes(void);
+void FrameXML_FreeHashNodes();
 
-XMLTree* FrameXML_LoadXML(const char*, MD5_CTX*, CStatus*);
+XMLTree* FrameXML_LoadXML(const char* filePath, MD5_CTX* md5, CStatus* status);
 
-int32_t FrameXML_ProcessFile(const char*, const char*, MD5_CTX*, CStatus*);
+int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5, CStatus* status);
 
-void FrameXML_RegisterDefault(void);
+void FrameXML_RegisterDefault();
 
-int32_t FrameXML_RegisterFactory(const char*, CSimpleFrame* (*)(CSimpleFrame*), bool);
+int32_t FrameXML_RegisterFactory(const char* type, CSimpleFrame* (*factory)(CSimpleFrame*), bool);
 
-void FrameXML_ReleaseHashNode(const char*);
+void FrameXML_ReleaseHashNode(const char* name);
 
-void FrameXML_StoreHashNode(XMLNode*, const char*, const char*, CStatus*);
+void FrameXML_StoreHashNode(XMLNode* node, const char* name, const char* a3, CStatus* status);
 
 #endif
