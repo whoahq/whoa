@@ -12,10 +12,10 @@ class CGxPool;
 class CM2Cache;
 class CM2Model;
 class CShaderEffect;
-class M2Batch;
-class M2Data;
-class M2SkinProfile;
-class M2SkinSection;
+struct M2Batch;
+struct M2Data;
+struct M2SkinProfile;
+struct M2SkinSection;
 class SFile;
 
 class CM2Shared {

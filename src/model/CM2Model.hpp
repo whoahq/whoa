@@ -11,16 +11,16 @@
 class CAaBox;
 class CM2Scene;
 class CM2Shared;
-class M2Batch;
-class M2Data;
-class M2ModelBone;
-class M2ModelBoneSeq;
-class M2ModelCamera;
-class M2ModelColor;
-class M2ModelLight;
-class M2ModelTextureWeight;
-class M2SequenceFallback;
-class M2TrackBase;
+struct M2Batch;
+struct M2Data;
+struct M2ModelBone;
+struct M2ModelBoneSeq;
+struct M2ModelCamera;
+struct M2ModelColor;
+struct M2ModelLight;
+struct M2ModelTextureWeight;
+struct M2SequenceFallback;
+struct M2TrackBase;
 
 struct CM2ModelCall {
     uint32_t type = -1;

@@ -10,11 +10,11 @@ class CM2Cache;
 class CM2Lighting;
 class CM2Model;
 class CM2Shared;
-class M2Batch;
-class M2Data;
-class M2Element;
-class M2Material;
-class M2SkinSection;
+struct M2Batch;
+struct M2Data;
+struct M2Element;
+struct M2Material;
+struct M2SkinSection;
 
 class CM2SceneRender {
     public:
