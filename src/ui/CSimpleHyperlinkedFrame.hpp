@@ -6,7 +6,7 @@
 class CSimpleHyperlinkedFrame : public CSimpleFrame {
     public:
         // Member functions
-        CSimpleHyperlinkedFrame(CSimpleFrame*);
+        CSimpleHyperlinkedFrame(CSimpleFrame* parent);
 };
 
 #endif

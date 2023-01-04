@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-void* luaM_initPool(void);
-void* luaM_reallocPool(void*, void*, size_t, size_t);
+void* luaM_initPool();
+void* luaM_reallocPool(void* ud, void* ptr, size_t osize, size_t nsize);
 
 #endif

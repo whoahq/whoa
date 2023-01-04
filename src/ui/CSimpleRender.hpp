@@ -10,8 +10,8 @@ class CSimpleRender {
         static CGxShader* s_vertexShader[];
 
         // Static functions
-        static void DrawBatch(CRenderBatch*);
-        static void Init(void);
+        static void DrawBatch(CRenderBatch* batch);
+        static void Init();
 };
 
 #endif

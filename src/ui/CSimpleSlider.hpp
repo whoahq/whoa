@@ -10,9 +10,9 @@ class CSimpleSlider : public CSimpleFrame {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         int32_t m_changed : 1;
@@ -27,9 +27,9 @@ class CSimpleSlider : public CSimpleFrame {
         ScriptIx m_onMinMaxChanged;
 
         // Virtual member functions
-        virtual ScriptIx* GetScriptByName(const char*, ScriptData&);
-        virtual bool IsA(int32_t);
-        virtual int32_t GetScriptMetaTable(void);
+        virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
+        virtual bool IsA(int32_t type);
+        virtual int32_t GetScriptMetaTable();
 
         // Member functions
         CSimpleSlider(CSimpleFrame* parent)

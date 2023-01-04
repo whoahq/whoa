@@ -20,13 +20,13 @@ class CFramePoint {
         uint32_t m_flags : 24;
 
         // Member functions
-        CFramePoint(CLayoutFrame*, FRAMEPOINT, float, float);
+        CFramePoint(CLayoutFrame* relative, FRAMEPOINT framePoint, float offsetX, float offsetY);
         CLayoutFrame* GetRelative();
-        int32_t GetRelativeRect(CRect&);
-        void MarkUnused(void);
-        void SetRelative(CLayoutFrame*, FRAMEPOINT, float, float);
-        float X(float);
-        float Y(float);
+        int32_t GetRelativeRect(CRect& rect);
+        void MarkUnused();
+        void SetRelative(CLayoutFrame* relative, FRAMEPOINT relativePoint, float offsetX, float offsetY);
+        float X(float scale);
+        float Y(float scale);
 };
 
 #endif

@@ -1542,7 +1542,7 @@ int32_t CSimpleFrame::TestHitRect(const C2Vector& pt) {
     return rect.IsPointInside(pt);
 }
 
-void CSimpleFrame::UpdateDepth(bool a1) {
+void CSimpleFrame::UpdateDepth(bool a2) {
     // TODO
 }
 

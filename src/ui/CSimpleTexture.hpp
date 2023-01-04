@@ -21,11 +21,11 @@ class CSimpleTexture : public CSimpleRegion {
         static EGxTexFilter s_textureFilterMode;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static CGxShader* GetImageModePixelShader(TextureImageMode);
-        static int32_t GetObjectType(void);
-        static void Init(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static CGxShader* GetImageModePixelShader(TextureImageMode mode);
+        static int32_t GetObjectType();
+        static void Init();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         HTEXTURE m_texture = nullptr;
@@ -40,25 +40,25 @@ class CSimpleTexture : public CSimpleRegion {
 
         // Virtual member functions
         virtual ~CSimpleTexture();
-        virtual int32_t GetScriptMetaTable(void);
-        virtual bool IsA(int32_t);
-        virtual void LoadXML(XMLNode*, CStatus*);
-        virtual float GetWidth(void);
-        virtual float GetHeight(void);
-        virtual void Draw(CRenderBatch*);
-        virtual void OnFrameSizeChanged(const CRect&);
+        virtual int32_t GetScriptMetaTable();
+        virtual bool IsA(int32_t type);
+        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual float GetWidth();
+        virtual float GetHeight();
+        virtual void Draw(CRenderBatch* batch);
+        virtual void OnFrameSizeChanged(const CRect& rect);
 
         // Member functions
-        CSimpleTexture(CSimpleFrame*, uint32_t, int32_t);
-        void GetTexCoord(C2Vector*);
-        void PostLoadXML(XMLNode*, CStatus*);
+        CSimpleTexture(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
+        void GetTexCoord(C2Vector* texCoord);
+        void PostLoadXML(XMLNode* node, CStatus* status);
         void SetAlpha(float alpha);
-        void SetBlendMode(EGxBlend);
-        void SetPosition(const CRect&, C3Vector*);
+        void SetBlendMode(EGxBlend blend);
+        void SetPosition(const CRect& rect, C3Vector* position);
         void SetTexCoord(const CRect& texRect);
-        void SetTexCoord(const C2Vector*);
-        int32_t SetTexture(const char*, bool, bool, EGxTexFilter, TextureImageMode);
-        int32_t SetTexture(const CImVector&);
+        void SetTexCoord(const C2Vector* texCoord);
+        int32_t SetTexture(const char* fileName, bool wrapU, bool wrapV, EGxTexFilter filter, TextureImageMode mode);
+        int32_t SetTexture(const CImVector& color);
 };
 
 #endif

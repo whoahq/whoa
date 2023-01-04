@@ -16,11 +16,11 @@ class CSimpleFontable {
 
         // Virtual member functions
         virtual ~CSimpleFontable();
-        virtual void FontObjectUpdated(CSimpleFontStringAttributes&) = 0;
+        virtual void FontObjectUpdated(CSimpleFontStringAttributes& attributes) = 0;
 
         // Member functions
-        CSimpleFont* GetFontObject(void);
-        void SetFontObject(CSimpleFont*);
+        CSimpleFont* GetFontObject();
+        void SetFontObject(CSimpleFont* fontObject);
 };
 
 #endif

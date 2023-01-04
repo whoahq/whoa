@@ -16,9 +16,9 @@ class CSimpleFontString : public CSimpleRegion, public CSimpleFontable {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         HTEXTFONT m_font = nullptr;
@@ -42,48 +42,48 @@ class CSimpleFontString : public CSimpleRegion, public CSimpleFontable {
 
         // Virtual member functions
         virtual ~CSimpleFontString();
-        virtual bool IsA(int32_t);
-        virtual int32_t GetScriptMetaTable(void);
-        virtual void LoadXML(XMLNode*, CStatus*);
-        virtual void OnColorChanged(bool);
+        virtual bool IsA(int32_t type);
+        virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void OnColorChanged(bool a2);
         virtual void OnScreenSizeChanged();
-        virtual void Draw(CRenderBatch*);
-        virtual float GetWidth(void);
-        virtual float GetHeight(void);
-        virtual void OnFrameSizeChanged(const CRect&);
-        virtual void FontObjectUpdated(CSimpleFontStringAttributes&);
+        virtual void Draw(CRenderBatch* batch);
+        virtual float GetWidth();
+        virtual float GetHeight();
+        virtual void OnFrameSizeChanged(const CRect& rect);
+        virtual void FontObjectUpdated(CSimpleFontStringAttributes& attributes);
 
         // Member functions
-        CSimpleFontString(CSimpleFrame*, uint32_t, int32_t);
-        void AddShadow(const CImVector&, const C2Vector&);
-        void ClearString(void);
-        void DrawEmbeddedTextures(CRenderBatch*);
-        void FreeEmbeddedTextures(void);
-        const char* GetDisplayText(float, float);
-        uint32_t GetFontFlags(void);
-        float GetFontHeight(bool);
-        const char* GetFontName(void);
-        uint32_t GetNumCharsWithinWidth(const char*, uint32_t, float);
-        float GetStringHeight(void);
-        float GetStringWidth(void);
-        const char* GetText(void);
-        float GetTextWidth(const char*, uint32_t);
-        void PostLoadXML(XMLNode*, CStatus*);
-        void RefreshEmbeddedTextures(void);
-        void RemoveShadow(void);
-        int32_t SetFont(const char*, float, uint32_t, bool);
-        void SetIndentedWordWrap(bool);
-        void SetJustificationOffset(float, float);
-        void SetJustifyV(uint8_t);
-        void SetJustifyH(uint8_t);
-        void SetNonSpaceWrap(int32_t);
-        void SetNonWordWrap(int32_t);
-        void SetSpacing(float);
-        void SetStyleFlags(uint32_t);
-        void SetText(const char*, int32_t);
-        void SetTextLength(uint32_t);
+        CSimpleFontString(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
+        void AddShadow(const CImVector& shadowColor, const C2Vector& shadowOffset);
+        void ClearString();
+        void DrawEmbeddedTextures(CRenderBatch* batch);
+        void FreeEmbeddedTextures();
+        const char* GetDisplayText(float width, float height);
+        uint32_t GetFontFlags();
+        float GetFontHeight(bool a2);
+        const char* GetFontName();
+        uint32_t GetNumCharsWithinWidth(const char* text, uint32_t textBytes, float maxWidth);
+        float GetStringHeight();
+        float GetStringWidth();
+        const char* GetText();
+        float GetTextWidth(const char* text, uint32_t textBytes);
+        void PostLoadXML(XMLNode* node, CStatus* status);
+        void RefreshEmbeddedTextures();
+        void RemoveShadow();
+        int32_t SetFont(const char* fontName, float fontHeight, uint32_t fontFlags, bool force);
+        void SetIndentedWordWrap(bool a2);
+        void SetJustificationOffset(float x, float y);
+        void SetJustifyV(uint8_t justify);
+        void SetJustifyH(uint8_t justify);
+        void SetNonSpaceWrap(int32_t a2);
+        void SetNonWordWrap(int32_t a2);
+        void SetSpacing(float spacing);
+        void SetStyleFlags(uint32_t styleFlags);
+        void SetText(const char* text, int32_t a3);
+        void SetTextLength(uint32_t a2);
         int32_t Sub482AC0();
-        void UpdateString(void);
+        void UpdateString();
 };
 
 #endif

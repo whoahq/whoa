@@ -15,24 +15,24 @@ class CScriptObject : public FrameScript_Object {
         static const char* s_objectTypeName;
 
         // Static functions
-        static void RegisterScriptMethods(lua_State*);
-        static CScriptObject* GetScriptObjectByName(const char*, int32_t);
+        static void RegisterScriptMethods(lua_State* L);
+        static CScriptObject* GetScriptObjectByName(const char* name, int32_t type);
 
         // Member variables
         RCString m_name;
 
         // Virtual member functions
-        virtual ~CScriptObject(void);
-        virtual char* GetName(void);
-        virtual bool IsA(int32_t);
-        virtual CScriptObject* GetScriptObjectParent(void) = 0;
-        virtual bool IsA(const char*);
-        virtual const char* GetObjectTypeName(void);
+        virtual ~CScriptObject();
+        virtual char* GetName();
+        virtual bool IsA(int32_t type);
+        virtual CScriptObject* GetScriptObjectParent() = 0;
+        virtual bool IsA(const char* typeName);
+        virtual const char* GetObjectTypeName();
 
         // Member functions
-        void CreateName(const char*, char*, uint32_t);
-        void PreLoadXML(XMLNode*, CStatus*);
-        void SetName(const char*);
+        void CreateName(const char* source, char* dest, uint32_t destsize);
+        void PreLoadXML(XMLNode* node, CStatus* status);
+        void SetName(const char* name);
 };
 
 #endif

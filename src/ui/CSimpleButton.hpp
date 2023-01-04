@@ -22,9 +22,9 @@ class CSimpleButton : public CSimpleFrame {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static int32_t GetObjectType(void);
-        static void RegisterScriptMethods(lua_State*);
+        static void CreateScriptMetaTable();
+        static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         uint32_t m_doubleClickTime = 0;
@@ -45,33 +45,33 @@ class CSimpleButton : public CSimpleFrame {
         ScriptIx m_onDoubleClick;
 
         // Virtual member functions
-        virtual ScriptIx* GetScriptByName(const char*, ScriptData&);
-        virtual bool IsA(int32_t);
-        virtual int32_t GetScriptMetaTable(void);
-        virtual void LoadXML(XMLNode*, CStatus*);
-        virtual void OnLayerHide(void);
-        virtual void OnLayerCursorEnter(int32_t);
-        virtual void OnLayerCursorExit(int32_t, int32_t);
-        virtual int32_t OnLayerMouseDown(const CMouseEvent&, const char*);
-        virtual int32_t OnLayerMouseUp(const CMouseEvent&, const char*);
-        virtual void LockHighlight(int32_t);
-        virtual void Enable(int32_t);
-        virtual void OnClick(const char*, int32_t);
-        virtual void OnDoubleClick(const char*);
-        virtual void SetButtonState(CSimpleButtonState, int32_t);
+        virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
+        virtual bool IsA(int32_t type);
+        virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void OnLayerHide();
+        virtual void OnLayerCursorEnter(int32_t a2);
+        virtual void OnLayerCursorExit(int32_t a2, int32_t a3);
+        virtual int32_t OnLayerMouseDown(const CMouseEvent& evt, const char* btn);
+        virtual int32_t OnLayerMouseUp(const CMouseEvent& evt, const char* btn);
+        virtual void LockHighlight(int32_t lock);
+        virtual void Enable(int32_t enabled);
+        virtual void OnClick(const char* btn, int32_t a3);
+        virtual void OnDoubleClick(const char* btn);
+        virtual void SetButtonState(CSimpleButtonState state, int32_t stateLocked);
 
         // Member functions
-        CSimpleButton(CSimpleFrame*);
-        void RunOnClickScript(const char*, int32_t);
+        CSimpleButton(CSimpleFrame* parent);
+        void RunOnClickScript(const char* btn, int32_t down);
         void SetClickAction(uint64_t action);
-        void SetFontString(CSimpleFontString*);
-        void SetHighlight(CSimpleTexture*, EGxBlend);
+        void SetFontString(CSimpleFontString* text);
+        void SetHighlight(CSimpleTexture* texture, EGxBlend blend);
         int32_t SetHighlight(const char* texFile, EGxBlend blendMode);
-        void SetPressedOffset(C2Vector&);
-        void SetStateTexture(CSimpleButtonState, CSimpleTexture*);
+        void SetPressedOffset(C2Vector& offset);
+        void SetStateTexture(CSimpleButtonState state, CSimpleTexture* texture);
         int32_t SetStateTexture(CSimpleButtonState state, const char* texFile);
-        void SetText(const char*);
-        void UpdateTextState(CSimpleButtonState);
+        void SetText(const char* string);
+        void UpdateTextState(CSimpleButtonState state);
 };
 
 #endif

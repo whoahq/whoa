@@ -22,21 +22,21 @@ class CSimpleRegion : public CScriptRegion {
 
         // Virtual member functions
         virtual ~CSimpleRegion();
-        virtual void OnColorChanged(bool);
+        virtual void OnColorChanged(bool a2);
         virtual void OnScreenSizeChanged() {};
-        virtual void Draw(CRenderBatch*) = 0;
+        virtual void Draw(CRenderBatch* batch) = 0;
 
         // Member functions
-        CSimpleRegion(CSimpleFrame*, uint32_t, int32_t);
+        CSimpleRegion(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
         void GetVertexColor(CImVector& color) const;
-        void Hide(void);
-        void HideThis(void);
+        void Hide();
+        void HideThis();
         bool IsShown();
-        void OnRegionChanged(void);
-        void SetVertexColor(const CImVector&);
-        void SetFrame(CSimpleFrame*, uint32_t, int32_t);
-        void Show(void);
-        void ShowThis(void);
+        void OnRegionChanged();
+        void SetVertexColor(const CImVector& color);
+        void SetFrame(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
+        void Show();
+        void ShowThis();
 };
 
 #endif

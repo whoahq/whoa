@@ -40,10 +40,10 @@ class CBackdropGenerator {
 
         // Member functions
         CBackdropGenerator();
-        void Generate(const CRect*);
-        void LoadXML(XMLNode*, CStatus*);
-        void SetBorderVertexColor(const CImVector&);
-        void SetOutput(CSimpleFrame*);
+        void Generate(const CRect* rect);
+        void LoadXML(XMLNode* node, CStatus* status);
+        void SetBorderVertexColor(const CImVector& borderColor);
+        void SetOutput(CSimpleFrame* frame);
 };
 
 #endif

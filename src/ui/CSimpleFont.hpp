@@ -29,10 +29,10 @@ class CSimpleFont : public FrameScript_Object, public CSimpleFontable {
         static int32_t s_objectType;
 
         // Static functions
-        static void CreateScriptMetaTable(void);
-        static CSimpleFont* GetFont(const char*, int32_t);
+        static void CreateScriptMetaTable();
+        static CSimpleFont* GetFont(const char* name, int32_t a2);
         static int32_t GetObjectType();
-        static void RegisterScriptMethods(lua_State*);
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         CSimpleFontStringAttributes m_attributes;
@@ -40,15 +40,15 @@ class CSimpleFont : public FrameScript_Object, public CSimpleFontable {
         STORM_EXPLICIT_LIST(CSimpleFontable, m_fontableLink) m_fontableList;
 
         // Virtual member functions
-        virtual char* GetName(void);
-        virtual int32_t GetScriptMetaTable(void);
-        virtual bool IsA(int32_t);
-        virtual void FontObjectUpdated(CSimpleFontStringAttributes&);
+        virtual char* GetName();
+        virtual int32_t GetScriptMetaTable();
+        virtual bool IsA(int32_t type);
+        virtual void FontObjectUpdated(CSimpleFontStringAttributes& attributes);
 
         // Member functions
         CSimpleFont();
-        void LoadXML(XMLNode*, CStatus*);
-        void UpdateObjects(void);
+        void LoadXML(XMLNode* node, CStatus* status);
+        void UpdateObjects();
 };
 
 #endif
