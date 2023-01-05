@@ -116,7 +116,7 @@ int32_t M2ConvertModelFileName(const char* source, char* dest, uint32_t a3, uint
 }
 
 CM2Scene* M2CreateScene() {
-    void* m = SMemAlloc(sizeof(CM2Scene), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(CM2Scene), __FILE__, __LINE__, 0x0);
     return new (m) CM2Scene(&CM2Cache::s_cache);
 }
 

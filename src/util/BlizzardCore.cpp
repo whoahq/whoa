@@ -209,8 +209,8 @@ void Blizzard::System_Thread::AddToRegistry(Thread::ThreadRecord* thread) {
     Blizzard::Lock::MutexEnter(System_Thread::s_registryMutex);
 
     if (!System_Thread::s_threadRegistry) {
-        void* v2 = Blizzard::Memory::Allocate(sizeof(std::map<Thread::ThreadRecord*, Thread::ThreadRecord*>), 0, __FILE__, __LINE__, nullptr);
-        System_Thread::s_threadRegistry = new (v2) std::map<Thread::ThreadRecord*, Thread::ThreadRecord*>();
+        auto m = Blizzard::Memory::Allocate(sizeof(std::map<Thread::ThreadRecord*, Thread::ThreadRecord*>), 0, __FILE__, __LINE__, nullptr);
+        System_Thread::s_threadRegistry = new (m) std::map<Thread::ThreadRecord*, Thread::ThreadRecord*>();
     }
 
     System_Thread::s_threadRegistry->insert(std::pair<Thread::ThreadRecord*, Thread::ThreadRecord*>(thread, thread));

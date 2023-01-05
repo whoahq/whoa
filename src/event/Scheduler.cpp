@@ -37,21 +37,14 @@ HEVENTCONTEXT IEvtSchedulerCreateContext(int32_t interactive, int32_t (*initiali
         callContext = OsCallInitializeContext(contextName);
     }
 
-    void* m = SMemAlloc(sizeof(EvtContext), __FILE__, __LINE__, 0);
-
-    EvtContext* context;
-
-    if (m) {
-        context = new (m) EvtContext(
-            interactive != 0 ? 2 : 0,
-            idleTime,
-            interactive != 0 ? 1000 : 1,
-            callContext,
-            (debugFlags >> 1) & 1
-        );
-    } else {
-        context = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(EvtContext), __FILE__, __LINE__, 0x0);
+    auto context = new (m) EvtContext(
+        interactive != 0 ? 2 : 0,
+        idleTime,
+        interactive != 0 ? 1000 : 1,
+        callContext,
+        (debugFlags >> 1) & 1
+    );
 
     if (interactive) {
         SInterlockedIncrement(&Event::s_interactiveCount);
@@ -89,13 +82,8 @@ void IEvtSchedulerInitialize(int32_t threadCount, int32_t netServer) {
     // Allocate SCritSects for each thread slot
     int32_t v4 = sizeof(SCritSect) * threadSlotCount;
 
-    void* v5 = SMemAlloc((v4 + 4), ".\\EvtSched.cpp", 791, 0);
-
-    if (v5) {
-        Event::s_threadSlotCritsects = new (v5) SCritSect[threadSlotCount];
-    } else {
-        Event::s_threadSlotCritsects = nullptr;
-    }
+    auto slotMem = SMemAlloc((v4 + 4), __FILE__, __LINE__, 0x0);
+    Event::s_threadSlotCritsects = new (slotMem) SCritSect[threadSlotCount];
 
     // Allocate EvtThread pointers for each thread slot
     Event::s_threadSlots = static_cast<EvtThread**>(SMemAlloc(sizeof(EvtThread*) * threadSlotCount, __FILE__, __LINE__, 0));
@@ -107,15 +95,8 @@ void IEvtSchedulerInitialize(int32_t threadCount, int32_t netServer) {
     Event::s_mainThread = InitializeSchedulerThread();
 
     for (int32_t i = 0; i < threadCount - 1; ++i) {
-        void* m = SMemAlloc(sizeof(SThread), __FILE__, __LINE__, 0);
-
-        SThread* thread;
-
-        if (m) {
-            thread = new (m) SThread();
-        } else {
-            thread = nullptr;
-        }
+        auto threadMem = SMemAlloc(sizeof(SThread), __FILE__, __LINE__, 0x0);
+        auto thread = new (threadMem) SThread();
 
         Event::s_schedulerThreads.SetCount(Event::s_schedulerThreads.Count() + 1);
 

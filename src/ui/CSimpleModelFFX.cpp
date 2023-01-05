@@ -8,15 +8,9 @@ int32_t CSimpleModelFFX::s_metatable;
 
 CSimpleFrame* CSimpleModelFFX::Create(CSimpleFrame* parent) {
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleModelFFX::s_simpleModelFFXHeap, 0, __FILE__, __LINE__);
-
-    void* m = SMemAlloc(sizeof(CSimpleModelFFX), __FILE__, __LINE__, 0);
-
-    if (m) {
-        return new (m) CSimpleModelFFX(parent);
-    } else {
-        return nullptr;
-    }
+    // auto m = CDataAllocator::GetData(CSimpleModelFFX::s_simpleModelFFXHeap, 0, __FILE__, __LINE__);
+    auto m = SMemAlloc(sizeof(CSimpleModelFFX), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleModelFFX(parent);
 }
 
 void CSimpleModelFFX::Render(void* arg) {

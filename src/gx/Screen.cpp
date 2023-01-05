@@ -185,9 +185,8 @@ void ScrnLayerCreate(const RECTF* rect, float zorder, unsigned long flags, void*
 
     const RECTF* r = rect ? rect : &defaultrect;
 
-    void* m = SMemAlloc(sizeof(CILayer), __FILE__, __LINE__, 0);
-
-    CILayer* l = new (m) CILayer();
+    auto m = SMemAlloc(sizeof(CILayer), __FILE__, __LINE__, 0x0);
+    auto l = new (m) CILayer();
 
     l->rect.left = r->left;
     l->rect.bottom = r->bottom;

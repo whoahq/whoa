@@ -247,7 +247,7 @@ CGxStringBatch* GxuFontCreateBatch(bool a1, bool a2) {
         batch = s_unusedBatches.Head();
         s_unusedBatches.UnlinkNode(batch);
     } else {
-        void* m = SMemAlloc(sizeof(CGxStringBatch), __FILE__, __LINE__, 0x8);
+        auto m = SMemAlloc(sizeof(CGxStringBatch), __FILE__, __LINE__, 0x8);
         batch = new (m) CGxStringBatch();
     }
 
@@ -764,7 +764,7 @@ HTEXTBLOCK TextBlockCreate(HTEXTFONT font, const char* text, const CImVector& co
     STORM_ASSERT(font);
     STORM_ASSERT(text);
 
-    void* m = SMemAlloc(sizeof(TEXTBLOCK), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(TEXTBLOCK), __FILE__, __LINE__, 0x0);
     auto textBlock = new (m) TEXTBLOCK();
 
     C3Vector position = { 0.0f, 0.0f, pos.z };

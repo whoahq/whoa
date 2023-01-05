@@ -459,8 +459,8 @@ int32_t CSimpleButton::SetHighlight(const char* texFile, EGxBlend blendMode) {
         return 1;
     }
 
-    // TODO void* m = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
-    void* m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
+    // TODO auto m = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
+    auto m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
     auto texture = new (m) CSimpleTexture(this, DRAWLAYER_HIGHLIGHT, 1);
 
     if (!texture->SetTexture(texFile, false, false, CSimpleTexture::s_textureFilterMode, ImageMode_UI)) {
@@ -556,7 +556,7 @@ int32_t CSimpleButton::SetStateTexture(CSimpleButtonState state, const char* tex
     }
 
     // TODO void* m = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
-    void* m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
     auto texture = new (m) CSimpleTexture(nullptr, 2, 1);
 
     if (texture->SetTexture(texFile, false, false, CSimpleTexture::s_textureFilterMode, ImageMode_UI)) {
@@ -577,17 +577,10 @@ void CSimpleButton::SetText(const char* string) {
     if ((string && *string) || this->m_text) {
         if (!this->m_text) {
             // TODO
-            // void* m = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, __FILE__, __LINE__);
+            // auto m = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, __FILE__, __LINE__);
 
-            void* m = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
-
-            CSimpleFontString* text;
-
-            if (m) {
-                text = new (m) CSimpleFontString(this, 2, 1);
-            } else {
-                text = nullptr;
-            }
+            auto m = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
+            auto text = new (m) CSimpleFontString(this, 2, 1);
 
             this->SetFontString(text);
         }

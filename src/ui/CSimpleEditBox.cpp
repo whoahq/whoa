@@ -95,16 +95,16 @@ CSimpleEditBox::CSimpleEditBox(CSimpleFrame* parent) : CSimpleFrame(parent) {
     memset(textInfo, 0, sizeof(uint32_t) * this->m_textSize);
     this->m_textInfo = textInfo;
 
-    void* fontMem = SMemAlloc(sizeof(CSimpleFontedFrameFont), __FILE__, __LINE__, 0);
-    CSimpleFontedFrameFont* font = new (fontMem) CSimpleFontedFrameFont(this);
+    auto fontMem = SMemAlloc(sizeof(CSimpleFontedFrameFont), __FILE__, __LINE__, 0x0);
+    auto font = new (fontMem) CSimpleFontedFrameFont(this);
     this->m_font = font;
 
     this->m_font->m_attributes.SetJustifyH(0x1);
 
     // TODO
-    // void* stringMem = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, __FILE__, __LINE__);
-    void* stringMem = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0);
-    CSimpleFontString* string = new (stringMem) CSimpleFontString(this, DRAWLAYER_ARTWORK, 1);
+    // auto stringMem = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, __FILE__, __LINE__);
+    auto stringMem = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
+    auto string = new (stringMem) CSimpleFontString(this, DRAWLAYER_ARTWORK, 1);
     this->m_string = string;
 
     this->m_string->SetFontObject(this->m_font);
@@ -113,9 +113,9 @@ CSimpleEditBox::CSimpleEditBox(CSimpleFrame* parent) : CSimpleFrame(parent) {
 
     for (int32_t i = 0; i < 3; i++) {
         // TODO
-        // void* highlightMem = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
-        void* highlightMem = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0);
-        CSimpleTexture* highlight = new (highlightMem) CSimpleTexture(this, DRAWLAYER_ARTWORK, 0);
+        // auto highlightMem = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
+        auto highlightMem = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
+        auto highlight = new (highlightMem) CSimpleTexture(this, DRAWLAYER_ARTWORK, 0);
         this->m_highlight[i] = highlight;
     }
 
@@ -126,9 +126,9 @@ CSimpleEditBox::CSimpleEditBox(CSimpleFrame* parent) : CSimpleFrame(parent) {
     }
 
     // TODO
-    // void* cursorMem = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
-    void* cursorMem = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0);
-    CSimpleTexture* cursor = new (cursorMem) CSimpleTexture(this, DRAWLAYER_ARTWORK_OVERLAY, 1);
+    // auto cursorMem = CDataAllocator::GetData(CSimpleTexture::s_allocator, 0, __FILE__, __LINE__);
+    auto cursorMem = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
+    auto cursor = new (cursorMem) CSimpleTexture(this, DRAWLAYER_ARTWORK_OVERLAY, 1);
     cursor->Hide();
     this->m_cursor = cursor;
 

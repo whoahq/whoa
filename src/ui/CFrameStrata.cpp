@@ -80,8 +80,8 @@ void CFrameStrata::AddFrame(CSimpleFrame* frame) {
         this->levels.SetCount(frame->m_level + 1);
 
         for (int32_t i = count; i < frame->m_level + 1; i++) {
-            void* m = SMemAlloc(sizeof(CFrameStrataNode), __FILE__, __LINE__, 0);
-            CFrameStrataNode* node = m ? new (m) CFrameStrataNode() : nullptr;
+            auto m = SMemAlloc(sizeof(CFrameStrataNode), __FILE__, __LINE__, 0x0);
+            auto node = new (m) CFrameStrataNode();
             this->levels[i] = node;
         }
     }

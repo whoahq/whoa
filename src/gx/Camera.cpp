@@ -6,7 +6,7 @@
 #include <storm/Error.hpp>
 
 HCAMERA CameraCreate() {
-    void* m = SMemAlloc(sizeof(CCamera), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(CCamera), __FILE__, __LINE__, 0x0);
     auto camera = new (m) CCamera();
     return HandleCreate(camera);
 }

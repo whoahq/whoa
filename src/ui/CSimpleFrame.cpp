@@ -702,7 +702,7 @@ void CSimpleFrame::LoadXML_Attributes(XMLNode* node, CStatus* status) {
 }
 
 void CSimpleFrame::LoadXML_Backdrop(XMLNode* node, CStatus* status) {
-    void* m = SMemAlloc(sizeof(CBackdropGenerator), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(CBackdropGenerator), __FILE__, __LINE__, 0x0);
     auto backdrop = new (m) CBackdropGenerator();
 
     backdrop->LoadXML(node, status);

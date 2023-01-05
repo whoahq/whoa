@@ -82,25 +82,15 @@ CGxDevice* CGxDevice::NewD3d9Ex() {
 
 #if defined(WHOA_SYSTEM_MAC)
 CGxDevice* CGxDevice::NewGLL() {
-    void* m = SMemAlloc(sizeof(CGxDeviceGLL), __FILE__, __LINE__, 0);
-
-    if (m) {
-        return new (m) CGxDeviceGLL();
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CGxDeviceGLL), __FILE__, __LINE__, 0x0);
+    return new (m) CGxDeviceGLL();
 }
 #endif
 
 CGxDevice* CGxDevice::NewOpenGl() {
     // TODO
-    // void* m = SMemAlloc(sizeof(CGxDeviceOpenGl), __FILE__, __LINE__, 0);
-
-    // if (m) {
-    //     return new (m) CGxDeviceOpenGl();
-    // } else {
-    //     return nullptr;
-    // }
+    // auto m = SMemAlloc(sizeof(CGxDeviceOpenGl), __FILE__, __LINE__, 0x0);
+    // return new (m) CGxDeviceOpenGl();
 
     return nullptr;
 }
@@ -124,8 +114,8 @@ CGxDevice::CGxDevice() {
 }
 
 CGxBuf* CGxDevice::BufCreate(CGxPool* pool, uint32_t itemSize, uint32_t itemCount, uint32_t index) {
-    void* m = SMemAlloc(sizeof(CGxBuf), __FILE__, __LINE__, 0);
-    CGxBuf* buf = new (m) CGxBuf(pool, itemSize, itemCount, index);
+    auto m = SMemAlloc(sizeof(CGxBuf), __FILE__, __LINE__, 0x0);
+    auto buf = new (m) CGxBuf(pool, itemSize, itemCount, index);
 
     pool->m_bufList.LinkToTail(buf);
 
@@ -636,8 +626,8 @@ void CGxDevice::PrimVertexPtr(CGxBuf* buf, EGxVertexBufferFormat format) {
 }
 
 CGxPool* CGxDevice::PoolCreate(EGxPoolTarget target, EGxPoolUsage usage, uint32_t size, EGxPoolHintBits hint, const char* name) {
-    void* m = SMemAlloc(sizeof(CGxPool), __FILE__, __LINE__, 0);
-    CGxPool* pool = new (m) CGxPool(target, usage, size, hint, name);
+    auto m = SMemAlloc(sizeof(CGxPool), __FILE__, __LINE__, 0x0);
+    auto pool = new (m) CGxPool(target, usage, size, hint, name);
 
     this->m_poolList.LinkToTail(pool);
 
@@ -889,24 +879,19 @@ void CGxDevice::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const cha
 }
 
 int32_t CGxDevice::TexCreate(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t depth, EGxTexFormat format, EGxTexFormat dataFormat, CGxTexFlags flags, void* userArg, void (*userFunc)(EGxTexCommand, uint32_t, uint32_t, uint32_t, uint32_t, void*, uint32_t&, const void*&), const char* name, CGxTex*& texId) {
-    void* m = SMemAlloc(sizeof(CGxTex), __FILE__, __LINE__, 0);
-
-    CGxTex* tex = nullptr;
-
-    if (m) {
-        tex = new (m) CGxTex(
-            target,
-            width,
-            height,
-            depth,
-            format,
-            dataFormat,
-            flags,
-            userArg,
-            userFunc,
-            name
-        );
-    }
+    auto m = SMemAlloc(sizeof(CGxTex), __FILE__, __LINE__, 0);
+    auto tex = new (m) CGxTex(
+        target,
+        width,
+        height,
+        depth,
+        format,
+        dataFormat,
+        flags,
+        userArg,
+        userFunc,
+        name
+    );
 
     texId = tex;
 

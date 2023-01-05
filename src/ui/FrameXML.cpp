@@ -21,55 +21,35 @@ TSHashTable<FrameFactoryNode, HASHKEY_STRI> FrameXML::s_factoryHash;
 TSHashTable<HashedNode, HASHKEY_STRI> FrameXML::s_nodeHash;
 
 CSimpleFrame* Create_SimpleButton(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleButton), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleFrame::s_simpleButtonHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleFrame::s_simpleButtonHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleButton(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleButton), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleButton(parent);
 }
 
 CSimpleFrame* Create_SimpleCheckButton(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleCheckbox), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleCheckbox::s_simpleCheckboxHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleCheckbox::s_simpleCheckboxHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleCheckbox(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleCheckbox), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleCheckbox(parent);
 }
 
 CSimpleFrame* Create_SimpleEditBox(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleEditBox), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleEditBox::s_simpleEditBoxHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleEditBox::s_simpleEditBoxHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleEditBox(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleEditBox), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleEditBox(parent);
 }
 
 CSimpleFrame* Create_SimpleFrame(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleFrame), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleFrame::s_simpleFrameHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleFrame::s_simpleFrameHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleFrame(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleFrame), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleFrame(parent);
 }
 
 CSimpleFrame* Create_SimpleMessageFrame(CSimpleFrame* parent) {
@@ -79,29 +59,19 @@ CSimpleFrame* Create_SimpleMessageFrame(CSimpleFrame* parent) {
 }
 
 CSimpleFrame* Create_SimpleModel(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleModel), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleFrame::s_simpleModelHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleFrame::s_simpleModelHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleModel(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleModel), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleModel(parent);
 }
 
 CSimpleFrame* Create_SimpleScrollFrame(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleScrollFrame), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleScrollFrame::s_simpleScrollHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleScrollFrame::s_simpleScrollHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleScrollFrame(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleScrollFrame), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleScrollFrame(parent);
 }
 
 CSimpleFrame* Create_SimpleScrollingMessageFrame(CSimpleFrame* parent) {
@@ -111,29 +81,19 @@ CSimpleFrame* Create_SimpleScrollingMessageFrame(CSimpleFrame* parent) {
 }
 
 CSimpleFrame* Create_SimpleSlider(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleSlider), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleSlider::s_simpleSliderHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleSlider::s_simpleSliderHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleSlider(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleSlider), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleSlider(parent);
 }
 
 CSimpleFrame* Create_SimpleHTML(CSimpleFrame* parent) {
-    void* m = SMemAlloc(sizeof(CSimpleHTML), __FILE__, __LINE__, 0);
-
     // TODO
-    // void* m = CDataAllocator::GetData(CSimpleHTML::s_simpleHTMLHeap, 0, __FILE__, __LINE__);
+    // auto m = CDataAllocator::GetData(CSimpleHTML::s_simpleHTMLHeap, 0, __FILE__, __LINE__);
 
-    if (m) {
-        return new (m) CSimpleHTML(parent);
-    } else {
-        return nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleHTML), __FILE__, __LINE__, 0x0);
+    return new (m) CSimpleHTML(parent);
 }
 
 CSimpleFrame* Create_SimpleStatusBar(CSimpleFrame* parent) {

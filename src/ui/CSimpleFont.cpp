@@ -15,13 +15,8 @@ int32_t CSimpleFont::s_metatable;
 int32_t CSimpleFont::s_objectType;
 
 SIMPLEFONT::SIMPLEFONT() : TSHashObject<SIMPLEFONT, HASHKEY_STRI>() {
-    void* m = SMemAlloc(sizeof(CSimpleFont), __FILE__, __LINE__, 0);
-
-    if (m) {
-        this->font = new (m) CSimpleFont();
-    } else {
-        this->font = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleFont), __FILE__, __LINE__, 0x0);
+    this->font = new (m) CSimpleFont();
 }
 
 void CSimpleFont::CreateScriptMetaTable() {

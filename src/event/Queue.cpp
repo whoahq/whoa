@@ -49,15 +49,8 @@ void IEvtQueueRegister(EvtContext* context, EVENTID id, int32_t (*handler)(const
 
     auto handlerList = &context->m_queueHandlerList[id];
 
-    EvtHandler* evtHandler;
-
-    void* m = SMemAlloc(sizeof(EvtHandler), __FILE__, __LINE__, 0x8);
-
-    if (m) {
-        evtHandler = new (m) EvtHandler();
-    } else {
-        evtHandler = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(EvtHandler), __FILE__, __LINE__, 0x8);
+    auto evtHandler = new (m) EvtHandler();
 
     evtHandler->priority = priority;
     evtHandler->param = param;

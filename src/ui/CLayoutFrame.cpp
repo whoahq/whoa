@@ -692,8 +692,8 @@ void CLayoutFrame::SetAllPoints(CLayoutFrame* relative, int32_t doResize) {
         // TODO
         // CFramePoint::s_framePointHeap->GetData(0, __FILE__, __LINE__);
 
-        void* m = SMemAlloc(sizeof(CFramePoint), __FILE__, __LINE__, 0);
-        topLeft = m ? new (m) CFramePoint(relative, FRAMEPOINT_TOPLEFT, 0.0f, 0.0f) : nullptr;
+        auto m = SMemAlloc(sizeof(CFramePoint), __FILE__, __LINE__, 0x0);
+        topLeft = new (m) CFramePoint(relative, FRAMEPOINT_TOPLEFT, 0.0f, 0.0f);
 
         this->m_points[FRAMEPOINT_TOPLEFT] = topLeft;
     }
@@ -707,7 +707,7 @@ void CLayoutFrame::SetAllPoints(CLayoutFrame* relative, int32_t doResize) {
         // CFramePoint::s_framePointHeap->GetData(0, __FILE__, __LINE__);
 
         void* m = SMemAlloc(sizeof(CFramePoint), __FILE__, __LINE__, 0);
-        bottomRight = m ? new (m) CFramePoint(relative, FRAMEPOINT_BOTTOMRIGHT, 0.0f, 0.0f) : nullptr;
+        bottomRight = new (m) CFramePoint(relative, FRAMEPOINT_BOTTOMRIGHT, 0.0f, 0.0f);
 
         this->m_points[FRAMEPOINT_BOTTOMRIGHT] = bottomRight;
     }
@@ -798,7 +798,8 @@ void CLayoutFrame::SetPoint(FRAMEPOINT point, CLayoutFrame* relative, FRAMEPOINT
         // CFramePoint::s_framePointHeap->GetData(0, __FILE__, __LINE__);
 
         void* m = SMemAlloc(sizeof(CFramePoint), __FILE__, __LINE__, 0);
-        framePoint = m ? new (m) CFramePoint(relative, relativePoint, offsetX, offsetY) : nullptr;
+        framePoint = new (m) CFramePoint(relative, relativePoint, offsetX, offsetY);
+
         this->m_points[point] = framePoint;
     }
 

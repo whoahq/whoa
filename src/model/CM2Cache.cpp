@@ -36,8 +36,8 @@ CM2Shared* CM2Cache::CreateShared(const char* path, uint32_t flags) {
     SFile* fileptr;
 
     if (SFile::OpenEx(nullptr, convertedPath, (flags >> 2) & 1, &fileptr)) {
-        void* m = SMemAlloc(sizeof(CM2Shared), __FILE__, __LINE__, 0x0);
-        CM2Shared* shared = new (m) CM2Shared(this);
+        auto m = SMemAlloc(sizeof(CM2Shared), __FILE__, __LINE__, 0x0);
+        auto shared = new (m) CM2Shared(this);
 
         if (shared->Load(fileptr, flags & 0x4, &v28)) {
             strcpy(shared->m_filePath, convertedPath);

@@ -245,17 +245,10 @@ int32_t LoadXML_Insets(XMLNode* node, float& left, float& right, float& top, flo
 
 CSimpleFontString* LoadXML_String(XMLNode* node, CSimpleFrame* frame, CStatus* status) {
     // TODO
-    // v3 = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, a__avcsimplefon, -2);
+    // auto m = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, a__avcsimplefon, -2);
 
-    void* m = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0);
-
-    CSimpleFontString* fontString;
-
-    if (m) {
-        fontString = new (m) CSimpleFontString(frame, 2, 1);
-    } else {
-        fontString = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
+    auto fontString = new (m) CSimpleFontString(frame, 2, 1);
 
     fontString->PreLoadXML(node, status);
     fontString->LoadXML(node, status);
@@ -266,17 +259,10 @@ CSimpleFontString* LoadXML_String(XMLNode* node, CSimpleFrame* frame, CStatus* s
 
 CSimpleTexture* LoadXML_Texture(XMLNode* node, CSimpleFrame* frame, CStatus* status) {
     // TODO
-    // v3 = (CSimpleTexture *)CDataAllocator::GetData((int)CSimpleTexture::s_allocator, 0, a__avcsimpletex, -2);
+    // auto m = (CSimpleTexture *)CDataAllocator::GetData((int)CSimpleTexture::s_allocator, 0, a__avcsimpletex, -2);
 
-    void* m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0);
-
-    CSimpleTexture* texture;
-
-    if (m) {
-        texture = new (m) CSimpleTexture(frame, 2, 1);
-    } else {
-        texture = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleTexture), __FILE__, __LINE__, 0x0);
+    auto texture = new (m) CSimpleTexture(frame, 2, 1);
 
     texture->PreLoadXML(node, status);
     texture->LoadXML(node, status);
