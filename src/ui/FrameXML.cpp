@@ -496,8 +496,7 @@ int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5,
 
             if (!v22 || SStrCmpI(v22, "true", 0x7FFFFFFFu)) {
                 FrameXML_CreateFrame(node, nullptr, &unkStatus);
-                // TODO
-                // CLayoutFrame::ResizePending();
+                CLayoutFrame::ResizePending();
             } else {
                 const char* v23 = node->GetAttributeByName("name");
 
