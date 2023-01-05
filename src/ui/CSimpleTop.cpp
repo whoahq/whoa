@@ -253,8 +253,9 @@ int32_t CSimpleTop::OnMouseMove(const EVENT_DATA_MOUSE* pMouseData, void* param)
     for (int32_t strata = FRAME_STRATA_DIALOG; strata >= FRAME_STRATA_WORLD; strata--) {
         auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_MOUSE];
 
-        for (int32_t i = priorities->Count() - 1; i >= 0; i--) {
-            auto frame = priorities->operator[](i)->frame;
+        for (int32_t i = 0; i < priorities->Count(); i++) {
+            auto priority = priorities->operator[](i);
+            auto frame = priority->frame;
 
             if (frame->OnLayerTrackUpdate(mouseEvent)) {
                 nextFocus = frame;
