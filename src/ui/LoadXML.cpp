@@ -254,7 +254,7 @@ CSimpleFontString* LoadXML_String(XMLNode* node, CSimpleFrame* frame, CStatus* s
     if (m) {
         fontString = new (m) CSimpleFontString(frame, 2, 1);
     } else {
-        fontString = NULL;
+        fontString = nullptr;
     }
 
     fontString->PreLoadXML(node, status);
@@ -275,7 +275,7 @@ CSimpleTexture* LoadXML_Texture(XMLNode* node, CSimpleFrame* frame, CStatus* sta
     if (m) {
         texture = new (m) CSimpleTexture(frame, 2, 1);
     } else {
-        texture = NULL;
+        texture = nullptr;
     }
 
     texture->PreLoadXML(node, status);

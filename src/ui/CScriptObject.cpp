@@ -27,11 +27,11 @@ CScriptObject* CScriptObject::GetScriptObjectByName(const char* name, int32_t ty
         if (v4 && v4->IsA(type)) {
             return v4;
         } else {
-            return NULL;
+            return nullptr;
         }
     } else {
         lua_settop(L, -2);
-        return NULL;
+        return nullptr;
     }
 }
 

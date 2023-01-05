@@ -407,7 +407,7 @@ int32_t FrameScript_ExecuteFile(const char* filePath, const char* a2, MD5_CTX* m
     void* fileBuffer;
     size_t fileBytes;
 
-    if (SFile::Load(0, v4, &fileBuffer, &fileBytes, 0, 1, NULL)) {
+    if (SFile::Load(0, v4, &fileBuffer, &fileBytes, 0, 1, nullptr)) {
         if (md5) {
             MD5Update(md5, static_cast<unsigned char*>(fileBuffer), fileBytes);
         }

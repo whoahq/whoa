@@ -36,7 +36,7 @@ luaL_Reg FrameScriptInternal::extra_funcs[31] = {
     { "debugstack", &debugstack },
     { "debuglocals", &debuglocals },
     { "scrub", &scrub },
-    { NULL, NULL }
+    { nullptr, nullptr }
 };
 
 int32_t sub_8168D0(lua_State* L) {

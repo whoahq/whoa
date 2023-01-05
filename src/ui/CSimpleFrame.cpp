@@ -95,7 +95,7 @@ void CSimpleFrame::LoadXML(XMLNode* node, CStatus* status) {
 
     if (inherits && *inherits) {
         do {
-            SStrTokenize(v68, inheritName, 0x400u, " ,", NULL);
+            SStrTokenize(v68, inheritName, 0x400u, " ,", nullptr);
 
             if (!*inheritName) {
                 break;
@@ -626,7 +626,7 @@ FrameScript_Object::ScriptIx* CSimpleFrame::GetScriptByName(const char* name, Fr
         return &this->m_onDisable;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 int32_t CSimpleFrame::GetScriptMetaTable() {
@@ -799,7 +799,7 @@ void CSimpleFrame::LoadXML_Scripts(XMLNode* root, CStatus* status) {
                     scriptFunction = new (scriptFunction) ScriptFunction();
                     static_cast<ScriptFunction*>(scriptFunction)->luaRef = luaRef;
                 } else {
-                    scriptFunction = NULL;
+                    scriptFunction = nullptr;
                 }
 
                 node->m_userData = scriptFunction;
@@ -840,7 +840,7 @@ void CSimpleFrame::LoadXML_Scripts(XMLNode* root, CStatus* status) {
                 script->luaRef = 0;
             }
 
-            script->unk = NULL;
+            script->unk = nullptr;
 
             if (!SStrCmpI(node->GetName(), "OnChar", 0x7FFFFFFFu) && !(this->m_eventmask & 1)) {
                 if (this->m_visible) {

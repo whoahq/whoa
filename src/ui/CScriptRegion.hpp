@@ -21,7 +21,7 @@ class CScriptRegion : public CScriptObject, public CLayoutFrame {
         static int32_t GetObjectType();
 
         // Member variables
-        CSimpleFrame* m_parent = NULL; // TODO verify type
+        CSimpleFrame* m_parent = nullptr; // TODO verify type
 
         // Virtual member functions
         virtual bool IsA(int32_t type);

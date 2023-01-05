@@ -28,8 +28,8 @@ class CSimpleFrame : public CScriptRegion {
         static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
-        CSimpleTop* m_top = NULL;
-        CSimpleTitleRegion* m_titleRegion = NULL;
+        CSimpleTop* m_top = nullptr;
+        CSimpleTitleRegion* m_titleRegion = nullptr;
         int32_t m_intAC = 1;
         int32_t m_id = 0;
         uint32_t m_flags = 0;
