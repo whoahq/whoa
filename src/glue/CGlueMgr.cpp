@@ -248,15 +248,8 @@ void CGlueMgr::Resume() {
     CoordinateSetAspectRatio(CGlueMgr::m_aspect);
 
     // Create CSimpleTop
-    CSimpleTop* top;
-
-    void* m = SMemAlloc(sizeof(CSimpleTop), __FILE__, __LINE__, 0);
-
-    if (m) {
-        top = new (m) CSimpleTop();
-    } else {
-        top = nullptr;
-    }
+    auto m = SMemAlloc(sizeof(CSimpleTop), __FILE__, __LINE__, 0x0);
+    auto top = new (m) CSimpleTop();
 
     CGlueMgr::m_simpleTop = top;
     CGlueMgr::m_simpleTop->m_displaySizeCallback = &CGlueMgr::HandleDisplaySizeChanged;

@@ -49,9 +49,9 @@ CSimpleHTML::CSimpleHTML(CSimpleFrame* parent) : CSimpleHyperlinkedFrame(parent)
 }
 
 void CSimpleHTML::AddText(const char* text, HTML_TEXT_TYPE type, uint32_t justify) {
-    // TODO void* stringMem = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0x0, __FILE__, __LINE__);
-    void* stringMem = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
-    CSimpleFontString* string = new (stringMem) CSimpleFontString(this, DRAWLAYER_ARTWORK, 1);
+    // TODO auto stringMem = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0x0, __FILE__, __LINE__);
+    auto stringMem = SMemAlloc(sizeof(CSimpleFontString), __FILE__, __LINE__, 0x0);
+    auto string = new (stringMem) CSimpleFontString(this, DRAWLAYER_ARTWORK, 1);
 
     if (this->m_layoutAnchor) {
         string->SetPoint(

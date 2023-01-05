@@ -25,8 +25,8 @@ ClientServices* ClientServices::GetInstance() {
         return ClientServices::s_instance;
     }
 
-    auto instanceMem = SMemAlloc(sizeof(ClientServices), __FILE__, __LINE__, 0x0);
-    auto instance = new (instanceMem) ClientServices();
+    auto m = SMemAlloc(sizeof(ClientServices), __FILE__, __LINE__, 0x0);
+    auto instance = new (m) ClientServices();
     ClientServices::s_instance = instance;
 
     return ClientServices::s_instance;

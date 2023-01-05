@@ -87,8 +87,8 @@ CHARCODEDESC* TEXTURECACHEROW::CreateNewDesc(GLYPHBITMAPDATA* data, uint32_t row
     this->widestFreeSlot = gapToPrevious;
 
     if (gapToPrevious >= glyphWidth) {
-        void* m = SMemAlloc(sizeof(CHARCODEDESC), __FILE__, __LINE__, 0);
-        CHARCODEDESC* newCode = new (m) CHARCODEDESC();
+        auto m = SMemAlloc(sizeof(CHARCODEDESC), __FILE__, __LINE__, 0x0);
+        auto newCode = new (m) CHARCODEDESC();
 
         this->glyphList.LinkNode(newCode, 2, this->glyphList.Head());
 
@@ -127,7 +127,7 @@ CHARCODEDESC* TEXTURECACHEROW::CreateNewDesc(GLYPHBITMAPDATA* data, uint32_t row
         }
 
         if (gapToNext >= glyphWidth) {
-            void* m = SMemAlloc(sizeof(CHARCODEDESC), __FILE__, __LINE__, 0);
+            auto m = SMemAlloc(sizeof(CHARCODEDESC), __FILE__, __LINE__, 0x0);
             newCode = new (m) CHARCODEDESC();
 
             this->glyphList.LinkNode(newCode, 1, code);

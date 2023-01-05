@@ -6,24 +6,17 @@
 #include <storm/Memory.hpp>
 
 void* luaM_initPool() {
-    void* v0 = SMemAlloc(sizeof(MemPool*) * 9, ".\\src\\lmemPool.cpp", 243, 0);
-    MemPool** pools = (MemPool**)v0;
+    void* m = SMemAlloc(sizeof(MemPool*) * 9, __FILE__, __LINE__, 0x0);
+    MemPool** pools = (MemPool**)m;
 
     uint32_t v2 = 0;
 
-    void* v3;
-    MemPool* v4;
     size_t v5;
     size_t v6;
 
     do {
-        v3 = SMemAlloc(sizeof(MemPool), ".\\src\\lmemPool.cpp", 245, 0);
-
-        if (v3) {
-            v4 = new (v3) MemPool();
-        } else {
-            v4 = 0;
-        }
+        auto poolMem = SMemAlloc(sizeof(MemPool), __FILE__, __LINE__, 0x0);
+        auto v4 = new (poolMem) MemPool();
 
         pools[v2] = v4;
 

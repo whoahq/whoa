@@ -15,7 +15,7 @@ TEXTLINETEXTURE* TEXTLINETEXTURE::NewTextLineTexture() {
     // TODO
     // Allocate off of TEXTLINETEXTURE::s_freeTextLineTextures
 
-    void* m = SMemAlloc(sizeof(TEXTLINETEXTURE), __FILE__, __LINE__, 0x0);
+    auto m = SMemAlloc(sizeof(TEXTLINETEXTURE), __FILE__, __LINE__, 0x0);
     return new (m) TEXTLINETEXTURE();
 }
 
@@ -118,7 +118,7 @@ CGxString* CGxString::GetNewString(int32_t linkOnList) {
         return string;
     }
 
-    void* m = SMemAlloc(sizeof(CGxString), __FILE__, __LINE__, 0x8);
+    auto m = SMemAlloc(sizeof(CGxString), __FILE__, __LINE__, 0x8);
     string = new (m) CGxString();
 
     if (linkOnList) {

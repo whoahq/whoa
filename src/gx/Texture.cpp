@@ -744,13 +744,8 @@ CTexture* CreateBlpSync(int32_t createFlags, char* fileName, char* fileExt, CGxT
         return nullptr;
     }
 
-    void* v8 = SMemAlloc(sizeof(CTexture), "HTEXTURE", -2, 0);
-
-    CTexture* texture;
-
-    if (v8) {
-        texture = new (v8) CTexture();
-    }
+    auto m = SMemAlloc(sizeof(CTexture), "HTEXTURE", -2, 0x0);
+    auto texture = new (m) CTexture();
 
     texture->gxTexFlags = texFlags;
 
@@ -945,8 +940,8 @@ HTEXTURE TextureCreate(uint32_t width, uint32_t height, EGxTexFormat format, EGx
 }
 
 HTEXTURE TextureCreate(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t depth, EGxTexFormat format, EGxTexFormat dataFormat, CGxTexFlags texFlags, void* userArg, TEXTURE_CALLBACK* userFunc, const char* a10, int32_t a11) {
-    void* m = SMemAlloc(sizeof(CTexture), __FILE__, __LINE__, 0x0);
-    CTexture* texture = new (m) CTexture();
+    auto m = SMemAlloc(sizeof(CTexture), __FILE__, __LINE__, 0x0);
+    auto texture = new (m) CTexture();
 
     if (a11) {
         texFlags.m_filter = CTexture::s_filterMode;
@@ -976,8 +971,8 @@ HTEXTURE TextureCreateSolid(const CImVector& color) {
         return textureHandle;
     }
 
-    void* m = SMemAlloc(sizeof(CTexture), __FILE__, __LINE__, 0x0);
-    CTexture* texture = new (m) CTexture();
+    auto m = SMemAlloc(sizeof(CTexture), __FILE__, __LINE__, 0x0);
+    auto texture = new (m) CTexture();
 
     FillInSolidTexture(color, texture);
     textureHandle = HandleCreate(texture);

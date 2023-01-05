@@ -371,8 +371,8 @@ CSimpleTop::CSimpleTop() : CLayoutFrame() {
     // TODO
 
     for (int32_t s = 0; s < NUM_FRAME_STRATA; s++) {
-        void* m = SMemAlloc(sizeof(CFrameStrata), __FILE__, __LINE__, 0);
-        this->m_strata[s] = m ? new (m) CFrameStrata() : nullptr;
+        auto m = SMemAlloc(sizeof(CFrameStrata), __FILE__, __LINE__, 0x0);
+        this->m_strata[s] = new (m) CFrameStrata();
     }
 
     // TODO
