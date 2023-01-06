@@ -46,7 +46,7 @@ class EvtContext : public TSingletonInstanceId<EvtContext, offsetof(TInstanceId<
         uint32_t m_startWatchdog;
 
         // Member functions
-        EvtContext(uint32_t, uint32_t, uint32_t, void*, int32_t);
+        EvtContext(uint32_t flags, uint32_t idleTime, uint32_t schedWeight, void* callContext, int32_t startWatchdog);
 };
 
 class EvtContextQueue : public TSPriorityQueue<EvtContext> {

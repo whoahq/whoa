@@ -29,34 +29,34 @@ namespace Input {
     #endif
 }
 
-void CheckMouseModeState(void);
+void CheckMouseModeState();
 
-MOUSEBUTTON ConvertButtonNumberToMOUSEBUTTON(int32_t);
+MOUSEBUTTON ConvertButtonNumberToMOUSEBUTTON(int32_t buttonNumber);
 
-void ConvertPosition(int32_t, int32_t, float*, float*);
+void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y);
 
-uint32_t GenerateMouseFlags(void);
+uint32_t GenerateMouseFlags();
 
-const char* GetButtonName(int32_t);
+const char* GetButtonName(int32_t button);
 
 void IEvtInputInitialize();
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown);
 
-const char* KeyCodeToString(KEY);
+const char* KeyCodeToString(KEY key);
 
-int32_t OsInputGet(OSINPUT*, int32_t*, int32_t*, int32_t*, int32_t*);
+int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3);
 
-void OsInputInitialize(void);
+void OsInputInitialize();
 
-bool OsInputIsUsingCocoaEventLoop(void);
+bool OsInputIsUsingCocoaEventLoop();
 
-void OsInputPostEvent(OSINPUT, int32_t, int32_t, int32_t, int32_t);
+void OsInputPostEvent(OSINPUT id, int32_t param0, int32_t param1, int32_t param2, int32_t param3);
 
-int32_t OsQueueGet(OSINPUT*, int32_t*, int32_t*, int32_t*, int32_t*);
+int32_t OsQueueGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3);
 
-void OsQueuePut(OSINPUT, int32_t, int32_t, int32_t, int32_t);
+void OsQueuePut(OSINPUT id, int32_t param0, int32_t param1, int32_t param2, int32_t param3);
 
-void OsQueueSetParam(int32_t, int32_t);
+void OsQueueSetParam(int32_t index, int32_t param);
 
 #endif

@@ -15,25 +15,25 @@ class CEvent : public TRefCnt {
 class CCharEvent : public CEvent, public EVENT_DATA_CHAR {
     public:
         // Member functions
-        CCharEvent& operator=(const EVENT_DATA_CHAR&);
+        CCharEvent& operator=(const EVENT_DATA_CHAR& data);
 };
 
 class CKeyEvent : public CEvent, public EVENT_DATA_KEY {
     public:
         // Member functions
-        CKeyEvent& operator=(const EVENT_DATA_KEY&);
+        CKeyEvent& operator=(const EVENT_DATA_KEY& data);
 };
 
 class CMouseEvent : public CEvent, public EVENT_DATA_MOUSE {
     public:
         // Member functions
-        CMouseEvent& operator=(const EVENT_DATA_MOUSE&);
+        CMouseEvent& operator=(const EVENT_DATA_MOUSE& data);
 };
 
 class CSizeEvent : public CEvent, public EVENT_DATA_SIZE {
     public:
         // Member functions
-        CSizeEvent& operator=(const EVENT_DATA_SIZE&);
+        CSizeEvent& operator=(const EVENT_DATA_SIZE& data);
 };
 
 #endif
