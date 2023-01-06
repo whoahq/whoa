@@ -26,6 +26,8 @@ Assuming all goes well, you should be greeted by the login screen, complete with
 
 Whoa is very much a work-in-progress: it does not fully connect to a login server, does not play back sound or music, and does not support customizing settings. These things will be supported over time.
 
+![Whoa in action](./docs/img/login.png)
+
 ## Contributing
 
 Thanks for making a contribution to Whoa!
