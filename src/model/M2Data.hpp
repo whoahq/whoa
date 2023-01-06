@@ -63,9 +63,9 @@ struct M2Array {
 
     T& operator[](uint32_t i);
     T& operator[](uint32_t i) const;
-    uint32_t Count(void);
-    uint32_t Count(void) const;
-    T* Data(void);
+    uint32_t Count();
+    uint32_t Count() const;
+    T* Data();
 };
 
 template<class T>

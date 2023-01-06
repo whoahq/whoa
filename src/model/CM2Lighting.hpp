@@ -37,12 +37,12 @@ class CM2Lighting {
         void AddDiffuse(const C3Vector& dirColor, const C3Vector& dir);
         void AddLight(CM2Light* light);
         void AddSpecular(const C3Vector& specColor);
-        void CameraSpace(void);
+        void CameraSpace();
         void Initialize(CM2Scene* scene, const CAaSphere& a3);
         void SetFog(const C3Vector& fogColor, float fogStart, float fogEnd);
         void SetFog(const C3Vector& fogColor, float fogStart, float fogEnd, float fogDensity);
         void SetupGxLights(const C3Vector* a2);
-        void SetupSunlight(void);
+        void SetupSunlight();
 };
 
 #endif

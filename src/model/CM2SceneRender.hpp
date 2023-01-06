@@ -57,17 +57,17 @@ class CM2SceneRender {
             , m_cache(scene->m_cache)
             {};
         void Draw(M2PASS pass, M2Element* elements, uint32_t* a4, uint32_t a5);
-        void DrawBatch(void);
+        void DrawBatch();
         void DrawBatchDoodad(M2Element* elements, uint32_t* a3);
-        void DrawBatchProj(void);
-        void DrawCallback(void);
+        void DrawBatchProj();
+        void DrawCallback();
         int32_t DrawParticle(uint32_t a2, M2Element* elements, uint32_t* a4, uint32_t a5);
-        void DrawRibbon(void);
+        void DrawRibbon();
         void SetBatchVertices(int32_t a2);
-        void SetupBatchVertices(void);
-        void SetupLighting(void);
-        void SetupMaterial(void);
-        void SetupTextures(void);
+        void SetupBatchVertices();
+        void SetupLighting();
+        void SetupMaterial();
+        void SetupTextures();
 };
 
 #endif

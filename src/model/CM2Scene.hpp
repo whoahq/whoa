@@ -49,7 +49,7 @@ class CM2Scene {
             {};
         void AdvanceTime(uint32_t a2);
         void Animate(const C3Vector& cameraPos);
-        CM2Model* CreateModel(const char*, uint32_t);
+        CM2Model* CreateModel(const char* file, uint32_t a3);
         int32_t Draw(M2PASS pass);
         void SelectLights(CM2Lighting* lighting);
 };

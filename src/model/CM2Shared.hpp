@@ -64,20 +64,20 @@ class CM2Shared {
             , m_flag20(0)
             , m_flag40(0)
             {};
-        void AddRef(void);
+        void AddRef();
         int32_t CallbackWhenLoaded(CM2Model* model);
         CShaderEffect* CreateSimpleEffect(uint32_t textureCount, uint16_t shader, uint16_t textureCoordComboIndex);
         CShaderEffect* GetEffect(M2Batch* batch);
         int32_t FinishLoadingSkinProfile(uint32_t size);
-        int32_t Initialize(void);
-        int32_t InitializeSkinProfile(void);
-        int32_t Load(SFile*, int32_t, CAaBox*);
+        int32_t Initialize();
+        int32_t InitializeSkinProfile();
+        int32_t Load(SFile* file, int32_t a3, CAaBox* a4);
         int32_t LoadSkinProfile(uint32_t profile);
-        void Release(void);
-        int32_t SetIndices(void);
+        void Release();
+        int32_t SetIndices();
         int32_t SetVertices(uint32_t a2);
-        void SubstituteSimpleShaders(void);
-        void SubstituteSpecializedShaders(void);
+        void SubstituteSimpleShaders();
+        void SubstituteSpecializedShaders();
 };
 
 #endif

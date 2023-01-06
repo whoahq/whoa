@@ -19,8 +19,8 @@ class CM2Cache {
         CM2Shared* CreateShared(const char*, uint32_t);
         void GarbageCollect(int32_t a2);
         int32_t Initialize(uint32_t flags);
-        void UpdateShared(void);
-        void WaitThread(void);
+        void UpdateShared();
+        void WaitThread();
 };
 
 #endif
