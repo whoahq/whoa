@@ -52,12 +52,12 @@ class CGlueMgr {
         // Static functions
         // TODO a1: const EVENT_DATA_IDLE*
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
-        static int32_t Idle(const void*, void*);
+        static int32_t Idle(const void* a1, void* a2);
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
         static void QuitGame();
         static void Resume();
-        static void SetScreen(const char*);
+        static void SetScreen(const char* screen);
         static void StatusDialogClick();
         static void Suspend();
         static void UpdateCurrentScreen(const char* screen);
