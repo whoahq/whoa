@@ -1,14 +1,14 @@
 # Whoa
 
-Welcome to Whoa, a reimplementation of World of Warcraft 3.3.5a (build 12340) in C++11.
+Welcome to Whoa, an unofficial open source implementation of the World of Warcraft 3.3.5a (build 12340) game client in C++11.
 
 ## Supported Platforms
 
-Currently, macOS 10.14+ is supported, including recent versions of macOS on M1 processors. Support for Linux is in progress. Support for Windows is coming soon™.
+Currently, macOS 10.14+ is supported, including recent versions of macOS on M1 processors. Support for Windows and Linux is in progress.
 
 ## Building
 
-To build, ensure you have a recent version of CMake installed, and run the following from the `whoa` directory:
+To build, ensure you have installed a recent version of CMake and an appropriate C++ build environment, and run the following from the `whoa` directory:
 
 ```
 mkdir build && cd build
@@ -16,7 +16,7 @@ cmake ..
 make install
 ```
 
-Assuming all went well, you should see a `dist/bin` directory appear in the `build` directory. The `bin` directory will contain a `whoa` executable.
+Assuming all went well, you should see a `dist/bin` directory appear in the `build` directory. The `dist/bin` directory will contain a `Whoa` executable.
 
 ## Running
 
@@ -38,7 +38,7 @@ The game and its libraries have become significantly more complex in the interve
 
 **Can I use this in my own development projects?**
 
-It's probably a bad idea. The game is closed source, and this project is in no way official.
+It's probably a bad idea. The original game is closed source, and this project is in no way official.
 
 ## Legal
 
