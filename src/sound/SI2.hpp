@@ -11,7 +11,7 @@ class SI2 {
         static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_SI2];
 
         // Static functions
-        static void RegisterScriptFunctions(void);
+        static void RegisterScriptFunctions();
 };
 
 #endif
