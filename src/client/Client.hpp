@@ -11,12 +11,12 @@ namespace Client {
     extern HEVENTCONTEXT g_clientEventContext;
 }
 
-void ClientPostClose(int32_t);
+void ClientPostClose(int32_t a1);
 
-void CommonMain(void);
+void CommonMain();
 
-void StormInitialize(void);
+void StormInitialize();
 
-void WowClientInit(void);
+void WowClientInit();
 
 #endif
