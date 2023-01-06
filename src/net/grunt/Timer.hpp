@@ -30,7 +30,7 @@ class Grunt::Timer {
 
         // Member functions
         Timer();
-        void Insert(Event&);
+        void Insert(Event& newEvent);
         uint32_t Pump();
 };
 
