@@ -1,4 +1,4 @@
-file(GLOB PRIVATE_SOURCES "*.cpp" "connection/*.cpp" "grunt/*.cpp" "login/*.cpp")
+file(GLOB PRIVATE_SOURCES "*.cpp" "connection/*.cpp" "grunt/*.cpp" "login/*.cpp" "srp/*.cpp")
 
 add_library(net STATIC
     ${PRIVATE_SOURCES}
