@@ -1,5 +1,7 @@
 # Whoa
 
+[![Push](https://github.com/whoahq/whoa/actions/workflows/push.yml/badge.svg)](https://github.com/whoahq/whoa/actions/workflows/push.yml)
+
 Welcome to Whoa, an unofficial open source implementation of the World of Warcraft 3.3.5a (build 12340) game client in C++11.
 
 ## Supported Platforms
