@@ -82,7 +82,7 @@ void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
         *decoration = '\0';
     }
 
-    // TODO SRP6_Client::BeginAuthentication
+    this->m_srpClient.BeginAuthentication(accountNameUnDecorated, password);
 
     CDataStoreCache<1024> clientChallenge;
 

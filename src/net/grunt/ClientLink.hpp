@@ -5,6 +5,7 @@
 #include "net/connection/WowConnectionResponse.hpp"
 #include "net/grunt/Pending.hpp"
 #include "net/grunt/Timer.hpp"
+#include "net/srp/SRP6_Client.hpp"
 #include "net/Types.hpp"
 #include <storm/Thread.hpp>
 
@@ -31,6 +32,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         Grunt::Timer m_timer;
         uint32_t m_clientIP = 0;
         int32_t m_state;
+        SRP6_Client m_srpClient;
         SCritSect m_critSect;
         WowConnection* m_connection = nullptr;
         ClientResponse* m_clientResponse;
