@@ -3,7 +3,7 @@
 
 #include "async/CAsyncObject.hpp"
 
-CAsyncObject* AsyncFileReadAllocObject(void);
+CAsyncObject* AsyncFileReadAllocObject();
 
 void AsyncFileReadDestroyObject(CAsyncObject* object);
 

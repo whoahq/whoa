@@ -65,7 +65,7 @@ void AsyncFileReadLinkObject(CAsyncObject* object, int32_t a2) {
     object->char25 = 0;
 }
 
-int32_t AsyncFileReadPollHandler(const void*, void*) {
+int32_t AsyncFileReadPollHandler(const void* a1, void* a2) {
     uint32_t start = OsGetAsyncTimeMsPrecise();
 
     while (1) {
