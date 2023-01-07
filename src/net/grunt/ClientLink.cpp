@@ -115,7 +115,7 @@ void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
 
     msg.Put(this->m_clientIP);
 
-    uint32_t accountNameLen = SStrLen(this->m_accountName);
+    auto accountNameLen = static_cast<uint8_t>(SStrLen(this->m_accountName));
     msg.Put(accountNameLen);
     msg.PutData(this->m_accountName, accountNameLen);
 
