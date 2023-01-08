@@ -1,10 +1,20 @@
 #include "net/grunt/ClientLink.hpp"
 #include "net/connection/WowConnection.hpp"
 #include "net/grunt/ClientResponse.hpp"
+#include "net/grunt/Command.hpp"
 #include <new>
-#include <common/DataStore.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+
+Grunt::Command<Grunt::ClientLink> Grunt::s_clientCommands[] = {
+    { Grunt::ClientLink::CMD_AUTH_LOGON_CHALLENGE, "ClientLink::CMD_AUTH_LOGON_CHALLENGE", &Grunt::ClientLink::CmdAuthLogonChallenge, 0 },
+    { Grunt::ClientLink::CMD_AUTH_LOGON_PROOF, "ClientLink::CMD_AUTH_LOGON_PROOF", &Grunt::ClientLink::CmdAuthLogonProof, 0 },
+    { Grunt::ClientLink::CMD_AUTH_RECONNECT_CHALLENGE, "ClientLink::CMD_AUTH_RECONNECT_CHALLENGE", &Grunt::ClientLink::CmdAuthReconnectChallenge, 0 },
+    { Grunt::ClientLink::CMD_AUTH_RECONNECT_PROOF, "ClientLink::CMD_AUTH_RECONNECT_PROOF", &Grunt::ClientLink::CmdAuthReconnectProof, 0 },
+    { Grunt::ClientLink::CMD_REALM_LIST, "ClientLink::CMD_REALM_LIST", &Grunt::ClientLink::CmdRealmList, 0 },
+    { Grunt::ClientLink::CMD_XFER_INITIATE, "ClientLink::CMD_XFER_INITIATE", &Grunt::ClientLink::CmdXferInitiate, 0 },
+    { Grunt::ClientLink::CMD_XFER_DATA, "ClientLink::CMD_XFER_DATA", &Grunt::ClientLink::CmdXferData, 0 },
+};
 
 Grunt::ClientLink::ClientLink(Grunt::ClientResponse& clientResponse) {
     // TODO
@@ -32,6 +42,41 @@ void Grunt::ClientLink::Call() {
     }
 
     this->m_critSect.Leave();
+}
+
+int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdXferData(CDataStore& msg) {
+    // TODO
+    return 0;
+}
+
+int32_t Grunt::ClientLink::CmdXferInitiate(CDataStore& msg) {
+    // TODO
+    return 0;
 }
 
 void Grunt::ClientLink::Connect(const char* a2) {
@@ -160,6 +205,26 @@ void Grunt::ClientLink::WCConnected(WowConnection* conn, WowConnection* inbound,
     this->m_critSect.Leave();
 
     if (!connected) {
+        this->Disconnect();
+    }
+}
+
+void Grunt::ClientLink::WCDataReady(WowConnection* conn, uint32_t timeStamp, uint8_t* data, int32_t len) {
+    this->m_datastore1B0.PutArray(data, len);
+    this->m_datastore1B0.Finalize();
+
+    uint32_t pos = 0;
+    if (Grunt::Command<Grunt::ClientLink>::Process(this->m_datastore1B0, Grunt::s_clientCommands, 7u, *this, pos)) {
+        auto remainingBytes = this->m_datastore1B0.m_size - pos;
+        this->m_datastore1B0.m_read = pos;
+        void* remainingData;
+        this->m_datastore1B0.GetDataInSitu(remainingData, remainingBytes);
+        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Reset();
+        this->m_datastore1B0.PutData(remainingData, remainingBytes);
+    } else {
+        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Reset();
         this->Disconnect();
     }
 }
