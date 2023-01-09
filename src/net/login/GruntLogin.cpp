@@ -88,6 +88,10 @@ void GruntLogin::GetRealmList() {
     // TODO
 }
 
+void GruntLogin::GetVersionProof(const uint8_t* a2) {
+    // TODO
+}
+
 void GruntLogin::Init(LoginResponse* loginResponse) {
     this->m_loginResponse = loginResponse;
 
@@ -123,4 +127,20 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
     }
 
     this->m_clientLink->Connect(a2);
+}
+
+void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* a3, uint32_t a4, uint16_t a5) {
+    // TODO
+}
+
+void GruntLogin::SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11) {
+    // TODO
+}
+
+void GruntLogin::SetPinInfo(bool enabled, uint32_t a3, const uint8_t* a4) {
+    // TODO
+}
+
+void GruntLogin::SetTokenInfo(bool enabled, uint8_t tokenRequired) {
+    // TODO
 }
