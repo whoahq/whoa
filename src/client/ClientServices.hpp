@@ -24,7 +24,7 @@ class ClientServices : public LoginResponse {
         static void Logon(const char* accountName, const char* password);
 
         // Virtual member functions
-        virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint16_t a7);
+        virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags);
 };
 
 #endif

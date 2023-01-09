@@ -2,6 +2,7 @@
 #define GLUE_C_GLUE_MGR_HPP
 
 #include "event/Event.hpp"
+#include "net/Types.hpp"
 #include <cstdint>
 
 class CSimpleTop;
@@ -30,6 +31,7 @@ class CGlueMgr {
         static int32_t m_acceptedEULA;
         static int32_t m_acceptedTerminationWithoutNotice;
         static int32_t m_acceptedTOS;
+        static int32_t m_accountMsgAvailable;
         static char m_accountName[];
         static float m_aspect;
         static bool m_authenticated;
@@ -57,6 +59,7 @@ class CGlueMgr {
         static void LoginServerLogin(const char* accountName, const char* password);
         static void QuitGame();
         static void Resume();
+        static void SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, char const* addrStr, char const* stateStr, char const* resultStr, uint8_t flags);
         static void SetScreen(const char* screen);
         static void StatusDialogClick();
         static void Suspend();
