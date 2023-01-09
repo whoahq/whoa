@@ -88,8 +88,14 @@ void GruntLogin::GetRealmList() {
     // TODO
 }
 
-void GruntLogin::GetVersionProof(const uint8_t* a2) {
-    // TODO
+void GruntLogin::GetVersionProof(const uint8_t* crcSalt) {
+    if (this->IsReconnect()) {
+        // TODO
+    } else {
+        memcpy(this->m_crcSalt, crcSalt, sizeof(this->m_crcSalt));
+        LOGIN_STATE nextState = this->NextSecurityState(LOGIN_STATE_FIRST_SECURITY);
+        this->m_loginResponse->UpdateLoginStatus(nextState, LOGIN_OK, nullptr, 0);
+    }
 }
 
 void GruntLogin::Init(LoginResponse* loginResponse) {
@@ -131,6 +137,11 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
 
 void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* a3, uint32_t a4, uint16_t a5) {
     // TODO
+}
+
+LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
+    // TODO
+    return LOGIN_STATE_CHECKINGVERSIONS;
 }
 
 void GruntLogin::SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11) {
