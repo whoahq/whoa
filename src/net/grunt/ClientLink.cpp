@@ -114,8 +114,8 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t* salt;
     msg.GetDataInSitu(reinterpret_cast<void*&>(salt), 32);
 
-    uint8_t* crcSalt;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(crcSalt), 16);
+    uint8_t* versionChallenge;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), 16);
 
     // TODO
     // if (!msg.Sub8CBBF0(1)) {
@@ -197,7 +197,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
         // TODO
         // this->m_clientResponse->SetMatrixInfo(logonFlags & 0x2, matrixWidth, matrixHeight, matrixDigitCount, matrixDigitCount, 0, matrixChallengeCount, matrixSeed, this->m_srpClient.buf20, 40);
         this->m_clientResponse->SetTokenInfo(logonFlags & 0x4, tokenRequired);
-        this->m_clientResponse->GetVersionProof(crcSalt);
+        this->m_clientResponse->GetVersionProof(versionChallenge);
     }
 
     return 2;
@@ -319,6 +319,37 @@ void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
     msg.PutData(this->m_accountName, accountNameLen);
 
     msg.Set(startPos, msg.m_size - startPos - 2);
+}
+
+void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
+    CDataStoreCache<1024> command;
+
+    // TODO cd keys
+    // Grunt::CdKey cdKeys;
+    // if (!this->m_loginResponse->GetCdKeys(cdKeys)) {
+    //     cdKeys.int0 = 0;
+    // }
+
+    if (this->m_state == 4) {
+        command.Put(static_cast<uint8_t>(CMD_AUTH_LOGON_PROOF));
+        command.PutData(this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
+        command.PutData(this->m_srpClient.clientProof, sizeof(this->m_srpClient.clientProof));
+
+        uint8_t versionProof[SHA1_DIGEST_SIZE];
+        SHA1_CONTEXT ctx;
+        SHA1_Init(&ctx);
+        SHA1_Update(&ctx, this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
+        SHA1_Update(&ctx, versionChecksum, 20);
+        SHA1_Final(versionProof, &ctx);
+        command.PutData(versionProof, sizeof(versionProof));
+
+        // TODO cd keys
+        command.Put(static_cast<uint8_t>(0));
+    } else {
+        // TODO
+    }
+
+    this->Send(command);
 }
 
 void Grunt::ClientLink::Send(CDataStore& msg) {
