@@ -88,11 +88,11 @@ void GruntLogin::GetRealmList() {
     // TODO
 }
 
-void GruntLogin::GetVersionProof(const uint8_t* crcSalt) {
+void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
     if (this->IsReconnect()) {
         // TODO
     } else {
-        memcpy(this->m_crcSalt, crcSalt, sizeof(this->m_crcSalt));
+        memcpy(this->m_versionChallenge, versionChallenge, sizeof(this->m_versionChallenge));
         LOGIN_STATE nextState = this->NextSecurityState(LOGIN_STATE_FIRST_SECURITY);
         this->m_loginResponse->UpdateLoginStatus(nextState, LOGIN_OK, nullptr, 0);
     }
@@ -142,6 +142,32 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* a3, uint32_t a
 LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
     // TODO
     return LOGIN_STATE_CHECKINGVERSIONS;
+}
+
+void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
+    if (!this->m_loggedOn) {
+        return;
+    }
+
+    this->m_clientLink->ProveVersion(versionChecksum);
+
+    this->m_loginResponse->m_loginState = LOGIN_STATE_HANDSHAKING;
+    this->m_loginResponse->m_loginResult = LOGIN_OK;
+
+    char stateStr[64];
+    SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_HANDSHAKING], sizeof(stateStr));
+
+    char resultStr[64];
+    SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
+
+    this->m_loginResponse->LoginServerStatus(
+        LOGIN_STATE_HANDSHAKING,
+        LOGIN_OK,
+        nullptr,
+        stateStr,
+        resultStr,
+        0
+    );
 }
 
 void GruntLogin::SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11) {

@@ -8,6 +8,8 @@ class SRP6_Random;
 class SRP6_Client {
     public:
     // Member variables
+    uint8_t clientPublicKey[32];
+    uint8_t clientProof[20];
     uint8_t accountNameDigest[SHA1_DIGEST_SIZE];
     uint8_t interimDigest[SHA1_DIGEST_SIZE];
     SHA1_CONTEXT ctx;
