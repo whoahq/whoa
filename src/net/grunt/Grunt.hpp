@@ -47,6 +47,9 @@ namespace Grunt {
         GRUNT_RESULT_32 = 32,
         GRUNT_RESULT_LAST,
     };
+
+    extern const char* g_LoginResultStringNames[];
+    extern const char* g_LoginStateStringNames[];
 }
 
 #endif
