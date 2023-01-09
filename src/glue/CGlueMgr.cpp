@@ -135,6 +135,23 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
 
     // TODO
 
+    switch (CGlueMgr::m_idleState) {
+    case IDLE_LOGIN_SERVER_LOGIN: {
+        CGlueMgr::PollLoginServerLogin();
+        break;
+    }
+
+    case IDLE_ACCOUNT_LOGIN: {
+        // TODO PollAccountLogin
+        break;
+    }
+
+    // TODO other idle states
+
+    default:
+        break;
+    }
+
     return 1;
 }
 
@@ -199,7 +216,7 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
     CGlueMgr::m_lastLoginState = -1;
     CGlueMgr::m_authenticated = false;
     CGlueMgr::m_matrixRemaining = 0;
-    CGlueMgr::m_idleState = IDLE_ACCOUNT_LOGIN;
+    CGlueMgr::m_idleState = IDLE_LOGIN_SERVER_LOGIN;
     CGlueMgr::m_showedDisconnect = 0;
 
     char* dest = CGlueMgr::m_accountName;
@@ -225,6 +242,66 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
 
 void CGlueMgr::QuitGame() {
     ClientPostClose(0);
+}
+
+void CGlueMgr::PollLoginServerLogin() {
+    if (CGlueMgr::m_loginState != LOGIN_STATE_PIN_WAIT) {
+        // TODO
+        // CGlueMgr::DisplayLoginStatus();
+    }
+
+    if (CGlueMgr::m_authenticated) {
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+        // Sub4D8BA0();
+        CGlueMgr::m_authenticated = false;
+        return;
+    }
+
+    switch (CGlueMgr::m_loginState) {
+    case LOGIN_STATE_FAILED: {
+        // TODO
+
+        break;
+    }
+
+    case LOGIN_STATE_DOWNLOADFILE: {
+        // TODO
+
+        break;
+    }
+
+    case LOGIN_STATE_PIN: {
+        // TODO
+
+        break;
+    }
+
+    case LOGIN_STATE_MATRIX: {
+        // TODO
+
+        break;
+    }
+
+    case LOGIN_STATE_TOKEN: {
+        // TODO
+
+        break;
+    }
+
+    case LOGIN_STATE_CHECKINGVERSIONS: {
+        uint8_t versionChecksum[20];
+        // TODO
+        // uint8_t* versionChallenge = ClientServices::LoginConnection()->GetVersionChallenge();
+        // ChecksumExecutables(versionChallenge, 16, versionChecksum);
+        ClientServices::LoginConnection()->ProveVersion(versionChecksum);
+
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 void CGlueMgr::Resume() {
@@ -393,7 +470,7 @@ void CGlueMgr::StatusDialogClick() {
             break;
         }
 
-        case IDLE_ACCOUNT_LOGIN: {
+        case IDLE_LOGIN_SERVER_LOGIN: {
             ClientServices::LoginConnection()->Logoff();
 
             CGlueMgr::m_showedDisconnect = 0;
@@ -402,7 +479,7 @@ void CGlueMgr::StatusDialogClick() {
             break;
         }
 
-        case IDLE_2:
+        case IDLE_ACCOUNT_LOGIN:
         case IDLE_3: {
             ClientServices::Connection()->Cancel(2);
 

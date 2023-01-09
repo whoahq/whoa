@@ -12,8 +12,8 @@ class CGlueMgr {
         // Types
         enum GLUE_IDLE_STATE {
             IDLE_NONE = 0,
-            IDLE_ACCOUNT_LOGIN = 1,
-            IDLE_2 = 2,
+            IDLE_LOGIN_SERVER_LOGIN = 1,
+            IDLE_ACCOUNT_LOGIN = 2,
             IDLE_3 = 3,
             IDLE_4 = 4,
             IDLE_5 = 5,
@@ -58,6 +58,7 @@ class CGlueMgr {
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
         static void QuitGame();
+        static void PollLoginServerLogin();
         static void Resume();
         static void SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, char const* addrStr, char const* stateStr, char const* resultStr, uint8_t flags);
         static void SetScreen(const char* screen);
