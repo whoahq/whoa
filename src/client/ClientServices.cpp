@@ -1,5 +1,6 @@
 #include "client/ClientServices.hpp"
 #include "client/ClientRealmResponseAdapter.hpp"
+#include "glue/CGlueMgr.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
 #include <storm/Memory.hpp>
@@ -87,6 +88,10 @@ void ClientServices::Logon(const char* accountName, const char* password) {
     ClientServices::s_loginObj->Logon(nullptr, nullptr);
 }
 
-void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint16_t a7) {
-    // TODO
+void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
+    CGlueMgr::SetLoginStateAndResult(state, result, addrStr, stateStr, resultStr, flags);
+
+    if (state == LOGIN_STATE_AUTHENTICATED) {
+        // TODO
+    }
 }

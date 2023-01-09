@@ -41,6 +41,7 @@ unsigned char InterfaceKey[256] = {
 int32_t CGlueMgr::m_acceptedEULA = 1; // TODO
 int32_t CGlueMgr::m_acceptedTerminationWithoutNotice;
 int32_t CGlueMgr::m_acceptedTOS = 1; // TODO
+int32_t CGlueMgr::m_accountMsgAvailable;
 char CGlueMgr::m_accountName[1280];
 float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
@@ -358,6 +359,22 @@ void CGlueMgr::Resume() {
     // if (!OsURLDownload(v22, CGlueMgr::ServerAlertURLCallback, 0)) {
     //     CGlueMgr::m_pendingServerAlert = 0;
     // }
+}
+
+void CGlueMgr::SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
+    // TODO
+    // CGlueMgr::LogConnectionStatus("GRUNT: state: %s result: %s %s", a4);
+
+    if (flags & 0x1) {
+        CGlueMgr::m_accountMsgAvailable = 1;
+    }
+
+    if (state == LOGIN_STATE_AUTHENTICATED) {
+        CGlueMgr::m_authenticated = true;
+    }
+
+    CGlueMgr::m_loginState = state;
+    CGlueMgr::m_loginResult = result;
 }
 
 void CGlueMgr::SetScreen(const char* screen) {
