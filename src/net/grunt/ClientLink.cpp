@@ -2,6 +2,8 @@
 #include "net/connection/WowConnection.hpp"
 #include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Command.hpp"
+#include "net/srp/SRP6_Random.hpp"
+#include <cstring>
 #include <new>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
@@ -45,8 +47,160 @@ void Grunt::ClientLink::Call() {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
+    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+        return 0;
+    }
+
+    uint8_t v30;
+    msg.Get(v30);
+
+    if (v30 != 0) {
+        return 1;
+    }
+
+    uint8_t result;
+    msg.Get(result);
+
+    // Auth failure (success == 0)
+    if (result != 0) {
+        if (msg.m_read > msg.m_size) {
+            return 1;
+        }
+
+        this->SetState(2);
+
+        if (result >= GRUNT_RESULT_LAST) {
+            // TODO WLog error
+        }
+
+        this->m_clientResponse->LogonResult(static_cast<Grunt::Result>(result), nullptr, 0, 0);
+
+        return 2;
+    }
+
+    if (msg.m_read > msg.m_size) {
+        return 0;
+    }
+
+    if (msg.m_size - msg.m_read < 33) {
+        return 0;
+    }
+
+    uint8_t* serverPublicKey;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(serverPublicKey), 32);
+
+    uint8_t generatorLen;
+    msg.Get(generatorLen);
+
     // TODO
-    return 0;
+    // if (!msg.Sub8CBBF0(v31 + 1)) {
+    //     return 0;
+    // }
+
+    uint8_t* generator;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(generator), generatorLen);
+
+    uint8_t largeSafePrimeLen;
+    msg.Get(largeSafePrimeLen);
+
+    // TODO
+    // if (!msg.sub_8CBBF0(v32 + 48)) {
+    //     return 0;
+    // }
+
+    uint8_t* largeSafePrime;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(largeSafePrime), largeSafePrimeLen);
+
+    uint8_t* salt;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(salt), 32);
+
+    uint8_t* crcSalt;
+    msg.GetDataInSitu(reinterpret_cast<void*&>(crcSalt), 16);
+
+    // TODO
+    // if (!msg.Sub8CBBF0(1)) {
+    //     return 0;
+    // }
+
+    uint8_t logonFlags;
+    msg.Get(logonFlags);
+
+    uint32_t pinGridSeed = 0;
+    uint8_t* pinSalt = nullptr;
+
+    uint8_t matrixWidth = 0;
+    uint8_t matrixHeight = 0;
+    uint8_t matrixDigitCount = 0;
+    uint8_t matrixChallengeCount = 0;
+    uint64_t matrixSeed = 0;
+
+    uint8_t tokenRequired = 0;
+
+    // PIN
+    if (logonFlags & 0x1) {
+        // TODO
+        // if (!msg.Sub8CBBF0(20)) {
+        //     return 0;
+        // }
+
+        msg.Get(pinGridSeed);
+        msg.GetDataInSitu(reinterpret_cast<void*&>(pinSalt), 16);
+    }
+
+    // MATRIX
+    if (logonFlags & 0x2) {
+        // TODO
+        /*
+        if (msg.Sub8CBBF0(12)) {
+            msg.Get(matrixWidth);
+            msg.Get(matrixHeight);
+            msg.Get(matrixDigitCount);
+            msg.Get(matrixChallengeCount);
+            msg.Get(matrixSeed);
+
+            if ((logonFlags & 0x2) && matrixChallengeCount == 0) {
+                return 1;
+            }
+        } else {
+            return 0;
+        }
+        */
+    }
+
+    // TOKEN (authenticator)
+    if (logonFlags & 0x4) {
+        // TODO
+        // if (!msg.Sub8CBBF0(1)) {
+        //     return 0;
+        // }
+
+        msg.Get(tokenRequired);
+    }
+
+    if (msg.m_read > msg.m_size) {
+        return 1;
+    }
+
+    memcpy(this->m_serverPublicKey, serverPublicKey, sizeof(this->m_serverPublicKey));
+
+    char randomSeed[16];
+    // TODO
+    // OsSecureRandom(randomSeed, sizeof(randomSeed));
+    SRP6_Random srpRandom(randomSeed, sizeof(randomSeed));
+
+    if (this->m_srpClient.CalculateProof(largeSafePrime, largeSafePrimeLen, generator, generatorLen, salt, 32, serverPublicKey, 32, srpRandom)) {
+        this->SetState(2);
+        this->m_clientResponse->LogonResult(GRUNT_RESULT_5, nullptr, 0, 0);
+    } else {
+        this->SetState(4);
+        this->m_clientResponse->SetPinInfo(logonFlags & 0x1, pinGridSeed, pinSalt);
+        // TODO
+        // this->m_clientResponse->SetMatrixInfo(logonFlags & 0x2, matrixWidth, matrixHeight, matrixDigitCount, matrixDigitCount, 0, matrixChallengeCount, matrixSeed, this->m_srpClient.buf20, 40);
+        this->m_clientResponse->SetTokenInfo(logonFlags & 0x4, tokenRequired);
+        this->m_clientResponse->GetVersionProof(crcSalt);
+    }
+
+    return 2;
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {

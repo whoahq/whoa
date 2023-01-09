@@ -22,3 +22,9 @@ int32_t SRP6_Client::BeginAuthentication(const char* accountName, const char* pa
 
     return 0;
 }
+
+int32_t SRP6_Client::CalculateProof(const uint8_t* largeSafePrime, uint32_t largeSafePrimeLen, const uint8_t* generator, uint32_t generatorLen, const uint8_t* salt, uint32_t saltLen, const uint8_t* publicKey, uint32_t publicKeyLen, SRP6_Random& random) {
+    // TODO
+
+    return 0;
+}

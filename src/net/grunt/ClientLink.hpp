@@ -48,6 +48,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         WowConnection* m_connection = nullptr;
         ClientResponse* m_clientResponse;
         char m_accountName[1280];
+        char m_serverPublicKey[32];
 
         // Virtual member functions
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
