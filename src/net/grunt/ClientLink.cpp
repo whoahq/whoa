@@ -349,6 +349,8 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
         // TODO
     }
 
+    command.Finalize();
+
     this->Send(command);
 }
 
