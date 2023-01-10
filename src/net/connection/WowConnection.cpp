@@ -367,7 +367,7 @@ void WowConnection::DoStreamReads() {
 #endif
         }
 
-        if (bytesRead == 0) {
+        if (bytesRead <= 0) {
             break;
         }
 
