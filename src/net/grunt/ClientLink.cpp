@@ -345,6 +345,10 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
 
         // TODO cd keys
         command.Put(static_cast<uint8_t>(0));
+
+        // TODO pin / matrix / token fields
+        uint8_t authFlags = 0x0;
+        command.Put(authFlags);
     } else {
         // TODO
     }
