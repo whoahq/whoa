@@ -32,23 +32,7 @@ Whoa is very much a work-in-progress: it does not fully connect to a login serve
 
 ## Contributing
 
-Thanks for making a contribution to Whoa!
-
-Since Whoa is a faithful implementation of the original 3.3.5a (build 12340) client, there are some important considerations to keep in mind:
-
-* Please use disassemblers and debuggers to determine original layouts and behaviors.
-
-* Make every effort to maintain equivalent function signatures, function behaviors, class names, class layouts, structs, and enums as the original client. When an original name is not known, attempt to use names based on behavior. If behavior is not known, attempt to use names based on offsets.
-
-* Occasionally, original layouts or behaviors must be changed to permit compilation on modern 64-bit systems. When behaviors differ for compatibility, the original behavior should be documented, and the variance explained.
-
-General contribution guidelines:
-
-* Follow formatting and style guidelines per the rules defined in `.clang-format` and `.editorconfig`. Ideally, configure your IDE to use both files.
-
-* Keep pull requests tightly scoped to make reviews easier. Smaller pull requests, more of them.
-
-* Keep commits formatted according to the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) standard.
+Please follow the guidelines contained in [CONTRIBUTING.md](./CONTRIBUTING.md) when making contributions.
 
 ## FAQ
 
