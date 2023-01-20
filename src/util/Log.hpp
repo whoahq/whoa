@@ -11,6 +11,10 @@ enum SYSMSG_TYPE {
     SYSMSG_NUMTYPES     = 0x4
 };
 
+struct HSLOG {
+    int32_t unused;
+};
+
 bool SLogCreate(const char*, uint32_t, void*);
 
 void SysMsgPrintf(SYSMSG_TYPE, const char*, ...);

@@ -1,5 +1,6 @@
 #include "client/Console.hpp"
 #include "gx/Device.hpp"
+#include "gx/Gx.hpp"
 #include "util/CVar.hpp"
 #include <cstring>
 
@@ -148,6 +149,7 @@ void ConsoleInitializeClientCVar(const char* a1) {
 }
 
 void ConsoleDeviceInitialize(const char* title) {
+    GxLogOpen();
     // TODO
 
     // TODO proper logic

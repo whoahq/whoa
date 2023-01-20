@@ -3,6 +3,7 @@
 #include "gx/Shader.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include "util/SFile.hpp"
+#include "util/Filesystem.hpp"
 #include <algorithm>
 #include <cstring>
 #include <limits>
@@ -69,6 +70,17 @@ uint32_t CGxDevice::s_texFormatBytesPerBlock[] = {
     4,      // GxTex_R32F
     4       // GxTex_D24X8
 };
+
+HSLOG* CGxDevice::m_log = nullptr;
+uint32_t CGxDevice::m_logbytes = 0;
+
+void CGxDevice::LogOpen() {
+    if (!CGxDevice::m_log) {
+        OsCreateDirectory("Logs",0);
+        SLogCreate("Logs\\gx.log",0,CGxDevice::m_log);
+        CGxDevice::m_logbytes = 0;
+    }
+}
 
 CGxDevice* CGxDevice::NewD3d() {
     // TODO

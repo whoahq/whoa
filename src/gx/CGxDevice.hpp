@@ -10,6 +10,7 @@
 #include "gx/Shader.hpp"
 #include <cstdint>
 #include <storm/Hash.hpp>
+#include <util/Log.hpp>
 #include <tempest/Box.hpp>
 #include <tempest/Rect.hpp>
 
@@ -44,8 +45,12 @@ class CGxDevice {
         static uint32_t s_streamPoolSize[];
         static uint32_t s_texFormatBitDepth[];
         static uint32_t s_texFormatBytesPerBlock[];
+        static HSLOG*   m_log;
+        static uint32_t m_logbytes;
 
         // Static functions
+        static void LogOpen();
+
         static CGxDevice* NewD3d();
         static CGxDevice* NewD3d9Ex();
 #if defined(WHOA_SYSTEM_MAC)
