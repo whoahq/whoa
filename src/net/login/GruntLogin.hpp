@@ -19,7 +19,7 @@ class GruntLogin : public Login {
         virtual void SetPinInfo(bool enabled, uint32_t a3, const uint8_t* a4);
         virtual void SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11);
         virtual void SetTokenInfo(bool enabled, uint8_t tokenRequired);
-        virtual void LogonResult(Grunt::Result result, const uint8_t* a3, uint32_t a4, uint16_t a5);
+        virtual void LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags);
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state);
         virtual void GetRealmList();
         virtual void Logon(const char* a2, const char* a3);

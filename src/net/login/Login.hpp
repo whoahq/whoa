@@ -13,6 +13,7 @@ class Login : public Grunt::ClientResponse {
         char m_accountName[1280] = {};
         char m_rawAccountName[1280] = {};
         char* m_password = nullptr;
+        uint8_t m_sessionKey[40] = {};
         LoginResponse* m_loginResponse = nullptr;
 
         // Virtual member functions

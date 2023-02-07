@@ -135,8 +135,71 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
     this->m_clientLink->Connect(a2);
 }
 
-void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* a3, uint32_t a4, uint16_t a5) {
+void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
+    // Reconnect
+    if (this->IsReconnect()) {
+        // TODO
+        // this->m_loginResponse->HandleRealmData(1, 0);
+        this->m_clientLink->Disconnect();
+
+        return;
+    }
+
+    // Authentication success
+    if (result == Grunt::GRUNT_RESULT_0 || result == Grunt::GRUNT_RESULT_14) {
+        // TODO
+        // this->uint8 = 0;
+        // LOBYTE(this->uint105C) = 0;
+
+        if (sessionKeyLen >= 40) {
+            sessionKeyLen = 40;
+        }
+        memcpy(this->m_sessionKey, sessionKey, sessionKeyLen);
+
+        this->m_loginResponse->m_loginResult = LOGIN_OK;
+
+        if (this->m_clientLink->m_surveyID == 0) {
+            this->m_loginResponse->m_loginState = LOGIN_STATE_AUTHENTICATED;
+
+            char stateStr[64];
+            SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_AUTHENTICATED], sizeof(stateStr));
+
+            char resultStr[64];
+            SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
+
+            this->m_loginResponse->LoginServerStatus(
+                LOGIN_STATE_AUTHENTICATED,
+                LOGIN_OK,
+                nullptr,
+                stateStr,
+                resultStr,
+                flags
+            );
+        } else {
+            this->m_loginResponse->m_loginState = LOGIN_STATE_SURVEY;
+
+            char stateStr[64];
+            SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_SURVEY], sizeof(stateStr));
+
+            char resultStr[64];
+            SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
+
+            this->m_loginResponse->LoginServerStatus(
+                LOGIN_STATE_SURVEY,
+                LOGIN_OK,
+                nullptr,
+                stateStr,
+                resultStr,
+                flags
+            );
+        }
+
+        return;
+    }
+
+    // Authentication failure
     // TODO
+
 }
 
 LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
