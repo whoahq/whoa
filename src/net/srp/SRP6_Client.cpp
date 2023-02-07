@@ -174,3 +174,16 @@ cleanup:
 
     return result;
 }
+
+int32_t SRP6_Client::VerifyServerProof(const uint8_t* serverProof, uint32_t serverProofLen) {
+    if (serverProofLen != 20) {
+        return -2;
+    }
+
+    // Calculate expected server proof
+    uint8_t localServerProof[SHA1_DIGEST_SIZE];
+    SHA1_Final(localServerProof, &this->ctx);
+
+    // Compare expected server proof with given server proof
+    return memcmp(localServerProof, serverProof, sizeof(localServerProof));
+}

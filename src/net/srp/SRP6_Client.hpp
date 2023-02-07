@@ -18,6 +18,7 @@ class SRP6_Client {
     // Member functions
     int32_t BeginAuthentication(const char* accountName, const char* password);
     int32_t CalculateProof(const uint8_t* largeSafePrime, uint32_t largeSafePrimeLen, const uint8_t* generator, uint32_t generatorLen, const uint8_t* salt, uint32_t saltLen, const uint8_t* publicKey, uint32_t publicKeyLen, SRP6_Random& random);
+    int32_t VerifyServerProof(const uint8_t* serverProof, uint32_t serverProofLen);
 };
 
 #endif

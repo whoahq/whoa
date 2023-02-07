@@ -233,8 +233,40 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     }
 
     // Auth success
+    if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 24) {
+        void* serverProof;
+        msg.GetDataInSitu(serverProof, 20);
 
-    // TODO
+        uint32_t v17 = 0;
+        msg.Get(v17);
+
+        uint32_t v14;
+        msg.Get(v14);
+
+        if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 2) {
+            uint16_t v16 = 0;
+            msg.Get(v16);
+
+            if (msg.m_read <= msg.m_size) {
+                if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
+                    this->SetState(2);
+                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
+                } else {
+                    // TODO
+                    // this->uint98 = v17;
+                    // this->uint94 = 0;
+                    // this->uint9C = v14;
+
+                    this->SetState(6);
+                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, v16);
+                }
+
+                return 2;
+            }
+
+            return 1;
+        }
+    }
 
     return 0;
 }
