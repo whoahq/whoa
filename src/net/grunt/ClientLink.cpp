@@ -204,7 +204,38 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
+    if (msg.m_read >= msg.m_size) {
+        return 0;
+    }
+
+    uint8_t result;
+    msg.Get(result);
+
+    // Auth failure (success == 0)
+    if (result != 0) {
+        if (result == 4) {
+            // TODO
+        }
+
+        if (msg.m_read > msg.m_size) {
+            return 1;
+        }
+
+        if (result != 10) {
+            this->SetState(2);
+
+            // TODO range check on result
+
+            this->m_clientResponse->LogonResult(static_cast<Grunt::Result>(result), nullptr, 0, 0);
+        }
+
+        return 2;
+    }
+
+    // Auth success
+
     // TODO
+
     return 0;
 }
 
