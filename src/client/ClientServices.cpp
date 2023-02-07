@@ -9,6 +9,7 @@
 
 ClientConnection* g_clientConnection;
 
+char ClientServices::s_accountName[1280];
 RealmResponse* ClientServices::s_clientRealmResponse;
 ClientConnection* ClientServices::s_currentConnection;
 ClientServices* ClientServices::s_instance;
@@ -88,10 +89,33 @@ void ClientServices::Logon(const char* accountName, const char* password) {
     ClientServices::s_loginObj->Logon(nullptr, nullptr);
 }
 
+void ClientServices::SetAccountName(const char* accountName) {
+    SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
+}
+
 void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
     CGlueMgr::SetLoginStateAndResult(state, result, addrStr, stateStr, resultStr, flags);
 
     if (state == LOGIN_STATE_AUTHENTICATED) {
+        LoginData loginData;
+        SStrCopy(loginData.m_account, ClientServices::LoginConnection()->m_accountName, sizeof(loginData.m_account));
+        loginData.m_loginServerID = ClientServices::LoginConnection()->GetServerId();
+        memcpy(loginData.m_sessionKey, ClientServices::LoginConnection()->m_sessionKey, sizeof(loginData.m_sessionKey));
+        loginData.m_loginServerType = ClientServices::LoginConnection()->GetLoginServerType();
+
+        if (!ClientServices::s_currentConnection) {
+            // TODO
+        }
+
+        ClientServices::s_currentConnection->SetLoginData(&loginData);
+        ClientServices::SetAccountName(loginData.m_account);
+
+        CGlueMgr::SetCurrentAccount(loginData.m_account);
+
         // TODO
+        // - initialize addons?
+        // sub_5F9080(v7.m_account);
+
+        // TODO CVar::DeleteAccountCVars();
     }
 }

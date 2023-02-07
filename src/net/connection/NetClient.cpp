@@ -44,6 +44,10 @@ int32_t NetClient::Initialize() {
     return 1;
 }
 
+void NetClient::SetLoginData(LoginData* loginData) {
+    memcpy(&this->m_loginData, loginData, sizeof(this->m_loginData));
+}
+
 void NetClient::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
     this->m_handlers[msgId] = handler;
     this->m_handlerParams[msgId] = param;

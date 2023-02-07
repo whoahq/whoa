@@ -1208,6 +1208,13 @@ enum WOWCS_OPS {
     COP_WAIT_QUEUE          = 10,
 };
 
+struct LoginData {
+    char m_account[1280];
+    int32_t m_loginServerID;
+    uint8_t m_sessionKey[40];
+    int32_t m_loginServerType;
+};
+
 struct NETADDR {
     uint16_t family;
     char data[14];

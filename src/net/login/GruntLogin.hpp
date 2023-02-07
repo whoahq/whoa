@@ -21,11 +21,13 @@ class GruntLogin : public Login {
         virtual void SetTokenInfo(bool enabled, uint8_t tokenRequired);
         virtual void LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags);
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state);
+        virtual int32_t GetServerId();
         virtual void GetRealmList();
         virtual void Logon(const char* a2, const char* a3);
         virtual void ProveVersion(const uint8_t* versionChecksum);
         virtual void Logoff();
         virtual void Init(LoginResponse* loginResponse);
+        virtual int32_t GetLoginServerType();
 };
 
 #endif

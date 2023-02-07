@@ -36,6 +36,7 @@ class NetClient : public WowConnectionResponse {
         static int32_t s_clientCount;
 
         // Member variables
+        LoginData m_loginData;
         NETSTATE m_netState = NS_UNINITIALIZED;
         MESSAGE_HANDLER m_handlers[NUM_MSG_TYPES];
         void* m_handlerParams[NUM_MSG_TYPES];
@@ -50,6 +51,7 @@ class NetClient : public WowConnectionResponse {
 
         // Member functions
         int32_t Initialize();
+        void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
 };
 

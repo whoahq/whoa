@@ -60,6 +60,7 @@ class CGlueMgr {
         static void QuitGame();
         static void PollLoginServerLogin();
         static void Resume();
+        static void SetCurrentAccount(const char* accountName);
         static void SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, char const* addrStr, char const* stateStr, char const* resultStr, uint8_t flags);
         static void SetScreen(const char* screen);
         static void StatusDialogClick();

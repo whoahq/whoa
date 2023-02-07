@@ -250,6 +250,7 @@ void CGlueMgr::PollLoginServerLogin() {
         // CGlueMgr::DisplayLoginStatus();
     }
 
+    // Open new client connection after successful authentication
     if (CGlueMgr::m_authenticated) {
         CGlueMgr::m_idleState = IDLE_NONE;
         CGlueMgr::m_showedDisconnect = 0;
@@ -436,6 +437,11 @@ void CGlueMgr::Resume() {
     // if (!OsURLDownload(v22, CGlueMgr::ServerAlertURLCallback, 0)) {
     //     CGlueMgr::m_pendingServerAlert = 0;
     // }
+}
+
+void CGlueMgr::SetCurrentAccount(const char* accountName) {
+    SStrCopy(CGlueMgr::m_accountName, accountName, sizeof(CGlueMgr::m_accountName));
+    SStrUpper(CGlueMgr::m_accountName);
 }
 
 void CGlueMgr::SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {

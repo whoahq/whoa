@@ -17,11 +17,13 @@ class Grunt::ClientResponse {
         virtual void SetTokenInfo(bool enabled, uint8_t required) = 0;
         virtual void LogonResult(Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) = 0;
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state) = 0;
+        virtual int32_t GetServerId() = 0;
         virtual void GetRealmList() = 0;
         virtual void Logon(const char* a2, const char* a3) = 0;
         virtual void ProveVersion(const uint8_t* versionChecksum) = 0;
         virtual void Logoff() = 0;
         virtual void Init(LoginResponse* loginResponse) = 0;
+        virtual int32_t GetLoginServerType() = 0;
 };
 
 #endif

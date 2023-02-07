@@ -34,6 +34,11 @@ bool GruntLogin::Connected(const NETADDR& addr) {
     return true;
 }
 
+int32_t GruntLogin::GetLoginServerType() {
+    // Grunt
+    return 0;
+}
+
 void GruntLogin::GetLogonMethod() {
     Grunt::ClientLink::Logon logon;
 
@@ -86,6 +91,11 @@ void GruntLogin::GetLogonMethod() {
 
 void GruntLogin::GetRealmList() {
     // TODO
+}
+
+int32_t GruntLogin::GetServerId() {
+    // TODO
+    return 0;
 }
 
 void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
