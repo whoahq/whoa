@@ -20,16 +20,12 @@ bool GruntLogin::Connected(const NETADDR& addr) {
     // TODO
     // OsNetAddrToStr(addr, addrStr, sizeof(addrStr));
 
-    char stateStr[64];
-    // TODO
-    // SStrCopy(stateStr, g_LoginStateStringNames[LOGIN_STATE_15], sizeof(stateStr));
-
-    char resultStr[64];
-    // TODO
-    // SStrCopy(resultStr, g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
-
-    // TODO
-    this->m_loginResponse->LoginServerStatus(LOGIN_STATE_15, LOGIN_OK, addrStr, stateStr, resultStr, 0);
+    this->m_loginResponse->UpdateLoginStatus(
+        LOGIN_STATE_15,
+        LOGIN_OK,
+        addrStr,
+        0x0
+    );
 
     return true;
 }
@@ -58,24 +54,11 @@ void GruntLogin::GetLogonMethod() {
     if (this->IsReconnect()) {
         // TODO
     } else if (this->m_password) {
-        this->m_loginResponse->m_loginState = LOGIN_STATE_AUTHENTICATING;
-        this->m_loginResponse->m_loginResult = LOGIN_OK;
-
-        char stateStr[64];
-        // TODO
-        // SStrCopy(stateStr, g_LoginStateStringNames[LOGIN_STATE_AUTHENTICATING], sizeof(stateStr));
-
-        char resultStr[64];
-        // TODO
-        // SStrCopy(resultStr, g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
-
-        this->m_loginResponse->LoginServerStatus(
+        this->m_loginResponse->UpdateLoginStatus(
             LOGIN_STATE_AUTHENTICATING,
             LOGIN_OK,
             nullptr,
-            stateStr,
-            resultStr,
-            0
+            0x0
         );
 
         logon.password = this->m_password;
@@ -104,7 +87,13 @@ void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
     } else {
         memcpy(this->m_versionChallenge, versionChallenge, sizeof(this->m_versionChallenge));
         LOGIN_STATE nextState = this->NextSecurityState(LOGIN_STATE_FIRST_SECURITY);
-        this->m_loginResponse->UpdateLoginStatus(nextState, LOGIN_OK, nullptr, 0);
+
+        this->m_loginResponse->UpdateLoginStatus(
+            nextState,
+            LOGIN_OK,
+            nullptr,
+            0x0
+        );
     }
 }
 
@@ -129,14 +118,12 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
 
     // TODO
 
-    this->m_loginResponse->m_loginState = LOGIN_STATE_CONNECTING;
-    this->m_loginResponse->m_loginResult = LOGIN_OK;
-
-    // TODO
-    // char v6[64], v7[64];
-    // SStrCopy(v6, g_LoginStateStringNames[1], sizeof(v6));
-    // SStrCopy(v7, g_LoginResultStringNames[0], sizeof(v7));
-    // this->m_loginResponse->Vfunc6(1, 0, 0, v6, v7, 0);
+    this->m_loginResponse->UpdateLoginStatus(
+        LOGIN_STATE_CONNECTING,
+        LOGIN_OK,
+        nullptr,
+        0x0
+    );
 
     if (!a2) {
         a2 = "us.logon.worldofwarcraft.com:3724";
@@ -202,22 +189,11 @@ void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
 
     this->m_clientLink->ProveVersion(versionChecksum);
 
-    this->m_loginResponse->m_loginState = LOGIN_STATE_HANDSHAKING;
-    this->m_loginResponse->m_loginResult = LOGIN_OK;
-
-    char stateStr[64];
-    SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_HANDSHAKING], sizeof(stateStr));
-
-    char resultStr[64];
-    SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
-
-    this->m_loginResponse->LoginServerStatus(
+    this->m_loginResponse->UpdateLoginStatus(
         LOGIN_STATE_HANDSHAKING,
         LOGIN_OK,
         nullptr,
-        stateStr,
-        resultStr,
-        0
+        0x0
     );
 }
 
