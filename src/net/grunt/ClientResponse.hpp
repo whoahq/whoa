@@ -15,7 +15,7 @@ class Grunt::ClientResponse {
         virtual void SetPinInfo(bool enabled, uint32_t a3, const uint8_t* a4) = 0;
         virtual void SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11) = 0;
         virtual void SetTokenInfo(bool enabled, uint8_t required) = 0;
-        virtual void LogonResult(Result result, const uint8_t* a3, uint32_t a4, uint16_t a5) = 0;
+        virtual void LogonResult(Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) = 0;
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state) = 0;
         virtual void GetRealmList() = 0;
         virtual void Logon(const char* a2, const char* a3) = 0;

@@ -211,7 +211,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     uint8_t result;
     msg.Get(result);
 
-    // Auth failure (success == 0)
+    // Authentication failure (result for success is 0)
     if (result != 0) {
         if (result == 4) {
             // TODO
@@ -232,33 +232,33 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         return 2;
     }
 
-    // Auth success
+    // Authentication success
     if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 24) {
         void* serverProof;
         msg.GetDataInSitu(serverProof, 20);
 
-        uint32_t v17 = 0;
-        msg.Get(v17);
+        uint32_t accountFlags = 0x0;
+        msg.Get(accountFlags);
 
-        uint32_t v14;
-        msg.Get(v14);
+        uint32_t surveyID;
+        msg.Get(surveyID);
 
         if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 2) {
-            uint16_t v16 = 0;
-            msg.Get(v16);
+            uint16_t logonFlags = 0x0;
+            msg.Get(logonFlags);
 
             if (msg.m_read <= msg.m_size) {
                 if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
                     this->SetState(2);
                     this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
                 } else {
+                    this->m_accountFlags = accountFlags;
                     // TODO
-                    // this->uint98 = v17;
                     // this->uint94 = 0;
-                    // this->uint9C = v14;
+                    this->m_surveyID = surveyID;
 
                     this->SetState(6);
-                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, v16);
+                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
                 }
 
                 return 2;

@@ -40,6 +40,8 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
 
         // Member variables
         Grunt::Timer m_timer;
+        uint32_t m_accountFlags = 0x0;
+        uint32_t m_surveyID = 0;
         uint32_t m_clientIP = 0;
         int32_t m_state;
         SRP6_Client m_srpClient;
