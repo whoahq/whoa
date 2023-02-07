@@ -1,12 +1,16 @@
 #include "net/login/LoginResponse.hpp"
+#include "net/grunt/Grunt.hpp"
+#include <storm/String.hpp>
 
-void LoginResponse::UpdateLoginStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* a4, uint16_t a5) {
+void LoginResponse::UpdateLoginStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, uint16_t flags) {
     this->m_loginState = state;
     this->m_loginResult = result;
 
-    // TODO string lookups
-    const char* stateStr = nullptr;
-    const char* resultStr = nullptr;
+    char stateStr[64];
+    SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_AUTHENTICATED], sizeof(stateStr));
 
-    this->LoginServerStatus(state, result, a4, stateStr, resultStr, a5);
+    char resultStr[64];
+    SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
+
+    this->LoginServerStatus(state, result, addrStr, stateStr, resultStr, flags);
 }

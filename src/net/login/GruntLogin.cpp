@@ -166,40 +166,18 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
         }
         memcpy(this->m_sessionKey, sessionKey, sessionKeyLen);
 
-        this->m_loginResponse->m_loginResult = LOGIN_OK;
-
         if (this->m_clientLink->m_surveyID == 0) {
-            this->m_loginResponse->m_loginState = LOGIN_STATE_AUTHENTICATED;
-
-            char stateStr[64];
-            SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_AUTHENTICATED], sizeof(stateStr));
-
-            char resultStr[64];
-            SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
-
-            this->m_loginResponse->LoginServerStatus(
+            this->m_loginResponse->UpdateLoginStatus(
                 LOGIN_STATE_AUTHENTICATED,
                 LOGIN_OK,
                 nullptr,
-                stateStr,
-                resultStr,
                 flags
             );
         } else {
-            this->m_loginResponse->m_loginState = LOGIN_STATE_SURVEY;
-
-            char stateStr[64];
-            SStrCopy(stateStr, Grunt::g_LoginStateStringNames[LOGIN_STATE_SURVEY], sizeof(stateStr));
-
-            char resultStr[64];
-            SStrCopy(resultStr, Grunt::g_LoginResultStringNames[LOGIN_OK], sizeof(resultStr));
-
-            this->m_loginResponse->LoginServerStatus(
+            this->m_loginResponse->UpdateLoginStatus(
                 LOGIN_STATE_SURVEY,
                 LOGIN_OK,
                 nullptr,
-                stateStr,
-                resultStr,
                 flags
             );
         }

@@ -13,7 +13,7 @@ class LoginResponse {
         virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) = 0;
 
         // Member functions
-        void UpdateLoginStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* a4, uint16_t a5);
+        void UpdateLoginStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, uint16_t flags);
 };
 
 #endif
