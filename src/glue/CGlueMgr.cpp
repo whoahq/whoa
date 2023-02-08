@@ -76,6 +76,66 @@ float CalculateAspectRatio() {
     return static_cast<float>(width) / static_cast<float>(height);
 }
 
+void CGlueMgr::DisplayLoginStatus() {
+    // No change
+    if (CGlueMgr::m_lastLoginState == CGlueMgr::m_loginState && CGlueMgr::m_lastLoginResult == CGlueMgr::m_loginResult) {
+        return;
+    }
+
+    CGlueMgr::m_lastLoginState = CGlueMgr::m_loginState;
+    CGlueMgr::m_lastLoginResult = CGlueMgr::m_loginResult;
+
+    // Authentication failure
+    if (CGlueMgr::m_loginState == LOGIN_STATE_FAILED) {
+        // Unknown result
+        if (CGlueMgr::m_loginResult >= LOGIN_RESULT_MAX) {
+            return;
+        }
+
+        // Parental control
+        if (CGlueMgr::m_loginResult == LOGIN_PARENTALCONTROL) {
+            auto resultStr = Grunt::g_LoginResultStringNames[LOGIN_PARENTALCONTROL];
+            auto resultText = FrameScript_GetText(resultStr, -1, GENDER_NOT_APPLICABLE);
+            FrameScript_SignalEvent(3, "%s%s%s", "PARENTAL_CONTROL", resultText, "AUTH_PARENTAL_CONTROL_URL");
+
+            return;
+        }
+
+        // Other failures
+        auto resultStr = Grunt::g_LoginResultStringNames[CGlueMgr::m_loginResult];
+        auto resultText = FrameScript_GetText(resultStr, -1, GENDER_NOT_APPLICABLE);
+
+        const char* buttonText;
+        if (false /* TODO SStrStrUTF8I(resultText, "<HTML>") */) {
+            buttonText = CGlueMgr::m_loginResult == LOGIN_FAILED
+                             ? "CONNECTION_HELP_HTML"
+                             : "OKAY_HTML";
+        } else {
+            buttonText = CGlueMgr::m_loginResult == LOGIN_FAILED
+                             ? "CONNECTION_HELP"
+                             : "OKAY";
+        }
+
+        FrameScript_SignalEvent(3, "%s%s", buttonText, resultText);
+
+        return;
+    }
+
+    // Authentication in progress or success
+    if (CGlueMgr::m_loginState != LOGIN_STATE_DISCONNECTED && CGlueMgr::m_loginState != LOGIN_STATE_SURVEY) {
+        auto v3 = CGlueMgr::m_loginState < LOGIN_STATE_MAX;
+        if (CGlueMgr::m_loginState == LOGIN_STATE_MATRIX || CGlueMgr::m_loginState == LOGIN_STATE_MATRIX_WAIT) {
+            v3 = false;
+        }
+
+        if (CGlueMgr::m_loginState != LOGIN_STATE_TOKEN && CGlueMgr::m_loginState != LOGIN_STATE_TOKEN_WAIT && v3) {
+            auto stateStr = Grunt::g_LoginStateStringNames[CGlueMgr::m_loginState];
+            auto stateText = FrameScript_GetText(stateStr, -1, GENDER_NOT_APPLICABLE);
+            FrameScript_SignalEvent(3, "%s%s", "CANCEL", stateText);
+        }
+    }
+}
+
 int32_t CGlueMgr::HandleDisplaySizeChanged(const CSizeEvent& event) {
     if (
         CGlueMgr::m_screenWidth > 0
@@ -246,8 +306,7 @@ void CGlueMgr::QuitGame() {
 
 void CGlueMgr::PollLoginServerLogin() {
     if (CGlueMgr::m_loginState != LOGIN_STATE_PIN_WAIT) {
-        // TODO
-        // CGlueMgr::DisplayLoginStatus();
+        CGlueMgr::DisplayLoginStatus();
     }
 
     // Open new client connection after successful authentication

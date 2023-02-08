@@ -52,6 +52,7 @@ class CGlueMgr {
         static int32_t m_suspended;
 
         // Static functions
+        static void DisplayLoginStatus();
         // TODO a1: const EVENT_DATA_IDLE*
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
         static int32_t Idle(const void* a1, void* a2);
