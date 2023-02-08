@@ -172,9 +172,86 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
         return;
     }
 
-    // Authentication failure
-    // TODO
+    // Authentication failure or file download
 
+    // TODO this->uint8 = 1;
+
+    switch (result) {
+    case 3:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BANNED, nullptr, 0x0);
+        break;
+
+    case 4:
+    case 5: {
+        LOGIN_RESULT loginResult = LOGIN_UNKNOWN_ACCOUNT;
+
+        // TODO
+        // if (LOBYTE(this->dword1100)) {
+        //     loginResult = 9 - (++LOBYTE(this->dword105C) < 3u);
+        // }
+
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, loginResult, nullptr, 0x0);
+
+        break;
+    }
+
+    case 6:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_ALREADYONLINE, nullptr, 0x0);
+        break;
+
+    case 7:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_NOTIME, nullptr, 0x0);
+        break;
+
+    case 8:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_DBBUSY, nullptr, 0x0);
+        break;
+
+    case 9:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BADVERSION, nullptr, 0x0);
+        break;
+
+    case 10:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_DOWNLOADFILE, LOGIN_OK, nullptr, 0x0);
+        break;
+
+    case 12:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_SUSPENDED, nullptr, 0x0);
+        break;
+
+    case 15:
+        // TODO
+
+    case 16:
+        // TODO
+
+    case 17:
+        // TODO
+
+    case 18:
+        // TODO
+
+    case 22:
+        // TODO
+
+    case 23:
+        // TODO
+
+    case 24:
+        // TODO
+
+    case 25:
+        // TODO
+
+    case 32:
+        // TODO
+
+    // TODO case 255
+
+    default:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_FAILED, nullptr, 0x0);
+        break;
+    }
 }
 
 LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
