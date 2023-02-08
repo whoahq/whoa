@@ -65,6 +65,7 @@ class CGlueMgr {
         static void SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, char const* addrStr, char const* stateStr, char const* resultStr, uint8_t flags);
         static void SetScreen(const char* screen);
         static void StatusDialogClick();
+        static void Sub4D8BA0();
         static void Suspend();
         static void UpdateCurrentScreen(const char* screen);
 };

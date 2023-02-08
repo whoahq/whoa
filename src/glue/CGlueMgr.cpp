@@ -313,8 +313,9 @@ void CGlueMgr::PollLoginServerLogin() {
     if (CGlueMgr::m_authenticated) {
         CGlueMgr::m_idleState = IDLE_NONE;
         CGlueMgr::m_showedDisconnect = 0;
-        // Sub4D8BA0();
+        CGlueMgr::Sub4D8BA0();
         CGlueMgr::m_authenticated = false;
+
         return;
     }
 
@@ -589,6 +590,16 @@ void CGlueMgr::StatusDialogClick() {
             break;
         }
     }
+}
+
+void CGlueMgr::Sub4D8BA0() {
+    if (CGlueMgr::m_idleState != IDLE_NONE) {
+        return;
+    }
+
+    CGlueMgr::m_idleState = IDLE_ACCOUNT_LOGIN;
+    CGlueMgr::m_showedDisconnect = 0;
+    ClientServices::Connection()->Connect();
 }
 
 void CGlueMgr::Suspend() {
