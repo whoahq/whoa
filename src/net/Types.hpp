@@ -1225,4 +1225,24 @@ struct NETCONNADDR {
     NETADDR selfAddr;
 };
 
+struct REALM_INFO {
+    uint32_t id;
+    uint8_t type;
+    uint8_t flags;
+    char name[256];
+    char address[32];
+    float population;
+    uint8_t numChars;
+    uint8_t category;
+    uint32_t uint130;
+    uint32_t uint134;
+    uint32_t sort;
+    uint32_t uint13C;
+    uint8_t locked;
+    uint8_t majorVersion;
+    uint8_t minorVersion;
+    uint8_t patchVersion;
+    uint16_t revision;
+};
+
 #endif

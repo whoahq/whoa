@@ -1,5 +1,7 @@
 #include "net/login/Login.hpp"
+#include "net/login/LoginResponse.hpp"
 #include <cstring>
+#include <common/DataStore.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
@@ -15,6 +17,14 @@ bool Login::OnlineIdle() {
     // TODO
 
     return true;
+}
+
+void Login::RealmListResult(CDataStore* msg) {
+    if (!msg || !msg->IsFinal()) {
+        this->m_loginResponse->HandleRealmData(4, nullptr);
+    } else {
+        this->m_loginResponse->HandleRealmData(0, msg);
+    }
 }
 
 void Login::SetLogonCreds(const char* accountName, const char* password) {

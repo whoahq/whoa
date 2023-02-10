@@ -26,7 +26,9 @@ class ClientServices : public LoginResponse {
         static void SetAccountName(const char* accountName);
 
         // Virtual member functions
+        virtual int32_t GetLoginServerType();
         virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags);
+        virtual void RealmEnumCallback(uint32_t a2);
 };
 
 #endif

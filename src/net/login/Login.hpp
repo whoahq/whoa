@@ -3,6 +3,7 @@
 
 #include "net/grunt/ClientResponse.hpp"
 
+class CDataStore;
 class LoginResponse;
 
 class Login : public Grunt::ClientResponse {
@@ -19,6 +20,7 @@ class Login : public Grunt::ClientResponse {
         // Virtual member functions
         virtual ~Login();
         virtual bool OnlineIdle();
+        virtual void RealmListResult(CDataStore* msg);
         virtual bool IsReconnect();
 
         // Member functions

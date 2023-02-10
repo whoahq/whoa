@@ -93,6 +93,14 @@ void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
 }
 
+int32_t ClientServices::GetLoginServerType() {
+    if (!ClientServices::LoginConnection()) {
+        return 0;
+    }
+
+    return ClientServices::LoginConnection()->GetLoginServerType();
+}
+
 void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
     CGlueMgr::SetLoginStateAndResult(state, result, addrStr, stateStr, resultStr, flags);
 
@@ -118,4 +126,8 @@ void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, c
 
         // TODO CVar::DeleteAccountCVars();
     }
+}
+
+void ClientServices::RealmEnumCallback(uint32_t a2) {
+    // TODO
 }

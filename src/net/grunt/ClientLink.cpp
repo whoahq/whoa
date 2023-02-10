@@ -282,8 +282,86 @@ int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
-    // TODO
-    return 0;
+    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+        return 0;
+    }
+
+    uint16_t size;
+    msg.Get(size);
+
+    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < size) {
+        return 0;
+    }
+
+    uint32_t startData = msg.m_read;
+
+    uint32_t padding;
+    msg.Get(padding);
+
+    uint32_t startList = msg.m_read;
+
+    uint16_t count;
+    msg.Get(count);
+
+    for (uint32_t i = 0; i < count && msg.m_read < msg.m_size; i++) {
+        uint8_t realmType;
+        msg.Get(realmType);
+
+        uint8_t locked;
+        msg.Get(locked);
+
+        uint8_t realmFlags;
+        msg.Get(realmFlags);
+
+        char realmName[256];
+        msg.GetString(realmName, sizeof(realmName));
+
+        char realmAddress[256];
+        msg.GetString(realmAddress, sizeof(realmAddress));
+
+        float population;
+        msg.Get(population);
+
+        uint8_t numChars;
+        msg.Get(numChars);
+
+        uint8_t realmCategory;
+        msg.Get(realmCategory);
+
+        uint8_t sort;
+        msg.Get(sort);
+
+        // TODO SPECIFY_BUILD
+        if (realmFlags & 0x4) {
+            uint8_t major;
+            msg.Get(major);
+
+            uint8_t minor;
+            msg.Get(minor);
+
+            uint8_t patch;
+            msg.Get(patch);
+
+            uint16_t revision;
+            msg.Get(revision);
+        }
+    }
+
+    uint16_t padding2;
+    msg.Get(padding2);
+
+    if (msg.m_read <= msg.m_size && msg.m_read - startData == size) {
+        uint32_t endData = msg.m_read;
+        msg.m_read = startList;
+
+        this->m_clientResponse->RealmListResult(&msg);
+
+        msg.m_read = endData;
+
+        return 2;
+    }
+
+    return 1;
 }
 
 int32_t Grunt::ClientLink::CmdXferData(CDataStore& msg) {
