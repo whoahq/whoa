@@ -366,7 +366,7 @@ void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
 
     CDataStoreCache<1024> clientChallenge;
 
-    uint8_t opcode = 0;
+    uint8_t opcode = CMD_AUTH_LOGON_CHALLENGE;
     clientChallenge.Put(opcode);
 
     uint8_t protocol = 8;
