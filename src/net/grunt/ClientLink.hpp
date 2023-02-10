@@ -69,6 +69,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         int32_t CmdXferInitiate(CDataStore& msg);
         void Connect(const char* a2);
         void Disconnect();
+        void GetRealmList();
         void LogonNewSession(const Logon& logon);
         void PackLogon(CDataStore& msg, const Logon& logon);
         void ProveVersion(const uint8_t* versionChecksum);

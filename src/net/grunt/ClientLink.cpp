@@ -327,6 +327,24 @@ void Grunt::ClientLink::Disconnect() {
     this->m_critSect.Leave();
 }
 
+void Grunt::ClientLink::GetRealmList() {
+    if (this->m_state != 6) {
+        return;
+    }
+
+    CDataStoreCache<1024> realmListCmd;
+
+    uint8_t opcode = CMD_REALM_LIST;
+    realmListCmd.Put(opcode);
+
+    uint32_t padding = 0;
+    realmListCmd.Put(padding);
+
+    realmListCmd.Finalize();
+
+    this->Send(realmListCmd);
+}
+
 void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
     this->SetState(3);
 

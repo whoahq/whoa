@@ -79,7 +79,7 @@ void GruntLogin::GetLogonMethod() {
 }
 
 void GruntLogin::GetRealmList() {
-    // TODO
+    this->m_clientLink->GetRealmList();
 }
 
 int32_t GruntLogin::GetServerId() {
