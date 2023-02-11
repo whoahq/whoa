@@ -25,6 +25,16 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
             CMD_XFER_DATA                   = 49,
         };
 
+        enum STATE {
+            STATE_NONE                      = 0,
+            STATE_CONNECTING                = 1,
+            STATE_CONNECTED                 = 2,
+            STATE_AUTH_CHALLENGE            = 3,
+            STATE_CONNECT_VERSION           = 4,
+            STATE_RECONNECT_VERSION         = 5,
+            STATE_AUTHENTICATED             = 6
+        };
+
         struct Logon {
             const char* accountName;
             const char* password;
@@ -43,7 +53,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         uint32_t m_accountFlags = 0x0;
         uint32_t m_surveyID = 0;
         uint32_t m_clientIP = 0;
-        int32_t m_state;
+        STATE m_state;
         SRP6_Client m_srpClient;
         SCritSect m_critSect;
         CDataStore m_datastore1B0;
@@ -75,7 +85,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         void PackLogon(CDataStore& msg, const Logon& logon);
         void ProveVersion(const uint8_t* versionChecksum);
         void Send(CDataStore& msg);
-        void SetState(int32_t state);
+        void SetState(STATE state);
 };
 
 #endif
