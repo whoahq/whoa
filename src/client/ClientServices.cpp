@@ -174,11 +174,7 @@ void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, c
         memcpy(loginData.m_sessionKey, ClientServices::LoginConnection()->m_sessionKey, sizeof(loginData.m_sessionKey));
         loginData.m_loginServerType = ClientServices::LoginConnection()->GetLoginServerType();
 
-        if (!ClientServices::s_currentConnection) {
-            // TODO
-        }
-
-        ClientServices::s_currentConnection->SetLoginData(&loginData);
+        ClientServices::Connection()->SetLoginData(&loginData);
         ClientServices::SetAccountName(loginData.m_account);
 
         CGlueMgr::SetCurrentAccount(loginData.m_account);
