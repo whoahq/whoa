@@ -191,14 +191,12 @@ void ClientServices::RealmEnumCallback(uint32_t a2) {
     auto connection = ClientServices::Connection();
 
     if (a2 == 1) {
-        // TODO
-
+        connection->SetStatus(0, 23);
         return;
     }
 
     if (a2 == 2 || a2 == 3 || a2 == 4) {
-        // TODO
-
+        connection->SetStatus(0, 37);
         return;
     }
 
