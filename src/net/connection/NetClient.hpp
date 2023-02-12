@@ -50,6 +50,8 @@ class NetClient : public WowConnectionResponse {
         virtual void WCDataReady(WowConnection* conn, uint32_t timeStamp, uint8_t* data, int32_t len);
 
         // Member functions
+        void Connect(const char* addrStr);
+        int32_t ConnectInternal(const char* host, uint16_t port);
         int32_t Initialize();
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);

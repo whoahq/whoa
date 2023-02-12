@@ -4,6 +4,7 @@
 #include "net/login/LoginResponse.hpp"
 
 class ClientConnection;
+class CVar;
 class Login;
 class RealmResponse;
 
@@ -16,14 +17,20 @@ class ClientServices : public LoginResponse {
         static ClientServices* s_instance;
         static Login* s_loginObj;
         static bool s_newLogin;
+        static CVar* s_realmNameVar;
+        static REALM_INFO s_selectRealmInfo;
+        static bool s_selectRealmInfoValid;
 
         // Static functions
+        static void ConnectToSelectedServer();
         static ClientConnection* Connection();
         static ClientServices* GetInstance();
+        static const char* GetSelectedRealmName();
         static void Initialize();
         static Login* LoginConnection();
         static void Logon(const char* accountName, const char* password);
         static void SetAccountName(const char* accountName);
+        static int32_t SetSelectedRealmInfo(int32_t a1);
 
         // Virtual member functions
         virtual int32_t GetLoginServerType();

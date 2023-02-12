@@ -1,9 +1,11 @@
 #include "net/connection/NetClient.hpp"
 #include "net/connection/WowConnection.hpp"
+#include <cstdlib>
 #include <cstring>
 #include <new>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
+#include <storm/String.hpp>
 
 HPROPCONTEXT s_propContext;
 
@@ -13,6 +15,40 @@ void InitializePropContext() {
     if (PropGetSelectedContext() != s_propContext) {
         PropSelectContext(s_propContext);
     }
+}
+
+void NetClient::Connect(const char* addrStr) {
+    if (this->m_netState != NS_INITIALIZED) {
+        SErrDisplayAppFatal("Expected (m_netState == NS_INITIALIZED), got %d", this->m_netState);
+    }
+
+    uint16_t port = 9090;
+
+    char host[1024];
+    SStrCopy(host, addrStr, sizeof(host));
+
+    auto portDelim = SStrChr(host, ':');
+    if (portDelim) {
+        *portDelim = '\0';
+        port = atoi(portDelim + 1);
+    }
+
+    this->m_serverConnection->SetEncryptionType(WC_ENCRYPT_0);
+    this->m_netState = NS_INITIALIZED;
+    this->ConnectInternal(host, port);
+}
+
+int32_t NetClient::ConnectInternal(const char* host, uint16_t port) {
+    if (this->m_netState != NS_INITIALIZED) {
+        SErrDisplayAppFatal("Expected (m_netState == NS_INITIALIZED), got %d", this->m_netState);
+    }
+
+    this->m_netState = NS_GETTING_REALMS;
+    this->m_serverConnection->Connect(host, port, -1);
+
+    // TODO
+
+    return 1;
 }
 
 int32_t NetClient::Initialize() {

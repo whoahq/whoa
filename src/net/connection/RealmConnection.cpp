@@ -27,3 +27,7 @@ RealmConnection::RealmConnection(RealmResponse* realmResponse) {
 
     // TODO
 }
+
+void RealmConnection::SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4) {
+    // TODO
+}

@@ -3,6 +3,7 @@
 #include "glue/CGlueMgr.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
+#include "util/CVar.hpp"
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 #include <new>
@@ -15,6 +16,29 @@ ClientConnection* ClientServices::s_currentConnection;
 ClientServices* ClientServices::s_instance;
 Login* ClientServices::s_loginObj;
 bool ClientServices::s_newLogin;
+CVar* ClientServices::s_realmNameVar;
+REALM_INFO ClientServices::s_selectRealmInfo;
+bool ClientServices::s_selectRealmInfoValid;
+
+void ClientServices::ConnectToSelectedServer() {
+    if (!ClientServices::s_selectRealmInfoValid && !ClientServices::SetSelectedRealmInfo(0)) {
+        // TODO ClientServices::Connection()->Sub6B10B0(0, 39);
+        return;
+    }
+
+    if (ClientServices::Connection()->m_netState != NS_INITIALIZED) {
+        // TODO ClientServices::Connection()->Sub6B10B0(0, 39);
+        return;
+    }
+
+    ClientServices::Connection()->SetSelectedRealm(
+        ClientServices::s_selectRealmInfo.uint130,
+        ClientServices::s_selectRealmInfo.uint134,
+        ClientServices::s_selectRealmInfo.sort
+    );
+
+    ClientServices::Connection()->NetClient::Connect(ClientServices::s_selectRealmInfo.address);
+}
 
 ClientConnection* ClientServices::Connection() {
     // TODO assertion?
@@ -32,6 +56,24 @@ ClientServices* ClientServices::GetInstance() {
     ClientServices::s_instance = instance;
 
     return ClientServices::s_instance;
+}
+
+const char* ClientServices::GetSelectedRealmName() {
+    if (!ClientServices::s_realmNameVar) {
+        ClientServices::s_realmNameVar = CVar::Register(
+            "realmName",
+            "Last realm connected to",
+            0,
+            "",
+            nullptr,
+            6,
+            false,
+            nullptr,
+            false
+        );
+    }
+
+    return ClientServices::s_realmNameVar->GetString();
 }
 
 void ClientServices::Initialize() {
@@ -93,6 +135,27 @@ void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
 }
 
+int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
+    auto instance = ClientServices::GetInstance();
+
+    for (uint32_t index = 0; index < instance->m_realmList.Count(); index++) {
+        auto& realmInfo = instance->m_realmList[index];
+
+        if (!SStrCmpI(realmInfo.name, ClientServices::GetSelectedRealmName(), STORM_MAX_STR) /* TODO SStrCmpUTF8I */) {
+            if (!(realmInfo.flags & 0x1) || a1) {
+                ClientServices::s_selectRealmInfoValid = true;
+                memcpy(&ClientServices::s_selectRealmInfo, &realmInfo, sizeof(ClientServices::s_selectRealmInfo));
+
+                return 1;
+            }
+        }
+    }
+
+    ClientServices::s_selectRealmInfoValid = false;
+
+    return 0;
+}
+
 int32_t ClientServices::GetLoginServerType() {
     if (!ClientServices::LoginConnection()) {
         return 0;
@@ -129,5 +192,27 @@ void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, c
 }
 
 void ClientServices::RealmEnumCallback(uint32_t a2) {
-    // TODO
+    auto connection = ClientServices::Connection();
+
+    if (a2 == 1) {
+        // TODO
+
+        return;
+    }
+
+    if (a2 == 2 || a2 == 3 || a2 == 4) {
+        // TODO
+
+        return;
+    }
+
+    // TODO statusCop checks
+
+    if (ClientServices::LoginConnection()->GetLoginServerType() == 1) {
+        // TODO Battlenet logic
+
+        return;
+    }
+
+    ClientServices::ConnectToSelectedServer();
 }

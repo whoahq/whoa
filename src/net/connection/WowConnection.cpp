@@ -527,6 +527,10 @@ WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
     return WC_SEND_ERROR;
 }
 
+void WowConnection::SetEncryptionType(WC_ENCRYPT_TYPE encryptType) {
+    // TODO
+}
+
 void WowConnection::SetState(WOW_CONN_STATE state) {
     WOW_CONN_STATE oldState = this->m_connState;
     this->m_connState = state;

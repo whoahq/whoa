@@ -17,6 +17,7 @@ class RealmConnection : public NetClient {
 
         // Member functions
         RealmConnection(RealmResponse* realmResponse);
+        void SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4);
 };
 
 #endif

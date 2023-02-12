@@ -1169,6 +1169,8 @@ enum NETSTATE {
     NS_UNINITIALIZED    = 0,
     NS_INITIALIZING     = 1,
     NS_INITIALIZED      = 2,
+    NS_STATE_3          = 3,
+    NS_GETTING_REALMS   = 4,
 };
 
 enum WOW_CONN_STATE {
@@ -1186,6 +1188,10 @@ enum WOW_CONN_STATE {
 enum WOWC_TYPE {
     WOWC_TYPE_MESSAGES  = 0,
     WOWC_TYPE_STREAM    = 1,
+};
+
+enum WC_ENCRYPT_TYPE {
+    WC_ENCRYPT_0        = 0,
 };
 
 enum WC_SEND_RESULT {

@@ -79,6 +79,7 @@ class WowConnection {
         void Release();
         void ReleaseResponseRef();
         WC_SEND_RESULT SendRaw(uint8_t* data, int32_t len, bool a4);
+        void SetEncryptionType(WC_ENCRYPT_TYPE encryptType);
         void SetState(WOW_CONN_STATE state);
         void SetType(WOWC_TYPE type);
         void StartConnect();
