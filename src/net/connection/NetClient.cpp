@@ -43,7 +43,7 @@ int32_t NetClient::ConnectInternal(const char* host, uint16_t port) {
         SErrDisplayAppFatal("Expected (m_netState == NS_INITIALIZED), got %d", this->m_netState);
     }
 
-    this->m_netState = NS_GETTING_REALMS;
+    this->m_netState = NS_CONNECTING;
     this->m_serverConnection->Connect(host, port, -1);
 
     // TODO
