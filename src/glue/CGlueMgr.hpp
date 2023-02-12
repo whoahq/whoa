@@ -36,6 +36,7 @@ class CGlueMgr {
         static float m_aspect;
         static bool m_authenticated;
         static char m_currentScreen[];
+        static int32_t m_displayingQueueDialog;
         static GLUE_IDLE_STATE m_idleState;
         static int32_t m_initialized;
         static int32_t m_lastLoginResult;
@@ -59,6 +60,7 @@ class CGlueMgr {
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
         static void QuitGame();
+        static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
         static void PollLoginServerLogin();
         static void Resume();
         static void SetCurrentAccount(const char* accountName);

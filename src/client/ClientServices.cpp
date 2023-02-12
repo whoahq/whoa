@@ -22,12 +22,12 @@ bool ClientServices::s_selectRealmInfoValid;
 
 void ClientServices::ConnectToSelectedServer() {
     if (!ClientServices::s_selectRealmInfoValid && !ClientServices::SetSelectedRealmInfo(0)) {
-        // TODO ClientServices::Connection()->Sub6B10B0(0, 39);
+        ClientServices::Connection()->SetStatus(0, 39);
         return;
     }
 
     if (ClientServices::Connection()->m_netState != NS_INITIALIZED) {
-        // TODO ClientServices::Connection()->Sub6B10B0(0, 39);
+        ClientServices::Connection()->SetStatus(0, 39);
         return;
     }
 

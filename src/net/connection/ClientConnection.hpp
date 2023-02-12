@@ -22,6 +22,8 @@ class ClientConnection : public RealmConnection {
         void Cancel(int32_t errorCode);
         void Cleanup();
         void Connect();
+        int32_t PollStatus(WOWCS_OPS& op, const char** msg, int32_t& result, int32_t& errorCode);
+        void SetStatus(int32_t result, int32_t errorCode);
 };
 
 #endif

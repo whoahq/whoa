@@ -1,4 +1,5 @@
 #include "glue/CGlueMgr.hpp"
+#include "glue/CRealmList.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
 #include "gx/Coordinate.hpp"
@@ -46,6 +47,7 @@ char CGlueMgr::m_accountName[1280];
 float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
 char CGlueMgr::m_currentScreen[64];
+int32_t CGlueMgr::m_displayingQueueDialog;
 CGlueMgr::GLUE_IDLE_STATE CGlueMgr::m_idleState;
 int32_t CGlueMgr::m_initialized;
 int32_t CGlueMgr::m_lastLoginResult;
@@ -195,6 +197,12 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
 
     // TODO
 
+    WOWCS_OPS op;
+    const char* msg;
+    int32_t result;
+    int32_t errorCode;
+    int32_t complete = ClientServices::Connection()->PollStatus(op, &msg, result, errorCode);
+
     switch (CGlueMgr::m_idleState) {
     case IDLE_LOGIN_SERVER_LOGIN: {
         CGlueMgr::PollLoginServerLogin();
@@ -202,7 +210,7 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
     }
 
     case IDLE_ACCOUNT_LOGIN: {
-        // TODO PollAccountLogin
+        CGlueMgr::PollAccountLogin(errorCode, msg, complete, result, op);
         break;
     }
 
@@ -302,6 +310,75 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
 
 void CGlueMgr::QuitGame() {
     ClientPostClose(0);
+}
+
+void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
+    auto login = ClientServices::LoginConnection();
+
+    if (login->GetLoginServerType() == 1 && CGlueMgr::m_loginState == LOGIN_STATE_FAILED) {
+        CGlueMgr::DisplayLoginStatus();
+
+        ClientServices::Connection()->Cancel(2);
+        login->Logoff();
+
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+
+        return;
+    }
+
+    if (errorCode == 27) {
+        // TODO AUTH_WAIT_QUEUE
+    } else {
+        if (CGlueMgr::m_displayingQueueDialog) {
+            FrameScript_SignalEvent(3, "%s", "CANCEL");
+            CGlueMgr::m_displayingQueueDialog = 0;
+        }
+
+        FrameScript_SignalEvent(4, "%s", msg);
+    }
+
+    if (complete) {
+        if (result == 0) {
+            if (errorCode != 2) {
+                // TODO
+            }
+
+            CGlueMgr::m_idleState = IDLE_NONE;
+            CGlueMgr::m_showedDisconnect = 0;
+
+            if (errorCode == 2) {
+                // TODO CGlueMgr::m_disconnectPending = 1;
+                // TODO ClientServices::Connection()->Disconnect();
+            }
+
+            if (errorCode != 13) {
+                // TODO CCharacterSelection::ClearCharacterList();
+
+                if (ClientServices::GetInstance()->m_realmList.Count()) {
+                    FrameScript_SignalEvent(5, nullptr);
+                    CRealmList::UpdateList();
+                } else {
+                    // TODO
+                }
+
+                return;
+            }
+
+            if (!SStrCmpI(CGlueMgr::m_currentScreen, "charselect", STORM_MAX_STR)) {
+                CGlueMgr::SetScreen("login");
+                return;
+            }
+
+            return;
+        }
+
+        if (op == COP_CONNECT) {
+            // TODO
+
+            return;
+        }
+    }
 }
 
 void CGlueMgr::PollLoginServerLogin() {
