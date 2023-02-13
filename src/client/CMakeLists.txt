@@ -12,6 +12,7 @@ target_include_directories(client
 target_link_libraries(client
     PRIVATE
         async
+        db
         event
         gx
         model

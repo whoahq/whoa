@@ -1,6 +1,7 @@
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
 #include "client/Console.hpp"
+#include "db/Db.hpp"
 #include "async/AsyncFile.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Device.hpp"
@@ -353,7 +354,9 @@ void WowClientInit() {
     ClientMiscInitialize();
 
     // sub_401B60();
-    // ClientDBInitialize();
+
+    ClientDBInitialize();
+
     // LoadingScreenInitialize();
 
     FrameScript_Initialize(0);
