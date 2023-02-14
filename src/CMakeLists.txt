@@ -1,6 +1,7 @@
 add_subdirectory(app)
 add_subdirectory(async)
 add_subdirectory(client)
+add_subdirectory(db)
 add_subdirectory(event)
 add_subdirectory(glue)
 add_subdirectory(gx)
