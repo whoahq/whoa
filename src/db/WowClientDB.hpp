@@ -15,7 +15,21 @@ class WowClientDB : public WowClientDB_Common<T>, IDatabase<T> {
         virtual void LoadRecords(SFile* f, const char* filename, int32_t linenumber);
         virtual int32_t GetRecordByIndex(int32_t index, void* ptr) const;
         virtual T* GetRecord(int32_t id);
+
+        // Member functions
+        T* GetRecordByIndex(int32_t index) const;
 };
+
+template <class T>
+T* WowClientDB<T>::GetRecordByIndex(int32_t index) const {
+        STORM_ASSERT(this->m_numRecords >= 0);
+
+        if (index < 0 || index >= this->m_numRecords) {
+            return nullptr;
+        }
+
+        return &this->m_records[index];
+}
 
 template <class T>
 int32_t WowClientDB<T>::GetRecordByIndex(int32_t index, void* ptr) const {
