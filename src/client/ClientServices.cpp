@@ -58,6 +58,14 @@ ClientServices* ClientServices::GetInstance() {
     return ClientServices::s_instance;
 }
 
+REALM_INFO* ClientServices::GetRealmInfoByIndex(int32_t index) {
+    if (index >= ClientServices::GetInstance()->m_realmList.Count()) {
+        return nullptr;
+    }
+
+    return &ClientServices::GetInstance()->m_realmList[index];
+}
+
 const char* ClientServices::GetSelectedRealmName() {
     if (!ClientServices::s_realmNameVar) {
         ClientServices::s_realmNameVar = CVar::Register(
