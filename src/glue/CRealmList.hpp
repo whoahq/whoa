@@ -15,7 +15,10 @@ struct RealmCategory {
 class CRealmList {
     public:
         // Static variables
+        static float s_avgLoad;
         static TSFixedArray<RealmCategory*> s_categories;
+        static int32_t s_preferredCategory;
+        static int32_t s_selectedCategory;
 
         // Static functions
         static void Initialize();
