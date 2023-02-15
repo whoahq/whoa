@@ -243,8 +243,7 @@ void CGlueMgr::Initialize() {
 
     CGlueMgr::Resume();
 
-    // TODO
-    // CRealmList::Initialize();
+    CRealmList::Initialize();
 
     EventRegisterEx(EVENT_ID_IDLE, &CGlueMgr::Idle, 0, 0.0);
 
