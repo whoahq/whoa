@@ -53,6 +53,8 @@ void GruntLogin::GetLogonMethod() {
     logon.osID = '\0Win';
 #elif defined(WHOA_SYSTEM_MAC)
     logon.osID = '\0OSX';
+#elif defined(WHOA_SYSTEM_LINUX)
+    logon.osID = 'Linx';
 #endif
 
     // TODO
