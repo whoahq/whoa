@@ -5,6 +5,18 @@ const char* AchievementRec::GetFilename() {
     return "DBFilesClient\\Achievement.dbc";
 }
 
+uint32_t AchievementRec::GetNumColumns() {
+    return 62;
+}
+
+uint32_t AchievementRec::GetRowSize() {
+    return 248;
+}
+
+int32_t AchievementRec::GetID() {
+    return this->m_ID;
+}
+
 bool AchievementRec::Read(SFile* f, const char* stringBuffer) {
     uint32_t titleOfs[16];
     uint32_t titleMask;

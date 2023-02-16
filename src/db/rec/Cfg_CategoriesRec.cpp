@@ -5,6 +5,18 @@ const char* Cfg_CategoriesRec::GetFilename() {
     return "DBFilesClient\\Cfg_Categories.dbc";
 }
 
+uint32_t Cfg_CategoriesRec::GetNumColumns() {
+    return 21;
+}
+
+uint32_t Cfg_CategoriesRec::GetRowSize() {
+    return 84;
+}
+
+int32_t Cfg_CategoriesRec::GetID() {
+    return this->m_ID;
+}
+
 bool Cfg_CategoriesRec::Read(SFile* f, const char* stringBuffer) {
     uint32_t nameOfs[16];
     uint32_t nameMask;

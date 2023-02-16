@@ -7,17 +7,18 @@ class SFile;
 
 class Cfg_CategoriesRec {
     public:
-    static constexpr uint32_t columnCount = 21;
-    static constexpr uint32_t rowSize = 84;
+        int32_t m_ID;
+        int32_t m_localeMask;
+        int32_t m_createCharsetMask;
+        int32_t m_flags;
+        const char *m_name;
 
-    uint32_t m_ID;
-    uint32_t m_localeMask;
-    uint32_t m_createCharsetMask;
-    uint32_t m_flags;
-    const char *m_name;
+        static const char* GetFilename();
+        static uint32_t GetNumColumns();
+        static uint32_t GetRowSize();
 
-    static const char* GetFilename();
-    bool Read(SFile* f, const char* stringBuffer);
+        int32_t GetID();
+        bool Read(SFile* f, const char* stringBuffer);
 };
 
 #endif

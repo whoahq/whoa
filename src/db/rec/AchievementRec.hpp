@@ -7,9 +7,6 @@ class SFile;
 
 class AchievementRec {
     public:
-        static constexpr uint32_t columnCount = 62;
-        static constexpr uint32_t rowSize = 248;
-
         int32_t m_ID;
         int32_t m_faction;
         int32_t m_instanceID;
@@ -20,12 +17,16 @@ class AchievementRec {
         int32_t m_points;
         int32_t m_uiOrder;
         int32_t m_flags;
-        uint32_t m_iconID;
+        int32_t m_iconID;
         const char* m_reward;
         int32_t m_minimumCriteria;
         int32_t m_sharesCriteria;
 
         static const char* GetFilename();
+        static uint32_t GetNumColumns();
+        static uint32_t GetRowSize();
+
+        int32_t GetID();
         bool Read(SFile* f, const char* stringBuffer);
 };
 

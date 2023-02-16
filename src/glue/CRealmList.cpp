@@ -52,7 +52,7 @@ void CRealmList::UpdateList() {
         for (int32_t categoryIndex = 0; categoryIndex < CRealmList::s_categories.Count(); categoryIndex++) {
             auto realmCategory = CRealmList::s_categories[categoryIndex];
 
-            if (realmInfo->category != realmCategory->m_category->m_ID) {
+            if (realmInfo->category != realmCategory->m_category->GetID()) {
                 continue;
             }
 
@@ -76,7 +76,7 @@ void CRealmList::UpdateList() {
     // TODO sort realm list
 
     for (int32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
-        if (CRealmList::s_categories[i]->m_category->m_ID == category) {
+        if (CRealmList::s_categories[i]->m_category->GetID() == category) {
             CRealmList::s_selectedCategory = i;
         }
     }

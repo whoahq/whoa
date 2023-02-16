@@ -101,9 +101,9 @@ void WowClientDB<T>::Load(const char* filename, int32_t linenumber) {
         return;
     }
 
-    if (columnCount != T::columnCount) {
+    if (columnCount != T::GetNumColumns()) {
         // TODO
-        // SErrDisplayAppFatalCustom(0x85100079, "%s has wrong number of columns (found %i, expected %i)", T::GetFilename(), columnCount, T::columnCount);
+        // SErrDisplayAppFatalCustom(0x85100079, "%s has wrong number of columns (found %i, expected %i)", T::GetFilename(), columnCount, T::GetNumColumns());
         return;
     }
 
@@ -114,9 +114,9 @@ void WowClientDB<T>::Load(const char* filename, int32_t linenumber) {
         return;
     }
 
-    if (rowSize != T::rowSize) {
+    if (rowSize != T::GetRowSize()) {
         // TODO
-        // SErrDisplayAppFatalCustom(0x85100079, "%s has wrong row size (found %i, expected %i)", T::GetFilename(), rowSize, T::rowSize);
+        // SErrDisplayAppFatalCustom(0x85100079, "%s has wrong row size (found %i, expected %i)", T::GetFilename(), rowSize, T::GetRowSize());
         return;
     }
 
@@ -153,8 +153,8 @@ void WowClientDB<T>::LoadRecords(SFile* f, const char* filename, int32_t linenum
         auto record = &this->m_records[i];
         record->Read(f, this->m_strings);
 
-        this->m_maxID = record->m_ID > this->m_maxID ? record->m_ID : this->m_maxID;
-        this->m_minID = record->m_ID < this->m_minID ? record->m_ID : this->m_minID;
+        this->m_maxID = record->GetID() > this->m_maxID ? record->GetID() : this->m_maxID;
+        this->m_minID = record->GetID() < this->m_minID ? record->GetID() : this->m_minID;
     }
 
     auto recordsById = SMemAlloc(sizeof(void*) * (this->m_maxID - this->m_minID + 1), __FILE__, __LINE__, 0x0);
@@ -163,7 +163,7 @@ void WowClientDB<T>::LoadRecords(SFile* f, const char* filename, int32_t linenum
 
     for (uint32_t i = 0; i < this->m_numRecords; i++) {
         auto record = &this->m_records[i];
-        auto id = record->m_ID - this->m_minID;
+        auto id = record->GetID() - this->m_minID;
         this->m_recordsById[id] = record;
     }
 }
