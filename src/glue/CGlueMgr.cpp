@@ -480,10 +480,7 @@ void CGlueMgr::Resume() {
     GlueScriptEventsRegisterFunctions();
     CharSelectRegisterScriptFunctions();
     CharacterCreateRegisterScriptFunctions();
-
-    // TODO
-    // RealmListRegisterScriptFunctions();
-
+    RealmListRegisterScriptFunctions();
     SI2::RegisterScriptFunctions();
 
     // TODO

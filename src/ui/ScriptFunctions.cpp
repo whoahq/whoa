@@ -40,6 +40,15 @@ void GlueScriptEventsRegisterFunctions() {
     }
 }
 
+void RealmListRegisterScriptFunctions() {
+    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_REALM_LIST; ++i) {
+        FrameScript_RegisterFunction(
+            FrameScript::s_ScriptFunctions_RealmList[i].name,
+            FrameScript::s_ScriptFunctions_RealmList[i].method
+        );
+    }
+}
+
 void RegisterSimpleFrameScriptMethods() {
     for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_SIMPLE_FRAME; ++i) {
         FrameScript_RegisterFunction(
