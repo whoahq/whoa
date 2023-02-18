@@ -1,6 +1,7 @@
 #include "ui/ScriptFunctions.hpp"
 #include "client/ClientServices.hpp"
 #include "db/Db.hpp"
+#include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
 #include "util/StringTo.hpp"
 #include "ui/Types.hpp"
@@ -190,7 +191,50 @@ int32_t Script_GetRealmInfo(lua_State* L) {
 }
 
 int32_t Script_ChangeRealm(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: ChangeRealm(category, index)");
+    }
+
+    REALM_INFO* realmInfo = nullptr;
+
+    if (lua_isnumber(L, 2)) {
+        int32_t categoryIndex = lua_tonumber(L, 1) - 1;
+        categoryIndex = CRealmList::Sub4DE910(categoryIndex);
+
+        CRealmList::s_selectedCategory = categoryIndex;
+
+        auto realmCategory = categoryIndex < CRealmList::s_categories.Count()
+            ? CRealmList::s_categories[categoryIndex]
+            : nullptr;
+        int32_t realmIndex = lua_tonumber(L, 2) - 1;
+
+        if (realmCategory && realmIndex < realmCategory->uint14) {
+            realmInfo = ClientServices::GetRealmInfoByIndex(realmCategory->m_realms[realmIndex]);
+        }
+    } else {
+        int32_t realmIndex = lua_tonumber(L, 1) - 1;
+
+        for (int32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
+            auto realmCategory = CRealmList::s_categories[i];
+            if (realmCategory) {
+                if (realmCategory->uint14 > realmIndex) {
+                    realmInfo = ClientServices::GetRealmInfoByIndex(realmCategory->m_realms[realmIndex]);
+                } else {
+                    realmIndex -= realmCategory->uint14;
+                }
+            }
+        }
+    }
+
+    if (realmInfo) {
+        if (CRealmList::s_preferredCategory == -1) {
+            CRealmList::s_preferredCategory = 0;
+        }
+
+        CGlueMgr::ChangeRealm(realmInfo);
+    }
+
+    return 0;
 }
 
 int32_t Script_GetRealmCategories(lua_State* L) {

@@ -36,6 +36,7 @@ class CGlueMgr {
         static float m_aspect;
         static bool m_authenticated;
         static char m_currentScreen[];
+        static int32_t m_disconnectPending;
         static int32_t m_displayingQueueDialog;
         static GLUE_IDLE_STATE m_idleState;
         static int32_t m_initialized;
@@ -44,6 +45,7 @@ class CGlueMgr {
         static int32_t m_loginResult;
         static int32_t m_loginState;
         static int32_t m_matrixRemaining;
+        static int32_t m_reconnect;
         static int32_t m_reload;
         static int32_t m_scandllOkayToLogIn;
         static float m_screenHeight;
@@ -53,6 +55,7 @@ class CGlueMgr {
         static int32_t m_suspended;
 
         // Static functions
+        static void ChangeRealm(const REALM_INFO* realmInfo);
         static void DisplayLoginStatus();
         // TODO a1: const EVENT_DATA_IDLE*
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);

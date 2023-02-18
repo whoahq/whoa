@@ -139,6 +139,10 @@ void ClientServices::Logon(const char* accountName, const char* password) {
     ClientServices::s_loginObj->Logon(nullptr, nullptr);
 }
 
+void ClientServices::SelectRealm(const char* realmName) {
+    // TODO
+}
+
 void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
 }
