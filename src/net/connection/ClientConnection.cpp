@@ -141,6 +141,15 @@ void ClientConnection::Connect() {
     ClientServices::LoginConnection()->GetRealmList();
 }
 
+int32_t ClientConnection::Disconnect() {
+    // TODO
+    return 0;
+}
+
+int32_t ClientConnection::IsConnected() {
+    return this->m_connected;
+}
+
 int32_t ClientConnection::PollStatus(WOWCS_OPS& op, const char** msg, int32_t& result, int32_t& errorCode) {
     op = this->m_statusCop;
     errorCode = this->m_errorCode;

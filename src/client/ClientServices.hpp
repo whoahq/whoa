@@ -30,6 +30,7 @@ class ClientServices : public LoginResponse {
         static void Initialize();
         static Login* LoginConnection();
         static void Logon(const char* accountName, const char* password);
+        static void SelectRealm(const char* realmName);
         static void SetAccountName(const char* accountName);
         static int32_t SetSelectedRealmInfo(int32_t a1);
 

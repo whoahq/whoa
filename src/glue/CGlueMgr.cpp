@@ -47,6 +47,7 @@ char CGlueMgr::m_accountName[1280];
 float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
 char CGlueMgr::m_currentScreen[64];
+int32_t CGlueMgr::m_disconnectPending;
 int32_t CGlueMgr::m_displayingQueueDialog;
 CGlueMgr::GLUE_IDLE_STATE CGlueMgr::m_idleState;
 int32_t CGlueMgr::m_initialized;
@@ -55,6 +56,7 @@ int32_t CGlueMgr::m_lastLoginState;
 int32_t CGlueMgr::m_loginResult;
 int32_t CGlueMgr::m_loginState;
 int32_t CGlueMgr::m_matrixRemaining;
+int32_t CGlueMgr::m_reconnect;
 int32_t CGlueMgr::m_reload;
 int32_t CGlueMgr::m_scandllOkayToLogIn = 1; // TODO
 float CGlueMgr::m_screenHeight;
@@ -76,6 +78,31 @@ float CalculateAspectRatio() {
     }
 
     return static_cast<float>(width) / static_cast<float>(height);
+}
+
+void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
+    if (!realmInfo) {
+        return;
+    }
+
+    ClientServices::SelectRealm(realmInfo->name);
+
+    if (ClientServices::Connection()->IsConnected()) {
+        CGlueMgr::m_disconnectPending = 1;
+        CGlueMgr::m_reconnect = 1;
+
+        ClientServices::Connection()->Disconnect();
+
+        return;
+    }
+
+    CGlueMgr::m_idleState = IDLE_ACCOUNT_LOGIN;
+    CGlueMgr::m_showedDisconnect = 0;
+
+    auto text = FrameScript_GetText("GAME_SERVER_LOGIN", -1, GENDER_NOT_APPLICABLE);
+    FrameScript_SignalEvent(3, "%s%s", "CANCEL", text);
+
+    ClientServices::Connection()->Connect();
 }
 
 void CGlueMgr::DisplayLoginStatus() {

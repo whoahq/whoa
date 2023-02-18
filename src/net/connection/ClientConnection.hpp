@@ -9,6 +9,7 @@ class RealmResponse;
 class ClientConnection : public RealmConnection {
     public:
         // Member variables
+        int32_t m_connected = 0;
         int32_t m_statusComplete = 1;
         int32_t m_statusResult = 1;
         WOWCS_OPS m_statusCop = COP_NONE;
@@ -22,6 +23,8 @@ class ClientConnection : public RealmConnection {
         void Cancel(int32_t errorCode);
         void Cleanup();
         void Connect();
+        int32_t Disconnect();
+        int32_t IsConnected();
         int32_t PollStatus(WOWCS_OPS& op, const char** msg, int32_t& result, int32_t& errorCode);
         void SetStatus(int32_t result, int32_t errorCode);
 };
