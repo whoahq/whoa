@@ -216,7 +216,27 @@ int32_t Script_SortRealms(lua_State* L) {
 }
 
 int32_t Script_GetSelectedCategory(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (CRealmList::s_categories.Count() == 0) {
+        lua_pushnumber(L, 1.0);
+
+        return 1;
+    }
+
+    int32_t selectedCategory = -1;
+    for (uint32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
+        auto realmCategory = CRealmList::s_categories[i];
+        if (realmCategory && realmCategory->uint14) {
+            selectedCategory++;
+
+            if (i >= CRealmList::s_selectedCategory) {
+                break;
+            }
+        }
+    }
+
+    lua_pushnumber(L, selectedCategory + 1);
+
+    return 1;
 }
 
 int32_t Script_RealmListDialogCancelled(lua_State* L) {
