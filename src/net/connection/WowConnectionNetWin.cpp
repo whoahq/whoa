@@ -14,6 +14,10 @@ void WowConnectionNet::PlatformInit(bool useEngine) {
     // TODO
 }
 
+void WowConnectionNet::PlatformRemove(WowConnection* connection) {
+    // TODO
+}
+
 void WowConnectionNet::PlatformRun() {
     // TODO
 }

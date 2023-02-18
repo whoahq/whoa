@@ -42,6 +42,7 @@ class WowConnectionNet {
         void PlatformAdd(WowConnection* connection);
         void PlatformChangeState(WowConnection* connection, WOW_CONN_STATE state);
         void PlatformInit(bool useEngine);
+        void PlatformRemove(WowConnection* connection);
         void PlatformRun();
         void PlatformWorkerReady();
         void Remove(WowConnection* connection);
