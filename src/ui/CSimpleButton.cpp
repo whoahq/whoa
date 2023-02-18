@@ -83,6 +83,10 @@ void CSimpleButton::Enable(int32_t enabled) {
     }
 }
 
+CSimpleButtonState CSimpleButton::GetButtonState() {
+    return this->m_state;
+}
+
 FrameScript_Object::ScriptIx* CSimpleButton::GetScriptByName(const char* name, ScriptData& data) {
     auto parentScript = CSimpleFrame::GetScriptByName(name, data);
 

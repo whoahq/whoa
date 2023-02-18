@@ -62,6 +62,7 @@ class CSimpleButton : public CSimpleFrame {
 
         // Member functions
         CSimpleButton(CSimpleFrame* parent);
+        CSimpleButtonState GetButtonState();
         void RunOnClickScript(const char* btn, int32_t down);
         void SetClickAction(uint64_t action);
         void SetFontString(CSimpleFontString* text);
