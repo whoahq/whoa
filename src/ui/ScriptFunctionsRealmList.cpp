@@ -22,7 +22,34 @@ int32_t Script_CancelRealmListQuery(lua_State* L) {
 }
 
 int32_t Script_GetNumRealms(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (lua_isnumber(L, 1)) {
+        int32_t categoryIndex = lua_tonumber(L, 1) - 1;
+        categoryIndex = CRealmList::Sub4DE910(categoryIndex);
+
+        int32_t numRealms = 0;
+        if (categoryIndex < CRealmList::s_categories.Count()) {
+            auto realmCategory = CRealmList::s_categories[categoryIndex];
+            if (realmCategory) {
+                numRealms = realmCategory->uint14;
+            }
+        }
+
+        lua_pushnumber(L, numRealms);
+
+        return 1;
+    }
+
+    int32_t numRealms = 0;
+    for (int32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
+        auto realmCategory = CRealmList::s_categories[i];
+        if (realmCategory) {
+            numRealms += realmCategory->uint14;
+        }
+    }
+
+    lua_pushnumber(L, numRealms);
+
+    return 1;
 }
 
 int32_t Script_GetRealmInfo(lua_State* L) {
