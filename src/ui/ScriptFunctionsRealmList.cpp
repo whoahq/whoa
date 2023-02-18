@@ -1,4 +1,6 @@
 #include "ui/ScriptFunctions.hpp"
+#include "glue/CRealmList.hpp"
+#include "util/StringTo.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
@@ -33,7 +35,17 @@ int32_t Script_GetRealmCategories(lua_State* L) {
 }
 
 int32_t Script_SetPreferredInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: SetPreferredInfo(index, pvp, rp)");
+    }
+
+    uint32_t index = lua_tonumber(L, 1);
+    int32_t pvp = StringToBOOL(L, 2, 0);
+    int32_t rp = StringToBOOL(L, 3, 0);
+
+    CRealmList::SetPreferredInfo(index, pvp, rp);
+
+    return 0;
 }
 
 int32_t Script_SortRealms(lua_State* L) {
