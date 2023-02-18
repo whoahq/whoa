@@ -140,7 +140,10 @@ void ClientServices::Logon(const char* accountName, const char* password) {
 }
 
 void ClientServices::SelectRealm(const char* realmName) {
-    // TODO
+    STORM_ASSERT(ClientServices::s_realmNameVar);
+
+    ClientServices::s_realmNameVar->Set(realmName, true, false, false, true);
+    ClientServices::SetSelectedRealmInfo(1);
 }
 
 void ClientServices::SetAccountName(const char* accountName) {
