@@ -68,7 +68,7 @@ int32_t Script_GetRealmInfo(lua_State* L) {
             : nullptr;
         int32_t realmIndex = lua_tonumber(L, 2) - 1;
 
-        if (realmCategory && realmIndex > realmCategory->uint14) {
+        if (realmCategory && realmIndex < realmCategory->uint14) {
             realmInfo = ClientServices::GetRealmInfoByIndex(realmCategory->m_realms[realmIndex]);
         }
     } else {
