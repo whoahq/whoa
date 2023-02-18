@@ -2,6 +2,7 @@
 #define NET_CONNECTION_NET_CLIENT_HPP
 
 #include "net/connection/WowConnectionResponse.hpp"
+#include "event/Event.hpp"
 #include "net/Types.hpp"
 #include <storm/List.hpp>
 #include <storm/Thread.hpp>
@@ -28,6 +29,7 @@ class NETEVENTQUEUE {
         NETEVENTQUEUE(NetClient* client)
             : m_client(client)
             {};
+        void AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes);
 };
 
 class NetClient : public WowConnectionResponse {
@@ -42,6 +44,12 @@ class NetClient : public WowConnectionResponse {
         void* m_handlerParams[NUM_MSG_TYPES];
         NETEVENTQUEUE* m_netEventQueue = nullptr;
         WowConnection* m_serverConnection = nullptr;
+        uint32_t m_pingSent = 0;
+        uint32_t m_pingSequence = 0;
+        uint32_t m_latency[16];
+        uint32_t m_latencyStart;
+        uint32_t m_latencyEnd;
+        SCritSect m_pingLock;
 
         // Virtual member functions
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);

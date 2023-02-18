@@ -4,6 +4,7 @@
 #include <cstring>
 #include <new>
 #include <common/Prop.hpp>
+#include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
 
@@ -15,6 +16,10 @@ void InitializePropContext() {
     if (PropGetSelectedContext() != s_propContext) {
         PropSelectContext(s_propContext);
     }
+}
+
+void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes) {
+    // TODO
 }
 
 void NetClient::Connect(const char* addrStr) {
@@ -94,7 +99,21 @@ void NetClient::WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNAD
 }
 
 void NetClient::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr) {
+    if (conn != this->m_serverConnection) {
+        return;
+    }
+
+    this->m_pingLock.Enter();
+
     // TODO
+
+    this->m_latencyStart = 0;
+    this->m_latencyEnd = 0;
+    this->m_pingSent = OsGetAsyncTimeMsPrecise();
+
+    this->m_pingLock.Leave();
+
+    this->m_netEventQueue->AddEvent(EVENT_ID_NET_CONNECT, conn, this, nullptr, 0);
 }
 
 void NetClient::WCDataReady(WowConnection* conn, uint32_t timeStamp, uint8_t* data, int32_t len) {
