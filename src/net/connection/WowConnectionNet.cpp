@@ -35,7 +35,15 @@ void WowConnectionNet::Delete(WowConnection* connection) {
 }
 
 void WowConnectionNet::Remove(WowConnection* connection) {
-    // TODO
+    this->m_connectionsLock.Enter();
+
+    if (this->m_connections.IsLinked(connection)) {
+        this->m_connections.UnlinkNode(connection);
+    }
+
+    this->PlatformRemove(connection);
+
+    this->m_connectionsLock.Leave();
 }
 
 void WowConnectionNet::Run() {

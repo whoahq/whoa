@@ -31,6 +31,11 @@ void WowConnectionNet::PlatformInit(bool useEngine) {
     // TODO
 }
 
+void WowConnectionNet::PlatformRemove(WowConnection* connection) {
+    char buf = '\1';
+    write(s_workerPipe[1], &buf, sizeof(buf));
+}
+
 void WowConnectionNet::PlatformRun() {
     pipe(s_workerPipe);
 
