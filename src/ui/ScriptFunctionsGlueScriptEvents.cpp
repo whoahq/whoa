@@ -234,7 +234,10 @@ int32_t Script_PatchDownloadApply(lua_State* L) {
 }
 
 int32_t Script_GetNumAddOns(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    // TODO
+    lua_pushnumber(L, 0);
+
+    return 1;
 }
 
 int32_t Script_GetAddOnInfo(lua_State* L) {
