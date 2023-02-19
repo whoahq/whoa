@@ -35,7 +35,7 @@ int32_t CSimpleTop::OnChar(const EVENT_DATA_CHAR* pCharData, void* param) {
 
         auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_CHAR];
 
-        for (int32_t i = priorities->Count() - 1; i >= 0; i--) {
+        for (uint32_t i = 0; i < priorities->Count(); i++) {
             auto priority = priorities->operator[](i);
 
             if (!priority || eaten) {
@@ -103,7 +103,7 @@ int32_t CSimpleTop::OnKeyDown(const EVENT_DATA_KEY* pKeyData, void* param) {
 
         auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_KEY];
 
-        for (int32_t i = priorities->Count() - 1; i >= 0; i--) {
+        for (uint32_t i = 0; i < priorities->Count(); i++) {
             auto priority = priorities->operator[](i);
 
             if (!priority || eaten) {
