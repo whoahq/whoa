@@ -215,7 +215,7 @@ int32_t Script_GetServerName(lua_State* L) {
     auto down = true;
 
     if (selectedRealm) {
-        for (int32_t i = 0; i < g_cfg_ConfigsDB.m_numRecords; i++) {
+        for (int32_t i = 0; i < g_cfg_ConfigsDB.GetNumRecords(); i++) {
             auto config = g_cfg_ConfigsDB.GetRecordByIndex(i);
 
             if (config->m_realmType == selectedRealm->type) {

@@ -18,7 +18,13 @@ class WowClientDB : public WowClientDB_Common<T>, IDatabase<T> {
 
         // Member functions
         T* GetRecordByIndex(int32_t index) const;
+        int32_t GetNumRecords();
 };
+
+template <class T>
+int32_t WowClientDB<T>::GetNumRecords() {
+    return this->m_numRecords;
+}
 
 template <class T>
 T* WowClientDB<T>::GetRecordByIndex(int32_t index) const {

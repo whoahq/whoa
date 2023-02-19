@@ -137,7 +137,7 @@ int32_t Script_GetRealmInfo(lua_State* L) {
     int32_t realmIsPvp = 0;
     int32_t realmIsRp = 0;
 
-    for (int32_t i = 0; i < g_cfg_ConfigsDB.m_numRecords; i++) {
+    for (int32_t i = 0; i < g_cfg_ConfigsDB.GetNumRecords(); i++) {
         auto config = g_cfg_ConfigsDB.GetRecordByIndex(i);
 
         if (config->m_realmType == realmInfo->type) {

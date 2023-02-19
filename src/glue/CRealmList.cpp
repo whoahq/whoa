@@ -12,9 +12,9 @@ int32_t CRealmList::s_preferredCategory = -1;
 int32_t CRealmList::s_selectedCategory = -1;
 
 void CRealmList::Initialize() {
-    CRealmList::s_categories.SetCount(g_cfg_CategoriesDB.m_numRecords);
+    CRealmList::s_categories.SetCount(g_cfg_CategoriesDB.GetNumRecords());
 
-    for (int32_t i = 0; i < g_cfg_CategoriesDB.m_numRecords; i++) {
+    for (int32_t i = 0; i < g_cfg_CategoriesDB.GetNumRecords(); i++) {
         auto m = SMemAlloc(sizeof(RealmCategory), __FILE__, __LINE__, 0x0);
         auto category = new (m) RealmCategory();
 
