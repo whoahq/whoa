@@ -2,24 +2,19 @@
 #include "glue/CCharacterSelection.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
+#include "util/Unimplemented.hpp"
 #include <cstdint>
 
 int32_t Script_SetCharSelectModelFrame(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_SetCharSelectBackground(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_GetCharacterListUpdate(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_GetNumCharacters(lua_State* L) {
@@ -29,57 +24,39 @@ int32_t Script_GetNumCharacters(lua_State* L) {
 }
 
 int32_t Script_GetCharacterInfo(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_SelectCharacter(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_DeleteCharacter(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_RenameCharacter(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_DeclineCharacter(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_UpdateSelectionCustomizationScene(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_GetCharacterSelectFacing(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_SetCharacterSelectFacing(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 int32_t Script_GetSelectBackgroundModel(lua_State* L) {
-    // TODO
-
-    return 0;
+    WHOA_UNIMPLEMENTED();
 }
 
 FrameScript_Method FrameScript::s_ScriptFunctions_CharSelect[NUM_SCRIPT_FUNCTIONS_CHAR_SELECT] = {
