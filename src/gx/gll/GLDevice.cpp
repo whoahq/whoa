@@ -2121,8 +2121,11 @@ void GLDevice::SetClearDepth(double depth) {
     }
 }
 
-void GLDevice::SetClearStencil(int32_t a2) {
-    // TODO
+void GLDevice::SetClearStencil(int32_t s) {
+    if (this->m_States.clear.clearStencil != s) {
+        glClearStencil(s);
+        this->m_States.clear.clearStencil = s;
+    }
 }
 
 void GLDevice::SetColorWriteMask(bool red, bool green, bool blue, bool alpha, uint32_t index) {
