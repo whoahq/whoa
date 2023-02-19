@@ -11,11 +11,13 @@ target_include_directories(ui
 
 target_link_libraries(ui
     PRIVATE
+        client
         event
         glue
         gx
         math
         model
+        net
         util
     PUBLIC
         common

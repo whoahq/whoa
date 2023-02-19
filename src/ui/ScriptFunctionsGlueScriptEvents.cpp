@@ -1,7 +1,9 @@
 #include "ui/ScriptFunctions.hpp"
 #include "client/Client.hpp"
+#include "client/ClientServices.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Coordinate.hpp"
+#include "net/connection/ClientConnection.hpp"
 #include "ui/CSimpleTop.hpp"
 #include "ui/Types.hpp"
 #include "util/CVar.hpp"
@@ -210,7 +212,13 @@ int32_t Script_DisconnectFromServer(lua_State* L) {
 }
 
 int32_t Script_IsConnectedToServer(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (ClientServices::Connection()->IsConnected()) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_EnterWorld(lua_State* L) {
