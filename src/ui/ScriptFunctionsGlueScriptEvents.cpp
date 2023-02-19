@@ -1,6 +1,7 @@
 #include "ui/ScriptFunctions.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Coordinate.hpp"
 #include "net/connection/ClientConnection.hpp"
@@ -204,7 +205,54 @@ int32_t Script_StatusDialogClick(lua_State* L) {
 }
 
 int32_t Script_GetServerName(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    auto selectedRealmName = ClientServices::GetSelectedRealmName();
+    auto selectedRealm = ClientServices::GetSelectedRealm();
+
+    auto pvp = false;
+    auto rp = false;
+
+    // default down to true: if realm config isn't found, consider realm down
+    auto down = true;
+
+    if (selectedRealm) {
+        for (int32_t i = 0; i < g_cfg_ConfigsDB.m_numRecords; i++) {
+            auto config = g_cfg_ConfigsDB.GetRecordByIndex(i);
+
+            if (config->m_realmType == selectedRealm->type) {
+                pvp = config->m_playerKillingAllowed != 0;
+                rp = config->m_roleplaying != 0;
+                down = selectedRealm->flags & 0x2;
+
+                break;
+            }
+        }
+    }
+
+    // name
+    lua_pushstring(L, selectedRealmName);
+
+    // pvp
+    if (pvp) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    // rp
+    if (rp) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    // down
+    if (down) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 4;
 }
 
 int32_t Script_DisconnectFromServer(lua_State* L) {

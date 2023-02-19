@@ -12,6 +12,7 @@ target_include_directories(ui
 target_link_libraries(ui
     PRIVATE
         client
+        db
         event
         glue
         gx

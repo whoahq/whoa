@@ -84,6 +84,10 @@ const char* ClientServices::GetSelectedRealmName() {
     return ClientServices::s_realmNameVar->GetString();
 }
 
+const REALM_INFO* ClientServices::GetSelectedRealm() {
+    return &ClientServices::s_selectRealmInfo;
+}
+
 void ClientServices::Initialize() {
     if (!g_clientConnection) {
         auto adapterMem = SMemAlloc(sizeof(ClientRealmResponseAdapter), __FILE__, __LINE__, 0x0);
