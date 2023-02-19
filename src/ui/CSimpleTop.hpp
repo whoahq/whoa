@@ -79,6 +79,7 @@ class CSimpleTop : public CLayoutFrame {
         int32_t StartMoveOrResizeFrame(CSimpleFrame* frame, MOVERESIZE_REASON reason, float startx, float starty, int32_t a6);
         int32_t StartMoveOrResizeFrame(CSimpleFrame* frame, MOVERESIZE_REASON reason, float startx, float starty, FRAMEPOINT a6);
         void UnregisterForEvent(CSimpleFrame* frame, CSimpleEventType event, int32_t a4);
+        void UnregisterFrame(CSimpleFrame* frame);
 };
 
 #endif

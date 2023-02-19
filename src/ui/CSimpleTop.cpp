@@ -576,3 +576,9 @@ void CSimpleTop::UnregisterForEvent(CSimpleFrame* frame, CSimpleEventType event,
         }
     }
 }
+
+void CSimpleTop::UnregisterFrame(CSimpleFrame* frame) {
+    this->HideFrame(frame, 0);
+
+    // TODO strata
+}
