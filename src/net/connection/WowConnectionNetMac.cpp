@@ -49,9 +49,12 @@ void WowConnectionNet::PlatformRun() {
     while (!this->m_stop) {
         timeval timeout = { 30, 0 };
 
-        fd_set readFds = {};
-        fd_set writeFds = {};
-        fd_set errorFds = {};
+        fd_set readFds;
+        FD_ZERO(&readFds);
+        fd_set writeFds;
+        FD_ZERO(&writeFds);
+        fd_set errorFds;
+        FD_ZERO(&errorFds);
 
         readFds.fds_bits[s_workerPipe[0] >> 5] |= 1 << (s_workerPipe[0] & 0x1F);
 
@@ -69,8 +72,8 @@ void WowConnectionNet::PlatformRun() {
 
             switch (connection->m_connState) {
                 case WOWC_CONNECTING: {
-                    errorFds.fds_bits[connection->m_sock >> 5] |= 1 << (connection->m_sock & 0x1F);
-                    writeFds.fds_bits[connection->m_sock >> 5] |= 1 << (connection->m_sock & 0x1F);
+                    FD_SET(connection->m_sock, &writeFds);
+                    FD_SET(connection->m_sock, &errorFds);
 
                     connections.Add(1, &connection);
                     connection->AddRef();
@@ -80,7 +83,7 @@ void WowConnectionNet::PlatformRun() {
                 }
 
                 case WOWC_LISTENING: {
-                    readFds.fds_bits[connection->m_sock >> 5] |= 1 << (connection->m_sock & 0x1F);
+                    FD_SET(connection->m_sock, &readFds);
 
                     connections.Add(1, &connection);
                     connection->AddRef();
@@ -90,8 +93,8 @@ void WowConnectionNet::PlatformRun() {
                 }
 
                 case WOWC_CONNECTED: {
-                    readFds.fds_bits[connection->m_sock >> 5] |= 1 << (connection->m_sock & 0x1F);
-                    errorFds.fds_bits[connection->m_sock >> 5] |= 1 << (connection->m_sock & 0x1F);
+                    FD_SET(connection->m_sock, &readFds);
+                    FD_SET(connection->m_sock, &errorFds);
 
                     // TODO
 
