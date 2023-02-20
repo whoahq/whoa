@@ -56,7 +56,7 @@ void WowConnectionNet::PlatformRun() {
         fd_set errorFds;
         FD_ZERO(&errorFds);
 
-        readFds.fds_bits[s_workerPipe[0] >> 5] |= 1 << (s_workerPipe[0] & 0x1F);
+        FD_SET(s_workerPipe[0], &readFds);
 
         auto fdCount = s_workerPipe[0];
 
@@ -132,7 +132,7 @@ void WowConnectionNet::PlatformRun() {
         select(fdCount + 1, &readFds, &writeFds, &errorFds, &timeout);
 
         auto v1 = s_workerPipe[0];
-        if (((1 << (s_workerPipe[0] & 0x1F)) & readFds.fds_bits[s_workerPipe[0] >> 5]) != 0) {
+        if (FD_ISSET(s_workerPipe[0], &readFds)) {
             while (read(v1, buf, 1u) > 0) {
                 v1 = s_workerPipe[0];
             }
