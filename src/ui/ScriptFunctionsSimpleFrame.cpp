@@ -100,13 +100,15 @@ int32_t Script_CreateFrame(lua_State* L) {
     }
 
     if (lua_isstring(L, 5)) {
-        const char* id = lua_tolstring(L, 5, 0);
-        frameNode.SetAttribute("id", id);
+        const char* idStr = lua_tolstring(L, 5, nullptr);
+        frameNode.SetAttribute("id", idStr);
     } else if (lua_isnumber(L, 5)) {
         int32_t idNum = lua_tointeger(L, 5);
-        char id[4];
-        SStrPrintf(id, 256, "%d", id);
-        frameNode.SetAttribute("id", id);
+
+        char idStr[256];
+        SStrPrintf(idStr, sizeof(idStr), "%d", idNum);
+
+        frameNode.SetAttribute("id", idStr);
     }
 
     CStatus status;
