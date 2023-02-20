@@ -122,7 +122,12 @@ int32_t CSimpleModel_GetScale(lua_State* L) {
 }
 
 int32_t CSimpleModel_AdvanceTime(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    auto type = CSimpleModel::GetObjectType();
+    auto model = static_cast<CSimpleModel*>(FrameScript_GetObjectThis(L, type));
+
+    // TODO GxDefaultApi();
+
+    return 0;
 }
 
 int32_t CSimpleModel_ReplaceIconTexture(lua_State* L) {
