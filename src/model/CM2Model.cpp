@@ -1,4 +1,5 @@
 #include "model/CM2Model.hpp"
+#include "async/AsyncFileRead.hpp"
 #include "math/Types.hpp"
 #include "model/CM2Scene.hpp"
 #include "model/CM2Shared.hpp"
@@ -1020,7 +1021,33 @@ int32_t CM2Model::IsBatchDoodadCompatible(M2Batch* batch) {
 }
 
 int32_t CM2Model::IsDrawable(int32_t a2, int32_t a3) {
-    // TODO
+    if (!this->m_loaded && a2) {
+        this->WaitForLoad(nullptr);
+    }
+
+    if (!this->m_flag2) {
+        if (!this->m_loaded) {
+            return 0;
+        }
+
+        for (uint32_t i = 0; i < this->m_shared->m_data->textures.Count(); i++) {
+            auto texture = this->m_textures[i];
+
+            if (!texture) {
+                continue;
+            }
+
+            if (!TextureGetGxTex(texture, a2, nullptr)) {
+                return 0;
+            }
+        }
+
+        this->m_flag2 = 1;
+    }
+
+    if (!this->m_flag200 && a3) {
+        // TODO
+    }
 
     return 1;
 }
@@ -1501,5 +1528,15 @@ void CM2Model::UpdateLoaded() {
 }
 
 void CM2Model::WaitForLoad(const char* a2) {
-    // TODO
+    if (this->m_shared->asyncObject) {
+        AsyncFileReadWait(this->m_shared->asyncObject);
+    }
+
+    if (this->m_shared->asyncObject) {
+        AsyncFileReadWait(this->m_shared->asyncObject);
+    }
+
+    if (this->m_flags & 0x20) {
+        this->InitializeLoaded();
+    }
 }

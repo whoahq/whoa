@@ -2,6 +2,7 @@
 #include "util/SFile.hpp"
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
+#include <storm/Error.hpp>
 
 uint32_t AsyncFileRead::s_threadSleep;
 uint32_t AsyncFileRead::s_handlerTimeout = 100;
@@ -25,6 +26,7 @@ TSList<CAsyncQueue, TSGetLink<CAsyncQueue>> AsyncFileRead::s_asyncQueueList;
 TSList<CAsyncThread, TSGetLink<CAsyncThread>> AsyncFileRead::s_asyncThreadList;
 STORM_EXPLICIT_LIST(CAsyncObject, link) AsyncFileRead::s_asyncFileReadPostList;
 STORM_EXPLICIT_LIST(CAsyncObject, link) AsyncFileRead::s_asyncFileReadFreeList;
+int32_t AsyncFileRead::s_waiting;
 
 CAsyncQueue* AsyncFileReadCreateQueue() {
     CAsyncQueue* queue = AsyncFileRead::s_asyncQueueList.NewNode(0, 2, 0x8);
@@ -193,4 +195,52 @@ uint32_t AsyncFileReadThread(void* param) {
     }
 
     return 0;
+}
+
+void AsyncFileReadWait(CAsyncObject* object) {
+    STORM_ASSERT(object);
+
+    AsyncFileRead::s_waiting++;
+
+    AsyncFileRead::s_queueLock.Enter();
+
+    if (object->isProcessed) {
+        AsyncFileRead::s_queueLock.Leave();
+        return;
+    }
+
+    AsyncFileRead::s_asyncWaitObject = object;
+
+    if (!object->isCurrent && !object->isRead) {
+        object->link.Unlink();
+        object->queue->readList.LinkToHead(object);
+    }
+
+    AsyncFileRead::s_queueLock.Leave();
+
+    if (SFile::IsStreamingMode()) {
+        // TODO
+    }
+
+    // TODO
+
+    if (AsyncFileRead::s_ingameStartCallback) {
+        // TODO AsyncFileRead::s_ingameStartCallback();
+    }
+
+    while (true) {
+        if (AsyncFileRead::s_ingameProgressCallback) {
+            // TODO AsyncFileRead::s_ingameProgressCallback(0.0, 0);
+        }
+
+        AsyncFileReadPollHandler(nullptr, nullptr);
+
+        if (!AsyncFileRead::s_asyncWaitObject) {
+            break;
+        }
+
+        OsSleep(1);
+    }
+
+    AsyncFileRead::s_waiting--;
 }
