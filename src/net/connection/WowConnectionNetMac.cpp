@@ -60,11 +60,10 @@ void WowConnectionNet::PlatformRun() {
 
         auto fdCount = s_workerPipe[0];
 
-        int32_t v39 = 0;
-        int32_t v41 = 0;
-
         this->m_connectionsLock.Enter();
 
+        uint32_t connectionCount = 0;
+        uint32_t disconnectionCount = 0;
         for (auto connection = this->m_connections.Head(); connection; connection = this->m_connections.Link(connection)->Next()) {
             if (connection->m_serviceCount) {
                 continue;
@@ -75,7 +74,8 @@ void WowConnectionNet::PlatformRun() {
                     FD_SET(connection->m_sock, &writeFds);
                     FD_SET(connection->m_sock, &errorFds);
 
-                    connections.Add(1, &connection);
+                    connections.GrowToFit(connectionCount, 0);
+                    connections[connectionCount] = connection;
                     connection->AddRef();
                     fdCount = std::max(fdCount, connection->m_sock);
 
@@ -85,7 +85,8 @@ void WowConnectionNet::PlatformRun() {
                 case WOWC_LISTENING: {
                     FD_SET(connection->m_sock, &readFds);
 
-                    connections.Add(1, &connection);
+                    connections.GrowToFit(connectionCount, 0);
+                    connections[connectionCount] = connection;
                     connection->AddRef();
                     fdCount = std::max(fdCount, connection->m_sock);
 
@@ -98,16 +99,21 @@ void WowConnectionNet::PlatformRun() {
 
                     // TODO
 
-                    connections.Add(1, &connection);
+                    connections.GrowToFit(connectionCount, 0);
+                    connections[connectionCount] = connection;
                     connection->AddRef();
                     fdCount = std::max(fdCount, connection->m_sock);
+
+                    break;
                 }
 
                 case WOWC_DISCONNECTING: {
                     // TODO
 
-                    v41++;
-                    connections.Add(1, &connection);
+                    disconnectionCount++;
+
+                    connections.GrowToFit(connectionCount, 0);
+                    connections[connectionCount] = connection;
                     connection->AddRef();
 
                     break;
@@ -117,15 +123,17 @@ void WowConnectionNet::PlatformRun() {
                     break;
                 }
             }
+
+            connectionCount++;
         }
 
         this->m_connectionsLock.Leave();
 
-        if (v41 > 0) {
+        if (disconnectionCount > 0) {
             timeout = { 0, 0 };
         }
 
-        if (connections.Count() > 0) {
+        if (connectionCount > 0) {
             // TODO
         }
 
@@ -138,7 +146,7 @@ void WowConnectionNet::PlatformRun() {
             }
         }
 
-        for (int32_t i = 0; i < connections.Count(); i++) {
+        for (int32_t i = 0; i < connectionCount; i++) {
             auto connection = connections[i];
             uint32_t signalFlags = 0x0;
 
