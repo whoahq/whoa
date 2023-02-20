@@ -4,8 +4,7 @@
 #include "gx/gll/GLFramebuffer.h"
 
 int32_t GLMipmap::GetDepthBits() {
-    // TODO
-    return 0;
+    return this->m_DepthBits;
 }
 
 void GLMipmap::Attach(GLFramebuffer* framebuffer, GLenum attachPoint, int32_t a4) {
