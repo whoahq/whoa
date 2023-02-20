@@ -31,7 +31,13 @@ void WowConnectionNet::Add(WowConnection* connection) {
 }
 
 void WowConnectionNet::Delete(WowConnection* connection) {
-    // TODO
+    this->m_connectionsLock.Enter();
+
+    if (connection->m_refCount == 0) {
+        delete connection;
+    }
+
+    this->m_connectionsLock.Leave();
 }
 
 void WowConnectionNet::Remove(WowConnection* connection) {
