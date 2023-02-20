@@ -1,4 +1,5 @@
 #include "ui/ScriptFunctions.hpp"
+#include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
@@ -56,7 +57,29 @@ int32_t Script_SetCharacterSelectFacing(lua_State* L) {
 }
 
 int32_t Script_GetSelectBackgroundModel(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: GetSelectBackgroundModel(index)");
+    }
+
+    auto characterIndex = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
+
+    // TODO
+
+    ChrRacesRec* racesRec = nullptr;
+
+    if (characterIndex < 0 || characterIndex >= CCharacterSelection::s_characterList.Count()) {
+        racesRec = g_chrRacesDB.GetRecord(2);
+    } else {
+        // TODO
+    }
+
+    if (racesRec) {
+        lua_pushstring(L, racesRec->m_clientFileString);
+    } else {
+        lua_pushstring(L, "");
+    }
+
+    return 1;
 }
 
 FrameScript_Method FrameScript::s_ScriptFunctions_CharSelect[NUM_SCRIPT_FUNCTIONS_CHAR_SELECT] = {
