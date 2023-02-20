@@ -580,5 +580,8 @@ void CSimpleTop::UnregisterForEvent(CSimpleFrame* frame, CSimpleEventType event,
 void CSimpleTop::UnregisterFrame(CSimpleFrame* frame) {
     this->HideFrame(frame, 0);
 
-    // TODO strata
+    auto framesLink = this->m_frames.Link(frame);
+    if (framesLink) {
+        framesLink->Unlink();
+    }
 }
