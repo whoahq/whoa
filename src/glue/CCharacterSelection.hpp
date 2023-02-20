@@ -3,6 +3,8 @@
 
 #include <storm/Array.hpp>
 
+class CSimpleModelFFX;
+
 struct CharacterSelectionDisplay {
     // TODO
 };
@@ -11,6 +13,10 @@ class CCharacterSelection {
     public:
         // Static variables
         static TSGrowableArray<CharacterSelectionDisplay> s_characterList;
+        static CSimpleModelFFX* s_modelFrame;
+
+        // Static functions
+        static void SetBackgroundModel(const char* modelPath);
 };
 
 #endif

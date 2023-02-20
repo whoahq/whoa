@@ -15,6 +15,7 @@ target_link_libraries(glue
         db
         event
         gx
+        model
         net
         sound
         ui

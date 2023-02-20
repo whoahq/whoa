@@ -1,17 +1,37 @@
 #include "ui/ScriptFunctions.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
+#include "ui/CSimpleModelFFX.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
 int32_t Script_SetCharSelectModelFrame(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: SetCharSelectModelFrame(\"frameName\")");
+    }
+
+    auto type = CSimpleModel::GetObjectType();
+    auto name = lua_tolstring(L, 1, nullptr);
+    auto frame = CScriptObject::GetScriptObjectByName(name, type);
+
+    if (frame) {
+        CCharacterSelection::s_modelFrame = static_cast<CSimpleModelFFX*>(frame);
+    }
+
+    return 0;
 }
 
 int32_t Script_SetCharSelectBackground(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: SetCharSelectBackground(\"filename\")");
+    }
+
+    auto modelPath = lua_tolstring(L, 1, nullptr);
+    CCharacterSelection::SetBackgroundModel(modelPath);
+
+    return 0;
 }
 
 int32_t Script_GetCharacterListUpdate(lua_State* L) {
