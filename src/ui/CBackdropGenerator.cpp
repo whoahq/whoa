@@ -137,7 +137,9 @@ void CBackdropGenerator::LoadXML(XMLNode* node, CStatus* status) {
             // TODO
 
         } else if (!SStrCmpI(child->GetName(), "BorderColor", STORM_MAX_STR)) {
-            // TODO
+            CImVector borderColor = { 0 };
+            LoadXML_Color(child, borderColor);
+            this->SetBorderVertexColor(borderColor);
 
         } else {
             status->Add(
@@ -151,7 +153,39 @@ void CBackdropGenerator::LoadXML(XMLNode* node, CStatus* status) {
 }
 
 void CBackdropGenerator::SetBorderVertexColor(const CImVector& borderColor) {
-    // TODO
+    this->m_borderColor = borderColor;
+
+    if (this->m_leftTexture) {
+        this->m_leftTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_rightTexture) {
+        this->m_rightTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_topTexture) {
+        this->m_topTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_bottomTexture) {
+        this->m_bottomTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_topLeftTexture) {
+        this->m_topLeftTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_topRightTexture) {
+        this->m_topRightTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_bottomLeftTexture) {
+        this->m_bottomLeftTexture->SetVertexColor(borderColor);
+    }
+
+    if (this->m_bottomRightTexture) {
+        this->m_bottomRightTexture->SetVertexColor(borderColor);
+    }
 }
 
 void CBackdropGenerator::SetOutput(CSimpleFrame* frame) {
