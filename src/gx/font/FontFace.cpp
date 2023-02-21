@@ -14,8 +14,9 @@ void FontFaceCloseHandle(HFACE handle) {
     FACEDATA* dataPtr = reinterpret_cast<FACEDATA*>(handle);
 
     if (dataPtr->m_refcount <= 1) {
-        HandleClose(dataPtr->selfReference);
+        auto selfReference = dataPtr->selfReference;
         dataPtr->selfReference = nullptr;
+        HandleClose(selfReference);
     }
 }
 
