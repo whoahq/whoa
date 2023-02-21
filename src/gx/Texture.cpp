@@ -31,6 +31,8 @@ namespace Texture {
     };
 }
 
+static CImVector CRAPPY_GREEN = { 0x00, 0xFF, 0x00, 0xFF };
+
 void AsyncTextureWait(CTexture* texture) {
     // TODO
 }
@@ -773,8 +775,7 @@ CTexture* CreateBlpSync(int32_t createFlags, char* fileName, char* fileExt, CGxT
     }
 
     if (!PumpBlpTextureAsync(texture, buf)) {
-        // TODO
-        // FillInSolidTexture((int)&CRAPPY_GREEN, (int)v4);
+        FillInSolidTexture(CRAPPY_GREEN, texture);
     }
 
     SFile::Close(file);
@@ -918,7 +919,8 @@ HTEXTURE TextureCreate(const char* fileName, CGxTexFlags texFlags, CStatus* stat
 
     // TODO
     // FileError(status, "texture", fileName);
-    // return TextureCreateSolid(&CRAPPY_GREEN);
+
+    return TextureCreateSolid(CRAPPY_GREEN);
 
     return nullptr;
 }
