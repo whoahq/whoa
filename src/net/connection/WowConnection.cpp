@@ -462,6 +462,12 @@ void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
 
     // TODO
 
+    this->m_readBuffer = nullptr;
+    this->m_readBytes = 0;
+    this->m_readBufferSize = 0;
+
+    // TODO
+
     this->SetState(WOWC_INITIALIZED);
     this->m_type = WOWC_TYPE_MESSAGES;
 }

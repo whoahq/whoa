@@ -44,6 +44,9 @@ class WowConnection {
         int32_t m_sock;
         WOW_CONN_STATE m_connState;
         WowConnectionResponse* m_response;
+        uint8_t* m_readBuffer;
+        int32_t m_readBytes;
+        int32_t m_readBufferSize;
         uint32_t m_connectAddress;
         uint16_t m_connectPort;
         NETCONNADDR m_peer;
