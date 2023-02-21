@@ -374,8 +374,7 @@ void GLMipmap::TexImage(const void* pixels) {
 }
 
 void GLMipmap::TexSubImage(const GLBox& a2, int32_t size, const void* pixels) {
-    // TODO
-    // BLIZZARD_ASSERT(!this->m_Texture->IsRenderTarget() && pixels != 0 && GLDevice::Get()->GetVertexArrayStates().buffers[eGLBT_PIXEL_UNPACK] == 0);
+    BLIZZARD_ASSERT(!this->m_Texture->IsRenderTarget() && pixels != nullptr && GLDevice::Get()->GetVertexArrayStates().buffers[eGLBT_PIXEL_UNPACK] == 0);
 
     if (this->m_Target == GL_TEXTURE_3D) {
         glPixelStorei(GL_UNPACK_ROW_LENGTH, this->m_Width);
