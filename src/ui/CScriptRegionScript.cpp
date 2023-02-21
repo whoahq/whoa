@@ -10,19 +10,19 @@
 #include <tempest/Rect.hpp>
 
 int32_t CScriptRegion_IsProtected(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_CanChangeProtectedState(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_SetParent(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetRect(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetCenter(lua_State* L) {
@@ -54,19 +54,19 @@ int32_t CScriptRegion_GetCenter(lua_State* L) {
 }
 
 int32_t CScriptRegion_GetLeft(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetRight(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetTop(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetBottom(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetWidth(lua_State* L) {
@@ -168,19 +168,19 @@ int32_t CScriptRegion_SetHeight(lua_State* L) {
 }
 
 int32_t CScriptRegion_SetSize(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetSize(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetNumPoints(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetPoint(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_SetPoint(lua_State* L) {
@@ -339,23 +339,23 @@ int32_t CScriptRegion_ClearAllPoints(lua_State* L) {
 }
 
 int32_t CScriptRegion_CreateAnimationGroup(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_GetAnimationGroups(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_StopAnimating(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_IsDragging(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CScriptRegion_IsMouseOver(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method ScriptRegionMethods[NUM_SCRIPT_REGION_SCRIPT_METHODS] = {

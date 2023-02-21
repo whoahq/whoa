@@ -10,19 +10,19 @@
 #include <storm/String.hpp>
 
 int32_t Script_GetText(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumFrames(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_EnumerateFrames(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_CreateFont(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_CreateFrame(lua_State* L) {
@@ -132,11 +132,11 @@ int32_t Script_CreateFrame(lua_State* L) {
 }
 
 int32_t Script_GetFramesRegisteredForEvent(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCurrentKeyBoardFocus(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method FrameScript::s_ScriptFunctions_SimpleFrame[NUM_SCRIPT_FUNCTIONS_SIMPLE_FRAME] = {

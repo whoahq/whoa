@@ -4,5 +4,5 @@
 #include <cstdint>
 
 int32_t Script_GetAccountExpansionLevel(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }

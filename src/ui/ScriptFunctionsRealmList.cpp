@@ -11,15 +11,15 @@
 #include <storm/String.hpp>
 
 int32_t Script_RequestRealmList(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RealmListUpdateRate(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_CancelRealmListQuery(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumRealms(lua_State* L) {
@@ -238,7 +238,7 @@ int32_t Script_ChangeRealm(lua_State* L) {
 }
 
 int32_t Script_GetRealmCategories(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetPreferredInfo(lua_State* L) {
@@ -256,7 +256,7 @@ int32_t Script_SetPreferredInfo(lua_State* L) {
 }
 
 int32_t Script_SortRealms(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetSelectedCategory(lua_State* L) {
@@ -284,19 +284,19 @@ int32_t Script_GetSelectedCategory(lua_State* L) {
 }
 
 int32_t Script_RealmListDialogCancelled(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsInvalidTournamentRealmCategory(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsTournamentRealmCategory(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsInvalidLocale(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method FrameScript::s_ScriptFunctions_RealmList[NUM_SCRIPT_FUNCTIONS_REALM_LIST] = {
