@@ -6,31 +6,31 @@
 #include <cstdint>
 
 int32_t CSimpleTexture_IsObjectType(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetObjectType(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetDrawLayer(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetDrawLayer(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetBlendMode(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetBlendMode(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetVertexColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetVertexColor(lua_State* L) {
@@ -52,11 +52,11 @@ int32_t CSimpleTexture_SetVertexColor(lua_State* L) {
 }
 
 int32_t CSimpleTexture_SetGradient(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetGradientAlpha(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetAlpha(lua_State* L) {
@@ -74,7 +74,7 @@ int32_t CSimpleTexture_SetAlpha(lua_State* L) {
 }
 
 int32_t CSimpleTexture_GetAlpha(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_Show(lua_State* L) {
@@ -96,15 +96,15 @@ int32_t CSimpleTexture_Hide(lua_State* L) {
 }
 
 int32_t CSimpleTexture_IsVisible(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_IsShown(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetTexture(lua_State* L) {
@@ -146,7 +146,7 @@ int32_t CSimpleTexture_SetTexture(lua_State* L) {
 }
 
 int32_t CSimpleTexture_GetTexCoord(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetTexCoord(lua_State* L) {
@@ -207,39 +207,39 @@ int32_t CSimpleTexture_SetTexCoord(lua_State* L) {
 }
 
 int32_t CSimpleTexture_SetRotation(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetDesaturated(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_IsDesaturated(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetNonBlocking(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetNonBlocking(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetHorizTile(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetHorizTile(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_SetVertTile(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleTexture_GetVertTile(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method SimpleTextureMethods[NUM_SIMPLE_TEXTURE_SCRIPT_METHODS] = {

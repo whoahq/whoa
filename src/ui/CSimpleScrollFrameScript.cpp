@@ -6,15 +6,15 @@
 #include <cstdint>
 
 int32_t CSimpleScrollFrame_SetScrollChild(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleScrollFrame_GetScrollChild(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleScrollFrame_SetHorizontalScroll(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleScrollFrame_SetVerticalScroll(lua_State* L) {
@@ -89,7 +89,7 @@ int32_t CSimpleScrollFrame_GetVerticalScrollRange(lua_State* L) {
 }
 
 int32_t CSimpleScrollFrame_UpdateScrollChildRect(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method SimpleScrollFrameMethods[NUM_SIMPLE_SCROLL_FRAME_SCRIPT_METHODS] = {

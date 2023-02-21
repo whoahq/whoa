@@ -3,99 +3,99 @@
 #include <cstdint>
 
 int32_t CSimpleFont_GetObjectType(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_IsObjectType(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetName(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_CopyFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetFont(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetFont(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetAlpha(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetAlpha(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetTextColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetTextColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetShadowColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetShadowColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetShadowOffset(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetShadowOffset(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetSpacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetSpacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetJustifyH(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetJustifyH(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetJustifyV(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetJustifyV(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_SetIndentedWordWrap(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleFont_GetIndentedWordWrap(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method SimpleFontMethods[NUM_SIMPLE_FONT_SCRIPT_METHODS] = {

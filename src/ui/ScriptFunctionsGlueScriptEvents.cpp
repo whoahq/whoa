@@ -14,23 +14,23 @@
 #include <cstdint>
 
 int32_t Script_IsShiftKeyDown(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetBuildInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetLocale(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetSavedAccountName(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetSavedAccountName(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetUsesToken(lua_State* L) {
@@ -41,7 +41,7 @@ int32_t Script_GetUsesToken(lua_State* L) {
 }
 
 int32_t Script_SetUsesToken(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetSavedAccountList(lua_State* L) {
@@ -50,7 +50,7 @@ int32_t Script_GetSavedAccountList(lua_State* L) {
 }
 
 int32_t Script_SetSavedAccountList(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetCurrentScreen(lua_State* L) {
@@ -76,23 +76,23 @@ int32_t Script_QuitGame(lua_State* L) {
 }
 
 int32_t Script_QuitGameAndRunLauncher(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PlayGlueMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PlayCreditsMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_StopGlueMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetMovieResolution(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetScreenWidth(lua_State* L) {
@@ -116,11 +116,11 @@ int32_t Script_GetScreenHeight(lua_State* L) {
 }
 
 int32_t Script_LaunchURL(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowTOSNotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_TOSAccepted(lua_State* L) {
@@ -131,11 +131,11 @@ int32_t Script_TOSAccepted(lua_State* L) {
 }
 
 int32_t Script_AcceptTOS(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowEULANotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_EULAAccepted(lua_State* L) {
@@ -146,43 +146,43 @@ int32_t Script_EULAAccepted(lua_State* L) {
 }
 
 int32_t Script_AcceptEULA(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowTerminationWithoutNoticeNotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_TerminationWithoutNoticeAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AcceptTerminationWithoutNotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowScanningNotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ScanningAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AcceptScanning(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowContestNotice(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ContestAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AcceptContest(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DefaultServerLogin(lua_State* L) {
@@ -256,7 +256,7 @@ int32_t Script_GetServerName(lua_State* L) {
 }
 
 int32_t Script_DisconnectFromServer(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsConnectedToServer(lua_State* L) {
@@ -270,23 +270,23 @@ int32_t Script_IsConnectedToServer(lua_State* L) {
 }
 
 int32_t Script_EnterWorld(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_Screenshot(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PatchDownloadProgress(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PatchDownloadCancel(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PatchDownloadApply(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumAddOns(lua_State* L) {
@@ -297,51 +297,51 @@ int32_t Script_GetNumAddOns(lua_State* L) {
 }
 
 int32_t Script_GetAddOnInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_LaunchAddOnURL(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetAddOnDependencies(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetAddOnEnableState(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_EnableAddOn(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_EnableAllAddOns(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DisableAddOn(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DisableAllAddOns(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SaveAddOns(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ResetAddOns(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsAddonVersionCheckEnabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetAddonVersionCheck(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCursorPosition(lua_State* L) {
@@ -367,39 +367,39 @@ int32_t Script_GetCursorPosition(lua_State* L) {
 }
 
 int32_t Script_ShowCursor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_HideCursor(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetBillingTimeRemaining(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetBillingPlan(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetBillingTimeRested(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SurveyNotificationDone(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PINEntered(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_PlayGlueAmbience(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_StopGlueAmbience(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCreditsText(lua_State* L) {
@@ -439,27 +439,27 @@ int32_t Script_GetClientExpansionLevel(lua_State* L) {
 }
 
 int32_t Script_MatrixEntered(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_MatrixRevert(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_MatrixCommit(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetMatrixCoordinates(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ScanDLLStart(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ScanDLLContinueAnyway(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsScanDLLFinished(lua_State* L) {
@@ -470,63 +470,63 @@ int32_t Script_IsScanDLLFinished(lua_State* L) {
 }
 
 int32_t Script_IsWindowsClient(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsOtherPlatformClient(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetRealmSplitState(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RequestRealmSplitInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_CancelLogin(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarBool(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarDefault(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarMin(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarMax(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarAbsoluteMin(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCVarAbsoluteMax(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetChangedOptionWarnings(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AcceptChangedOptionWarnings(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ShowChangedOptionWarnings(lua_State* L) {
@@ -537,71 +537,71 @@ int32_t Script_ShowChangedOptionWarnings(lua_State* L) {
 }
 
 int32_t Script_TokenEntered(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumDeclensionSets(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DeclineName(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumGameAccounts(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetGameAccountInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetGameAccount(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_StopAllSFX(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetClearConfigData(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RestartGx(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RestoreVideoResolutionDefaults(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RestoreVideoEffectsDefaults(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RestoreVideoStereoDefaults(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsStreamingMode(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsStreamingTrial(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsConsoleActive(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RunScript(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ReadyForAccountDataTimes(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_IsTrialAccount(lua_State* L) {

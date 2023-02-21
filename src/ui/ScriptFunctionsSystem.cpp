@@ -13,11 +13,11 @@ int32_t Script_GetTime(lua_State* L) {
 }
 
 int32_t Script_GetGameTime(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_ConsoleExec(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AccessDenied(lua_State* L) {

@@ -35,7 +35,7 @@ int32_t Script_SetCharSelectBackground(lua_State* L) {
 }
 
 int32_t Script_GetCharacterListUpdate(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetNumCharacters(lua_State* L) {
@@ -45,35 +45,35 @@ int32_t Script_GetNumCharacters(lua_State* L) {
 }
 
 int32_t Script_GetCharacterInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SelectCharacter(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DeleteCharacter(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_RenameCharacter(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_DeclineCharacter(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_UpdateSelectionCustomizationScene(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetCharacterSelectFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_SetCharacterSelectFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_GetSelectBackgroundModel(lua_State* L) {

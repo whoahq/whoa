@@ -71,7 +71,7 @@ int32_t CSimpleButton_Disable(lua_State* L) {
 }
 
 int32_t CSimpleButton_IsEnabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetButtonState(lua_State* L) {
@@ -96,39 +96,39 @@ int32_t CSimpleButton_GetButtonState(lua_State* L) {
 }
 
 int32_t CSimpleButton_SetButtonState(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetNormalFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetNormalFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetDisabledFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetDisabledFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetHighlightFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetHighlightFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetFontString(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetFontString(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetText(lua_State* L) {
@@ -142,7 +142,7 @@ int32_t CSimpleButton_SetText(lua_State* L) {
 }
 
 int32_t CSimpleButton_SetFormattedText(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetText(lua_State* L) {
@@ -165,7 +165,7 @@ int32_t CSimpleButton_SetNormalTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetNormalTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetPushedTexture(lua_State* L) {
@@ -173,7 +173,7 @@ int32_t CSimpleButton_SetPushedTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetPushedTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetDisabledTexture(lua_State* L) {
@@ -181,7 +181,7 @@ int32_t CSimpleButton_SetDisabledTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetDisabledTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetHighlightTexture(lua_State* L) {
@@ -244,11 +244,11 @@ int32_t CSimpleButton_GetHighlightTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_SetPushedTextOffset(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetPushedTextOffset(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_GetTextWidth(lua_State* L) {
@@ -267,7 +267,7 @@ int32_t CSimpleButton_GetTextWidth(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetTextHeight(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_RegisterForClicks(lua_State* L) {
@@ -321,11 +321,11 @@ int32_t CSimpleButton_UnlockHighlight(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetMotionScriptsWhileDisabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t CSimpleButton_SetMotionScriptsWhileDisabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED();
+    WHOA_UNIMPLEMENTED(0);
 }
 
 FrameScript_Method SimpleButtonMethods[NUM_SIMPLE_BUTTON_SCRIPT_METHODS] = {
