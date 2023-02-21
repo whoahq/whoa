@@ -52,6 +52,7 @@ class CRenderBatch {
         TSLink<CRenderBatch> renderLink;
 
         // Member functions
+        ~CRenderBatch();
         void Clear();
         void Finish();
         void Queue(CTexture* texture, EGxBlend alphaMode, int32_t posCount, const C3Vector* position, const C2Vector* texCoord, int32_t colorCount, const CImVector* color, int32_t idx, const uint16_t* indices, CGxShader* shader);

@@ -41,6 +41,10 @@ EGxBlend CSimpleBatchedMesh::GetAlphaMode() {
     }
 }
 
+CRenderBatch::~CRenderBatch() {
+    this->Clear();
+}
+
 void CRenderBatch::Clear() {
     this->m_texturelist.SetCount(0);
 
