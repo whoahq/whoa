@@ -53,6 +53,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         char m_serverPublicKey[32];
 
         // Virtual member functions
+        virtual void WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {};
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
         virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
         virtual void WCDataReady(WowConnection* conn, uint32_t timeStamp, uint8_t* data, int32_t len);

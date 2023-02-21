@@ -116,10 +116,10 @@ void NetClient::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_
     this->m_netEventQueue->AddEvent(EVENT_ID_NET_CONNECT, conn, this, nullptr, 0);
 }
 
-void NetClient::WCDataReady(WowConnection* conn, uint32_t timeStamp, uint8_t* data, int32_t len) {
+void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
     // TODO
 }
 
-void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
+void NetClient::WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {
     // TODO
 }
