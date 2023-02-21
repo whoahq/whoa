@@ -1,4 +1,5 @@
 #include "gx/Blit.hpp"
+#include "util/Unimplemented.hpp"
 #include <algorithm>
 #include <cstring>
 #include <tempest/Vector.hpp>
@@ -59,7 +60,7 @@ void Blit_uint32_uint32(const C2iVector& size, const void* in, uint32_t inStride
 }
 
 void Blit_Argb8888_Abgr8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb8888_Argb8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
@@ -67,27 +68,27 @@ void Blit_Argb8888_Argb8888(const C2iVector& size, const void* in, uint32_t inSt
 }
 
 void Blit_Argb8888_Argb8888_A1(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb8888_Argb8888_A8(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb8888_Argb4444(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb8888_Argb1555(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb8888_Rgb565(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb4444_Abgr8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Argb4444_Argb4444(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
@@ -95,23 +96,23 @@ void Blit_Argb4444_Argb4444(const C2iVector& size, const void* in, uint32_t inSt
 }
 
 void Blit_Argb1555_Argb1555(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Rgb565_Rgb565(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt1_Argb8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt1_Argb1555(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt1_Rgb565(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt1_Dxt1(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
@@ -125,11 +126,11 @@ void Blit_Dxt1_Dxt1(const C2iVector& size, const void* in, uint32_t inStride, vo
 }
 
 void Blit_Dxt3_Argb8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt3_Argb4444(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt35_Dxt35(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
@@ -152,27 +153,27 @@ void Blit_Dxt35_Dxt35(const C2iVector& size, const void* in, uint32_t inStride, 
 }
 
 void Blit_Dxt5_Argb8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Dxt5_Argb4444(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Uv88_Uv88(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_Gr1616F_Gr1616F(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_R32F_R32F(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void Blit_D24X8_D24X8(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void InitBlit() {
