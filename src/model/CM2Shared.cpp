@@ -271,8 +271,10 @@ int32_t CM2Shared::FinishLoadingSkinProfile(uint32_t size) {
 
     this->m_skinProfileLoaded = 1;
 
-    while (this->m_callbackList) {
-        CM2Model* model = this->m_callbackList;
+    for (auto model = this->m_callbackList; model; model = this->m_callbackList) {
+        STORM_ASSERT(model->m_callbackPrev);
+        STORM_ASSERT(*model->m_callbackPrev == this->m_callbackList);
+
         model->UnlinkFromCallbackList();
         model->InitializeLoaded();
     }
