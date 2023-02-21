@@ -57,10 +57,9 @@ void CM2Shared::AddRef() {
 }
 
 int32_t CM2Shared::CallbackWhenLoaded(CM2Model* model) {
-    // TODO
-    // if (model->dword4 & 0x20) {
-    //     return 1;
-    // }
+    if (model->m_flags & 0x20) {
+        return 1;
+    }
 
     if (this->m_m2DataLoaded && this->m_skinProfileLoaded) {
         model->InitializeLoaded();
