@@ -5,6 +5,10 @@
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
 CSimpleModelFFX* CCharacterSelection::s_modelFrame;
 
+void CCharacterSelection::RenderPrep() {
+    // TODO
+}
+
 void CCharacterSelection::SetBackgroundModel(const char* modelPath) {
     if (!CCharacterSelection::s_modelFrame || !modelPath || !*modelPath) {
         return;
