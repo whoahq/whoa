@@ -1,6 +1,7 @@
 #include "net/connection/WowConnection.hpp"
 #include "net/connection/WowConnectionNet.hpp"
 #include "net/connection/WowConnectionResponse.hpp"
+#include <common/DataStore.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/Memory.hpp>
@@ -316,7 +317,130 @@ void WowConnection::DoExceptions() {
 }
 
 void WowConnection::DoMessageReads() {
+    if (!this->m_readBuffer) {
+        this->m_readBuffer = static_cast<uint8_t*>(SMemAlloc(1024, __FILE__, __LINE__, 0x0));
+        this->m_readBufferSize = 1024;
+        this->m_readBytes = 0;
+    }
+
+    uint32_t timeStamp = OsGetAsyncTimeMsPrecise();
+
+    this->AcquireResponseRef();
+    this->m_response->NotifyAboutToDoReads();
+    this->ReleaseResponseRef();
+
     // TODO
+
+    while (true) {
+        auto v36 = 2;
+        auto v35 = -1;
+
+        if (this->m_readBytes >= 2) {
+            uint8_t v14;
+
+            if (*this->m_readBuffer >= 0) {
+                v35 = (this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) + 2;
+            } else {
+                v36 = 3;
+
+                if (this->m_readBytes >= 3) {
+                    v35 = (this->m_readBuffer[2] | ((this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) << 8)) + 3;
+                }
+            }
+        }
+
+        if (this->m_readBytes >= this->m_readBufferSize) {
+            auto readBuffer = SMemReAlloc(
+                this->m_readBuffer,
+                this->m_readBufferSize * 2,
+                __FILE__,
+                __LINE__,
+                0x0
+            );
+            this->m_readBuffer = static_cast<uint8_t*>(readBuffer);
+            this->m_readBufferSize = this->m_readBufferSize * 2;
+
+            if (this->m_readBufferSize > 32000000) {
+                this->Disconnect();
+                return;
+            }
+        }
+
+        int32_t v17;
+
+        if (v35 >= 0) {
+            v17 = v35 - this->m_readBytes;
+            if (this->m_readBufferSize - this->m_readBytes < v35 - this->m_readBytes) {
+                v17 = this->m_readBufferSize - this->m_readBytes;
+            }
+        } else {
+            v17 = v36 - this->m_readBytes;
+        }
+
+#if defined(WHOA_SYSTEM_WIN)
+        int32_t bytesRead;
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+        ssize_t bytesRead;
+#endif
+
+        if (v17 <= 0) {
+            bytesRead = 0;
+        } else {
+            while (true) {
+                bytesRead = recv(this->m_sock, reinterpret_cast<char*>(&this->m_readBuffer[this->m_readBytes]), v17, 0x0);
+
+                if (bytesRead >= 0) {
+                    break;
+                }
+
+#if defined(WHOA_SYSTEM_WIN)
+                if (WSAGetLastError() != WSAEINTR) {
+                    break;
+                }
+#elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+                if (errno != EINTR) {
+                    break;
+                }
+#endif
+            }
+
+            // TODO
+        }
+
+        if (bytesRead <= 0 && v17 > 0) {
+            break;
+        }
+
+        // TODO
+
+        this->m_readBytes += bytesRead;
+
+        if (v35 >= 0 && this->m_readBytes >= v35) {
+            CDataStore msg;
+            msg.m_data = &this->m_readBuffer[v36];
+            msg.m_alloc = -1;
+            msg.m_size = v35 - v36;
+            msg.m_read = 0;
+
+            this->AcquireResponseRef();
+
+            // TODO NewSendNode conditional
+
+            if (this->m_response) {
+                this->m_lock.Leave();
+                this->m_response->WCMessageReady(this, timeStamp, &msg);
+                this->m_lock.Enter();
+            }
+
+            this->m_readBytes = 0;
+
+            this->ReleaseResponseRef();
+        }
+
+        if (bytesRead <= 0) {
+            return;
+        }
+    }
 }
 
 void WowConnection::DoReads() {
