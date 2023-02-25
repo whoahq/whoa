@@ -36,7 +36,7 @@ enum EVENTID {
     EVENT_ID_26                 = 26,
     EVENT_ID_27                 = 27,
     EVENT_ID_28                 = 28,
-    EVENT_ID_29                 = 29,
+    EVENT_ID_NET_AUTH_CHALLENGE = 29,
     EVENT_ID_30                 = 30,
     EVENT_ID_31                 = 31,
     EVENT_ID_32                 = 32,

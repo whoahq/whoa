@@ -5,6 +5,7 @@
 #include <new>
 #include <common/DataStore.hpp>
 #include <common/Prop.hpp>
+#include <common/SHA1.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
@@ -24,7 +25,24 @@ void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, con
 }
 
 void NetClient::AuthChallengeHandler(WowConnection* conn, CDataStore* msg) {
-    // TODO
+    auto challenge = static_cast<AuthenticationChallenge*>(SMemAlloc(sizeof(AuthenticationChallenge), __FILE__, __LINE__, 0x0));
+
+    uint32_t v14;
+    msg->Get(v14);
+
+    msg->Get(challenge->uint0);
+
+    // TODO calculate client seed?
+
+    if (conn == this->m_serverConnection) {
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_AUTH_CHALLENGE, conn, this, challenge, sizeof(AuthenticationChallenge));
+    } else if (conn == this->m_redirectConnection) {
+        // TODO
+    } else {
+        conn->Disconnect();
+    }
+
+    delete challenge;
 }
 
 void NetClient::Connect(const char* addrStr) {

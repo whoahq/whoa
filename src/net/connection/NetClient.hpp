@@ -14,6 +14,12 @@ class WowConnection;
 
 typedef int32_t (*MESSAGE_HANDLER)(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 
+struct AuthenticationChallenge {
+    uint32_t uint0;
+    uint32_t uint4;
+    uint64_t uint8;
+};
+
 class NETEVENTQUEUENODE : public TSLinkedNode<NETEVENTQUEUENODE> {
     public:
 };
@@ -45,6 +51,7 @@ class NetClient : public WowConnectionResponse {
         void* m_handlerParams[NUM_MSG_TYPES];
         NETEVENTQUEUE* m_netEventQueue = nullptr;
         WowConnection* m_serverConnection = nullptr;
+        WowConnection* m_redirectConnection = nullptr;
         uint32_t m_pingSent = 0;
         uint32_t m_pingSequence = 0;
         uint32_t m_latency[16];
