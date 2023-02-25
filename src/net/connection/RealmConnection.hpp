@@ -9,11 +9,24 @@ class RealmResponse;
 
 class RealmConnection : public NetClient {
     public:
+        // Types
+        struct REALMCONNECTIONNODE : TSLinkedNode<REALMCONNECTIONNODE> {
+            RealmConnection* connection;
+        };
+
+        // Static variables
+        SCritSect static s_AllRealmConnectionsCrit;
+        STORM_LIST(REALMCONNECTIONNODE) static s_AllRealmConnections;
+
         // Static functions
         int32_t static MessageHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+        void static PollNet();
 
         // Member variables
         RealmResponse* m_realmResponse;
+
+        // Virtual member functions
+        virtual int32_t HandleAuthChallenge(AuthenticationChallenge* challenge);
 
         // Member functions
         RealmConnection(RealmResponse* realmResponse);

@@ -8,6 +8,7 @@
 #include "gx/Screen.hpp"
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
+#include "net/Poll.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
 #include "util/BlizzardCore.hpp"
@@ -436,5 +437,6 @@ void WowClientInit() {
     // TODO
     // CGlueMgr::m_pendingTimerAlert = dword_B2F9D8;
     // sub_7FC5A0();
-    // EventRegister(EVENT_ID_POLL, &PollNet);
+
+    EventRegister(EVENT_ID_POLL, &PollNet);
 }

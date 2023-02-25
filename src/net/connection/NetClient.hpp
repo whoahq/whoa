@@ -4,6 +4,7 @@
 #include "net/connection/WowConnectionResponse.hpp"
 #include "event/Event.hpp"
 #include "net/Types.hpp"
+#include <storm/Atomic.hpp>
 #include <storm/List.hpp>
 #include <storm/Thread.hpp>
 #include <cstdint>
@@ -41,6 +42,7 @@ class NETEVENTQUEUE {
             : m_client(client)
             {};
         void AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes);
+        void Poll();
 };
 
 class NetClient : public WowConnectionResponse {
@@ -57,6 +59,8 @@ class NetClient : public WowConnectionResponse {
         NETEVENTQUEUE* m_netEventQueue = nullptr;
         WowConnection* m_serverConnection = nullptr;
         WowConnection* m_redirectConnection = nullptr;
+        ATOMIC32 m_refCount = 0;
+        bool m_deleteMe = false;
         uint32_t m_pingSent = 0;
         uint32_t m_pingSequence = 0;
         uint32_t m_latency[16];
@@ -69,13 +73,24 @@ class NetClient : public WowConnectionResponse {
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
         virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
         virtual void WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
+        virtual int32_t HandleData(uint32_t timeReceived, void* data, int32_t size);
+        virtual int32_t HandleAuthChallenge(AuthenticationChallenge* challenge) = 0;
+        virtual int32_t HandleConnect();
+        virtual int32_t HandleDisconnect();
+        virtual int32_t HandleCantConnect();
 
         // Member functions
+        void AddRef();
         void AuthChallengeHandler(WowConnection* conn, CDataStore* msg);
         void Connect(const char* addrStr);
         int32_t ConnectInternal(const char* host, uint16_t port);
+        void DelRef();
+        bool GetDelete();
+        void HandleIdle();
         int32_t Initialize();
+        void PollEventQueue();
         void PongHandler(WowConnection* conn, CDataStore* msg);
+        void SetDelete();
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
 };

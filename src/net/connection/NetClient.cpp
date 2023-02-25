@@ -38,9 +38,69 @@ void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, con
 
     node->m_timeReceived = OsGetAsyncTimeMsPrecise();
 
-    // TODO SInterlockedIncremement(client->uint2E44);
+    client->AddRef();
 
     this->m_critSect.Leave();
+}
+
+void NETEVENTQUEUE::Poll() {
+    this->m_critSect.Enter();
+
+    auto deleted = false;
+    auto client = this->m_client;
+
+    client->AddRef();
+
+    for (auto node = this->m_eventQueue.Head(); node; node = this->m_eventQueue.Next(node)) {
+        if (!client->GetDelete()) {
+            switch (node->m_eventId) {
+            case EVENT_ID_NET_DATA:
+                client->HandleData(node->m_timeReceived, node->m_data, node->m_dataSize);
+                break;
+
+            case EVENT_ID_NET_CONNECT:
+                client->HandleConnect();
+                break;
+
+            case EVENT_ID_NET_DISCONNECT:
+                client->HandleDisconnect();
+                break;
+
+            case EVENT_ID_NET_CANTCONNECT:
+                client->HandleCantConnect();
+                break;
+
+            case EVENT_ID_NET_DESTROY:
+                client->SetDelete();
+                deleted = true;
+                break;
+
+            case EVENT_ID_NET_AUTH_CHALLENGE:
+                client->HandleAuthChallenge(static_cast<AuthenticationChallenge*>(node->m_data));
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        // Matching 1:1 with the ref added by NETEVENTQUEUE::AddEvent
+        client->DelRef();
+    }
+
+    if (!deleted) {
+        client->HandleIdle();
+    }
+
+    client->DelRef();
+
+    this->m_eventQueue.DeleteAll();
+
+    this->m_critSect.Leave();
+}
+
+void NetClient::AddRef() {
+    SInterlockedIncrement(&this->m_refCount);
 }
 
 void NetClient::AuthChallengeHandler(WowConnection* conn, CDataStore* msg) {
@@ -98,6 +158,42 @@ int32_t NetClient::ConnectInternal(const char* host, uint16_t port) {
     return 1;
 }
 
+void NetClient::DelRef() {
+    auto refCount = SInterlockedDecrement(&this->m_refCount);
+
+    if (refCount == 0 && this->m_deleteMe) {
+        delete this;
+    }
+}
+
+bool NetClient::GetDelete() {
+    return this->m_deleteMe;
+}
+
+int32_t NetClient::HandleCantConnect() {
+    // TODO
+    return 1;
+}
+
+int32_t NetClient::HandleConnect() {
+    // TODO
+    return 1;
+}
+
+int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
+    // TODO
+    return 1;
+}
+
+int32_t NetClient::HandleDisconnect() {
+    // TODO
+    return 1;
+}
+
+void NetClient::HandleIdle() {
+    // TODO;
+}
+
 int32_t NetClient::Initialize() {
     STORM_ASSERT(this->m_netState == NS_UNINITIALIZED);
 
@@ -127,8 +223,16 @@ int32_t NetClient::Initialize() {
     return 1;
 }
 
+void NetClient::PollEventQueue() {
+    this->m_netEventQueue->Poll();
+}
+
 void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
+}
+
+void NetClient::SetDelete() {
+    this->m_deleteMe = true;
 }
 
 void NetClient::SetLoginData(LoginData* loginData) {
