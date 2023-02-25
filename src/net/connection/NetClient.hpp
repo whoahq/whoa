@@ -40,6 +40,7 @@ class NetClient : public WowConnectionResponse {
         // Member variables
         LoginData m_loginData;
         NETSTATE m_netState = NS_UNINITIALIZED;
+        bool m_suspended = false;
         MESSAGE_HANDLER m_handlers[NUM_MSG_TYPES];
         void* m_handlerParams[NUM_MSG_TYPES];
         NETEVENTQUEUE* m_netEventQueue = nullptr;
@@ -52,15 +53,17 @@ class NetClient : public WowConnectionResponse {
         SCritSect m_pingLock;
 
         // Virtual member functions
-        virtual void WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg);
+        virtual void WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg);
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
         virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
         virtual void WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
 
         // Member functions
+        void AuthChallengeHandler(WowConnection* conn, CDataStore* msg);
         void Connect(const char* addrStr);
         int32_t ConnectInternal(const char* host, uint16_t port);
         int32_t Initialize();
+        void PongHandler(WowConnection* conn, CDataStore* msg);
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
 };

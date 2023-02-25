@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <new>
+#include <common/DataStore.hpp>
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
@@ -19,6 +20,10 @@ void InitializePropContext() {
 }
 
 void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes) {
+    // TODO
+}
+
+void NetClient::AuthChallengeHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
 }
 
@@ -85,6 +90,10 @@ int32_t NetClient::Initialize() {
     return 1;
 }
 
+void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
+    // TODO
+}
+
 void NetClient::SetLoginData(LoginData* loginData) {
     memcpy(&this->m_loginData, loginData, sizeof(this->m_loginData));
 }
@@ -120,6 +129,34 @@ void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNA
     // TODO
 }
 
-void NetClient::WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {
-    // TODO
+void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg) {
+    uint8_t* data;
+    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->m_size);
+
+    // TODO increment byte counter
+    // SInterlockedExchangeAdd(this->m_bytesReceived, msg->m_size);
+
+    msg->m_read = 0;
+
+    uint16_t msgId;
+    msg->Get(msgId);
+
+    // TODO SMSG_SUSPEND_COMMS (0x50F)
+    // TODO SMSG_FORCE_SEND_QUEUED_PACKETS (0x511)
+    // TODO SMSG_REDIRECT_CLIENT (0x50D)
+
+    if (msgId == SMSG_PONG) {
+        this->PongHandler(conn, msg);
+        return;
+    } else if (msgId == SMSG_AUTH_CHALLENGE) {
+        this->AuthChallengeHandler(conn, msg);
+        return;
+    }
+
+    if (conn == this->m_serverConnection && !this->m_suspended) {
+        msg->m_read = msg->m_size;
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DATA, conn, this, data, msg->m_size);
+    } else {
+        conn->Disconnect();
+    }
 }
