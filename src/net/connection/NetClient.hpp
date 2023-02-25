@@ -47,6 +47,34 @@ class NETEVENTQUEUE {
 
 class NetClient : public WowConnectionResponse {
     public:
+        // Virtual member functions
+        virtual void WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg);
+        virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
+        virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
+        virtual void WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
+        virtual int32_t HandleData(uint32_t timeReceived, void* data, int32_t size);
+        virtual int32_t HandleAuthChallenge(AuthenticationChallenge* challenge) = 0;
+        virtual int32_t HandleConnect();
+        virtual int32_t HandleDisconnect();
+        virtual int32_t HandleCantConnect();
+
+        // Member functions
+        void AddRef();
+        void AuthChallengeHandler(WowConnection* conn, CDataStore* msg);
+        void Connect(const char* addrStr);
+        int32_t ConnectInternal(const char* host, uint16_t port);
+        void DelRef();
+        bool GetDelete();
+        NETSTATE GetState();
+        void HandleIdle();
+        int32_t Initialize();
+        void PollEventQueue();
+        void PongHandler(WowConnection* conn, CDataStore* msg);
+        void SetDelete();
+        void SetLoginData(LoginData* loginData);
+        void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
+
+    private:
         // Static variables
         static int32_t s_clientCount;
 
@@ -67,32 +95,6 @@ class NetClient : public WowConnectionResponse {
         uint32_t m_latencyStart;
         uint32_t m_latencyEnd;
         SCritSect m_pingLock;
-
-        // Virtual member functions
-        virtual void WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg);
-        virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
-        virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
-        virtual void WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
-        virtual int32_t HandleData(uint32_t timeReceived, void* data, int32_t size);
-        virtual int32_t HandleAuthChallenge(AuthenticationChallenge* challenge) = 0;
-        virtual int32_t HandleConnect();
-        virtual int32_t HandleDisconnect();
-        virtual int32_t HandleCantConnect();
-
-        // Member functions
-        void AddRef();
-        void AuthChallengeHandler(WowConnection* conn, CDataStore* msg);
-        void Connect(const char* addrStr);
-        int32_t ConnectInternal(const char* host, uint16_t port);
-        void DelRef();
-        bool GetDelete();
-        void HandleIdle();
-        int32_t Initialize();
-        void PollEventQueue();
-        void PongHandler(WowConnection* conn, CDataStore* msg);
-        void SetDelete();
-        void SetLoginData(LoginData* loginData);
-        void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
 };
 
 #endif

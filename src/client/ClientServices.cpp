@@ -26,7 +26,7 @@ void ClientServices::ConnectToSelectedServer() {
         return;
     }
 
-    if (ClientServices::Connection()->m_netState != NS_INITIALIZED) {
+    if (ClientServices::Connection()->GetState() != NS_INITIALIZED) {
         ClientServices::Connection()->SetStatus(0, 39);
         return;
     }

@@ -170,6 +170,10 @@ bool NetClient::GetDelete() {
     return this->m_deleteMe;
 }
 
+NETSTATE NetClient::GetState() {
+    return this->m_netState;
+}
+
 int32_t NetClient::HandleCantConnect() {
     // TODO
     return 1;
