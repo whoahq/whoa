@@ -21,7 +21,26 @@ void InitializePropContext() {
 }
 
 void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes) {
-    // TODO
+    this->m_critSect.Enter();
+
+    auto node = this->m_eventQueue.NewNode(2, 0, 0x0);
+
+    node->m_eventId = eventId;
+
+    if (bytes) {
+        node->m_data = SMemAlloc(bytes, __FILE__, __LINE__, 0x0);
+        memcpy(node->m_data, data, bytes);
+        node->m_dataSize = bytes;
+    } else {
+        node->m_data = nullptr;
+        node->m_dataSize = 0;
+    }
+
+    node->m_timeReceived = OsGetAsyncTimeMsPrecise();
+
+    // TODO SInterlockedIncremement(client->uint2E44);
+
+    this->m_critSect.Leave();
 }
 
 void NetClient::AuthChallengeHandler(WowConnection* conn, CDataStore* msg) {

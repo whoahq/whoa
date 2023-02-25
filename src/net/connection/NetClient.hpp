@@ -22,6 +22,11 @@ struct AuthenticationChallenge {
 
 class NETEVENTQUEUENODE : public TSLinkedNode<NETEVENTQUEUENODE> {
     public:
+        // Member variables
+        EVENTID m_eventId;
+        uint32_t m_timeReceived;
+        void* m_data;
+        uint32_t m_dataSize;
 };
 
 class NETEVENTQUEUE {
