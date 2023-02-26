@@ -1171,6 +1171,7 @@ enum NETSTATE {
     NS_INITIALIZED      = 2,
     NS_STATE_3          = 3,
     NS_CONNECTING       = 4,
+    NS_CONNECTED        = 5,
 };
 
 enum WOW_CONN_STATE {

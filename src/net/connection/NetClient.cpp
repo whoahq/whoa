@@ -180,7 +180,12 @@ int32_t NetClient::HandleCantConnect() {
 }
 
 int32_t NetClient::HandleConnect() {
-    // TODO
+    // TODO push obj mgr
+
+    this->m_netState = NS_CONNECTED;
+
+    // TODO pop obj mgr
+
     return 1;
 }
 
