@@ -94,6 +94,9 @@ class NetClient : public WowConnectionResponse {
         uint32_t m_latency[16];
         uint32_t m_latencyStart;
         uint32_t m_latencyEnd;
+        uint32_t m_bytesSent = 0;
+        uint32_t m_bytesReceived = 0;
+        uint32_t m_connectedTimestamp = 0;
         SCritSect m_pingLock;
 };
 

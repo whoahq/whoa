@@ -264,8 +264,9 @@ void NetClient::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_
 
     this->m_pingLock.Enter();
 
-    // TODO
-
+    this->m_connectedTimestamp = timeStamp;
+    this->m_bytesReceived = 0;
+    this->m_bytesSent = 0;
     this->m_latencyStart = 0;
     this->m_latencyEnd = 0;
     this->m_pingSent = OsGetAsyncTimeMsPrecise();
