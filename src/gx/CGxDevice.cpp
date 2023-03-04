@@ -930,7 +930,17 @@ void CGxDevice::TexMarkForUpdate(CGxTex* texId, const CiRect& updateRect, int32_
 }
 
 void CGxDevice::TexSetWrap(CGxTex* texId, EGxTexWrapMode wrapU, EGxTexWrapMode wrapV) {
-    // TODO
+    if (texId->m_flags.m_wrapU == wrapU && texId->m_flags.m_wrapV == wrapV) {
+        return;
+    }
+
+    texId->m_flags.m_wrapU = wrapU;
+    texId->m_flags.m_wrapV = wrapV;
+    texId->m_needsFlagUpdate = 1;
+
+    for (int32_t rs = GxRs_Texture0; rs <= GxRs_Texture15; rs++) {
+        this->IRsForceUpdate(static_cast<EGxRenderState>(rs));
+    }
 }
 
 void CGxDevice::ValidateDraw(CGxBatch* batch, int32_t count) {

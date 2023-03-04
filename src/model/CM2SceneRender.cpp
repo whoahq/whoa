@@ -516,8 +516,9 @@ void CM2SceneRender::SetupTextures() {
         if (texture) {
             uint16_t textureFlags = this->m_data->textures[textureIndex].flags;
 
-            EGxTexWrapMode wrapU = static_cast<EGxTexWrapMode>(textureFlags & 0x1);
-            EGxTexWrapMode wrapV = static_cast<EGxTexWrapMode>(textureFlags & 0x2);
+            EGxTexWrapMode wrapU = textureFlags & 0x1 ? GxTex_Wrap : GxTex_Clamp;
+            EGxTexWrapMode wrapV = textureFlags & 0x2 ? GxTex_Wrap : GxTex_Clamp;
+
             GxTexSetWrap(texture, wrapU, wrapV);
         }
 

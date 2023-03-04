@@ -283,8 +283,8 @@ enum EGxTexTarget {
 };
 
 enum EGxTexWrapMode {
-    GxTex_WrapMode0 = 0,
-    GxTex_WrapMode1 = 1
+    GxTex_Clamp = 0,
+    GxTex_Wrap = 1
 };
 
 enum EGxXform {
