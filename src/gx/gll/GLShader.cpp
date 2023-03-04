@@ -3,6 +3,7 @@
 #include "gx/gll/GLPixelShader.h"
 #include "gx/gll/GLPool.h"
 #include "gx/gll/GLVertexShader.h"
+#include <bc/Debug.hpp>
 
 // TODO
 // - threaded compiler support

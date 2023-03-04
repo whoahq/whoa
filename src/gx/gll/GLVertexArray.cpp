@@ -1,5 +1,6 @@
 #include "gx/gll/GLVertexArray.h"
 #include "gx/gll/GLDevice.h"
+#include <bc/Debug.hpp>
 
 bool GLVertexArray::s_VertexArrayEnable = false;
 

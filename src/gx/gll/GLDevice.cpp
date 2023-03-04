@@ -7,6 +7,7 @@
 #include <cstring>
 #include <type_traits>
 #include <ApplicationServices/ApplicationServices.h>
+#include <bc/Debug.hpp>
 
 #define GL_MAX_STREAM 4
 

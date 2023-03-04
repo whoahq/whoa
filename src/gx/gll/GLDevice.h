@@ -15,11 +15,11 @@
 #include "gx/gll/GLTypes.h"
 #include "gx/gll/GLVertexArray.h"
 #include "gx/gll/GLWorker.h"
-#include "util/BlizzardCore.hpp"
 #include <cstdint>
 #include <list>
 #include <string>
 #include <vector>
+#include <bc/Thread.hpp>
 
 class GLDevice {
     public:

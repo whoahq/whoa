@@ -1,7 +1,8 @@
 #include "gx/gll/GLBuffer.h"
 #include "gx/gll/GLDevice.h"
 #include "gx/gll/GLPool.h"
-#include "util/BlizzardCore.hpp"
+#include <bc/Debug.hpp>
+#include <bc/Memory.hpp>
 
 bool GLBuffer::m_UsingVBO = 1;
 

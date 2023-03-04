@@ -21,6 +21,7 @@ target_link_libraries(client
         util
         world
     PUBLIC
+        bc
         common
         storm
 )

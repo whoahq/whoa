@@ -1,5 +1,5 @@
 #include "gx/gll/GLObject.h"
-#include "util/BlizzardCore.hpp"
+#include <bc/Debug.hpp>
 
 void GLObject::AddRefTwin() {
 }

@@ -1,6 +1,7 @@
 #include "gx/gll/GLContext.h"
 #include "gx/gll/GLDevice.h"
 #include "util/Autorelease.hpp"
+#include <bc/Debug.hpp>
 
 NSOpenGLContext* GLContext::s_MainContext;
 Blizzard::Thread::TLSSlot GLContext::s_CurrentContext;

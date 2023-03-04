@@ -1,5 +1,5 @@
 #include "gx/gll/GLUtil.h"
-#include "util/BlizzardCore.hpp"
+#include <bc/Debug.hpp>
 
 uint32_t GLLTextureTypeToIndex(GLEnum textureType) {
     uint32_t index;

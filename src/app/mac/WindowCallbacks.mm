@@ -4,7 +4,7 @@
 #include "gx/gll/CGxDeviceGLL.hpp"
 #include "gx/Device.hpp"
 #include "gx/Window.hpp"
-#include "util/BlizzardCore.hpp"
+#include <bc/Debug.hpp>
 
 void MacOnKeyDown(NSEvent* event) {
     BLIZZARD_ASSERT(false);
