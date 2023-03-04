@@ -29,6 +29,7 @@ target_link_libraries(gx
         ui
         util
     PUBLIC
+        bc
         freetype-2.0
         storm
         tempest

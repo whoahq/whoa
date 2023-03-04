@@ -11,10 +11,10 @@
 #include "net/Poll.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
-#include "util/BlizzardCore.hpp"
 #include "util/CVar.hpp"
 #include "world/World.hpp"
 #include <cstring>
+#include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
 

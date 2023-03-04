@@ -10,6 +10,7 @@
 #include <cmath>
 #include <cstdio>
 #include <cstring>
+#include <bc/Debug.hpp>
 
 GLEnum CGxDeviceGLL::s_glCubeMapFaces[] = {
     GL_TEXTURE_CUBE_MAP_POSITIVE_X,

@@ -3,12 +3,12 @@
 
 #include "gx/gll/GLAbstractWindow.h"
 #include "gx/gll/GLTypes.h"
-#include "util/BlizzardCore.hpp"
 #include <cstdint>
 #include <map>
 #include <string>
 #include <vector>
 #include <CoreFoundation/CoreFoundation.h>
+#include <bc/Thread.hpp>
 
 #ifdef __OBJC__
     #include <AppKit/AppKit.h>

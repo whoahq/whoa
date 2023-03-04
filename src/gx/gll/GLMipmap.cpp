@@ -2,6 +2,7 @@
 #include "gx/gll/GLCommand.h"
 #include "gx/gll/GLDevice.h"
 #include "gx/gll/GLFramebuffer.h"
+#include <bc/Debug.hpp>
 
 int32_t GLMipmap::GetDepthBits() {
     return this->m_DepthBits;

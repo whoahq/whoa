@@ -10,3 +10,6 @@
 [submodule "lib/system"]
 	path = lib/system
 	url = https://github.com/whoahq/system.git
+[submodule "lib/bc"]
+	path = lib/bc
+	url = https://github.com/whoahq/bc

@@ -4,9 +4,9 @@
 #include "gx/gll/GL.h"
 #include "gx/gll/GLObject.h"
 #include "gx/gll/GLTypes.h"
-#include "util/BlizzardCore.hpp"
 #include <list>
 #include <vector>
+#include <bc/Thread.hpp>
 
 #define GLTFLAG_RENDERTARGET 0x1
 #define GLTFLAG_DEPTH 0x2

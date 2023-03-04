@@ -3,6 +3,7 @@
 #include "gx/gll/GLMipmap.h"
 #include "gx/gll/GLPool.h"
 #include "gx/gll/GLTypes.h"
+#include <bc/Debug.hpp>
 
 GLFramebuffer* GLFramebuffer::Create(bool a1) {
     GLFramebuffer* framebuffer = new GLFramebuffer(a1);

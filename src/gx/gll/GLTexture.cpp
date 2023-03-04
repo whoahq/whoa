@@ -5,6 +5,8 @@
 #include "gx/gll/GLUtil.h"
 #include "gx/texture/CGxTex.hpp"
 #include <deque>
+#include <bc/Debug.hpp>
+#include <bc/Memory.hpp>
 
 Blizzard::Thread::TLSSlot GLTexture::m_Bindings[4];
 

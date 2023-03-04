@@ -3,6 +3,7 @@
 #include "gx/gll/GLLayerView.h"
 #include "util/Autorelease.hpp"
 #include <cmath>
+#include <bc/Debug.hpp>
 
 GLWindowCallbacks DefaultCallbacks = {
     // TODO
