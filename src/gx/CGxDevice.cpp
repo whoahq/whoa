@@ -78,6 +78,10 @@ void CGxDevice::Log(const char* format, ...) {
     // TODO
 }
 
+void CGxDevice::Log(const CGxFormat& format) {
+    // TODO
+}
+
 #if defined(WHOA_SYSTEM_WIN)
 CGxDevice* CGxDevice::NewD3d() {
     auto m = SMemAlloc(sizeof(CGxDeviceD3d), __FILE__, __LINE__, 0x0);

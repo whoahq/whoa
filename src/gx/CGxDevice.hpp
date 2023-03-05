@@ -47,6 +47,7 @@ class CGxDevice {
 
         // Static functions
         static void Log(const char* format, ...);
+        static void Log(const CGxFormat& format);
 #if defined(WHOA_SYSTEM_WIN)
         static CGxDevice* NewD3d();
         static CGxDevice* NewD3d9Ex();
