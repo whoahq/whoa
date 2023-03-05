@@ -14,12 +14,12 @@ class CGxDeviceD3d : public CGxDevice {
     static LRESULT WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
     // Member variables
-    HWND m_hwnd;
+    HWND m_hwnd = nullptr;
     ATOM m_hwndClass;
     int32_t m_ownhwnd;
-    HINSTANCE m_d3dLib;
-    LPDIRECT3D9 m_d3d;
-    LPDIRECT3DDEVICE9 m_d3dDevice;
+    HINSTANCE m_d3dLib = nullptr;
+    LPDIRECT3D9 m_d3d = nullptr;
+    LPDIRECT3DDEVICE9 m_d3dDevice = nullptr;
     D3DCAPS9 m_d3dCaps;
     D3DDISPLAYMODE m_desktopDisplayMode;
 
