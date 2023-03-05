@@ -94,3 +94,7 @@ void GxFormatColor(CImVector& color) {
         color = formattedColor;
     }
 }
+
+void GxLogOpen() {
+    CGxDevice::LogOpen();
+}
