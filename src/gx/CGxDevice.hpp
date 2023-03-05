@@ -46,8 +46,11 @@ class CGxDevice {
         static uint32_t s_texFormatBytesPerBlock[];
 
         // Static functions
+        static void Log(const char* format, ...);
+#if defined(WHOA_SYSTEM_WIN)
         static CGxDevice* NewD3d();
         static CGxDevice* NewD3d9Ex();
+#endif
 #if defined(WHOA_SYSTEM_MAC)
         static CGxDevice* NewGLL();
 #endif

@@ -185,7 +185,15 @@ void ConsoleDeviceInitialize(const char* title) {
     CGxFormat format;
     memcpy(&format, &s_requestedFormat, sizeof(s_requestedFormat));
 
-    CGxDevice* device = GxDevCreate(GxApi_GLL, nullptr, format);
+    // TODO proper api selection
+    EGxApi api = GxApi_OpenGl;
+#if defined(WHOA_SYSTEM_WIN)
+    api = GxApi_D3d9;
+#elif defined(WHOA_SYSTEM_MAC)
+    api = GxApi_GLL;
+#endif
+
+    CGxDevice* device = GxDevCreate(api, nullptr, format);
 
     // TODO
 }

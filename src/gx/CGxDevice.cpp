@@ -10,6 +10,10 @@
 #include <storm/Error.hpp>
 #include <storm/Memory.hpp>
 
+#if defined(WHOA_SYSTEM_WIN)
+    #include "gx/d3d/CGxDeviceD3d.hpp"
+#endif
+
 #if defined(WHOA_SYSTEM_MAC)
     #include "gx/gll/CGxDeviceGLL.hpp"
 #endif
@@ -70,15 +74,21 @@ uint32_t CGxDevice::s_texFormatBytesPerBlock[] = {
     4       // GxTex_D24X8
 };
 
-CGxDevice* CGxDevice::NewD3d() {
+void CGxDevice::Log(const char* format, ...) {
     // TODO
-    return nullptr;
+}
+
+#if defined(WHOA_SYSTEM_WIN)
+CGxDevice* CGxDevice::NewD3d() {
+    auto m = SMemAlloc(sizeof(CGxDeviceD3d), __FILE__, __LINE__, 0x0);
+    return new (m) CGxDeviceD3d();
 }
 
 CGxDevice* CGxDevice::NewD3d9Ex() {
     // TODO
     return nullptr;
 }
+#endif
 
 #if defined(WHOA_SYSTEM_MAC)
 CGxDevice* CGxDevice::NewGLL() {
