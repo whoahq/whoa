@@ -9,7 +9,7 @@ ATOM WindowClassCreate() {
     wc.style = CS_OWNDC;
     wc.lpfnWndProc = CGxDeviceD3d::WindowProcD3d;
     wc.hInstance = instance;
-    wc.lpszClassName = "GxWindowClassD3d";
+    wc.lpszClassName = TEXT("GxWindowClassD3d");
 
     wc.hIcon = static_cast<HICON>(LoadImage(instance, TEXT("BlizzardIcon.ico"), 1u, 0, 0, 0x40));
     wc.hCursor = LoadCursor(instance, TEXT("BlizzardCursor.cur"));
@@ -62,7 +62,8 @@ void CGxDeviceD3d::IUnloadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d) {
 
 LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     // TODO
-    return 0;
+
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
@@ -96,6 +97,41 @@ int32_t CGxDeviceD3d::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t,
     return 0;
 }
 
+int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
+    CGxDevice::Log("CGxDeviceD3d::DeviceSetFormat():");
+    CGxDevice::Log(format);
+
+    if (this->m_hwnd) {
+        ShowWindow(this->m_hwnd, 0);
+    }
+
+    // TODO
+
+    if (this->m_hwnd) {
+        DestroyWindow(this->m_hwnd);
+    }
+
+    this->m_hwnd = nullptr;
+
+    this->m_format = format;
+
+    CGxFormat createFormat = format;
+
+    if (this->ICreateWindow(createFormat) && this->ICreateD3dDevice(createFormat) && this->CGxDevice::DeviceSetFormat(format)) {
+        this->m_context = 1;
+
+        // TODO
+
+        if (this->m_format.window == 0) {
+            RECT windowRect;
+            GetWindowRect(this->m_hwnd, &windowRect);
+            ClipCursor(&windowRect);
+        }
+
+        return 1;
+    }
+}
+
 int32_t CGxDeviceD3d::ICreateD3d() {
     if (CGxDeviceD3d::ILoadD3dLib(this->m_d3dLib, this->m_d3d) && this->m_d3d->GetDeviceCaps(0, D3DDEVTYPE_HAL, &this->m_d3dCaps) >= S_OK) {
         if (this->m_desktopDisplayMode.Format != D3DFMT_UNKNOWN) {
@@ -116,6 +152,56 @@ int32_t CGxDeviceD3d::ICreateD3d() {
     this->IDestroyD3d();
 
     return 0;
+}
+
+int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
+    // TODO
+    return 0;
+}
+
+bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
+    auto instance = GetModuleHandle(nullptr);
+
+    DWORD dwStyle;
+    if (format.window == 0) {
+        dwStyle = WS_POPUP | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_SYSMENU;
+    } else if (format.maximize == 1) {
+        dwStyle = WS_POPUP | WS_VISIBLE;
+    } else if (format.maximize == 2) {
+        dwStyle = WS_POPUP;
+    } else {
+        dwStyle = WS_CLIPSIBLINGS | WS_CLIPCHILDREN | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX | WS_MINIMIZEBOX | WS_MAXIMIZEBOX;
+    }
+
+    // TODO
+
+    int32_t width = format.size.x ? format.size.x : CW_USEDEFAULT;
+    int32_t height = format.size.y ? format.size.y : CW_USEDEFAULT;
+
+    if (format.window && format.maximize != 1 && format.size.x && format.size.y) {
+        // TODO adjust width and height
+    }
+
+    this->m_hwnd = CreateWindowEx(
+        WS_EX_APPWINDOW,
+        TEXT("GxWindowClassD3d"),
+        TEXT("World of Warcraft"),
+        dwStyle,
+        format.pos.x,
+        format.pos.y,
+        width,
+        height,
+        nullptr,
+        nullptr,
+        instance,
+        this
+    );
+
+    if (this->m_hwnd && format.maximize != 2) {
+        ShowWindow(this->m_hwnd, 1);
+    }
+
+    return this->m_hwnd != nullptr;
 }
 
 void CGxDeviceD3d::IDestroyD3d() {

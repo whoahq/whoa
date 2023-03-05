@@ -27,6 +27,7 @@ class CGxFormat {
         uint32_t sampleCount;
         Format colorFormat;
         uint32_t refreshRate;
+        C2iVector pos;
 };
 
 #endif
