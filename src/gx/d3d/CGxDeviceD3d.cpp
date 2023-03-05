@@ -1,5 +1,16 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
 
+D3DFORMAT CGxDeviceD3d::s_GxFormatToD3dFormat[] = {
+    D3DFMT_R5G6B5,      // Fmt_Rgb565
+    D3DFMT_X8R8G8B8,    // Fmt_ArgbX888
+    D3DFMT_A8R8G8B8,    // Fmt_Argb8888
+    D3DFMT_A2R10G10B10, // Fmt_Argb2101010
+    D3DFMT_D16,         // Fmt_Ds160
+    D3DFMT_D24X8,       // Fmt_Ds24X
+    D3DFMT_D24S8,       // Fmt_Ds248
+    D3DFMT_D32,         // Fmt_Ds320
+};
+
 ATOM WindowClassCreate() {
     auto instance = GetModuleHandle(nullptr);
 
@@ -155,7 +166,28 @@ int32_t CGxDeviceD3d::ICreateD3d() {
 }
 
 int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
-    // TODO
+    // TODO stereoscopic setup
+
+    auto hwTnL = format.hwTnL;
+    if (hwTnL && (this->m_d3dCaps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0) {
+        hwTnL = false;
+    }
+    this->m_d3dIsHwDevice = hwTnL;
+
+    D3DPRESENT_PARAMETERS d3dpp;
+    this->ISetPresentParms(d3dpp, format);
+
+    uint32_t behaviorFlags = hwTnL
+        ? D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE | D3DCREATE_FPU_PRESERVE
+        : D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE;
+
+    if (this->m_d3d->CreateDevice(0, D3DDEVTYPE_HAL, this->m_hwnd, behaviorFlags, &d3dpp, &this->m_d3dDevice) >= S_OK) {
+        // TODO
+
+        return 1;
+    }
+
+    this->m_d3dDevice = nullptr;
     return 0;
 }
 
@@ -215,6 +247,72 @@ void CGxDeviceD3d::IDestroyD3dDevice() {
 
 void CGxDeviceD3d::IRsSendToHw(EGxRenderState rs) {
     // TODO
+}
+
+void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format) {
+    memset(&d3dpp, 0, sizeof(d3dpp));
+
+    if (format.window) {
+        D3DDISPLAYMODE currentMode;
+        D3DFORMAT backBufferFormat;
+        if (this->m_d3d->GetAdapterDisplayMode(0, &currentMode) >= S_OK) {
+            backBufferFormat = currentMode.Format;
+        } else {
+            backBufferFormat = this->m_desktopDisplayMode.Format;
+        }
+
+        auto& windowRect = this->DeviceCurWindow();
+
+        d3dpp.Windowed = true;
+        d3dpp.BackBufferWidth = windowRect.maxX;
+        d3dpp.BackBufferHeight = windowRect.maxY;
+        d3dpp.BackBufferFormat = backBufferFormat;
+
+        if (format.vsync) {
+            // TODO d3dpp.BackBufferCount = format.int1C;
+            d3dpp.BackBufferCount = 1;
+        } else {
+            d3dpp.BackBufferCount = 1;
+        }
+
+        d3dpp.FullScreen_RefreshRateInHz = 0;
+    } else {
+        d3dpp.BackBufferWidth = format.size.x;
+        d3dpp.BackBufferHeight = format.size.y;
+        d3dpp.BackBufferFormat = CGxDeviceD3d::s_GxFormatToD3dFormat[format.colorFormat];
+        d3dpp.FullScreen_RefreshRateInHz = format.refreshRate;
+    }
+
+    d3dpp.hDeviceWindow = this->m_hwnd;
+    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+    d3dpp.EnableAutoDepthStencil = true;
+    d3dpp.AutoDepthStencilFormat = CGxDeviceD3d::s_GxFormatToD3dFormat[format.depthFormat];
+
+    switch (format.vsync) {
+    case 1:
+        d3dpp.PresentationInterval = 1;
+        break;
+    case 2:
+        d3dpp.PresentationInterval = format.window ? 1 : 2;
+        break;
+    case 3:
+        d3dpp.PresentationInterval = format.window ? 1 : 4;
+        break;
+    case 4:
+        d3dpp.PresentationInterval = format.window ? 1 : 8;
+        break;
+    default:
+        d3dpp.PresentationInterval = CW_USEDEFAULT;
+        break;
+    }
+
+    if (format.sampleCount <= 1) {
+        d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+    } else {
+        d3dpp.MultiSampleType = static_cast<D3DMULTISAMPLE_TYPE>(format.sampleCount);
+
+        // TODO MultiSampleQuality
+    }
 }
 
 void CGxDeviceD3d::IShaderCreate(CGxShader* shader) {

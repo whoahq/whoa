@@ -8,6 +8,9 @@
 
 class CGxDeviceD3d : public CGxDevice {
     public:
+    // Static variables
+    static D3DFORMAT s_GxFormatToD3dFormat[];
+
     // Static functions
     static int32_t ILoadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d);
     static void IUnloadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d);
@@ -21,6 +24,7 @@ class CGxDeviceD3d : public CGxDevice {
     LPDIRECT3D9 m_d3d = nullptr;
     LPDIRECT3DDEVICE9 m_d3dDevice = nullptr;
     D3DCAPS9 m_d3dCaps;
+    int32_t m_d3dIsHwDevice = 0;
     D3DDISPLAYMODE m_desktopDisplayMode;
 
     // Virtual member functions
@@ -38,6 +42,7 @@ class CGxDeviceD3d : public CGxDevice {
     int32_t ICreateD3d();
     int32_t ICreateD3dDevice(const CGxFormat& format);
     bool ICreateWindow(CGxFormat& format);
+    void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
 };
