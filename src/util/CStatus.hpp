@@ -21,7 +21,7 @@ class CStatus {
 
 class CWOWClientStatus : public CStatus {
     public:
-        void* m_logFile;
+        void* m_logFile = nullptr;
 };
 
 CStatus& GetGlobalStatusObj(void);
