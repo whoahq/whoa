@@ -72,6 +72,100 @@ void CGxDeviceD3d::IUnloadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d) {
 }
 
 LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    auto device = reinterpret_cast<CGxDeviceD3d*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+
+    switch (uMsg) {
+    case WM_CREATE: {
+        auto lpcs = reinterpret_cast<LPCREATESTRUCT>(lParam);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LPARAM>(lpcs->lpCreateParams));
+
+        return 0;
+    }
+
+    case WM_DESTROY: {
+        device->DeviceWM(GxWM_Destroy, 0, 0);
+
+        return 0;
+    }
+
+    case WM_SIZE: {
+        CRect windowRect = {
+            0.0f,
+            0.0f,
+            static_cast<float>(HIWORD(lParam)),
+            static_cast<float>(LOWORD(lParam))
+        };
+
+        int32_t resizeType = 0;
+        if (wParam == SIZE_MINIMIZED) {
+            resizeType = 1;
+        } else if (wParam == SIZE_MAXHIDE) {
+            resizeType = 2;
+        }
+
+        device->DeviceWM(GxWM_Size, reinterpret_cast<uintptr_t>(&windowRect), resizeType);
+
+        break;
+    }
+
+    case WM_ACTIVATE: {
+        // TODO
+
+        break;
+    }
+
+    case WM_SETFOCUS: {
+        device->DeviceWM(GxWM_SetFocus, 0, 0);
+
+        return 0;
+    }
+
+    case WM_KILLFOCUS: {
+        device->DeviceWM(GxWM_KillFocus, 0, 0);
+
+        return 0;
+    }
+
+    case WM_PAINT: {
+        PAINTSTRUCT paint;
+        BeginPaint(hWnd, &paint);
+        EndPaint(hWnd, &paint);
+
+        return 0;
+    }
+
+    case WM_ERASEBKGND: {
+        return 0;
+    }
+
+    case WM_SETCURSOR: {
+        // TODO
+
+        return 1;
+    }
+
+    case WM_DISPLAYCHANGE: {
+        // TODO
+
+        break;
+    }
+
+    case WM_SYSCOMMAND: {
+        // TODO
+
+        break;
+    }
+
+    case WM_SIZING: {
+        // TODO
+
+        break;
+    }
+
+    default:
+        break;
+    }
+
     // TODO
 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
@@ -141,6 +235,10 @@ int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
 
         return 1;
     }
+}
+
+void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
+    // TODO
 }
 
 int32_t CGxDeviceD3d::ICreateD3d() {
