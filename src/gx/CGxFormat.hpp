@@ -20,6 +20,7 @@ class CGxFormat {
         };
 
         // Member variables
+        bool hwTnL;
         int8_t window;
         int32_t maximize;
         Format depthFormat;
@@ -27,6 +28,7 @@ class CGxFormat {
         uint32_t sampleCount;
         Format colorFormat;
         uint32_t refreshRate;
+        uint32_t vsync;
         C2iVector pos;
 };
 
