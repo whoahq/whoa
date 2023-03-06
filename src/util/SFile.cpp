@@ -90,6 +90,7 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
     std::ifstream* stream = new std::ifstream(path, std::ios::in | std::ios::binary | std::ios::ate);
 
     if (!stream->is_open()) {
+        *file = nullptr;
         return 0;
     }
 
