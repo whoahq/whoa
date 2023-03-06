@@ -308,6 +308,14 @@ enum EGxuDrawListCategory {
     GxuCat_2 = 2
 };
 
+enum EGxWM {
+    GxWM_Size = 0,
+    GxWM_DisplayChange = 1,
+    GxWM_Destroy = 2,
+    GxWM_SetFocus = 3,
+    GxWM_KillFocus = 4,
+};
+
 enum COLOR_FILE_FORMAT {
     COLOR_JPEG = 0,
     COLOR_PAL = 1,

@@ -32,6 +32,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void IRsSendToHw(EGxRenderState rs);
     virtual int32_t DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format);
     virtual int32_t DeviceSetFormat(const CGxFormat& format);
+    virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);

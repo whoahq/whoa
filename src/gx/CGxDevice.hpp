@@ -99,6 +99,7 @@ class CGxDevice {
         virtual void ICursorCreate(const CGxFormat& format);
         virtual int32_t DeviceCreate(long (*)(void*, uint32_t, uint32_t, long), const CGxFormat&);
         virtual int32_t DeviceSetFormat(const CGxFormat&);
+        virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) = 0;
         virtual void CapsWindowSize(CRect&) = 0;
         virtual void CapsWindowSizeInScreenCoords(CRect& dst) = 0;
         virtual void ScenePresent(void);
