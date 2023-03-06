@@ -242,13 +242,13 @@ void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
 }
 
 int32_t CGxDeviceD3d::ICreateD3d() {
-    if (CGxDeviceD3d::ILoadD3dLib(this->m_d3dLib, this->m_d3d) && this->m_d3d->GetDeviceCaps(0, D3DDEVTYPE_HAL, &this->m_d3dCaps) >= S_OK) {
+    if (CGxDeviceD3d::ILoadD3dLib(this->m_d3dLib, this->m_d3d) && SUCCEEDED(this->m_d3d->GetDeviceCaps(0, D3DDEVTYPE_HAL, &this->m_d3dCaps))) {
         if (this->m_desktopDisplayMode.Format != D3DFMT_UNKNOWN) {
             return 1;
         }
 
         D3DDISPLAYMODE displayMode;
-        if (this->m_d3d->GetAdapterDisplayMode(0, &displayMode) >= S_OK) {
+        if (SUCCEEDED(this->m_d3d->GetAdapterDisplayMode(0, &displayMode))) {
             this->m_desktopDisplayMode.Width = displayMode.Width;
             this->m_desktopDisplayMode.Height = displayMode.Height;
             this->m_desktopDisplayMode.RefreshRate = displayMode.RefreshRate;
@@ -279,7 +279,7 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
         ? D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE | D3DCREATE_FPU_PRESERVE
         : D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE;
 
-    if (this->m_d3d->CreateDevice(0, D3DDEVTYPE_HAL, this->m_hwnd, behaviorFlags, &d3dpp, &this->m_d3dDevice) >= S_OK) {
+    if (SUCCEEDED(this->m_d3d->CreateDevice(0, D3DDEVTYPE_HAL, this->m_hwnd, behaviorFlags, &d3dpp, &this->m_d3dDevice))) {
         // TODO
 
         return 1;
@@ -353,7 +353,7 @@ void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxForma
     if (format.window) {
         D3DDISPLAYMODE currentMode;
         D3DFORMAT backBufferFormat;
-        if (this->m_d3d->GetAdapterDisplayMode(0, &currentMode) >= S_OK) {
+        if (SUCCEEDED(this->m_d3d->GetAdapterDisplayMode(0, &currentMode))) {
             backBufferFormat = currentMode.Format;
         } else {
             backBufferFormat = this->m_desktopDisplayMode.Format;
