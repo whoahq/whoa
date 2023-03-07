@@ -10,6 +10,9 @@ class CGxDeviceD3d : public CGxDevice {
     public:
     // Static variables
     static D3DFORMAT s_GxFormatToD3dFormat[];
+    static D3DFORMAT s_GxTexFmtToD3dFmt[];
+    static EGxTexFormat s_GxTexFmtToUse[];
+    static EGxTexFormat s_tolerableTexFmtMapping[];
 
     // Static functions
     static int32_t ILoadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d);
@@ -46,6 +49,8 @@ class CGxDeviceD3d : public CGxDevice {
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
+    void ITexCreate(CGxTex* texId);
+    void ITexUpload(CGxTex* texId);
 };
 
 #endif
