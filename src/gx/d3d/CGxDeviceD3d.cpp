@@ -227,6 +227,10 @@ CGxDeviceD3d::CGxDeviceD3d() : CGxDevice() {
 
     // TODO
 
+    memset(this->m_deviceStates, 0xFF, sizeof(this->m_deviceStates));
+
+    // TODO
+
     this->DeviceCreatePools();
     this->DeviceCreateStreamBufs();
 }
