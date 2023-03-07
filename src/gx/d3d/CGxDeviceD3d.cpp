@@ -1,4 +1,5 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
+#include "gx/texture/CGxTex.hpp"
 
 D3DFORMAT CGxDeviceD3d::s_GxFormatToD3dFormat[] = {
     D3DFMT_R5G6B5,      // Fmt_Rgb565
@@ -9,6 +10,54 @@ D3DFORMAT CGxDeviceD3d::s_GxFormatToD3dFormat[] = {
     D3DFMT_D24X8,       // Fmt_Ds24X
     D3DFMT_D24S8,       // Fmt_Ds248
     D3DFMT_D32,         // Fmt_Ds320
+};
+
+D3DFORMAT CGxDeviceD3d::s_GxTexFmtToD3dFmt[] = {
+    D3DFMT_UNKNOWN,     // GxTex_Unknown
+    D3DFMT_A8B8G8R8,    // GxTex_Abgr8888
+    D3DFMT_A8R8G8B8,    // GxTex_Argb8888
+    D3DFMT_A4R4G4B4,    // GxTex_Argb4444
+    D3DFMT_A1R5G5B5,    // GxTex_Argb1555
+    D3DFMT_R5G6B5,      // GxTex_Rgb565
+    D3DFMT_DXT1,        // GxTex_Dxt1
+    D3DFMT_DXT3,        // GxTex_Dxt3
+    D3DFMT_DXT5,        // GxTex_Dxt5
+    D3DFMT_V8U8,        // GxTex_Uv88
+    D3DFMT_G16R16F,     // GxTex_Gr1616F
+    D3DFMT_R32F,        // GxTex_R32F
+    D3DFMT_D24X8,       // GxTex_D24X8
+};
+
+EGxTexFormat CGxDeviceD3d::s_GxTexFmtToUse[] = {
+    GxTex_Unknown,
+    GxTex_Abgr8888,
+    GxTex_Argb8888,
+    GxTex_Argb4444,
+    GxTex_Argb1555,
+    GxTex_Rgb565,
+    GxTex_Dxt1,
+    GxTex_Dxt3,
+    GxTex_Dxt5,
+    GxTex_Uv88,
+    GxTex_Gr1616F,
+    GxTex_R32F,
+    GxTex_D24X8,
+};
+
+EGxTexFormat CGxDeviceD3d::s_tolerableTexFmtMapping[] = {
+    GxTex_Unknown,      // GxTex_Unknown
+    GxTex_Argb4444,     // GxTex_Abgr8888
+    GxTex_Argb4444,     // GxTex_Argb8888
+    GxTex_Argb4444,     // GxTex_Argb4444
+    GxTex_Argb4444,     // GxTex_Argb1555
+    GxTex_Argb4444,     // GxTex_Rgb565
+    GxTex_Dxt1,         // GxTex_Dxt1
+    GxTex_Dxt3,         // GxTex_Dxt3
+    GxTex_Dxt5,         // GxTex_Dxt5
+    GxTex_Uv88,         // GxTex_Uv88
+    GxTex_Gr1616F,      // GxTex_Gr1616F
+    GxTex_R32F,         // GxTex_R32F
+    GxTex_D24X8,        // GxTex_D24X8
 };
 
 ATOM WindowClassCreate() {
@@ -223,7 +272,7 @@ int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
     CGxFormat createFormat = format;
 
     if (this->ICreateWindow(createFormat) && this->ICreateD3dDevice(createFormat) && this->CGxDevice::DeviceSetFormat(format)) {
-        this->m_context = 1;
+        this->intF64 = 1;
 
         // TODO
 
@@ -280,6 +329,10 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
         : D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE;
 
     if (SUCCEEDED(this->m_d3d->CreateDevice(0, D3DDEVTYPE_HAL, this->m_hwnd, behaviorFlags, &d3dpp, &this->m_d3dDevice))) {
+        // TODO
+
+        this->m_context = 1;
+
         // TODO
 
         return 1;
@@ -417,7 +470,94 @@ void CGxDeviceD3d::IShaderCreate(CGxShader* shader) {
     // TODO
 }
 
+void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
+    uint32_t width, height, startLevel, endLevel;
+    this->ITexWHDStartEnd(texId, width, height, startLevel, endLevel);
+
+    texId->m_format = CGxDeviceD3d::s_GxTexFmtToUse[texId->m_format];
+
+    uint32_t d3dUsage = 0;
+    D3DPOOL d3dPool = D3DPOOL_MANAGED;
+
+    if (texId->m_flags.m_renderTarget) {
+        d3dUsage = D3DUSAGE_RENDERTARGET;
+        d3dPool = D3DPOOL_DEFAULT;
+    }
+
+    if (texId->m_flags.m_generateMipMaps) {
+        d3dUsage |= D3DUSAGE_AUTOGENMIPMAP;
+    }
+
+    // Cube map
+    if (texId->m_target == GxTex_CubeMap) {
+        auto d3dFormat = CGxDeviceD3d::s_GxTexFmtToD3dFmt[texId->m_format];
+        LPDIRECT3DCUBETEXTURE9 d3dTexture;
+
+        if (SUCCEEDED(this->m_d3dDevice->CreateCubeTexture(width, endLevel - startLevel, d3dUsage, d3dFormat, d3dPool, &d3dTexture, nullptr))) {
+            texId->m_apiSpecificData = d3dTexture;
+            texId->m_needsCreation = 0;
+        }
+
+        return;
+    }
+
+    // Depth stencil
+    if (texId->m_format == GxTex_D24X8) {
+        d3dUsage = D3DUSAGE_DEPTHSTENCIL;
+        auto d3dFormat = D3DFMT_D24X8;
+        LPDIRECT3DTEXTURE9 d3dTexture;
+
+        if (SUCCEEDED(this->m_d3dDevice->CreateTexture(width, height, 1, d3dUsage, d3dFormat, d3dPool, &d3dTexture, nullptr))) {
+            texId->m_apiSpecificData = d3dTexture;
+            texId->m_needsCreation = 0;
+        }
+
+        return;
+    }
+
+    // Ordinary texture
+    LPDIRECT3DTEXTURE9 d3dTexture;
+    auto d3dFormat = CGxDeviceD3d::s_GxTexFmtToD3dFmt[texId->m_format];
+
+    if (SUCCEEDED(this->m_d3dDevice->CreateTexture(width, height, endLevel - startLevel, d3dUsage, d3dFormat, d3dPool, &d3dTexture, nullptr))) {
+        texId->m_apiSpecificData = d3dTexture;
+        texId->m_needsCreation = 0;
+
+        return;
+    }
+
+    // TODO flag check SLOBYTE(texId->m_flags)
+
+    // If texture creation failed, try again with a fallback format
+    CGxDeviceD3d::s_GxTexFmtToUse[texId->m_format] = CGxDeviceD3d::s_tolerableTexFmtMapping[texId->m_format];
+    texId->m_format = CGxDeviceD3d::s_GxTexFmtToUse[texId->m_format];
+    d3dFormat = CGxDeviceD3d::s_GxTexFmtToD3dFmt[texId->m_format];
+
+    if (SUCCEEDED(this->m_d3dDevice->CreateTexture(width, height, endLevel - startLevel, d3dUsage, d3dFormat, d3dPool, &d3dTexture, nullptr))) {
+        texId->m_apiSpecificData = d3dTexture;
+        texId->m_needsCreation = 0;
+    }
+}
+
 void CGxDeviceD3d::ITexMarkAsUpdated(CGxTex* texId) {
+    if (!texId->m_needsUpdate || !this->m_context) {
+        return;
+    }
+
+    if (texId->m_needsCreation || (!texId->m_apiSpecificData && !texId->m_apiSpecificData2)) {
+        this->ITexCreate(texId);
+    }
+
+    if (!texId->m_needsCreation && (texId->m_apiSpecificData || texId->m_apiSpecificData2)) {
+        if (texId->m_userFunc) {
+            this->ITexUpload(texId);
+        }
+
+        CGxDevice::ITexMarkAsUpdated(texId);
+    }
+}
+
+void CGxDeviceD3d::ITexUpload(CGxTex* texId) {
     // TODO
 }
 

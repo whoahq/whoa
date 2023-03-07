@@ -69,6 +69,7 @@ class CGxDevice {
         int32_t m_shaderProfiles[GxShTargets_Last] = { 6, 0, 0, 0, 12, 0 }; // TODO placeholder
         TSHashTable<CGxShader, HASHKEY_STRI> m_shaderList[GxShTargets_Last];
         int32_t m_context = 0;
+        int32_t intF64 = 0;
         CBoundingBox m_viewport;
         C44Matrix m_projection;
         C44Matrix m_projNative;
