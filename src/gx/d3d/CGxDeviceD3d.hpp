@@ -43,6 +43,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual int32_t StereoEnabled();
 
     // Member functions
+    CGxDeviceD3d();
     int32_t ICreateD3d();
     int32_t ICreateD3dDevice(const CGxFormat& format);
     bool ICreateWindow(CGxFormat& format);
