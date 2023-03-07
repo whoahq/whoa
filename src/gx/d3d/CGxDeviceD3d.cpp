@@ -220,6 +220,17 @@ LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
+CGxDeviceD3d::CGxDeviceD3d() : CGxDevice() {
+    // TODO
+
+    this->m_api = GxApi_D3d9;
+
+    // TODO
+
+    this->DeviceCreatePools();
+    this->DeviceCreateStreamBufs();
+}
+
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
     // TODO
 }
