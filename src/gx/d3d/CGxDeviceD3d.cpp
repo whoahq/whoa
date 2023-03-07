@@ -1,6 +1,16 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
 #include "gx/texture/CGxTex.hpp"
 
+D3DTEXTUREFILTERTYPE CGxDeviceD3d::s_filterModes[GxTexFilters_Last][3] = {
+    // Min, Mag, Mip
+    { D3DTEXF_POINT,    D3DTEXF_POINT,  D3DTEXF_NONE    },  // GxTex_Nearest
+    { D3DTEXF_LINEAR,   D3DTEXF_LINEAR, D3DTEXF_NONE    },  // GxTex_Linear
+    { D3DTEXF_POINT,    D3DTEXF_POINT,  D3DTEXF_POINT   },  // GxTex_NearestMipNearest
+    { D3DTEXF_LINEAR,   D3DTEXF_LINEAR, D3DTEXF_POINT   },  // GxTex_LinearMipNearest
+    { D3DTEXF_LINEAR,   D3DTEXF_LINEAR, D3DTEXF_LINEAR  },  // GxTex_LinearMipLinear
+    { D3DTEXF_LINEAR,   D3DTEXF_LINEAR, D3DTEXF_LINEAR  },  // GxTex_Anisotropic
+};
+
 D3DFORMAT CGxDeviceD3d::s_GxFormatToD3dFormat[] = {
     D3DFMT_R5G6B5,      // Fmt_Rgb565
     D3DFMT_X8R8G8B8,    // Fmt_ArgbX888
@@ -58,6 +68,11 @@ EGxTexFormat CGxDeviceD3d::s_tolerableTexFmtMapping[] = {
     GxTex_Gr1616F,      // GxTex_Gr1616F
     GxTex_R32F,         // GxTex_R32F
     GxTex_D24X8,        // GxTex_D24X8
+};
+
+D3DTEXTUREADDRESS CGxDeviceD3d::s_wrapModes[] = {
+    D3DTADDRESS_CLAMP,  // GxTex_Clamp
+    D3DTADDRESS_WRAP,   // GxTex_Wrap
 };
 
 ATOM WindowClassCreate() {
@@ -305,6 +320,10 @@ void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
     // TODO
 }
 
+void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
+    // TODO
+}
+
 int32_t CGxDeviceD3d::ICreateD3d() {
     if (CGxDeviceD3d::ILoadD3dLib(this->m_d3dLib, this->m_d3d) && SUCCEEDED(this->m_d3d->GetDeviceCaps(0, D3DDEVTYPE_HAL, &this->m_d3dCaps))) {
         if (this->m_desktopDisplayMode.Format != D3DFMT_UNKNOWN) {
@@ -411,8 +430,38 @@ void CGxDeviceD3d::IDestroyD3dDevice() {
     // TODO
 }
 
-void CGxDeviceD3d::IRsSendToHw(EGxRenderState rs) {
-    // TODO
+void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
+    auto state = &this->m_appRenderStates[which];
+
+    switch (which) {
+    // TODO handle all render states
+
+    case GxRs_Texture0:
+    case GxRs_Texture1:
+    case GxRs_Texture2:
+    case GxRs_Texture3:
+    case GxRs_Texture4:
+    case GxRs_Texture5:
+    case GxRs_Texture6:
+    case GxRs_Texture7:
+    case GxRs_Texture8:
+    case GxRs_Texture9:
+    case GxRs_Texture10:
+    case GxRs_Texture11:
+    case GxRs_Texture12:
+    case GxRs_Texture13:
+    case GxRs_Texture14:
+    case GxRs_Texture15: {
+        uint32_t tmu = which - GxRs_Texture0;
+        auto texture = static_cast<CGxTex*>(static_cast<void*>(state->m_value));
+        this->ISetTexture(tmu, texture);
+
+        break;
+    }
+
+    default:
+        break;
+    }
 }
 
 void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format) {
@@ -478,6 +527,40 @@ void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxForma
         d3dpp.MultiSampleType = static_cast<D3DMULTISAMPLE_TYPE>(format.sampleCount);
 
         // TODO MultiSampleQuality
+    }
+}
+
+void CGxDeviceD3d::ISetTexture(uint32_t tmu, CGxTex* texId) {
+    if (tmu > 15) {
+        return;
+    }
+
+    if (texId) {
+        this->ITexMarkAsUpdated(texId);
+        this->m_d3dDevice->SetTexture(tmu, static_cast<LPDIRECT3DBASETEXTURE9>(texId->m_apiSpecificData));
+
+        // Texture filters
+        auto& filters = CGxDeviceD3d::s_filterModes[texId->m_flags.m_filter];
+        this->DsSet(static_cast<EDeviceState>(Ds_TssMinFilter0 + tmu), filters[0]);
+        this->DsSet(static_cast<EDeviceState>(Ds_TssMagFilter0 + tmu), filters[1]);
+        this->DsSet(static_cast<EDeviceState>(Ds_TssMipFilter0 + tmu), filters[2]);
+
+        // Texture addressing
+        this->DsSet(static_cast<EDeviceState>(Ds_TssWrapU0 + tmu), CGxDeviceD3d::s_wrapModes[texId->m_flags.m_wrapU]);
+        this->DsSet(static_cast<EDeviceState>(Ds_TssWrapV0 + tmu), CGxDeviceD3d::s_wrapModes[texId->m_flags.m_wrapV]);
+
+        // Max anisotropy
+        this->DsSet(static_cast<EDeviceState>(Ds_TssMaxAnisotropy0 + tmu), texId->m_flags.m_maxAnisotropy);
+
+        if (tmu < 8) {
+            // TODO FFP
+        }
+    } else {
+        this->m_d3dDevice->SetTexture(tmu, nullptr);
+
+        if (tmu < 8) {
+            // TODO FFP
+        }
     }
 }
 

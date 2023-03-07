@@ -196,10 +196,12 @@ class CGxDeviceD3d : public CGxDevice {
     };
 
     // Static variables
+    static D3DTEXTUREFILTERTYPE s_filterModes[GxTexFilters_Last][3];
     static D3DFORMAT s_GxFormatToD3dFormat[];
     static D3DFORMAT s_GxTexFmtToD3dFmt[];
     static EGxTexFormat s_GxTexFmtToUse[];
     static EGxTexFormat s_tolerableTexFmtMapping[];
+    static D3DTEXTUREADDRESS s_wrapModes[];
 
     // Static functions
     static int32_t ILoadD3dLib(HINSTANCE& d3dLib, LPDIRECT3D9& d3d);
@@ -220,7 +222,7 @@ class CGxDeviceD3d : public CGxDevice {
 
     // Virtual member functions
     virtual void ITexMarkAsUpdated(CGxTex* texId);
-    virtual void IRsSendToHw(EGxRenderState rs);
+    virtual void IRsSendToHw(EGxRenderState which);
     virtual int32_t DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format);
     virtual int32_t DeviceSetFormat(const CGxFormat& format);
     virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
@@ -232,12 +234,14 @@ class CGxDeviceD3d : public CGxDevice {
 
     // Member functions
     CGxDeviceD3d();
+    void DsSet(EDeviceState state, uint32_t val);
     int32_t ICreateD3d();
     int32_t ICreateD3dDevice(const CGxFormat& format);
     bool ICreateWindow(CGxFormat& format);
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
+    void ISetTexture(uint32_t tmu, CGxTex* texId);
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
 };
