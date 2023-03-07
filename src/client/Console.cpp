@@ -182,6 +182,13 @@ void ConsoleDeviceInitialize(const char* title) {
         SetGxCVars(s_requestedFormat);
     }
 
+    // TODO
+
+    // TODO s_requestedFormat.hwTnL = !CmdLineGetBool(CMD_SW_TNL);
+    s_requestedFormat.hwTnL = true;
+
+    // TODO
+
     CGxFormat format;
     memcpy(&format, &s_requestedFormat, sizeof(s_requestedFormat));
 
