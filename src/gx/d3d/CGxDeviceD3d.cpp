@@ -1,5 +1,6 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
 #include "gx/texture/CGxTex.hpp"
+#include <algorithm>
 
 D3DTEXTUREFILTERTYPE CGxDeviceD3d::s_filterModes[GxTexFilters_Last][3] = {
     // Min, Mag, Mip
@@ -483,6 +484,10 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
 
         // TODO
 
+        this->ISetCaps(format);
+
+        // TODO
+
         return 1;
     }
 
@@ -612,6 +617,66 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
     default:
         break;
     }
+}
+
+void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
+    // Texture stages
+
+    int32_t maxSimultaneousTextures = this->m_d3dCaps.MaxSimultaneousTextures;
+    this->m_caps.m_numTmus = std::min(maxSimultaneousTextures, 8);
+
+    // Rasterization rules
+
+    this->m_caps.m_pixelCenterOnEdge = 0;
+    this->m_caps.m_texelCenterOnEdge = 1;
+
+    // Max texture size
+
+    uint32_t maxTextureWidth = this->m_d3dCaps.MaxTextureWidth;
+    this->m_caps.m_texMaxSize[GxTex_2d] = std::max(maxTextureWidth, 256u);
+    this->m_caps.m_texMaxSize[GxTex_CubeMap] = std::max(maxTextureWidth, 256u);
+    this->m_caps.m_texMaxSize[GxTex_Rectangle] = std::max(maxTextureWidth, 256u);
+    this->m_caps.m_texMaxSize[GxTex_NonPow2] = std::max(maxTextureWidth, 256u);
+
+    // Max vertex index
+
+    this->m_caps.m_maxIndex = this->m_d3dCaps.MaxVertexIndex;
+
+    // Trilinear filtering
+
+    this->m_caps.m_texFilterTrilinear =
+        (this->m_d3dCaps.TextureFilterCaps & D3DPTFILTERCAPS_MIPFLINEAR) != 0;
+
+    // Anisotropic filtering
+
+    this->m_caps.m_texFilterAnisotropic =
+        (this->m_d3dCaps.TextureFilterCaps & (D3DPTFILTERCAPS_MINFANISOTROPIC | D3DPTFILTERCAPS_MAGFANISOTROPIC)) != 0;
+
+    if (this->m_d3dCaps.TextureFilterCaps & D3DPTFILTERCAPS_MINFANISOTROPIC) {
+        CGxDeviceD3d::s_filterModes[GxTex_Anisotropic][0] = D3DTEXF_ANISOTROPIC;
+    }
+
+    if (this->m_d3dCaps.TextureFilterCaps & D3DPTFILTERCAPS_MAGFANISOTROPIC) {
+        CGxDeviceD3d::s_filterModes[GxTex_Anisotropic][1] = D3DTEXF_ANISOTROPIC;
+    }
+
+    this->m_caps.m_maxTexAnisotropy = this->m_d3dCaps.MaxAnisotropy;
+
+    if (this->m_caps.m_texFilterAnisotropic && this->m_d3dCaps.MaxAnisotropy < 2) {
+        this->m_caps.m_texFilterAnisotropic = 0;
+    }
+
+    // Misc capabilities
+
+    this->m_caps.m_depthBias = (this->m_d3dCaps.RasterCaps & D3DPRASTERCAPS_DEPTHBIAS) != 0;
+    this->m_caps.m_numStreams = this->m_d3dCaps.MaxStreams;
+    this->m_caps.int10 = (this->m_d3dCaps.Caps2 & 1) != 0; // unknown caps flag
+
+    // Shader targets
+
+    // TODO
+
+    // TODO
 }
 
 void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format) {
