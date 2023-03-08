@@ -368,6 +368,7 @@ char* CGxDeviceD3d::IBufLock(CGxBuf* buf) {
         } else {
             lockFlags = D3DLOCK_DISCARD;
             pool->Discard();
+            buf->m_index = 0;
             pool->unk1C = buf->m_size;
         }
     } else if (pool->m_usage == GxPoolUsage_Dynamic) {
