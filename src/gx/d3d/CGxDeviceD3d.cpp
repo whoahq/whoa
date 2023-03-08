@@ -240,6 +240,10 @@ CGxDeviceD3d::CGxDeviceD3d() : CGxDevice() {
 
     this->m_api = GxApi_D3d9;
 
+    // TODO remove m_shaderProfiles in favor of caps-defined profiles
+    this->m_shaderProfiles[GxSh_Vertex] = GxShVS_vs_3_0;
+    this->m_shaderProfiles[GxSh_Pixel] = GxShPS_ps_3_0;
+
     // TODO
 
     memset(this->m_deviceStates, 0xFF, sizeof(this->m_deviceStates));
@@ -710,7 +714,51 @@ void CGxDeviceD3d::ISetTexture(uint32_t tmu, CGxTex* texId) {
 }
 
 void CGxDeviceD3d::IShaderCreate(CGxShader* shader) {
-    // TODO
+    if (shader->target == GxSh_Vertex) {
+        this->IShaderCreateVertex(shader);
+    } else if (shader->target == GxSh_Pixel) {
+        this->IShaderCreatePixel(shader);
+    }
+}
+
+void CGxDeviceD3d::IShaderCreatePixel(CGxShader* shader) {
+    shader->valid = 0;
+
+    if (!this->m_context) {
+        return;
+    }
+
+    shader->loaded = 1;
+
+    if (shader->code.Count() == 0) {
+        return;
+    }
+
+    LPDIRECT3DPIXELSHADER9 d3dShader;
+    if (SUCCEEDED(this->m_d3dDevice->CreatePixelShader(reinterpret_cast<DWORD*>(shader->code.Ptr()), &d3dShader))) {
+        shader->apiSpecific = d3dShader;
+        shader->valid = 1;
+    }
+}
+
+void CGxDeviceD3d::IShaderCreateVertex(CGxShader* shader) {
+    shader->valid = 0;
+
+    if (!this->m_context) {
+        return;
+    }
+
+    shader->loaded = 1;
+
+    if (shader->code.Count() == 0) {
+        return;
+    }
+
+    LPDIRECT3DVERTEXSHADER9 d3dShader;
+    if (SUCCEEDED(this->m_d3dDevice->CreateVertexShader(reinterpret_cast<DWORD*>(shader->code.Ptr()), &d3dShader))) {
+        shader->apiSpecific = d3dShader;
+        shader->valid = 1;
+    }
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
@@ -806,6 +854,14 @@ void CGxDeviceD3d::ITexUpload(CGxTex* texId) {
 
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
+}
+
+void CGxDeviceD3d::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations) {
+    CGxDevice::ShaderCreate(shaders, target, a4, a5, permutations);
+
+    if (permutations == 1 && !shaders[0]->loaded) {
+        this->IShaderCreate(shaders[0]);
+    }
 }
 
 int32_t CGxDeviceD3d::StereoEnabled() {

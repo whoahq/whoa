@@ -232,6 +232,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual char* BufLock(CGxBuf* buf);
     virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);
     virtual void IShaderCreate(CGxShader* shader);
+    virtual void ShaderCreate(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations);
     virtual int32_t StereoEnabled();
 
     // Member functions
@@ -249,6 +250,8 @@ class CGxDeviceD3d : public CGxDevice {
     void IDestroyD3d();
     void IDestroyD3dDevice();
     void ISetTexture(uint32_t tmu, CGxTex* texId);
+    void IShaderCreatePixel(CGxShader* shader);
+    void IShaderCreateVertex(CGxShader* shader);
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
 };
