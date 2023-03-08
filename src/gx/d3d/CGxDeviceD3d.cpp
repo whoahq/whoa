@@ -250,12 +250,34 @@ CGxDeviceD3d::CGxDeviceD3d() : CGxDevice() {
     this->DeviceCreateStreamBufs();
 }
 
+char* CGxDeviceD3d::BufLock(CGxBuf* buf) {
+    CGxDevice::BufLock(buf);
+    return this->IBufLock(buf);
+}
+
+int32_t CGxDeviceD3d::BufUnlock(CGxBuf* buf, uint32_t size) {
+    CGxDevice::BufUnlock(buf, size);
+    this->IBufUnlock(buf);
+
+    return 1;
+}
+
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
     // TODO
 }
 
 void CGxDeviceD3d::CapsWindowSizeInScreenCoords(CRect& dst) {
     // TODO
+}
+
+int32_t CGxDeviceD3d::CreatePoolAPI(CGxPool* pool) {
+    if (pool->m_target == GxPoolTarget_Vertex) {
+        pool->m_apiSpecific = this->ICreateD3dVB(pool->m_usage, pool->m_size);
+    } else if (pool->m_target == GxPoolTarget_Index) {
+        pool->m_apiSpecific = this->ICreateD3dIB(pool->m_usage, pool->m_size);
+    }
+
+    return 1;
 }
 
 int32_t CGxDeviceD3d::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format) {
@@ -324,6 +346,93 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
     // TODO
 }
 
+char* CGxDeviceD3d::IBufLock(CGxBuf* buf) {
+    if (!this->m_context) {
+        // TODO
+        return nullptr;
+    }
+
+    auto pool = buf->m_pool;
+    uint32_t lockFlags = 0x0;
+
+    if (pool->m_usage == GxPoolUsage_Stream) {
+        auto v6 = buf->m_itemSize + pool->unk1C - 1 - (buf->m_itemSize + pool->unk1C - 1) % buf->m_itemSize;
+        if (buf->m_size + v6 <= pool->m_size) {
+            lockFlags = D3DLOCK_NOOVERWRITE;
+            buf->m_index = v6;
+            pool->unk1C = buf->m_size + v6;
+        } else {
+            lockFlags = D3DLOCK_DISCARD;
+            pool->Discard();
+            pool->unk1C = buf->m_size;
+        }
+    } else if (pool->m_usage == GxPoolUsage_Dynamic) {
+        lockFlags = D3DLOCK_NOOVERWRITE;
+    }
+
+    if (!pool->m_apiSpecific) {
+        this->CreatePoolAPI(pool);
+    }
+
+    if (!pool->m_apiSpecific) {
+        // TODO
+        return nullptr;
+    }
+
+    // Invalid target
+    if (pool->m_target >= GxPoolTargets_Last) {
+        return nullptr;
+    }
+
+    char* data = nullptr;
+    HRESULT lockResult = S_OK;
+
+    if (pool->m_target == GxPoolTarget_Vertex) {
+        auto d3dBuf = static_cast<LPDIRECT3DVERTEXBUFFER9>(pool->m_apiSpecific);
+        lockResult = d3dBuf->Lock(buf->m_index, buf->m_size, reinterpret_cast<void**>(&data), lockFlags);
+    } else if (pool->m_target == GxPoolTarget_Index) {
+        auto d3dBuf = static_cast<LPDIRECT3DINDEXBUFFER9>(pool->m_apiSpecific);
+        lockResult = d3dBuf->Lock(buf->m_index, buf->m_size, reinterpret_cast<void**>(&data), lockFlags);
+    }
+
+    if (SUCCEEDED(lockResult)) {
+        if (buf->m_size) {
+            // TODO
+
+            if (pool->m_usage == GxPoolUsage_Stream) {
+                *data = 0;
+            } else {
+                *data = *data;
+            }
+
+            // TODO
+        }
+    } else {
+        this->IBufUnlock(buf);
+
+        // TODO
+        return nullptr;
+    }
+
+    return data;
+}
+
+void CGxDeviceD3d::IBufUnlock(CGxBuf* buf) {
+    // TODO
+
+    auto pool = buf->m_pool;
+
+    if (pool->m_target == GxPoolTarget_Vertex) {
+        auto d3dBuf = static_cast<LPDIRECT3DVERTEXBUFFER9>(pool->m_apiSpecific);
+        buf->unk1D = SUCCEEDED(d3dBuf->Unlock());
+    } else if (pool->m_target == GxPoolTarget_Index) {
+        auto d3dBuf = static_cast<LPDIRECT3DINDEXBUFFER9>(pool->m_apiSpecific);
+        buf->unk1D = SUCCEEDED(d3dBuf->Unlock());
+    } else {
+        buf->unk1D = 1;
+    }
+}
+
 int32_t CGxDeviceD3d::ICreateD3d() {
     if (CGxDeviceD3d::ILoadD3dLib(this->m_d3dLib, this->m_d3d) && SUCCEEDED(this->m_d3d->GetDeviceCaps(0, D3DDEVTYPE_HAL, &this->m_d3dCaps))) {
         if (this->m_desktopDisplayMode.Format != D3DFMT_UNKNOWN) {
@@ -374,6 +483,42 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
 
     this->m_d3dDevice = nullptr;
     return 0;
+}
+
+LPDIRECT3DINDEXBUFFER9 CGxDeviceD3d::ICreateD3dIB(EGxPoolUsage usage, uint32_t size) {
+    uint32_t d3dUsage = this->m_d3dIsHwDevice ? D3DUSAGE_WRITEONLY : D3DUSAGE_SOFTWAREPROCESSING;
+    D3DPOOL d3dPool = D3DPOOL_MANAGED;
+
+    if (usage == GxPoolUsage_Dynamic || usage == GxPoolUsage_Stream) {
+        d3dUsage |= D3DUSAGE_DYNAMIC;
+        d3dPool = D3DPOOL_DEFAULT;
+    }
+
+    LPDIRECT3DINDEXBUFFER9 indexBuf = nullptr;
+
+    if (SUCCEEDED(this->m_d3dDevice->CreateIndexBuffer(size, d3dUsage, D3DFMT_INDEX16, d3dPool, &indexBuf, nullptr))) {
+        return indexBuf;
+    }
+
+    return nullptr;
+}
+
+LPDIRECT3DVERTEXBUFFER9 CGxDeviceD3d::ICreateD3dVB(EGxPoolUsage usage, uint32_t size) {
+    uint32_t d3dUsage = this->m_d3dIsHwDevice ? D3DUSAGE_WRITEONLY : D3DUSAGE_SOFTWAREPROCESSING;
+    D3DPOOL d3dPool = D3DPOOL_MANAGED;
+
+    if (usage == GxPoolUsage_Dynamic || usage == GxPoolUsage_Stream) {
+        d3dUsage |= D3DUSAGE_DYNAMIC;
+        d3dPool = D3DPOOL_DEFAULT;
+    }
+
+    LPDIRECT3DVERTEXBUFFER9 vertexBuf = nullptr;
+
+    if (SUCCEEDED(this->m_d3dDevice->CreateVertexBuffer(size, d3dUsage, D3DFMT_INDEX16, d3dPool, &vertexBuf, nullptr))) {
+        return vertexBuf;
+    }
+
+    return nullptr;
 }
 
 bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
