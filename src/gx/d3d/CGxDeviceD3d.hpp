@@ -229,14 +229,21 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
+    virtual char* BufLock(CGxBuf* buf);
+    virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);
     virtual void IShaderCreate(CGxShader* shader);
     virtual int32_t StereoEnabled();
 
     // Member functions
     CGxDeviceD3d();
+    int32_t CreatePoolAPI(CGxPool* pool);
     void DsSet(EDeviceState state, uint32_t val);
+    char* IBufLock(CGxBuf* buf);
+    void IBufUnlock(CGxBuf* buf);
     int32_t ICreateD3d();
     int32_t ICreateD3dDevice(const CGxFormat& format);
+    LPDIRECT3DINDEXBUFFER9 ICreateD3dIB(EGxPoolUsage usage, uint32_t size);
+    LPDIRECT3DVERTEXBUFFER9 ICreateD3dVB(EGxPoolUsage usage, uint32_t size);
     bool ICreateWindow(CGxFormat& format);
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
