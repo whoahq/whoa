@@ -394,7 +394,7 @@ void GetDefaultTexture(uint32_t height, uint32_t width) {
 void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL_FORMAT preferredFormat, int32_t alphaBits) {
     switch (preferredFormat) {
         case PIXEL_DXT1:
-            if (GxCaps().m_texFmtDxt1) {
+            if (GxCaps().m_texFmt[GxTex_Dxt1]) {
                 *gxTexFormat = GxTex_Dxt1;
                 *pixFormat = PIXEL_DXT1;
             } else if (alphaBits) {
@@ -408,7 +408,7 @@ void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL
             break;
 
         case PIXEL_DXT3:
-            if (GxCaps().m_texFmtDxt3) {
+            if (GxCaps().m_texFmt[GxTex_Dxt3]) {
                 *gxTexFormat = GxTex_Dxt3;
                 *pixFormat = PIXEL_DXT3;
             } else {
@@ -443,7 +443,7 @@ void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL
             break;
 
         case PIXEL_DXT5:
-            if (GxCaps().m_texFmtDxt5) {
+            if (GxCaps().m_texFmt[GxTex_Dxt5]) {
                 *gxTexFormat = GxTex_Dxt5;
                 *pixFormat = PIXEL_DXT5;
             } else {

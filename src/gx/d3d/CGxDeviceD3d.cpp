@@ -480,6 +480,7 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
     if (SUCCEEDED(this->m_d3d->CreateDevice(0, D3DDEVTYPE_HAL, this->m_hwnd, behaviorFlags, &d3dpp, &this->m_d3dDevice))) {
         // TODO
 
+        this->m_devAdapterFormat = d3dpp.BackBufferFormat;
         this->m_context = 1;
 
         // TODO
@@ -702,7 +703,22 @@ void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
 
     // TODO modify shader targets based on format
 
-    // TODO
+    // Texture formats
+
+    for (int32_t i = 0; i < GxTexFormats_Last; i++) {
+        if (i == GxTex_Unknown) {
+            this->m_caps.m_texFmt[i] = 0;
+        } else {
+            this->m_caps.m_texFmt[i] = this->m_d3d->CheckDeviceFormat(
+                0,
+                D3DDEVTYPE_HAL,
+                this->m_devAdapterFormat,
+                0,
+                D3DRTYPE_TEXTURE,
+                CGxDeviceD3d::s_GxTexFmtToD3dFmt[i]
+            ) == D3D_OK;
+        }
+    }
 
     this->m_caps.m_generateMipMaps = (this->m_d3dCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0;
 
