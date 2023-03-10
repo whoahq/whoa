@@ -16,7 +16,6 @@ class CGxCaps {
         int32_t m_generateMipMaps = 0;
         int32_t m_texTarget[GxTexTargets_Last];
         uint32_t m_texMaxSize[GxTexTargets_Last];
-        uint32_t m_maxTextureSize = 0;
         int32_t m_texFmtDxt1 = 0;
         int32_t m_texFmtDxt3 = 0;
         int32_t m_texFmtDxt5 = 0;

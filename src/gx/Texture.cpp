@@ -508,10 +508,9 @@ uint32_t MippedImgCalcSize(uint32_t fourCC, uint32_t width, uint32_t height) {
 // - order: width, height or height, width?
 void RequestImageDimensions(uint32_t* width, uint32_t* height, uint32_t* bestMip) {
     CGxCaps systemCaps;
-
     memcpy(&systemCaps, GxCaps(), sizeof(systemCaps));
 
-    uint32_t maxTextureSize = systemCaps.m_maxTextureSize;
+    auto maxTextureSize = systemCaps.m_texMaxSize[GxTex_2d];
 
     if (maxTextureSize) {
         while (*height > maxTextureSize || *width > maxTextureSize) {

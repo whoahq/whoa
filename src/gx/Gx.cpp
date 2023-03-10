@@ -48,8 +48,6 @@ CGxCaps* GxCaps() {
 
     g_placeholderGxCaps->m_generateMipMaps = 1;
 
-    g_placeholderGxCaps->m_maxTextureSize = 4096;
-
     g_placeholderGxCaps->m_texFmtDxt1 = 1;
     g_placeholderGxCaps->m_texFmtDxt3 = 1;
     g_placeholderGxCaps->m_texFmtDxt5 = 1;
