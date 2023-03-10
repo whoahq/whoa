@@ -703,6 +703,10 @@ void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
     // TODO modify shader targets based on format
 
     // TODO
+
+    this->m_caps.m_generateMipMaps = (this->m_d3dCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0;
+
+    // TODO
 }
 
 void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format) {
