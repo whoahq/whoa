@@ -40,6 +40,8 @@ class CGxDevice {
         // Static variables
         static uint32_t s_alphaRef[];
         static C3Vector s_pointScaleIdentity;
+        static uint32_t s_primVtxAdjust[];
+        static uint32_t s_primVtxDiv[];
         static ShaderConstants s_shadowConstants[2];
         static uint32_t s_streamPoolSize[];
         static uint32_t s_texFormatBitDepth[];
@@ -56,6 +58,7 @@ class CGxDevice {
         static CGxDevice* NewGLL();
 #endif
         static CGxDevice* NewOpenGl();
+        static uint32_t PrimCalcCount(EGxPrim primType, uint32_t count);
 
         // Member variables
         TSGrowableArray<CGxPushedRenderState> m_pushedStates;
@@ -69,6 +72,7 @@ class CGxDevice {
         int32_t m_shaderProfiles[GxShTargets_Last] = { 6, 0, 0, 0, 12, 0 }; // TODO placeholder
         TSHashTable<CGxShader, HASHKEY_STRI> m_shaderList[GxShTargets_Last];
         int32_t m_context = 0;
+        int32_t intF5C = 0;
         int32_t intF64 = 0;
         CBoundingBox m_viewport;
         C44Matrix m_projection;

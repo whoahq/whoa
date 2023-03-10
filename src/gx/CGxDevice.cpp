@@ -35,6 +35,24 @@ uint32_t CGxDevice::s_alphaRef[] = {
 
 C3Vector CGxDevice::s_pointScaleIdentity = { 1.0f, 0.0f, 0.0f };
 
+uint32_t CGxDevice::s_primVtxAdjust[] = {
+    0,      // GxPrim_Points
+    0,      // GxPrim_Lines
+    1,      // GxPrim_LineStrip
+    0,      // GxPrim_Triangles
+    2,      // GxPrim_TriangleStrip
+    2,      // GxPrim_TriangleFan
+};
+
+uint32_t CGxDevice::s_primVtxDiv[] = {
+    1,      // GxPrim_Points
+    2,      // GxPrim_Lines
+    1,      // GxPrim_LineStrip
+    3,      // GxPrim_Triangles
+    1,      // GxPrim_TriangleStrip
+    1,      // GxPrim_TriangleFan
+};
+
 ShaderConstants CGxDevice::s_shadowConstants[2];
 
 uint32_t CGxDevice::s_streamPoolSize[] = {
@@ -107,6 +125,15 @@ CGxDevice* CGxDevice::NewOpenGl() {
     // return new (m) CGxDeviceOpenGl();
 
     return nullptr;
+}
+
+uint32_t CGxDevice::PrimCalcCount(EGxPrim primType, uint32_t count) {
+    auto div = CGxDevice::s_primVtxDiv[primType];
+    if (div != 1) {
+        count /= div;
+    }
+
+    return count - CGxDevice::s_primVtxAdjust[primType];
 }
 
 CGxDevice::CGxDevice() {
