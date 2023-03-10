@@ -875,6 +875,10 @@ void CGxDeviceD3d::ISetTexture(uint32_t tmu, CGxTex* texId) {
     }
 }
 
+void CGxDeviceD3d::IShaderConstantsFlush() {
+    // TODO
+}
+
 void CGxDeviceD3d::IShaderCreate(CGxShader* shader) {
     if (shader->target == GxSh_Vertex) {
         this->IShaderCreateVertex(shader);
@@ -924,6 +928,32 @@ void CGxDeviceD3d::IShaderCreateVertex(CGxShader* shader) {
 }
 
 void CGxDeviceD3d::IStateSync() {
+    // TODO
+
+    this->IShaderConstantsFlush();
+    this->IRsSync(0);
+
+    // TODO ffp if vertex shader is disabled
+
+    this->IStateSyncEnables();
+
+    // TODO
+
+    this->IStateSyncVertexPtrs();
+    this->IStateSyncIndexPtr();
+
+    // TODO
+}
+
+void CGxDeviceD3d::IStateSyncEnables() {
+    // TODO
+}
+
+void CGxDeviceD3d::IStateSyncIndexPtr() {
+    // TODO
+}
+
+void CGxDeviceD3d::IStateSyncVertexPtrs() {
     // TODO
 }
 

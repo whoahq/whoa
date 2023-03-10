@@ -254,9 +254,13 @@ class CGxDeviceD3d : public CGxDevice {
     void IDestroyD3dDevice();
     void ISetCaps(const CGxFormat& format);
     void ISetTexture(uint32_t tmu, CGxTex* texId);
+    void IShaderConstantsFlush();
     void IShaderCreatePixel(CGxShader* shader);
     void IShaderCreateVertex(CGxShader* shader);
     void IStateSync();
+    void IStateSyncEnables();
+    void IStateSyncIndexPtr();
+    void IStateSyncVertexPtrs();
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
 };
