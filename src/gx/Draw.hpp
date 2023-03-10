@@ -8,7 +8,7 @@
 class C3Vector;
 class CImVector;
 
-void GxDraw(CGxBatch*, int32_t);
+void GxDraw(CGxBatch* batch, int32_t indexed);
 
 void GxSceneClear(uint32_t, CImVector);
 

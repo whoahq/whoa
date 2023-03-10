@@ -1,8 +1,8 @@
 #include "gx/Draw.hpp"
 #include "gx/Device.hpp"
 
-void GxDraw(CGxBatch* batches, int32_t count) {
-    g_theGxDevicePtr->Draw(batches, count);
+void GxDraw(CGxBatch* batch, int32_t indexed) {
+    g_theGxDevicePtr->Draw(batch, indexed);
 }
 
 void GxSceneClear(uint32_t mask, CImVector color) {

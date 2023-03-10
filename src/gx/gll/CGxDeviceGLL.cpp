@@ -334,7 +334,7 @@ int32_t CGxDeviceGLL::DeviceSetFormat(const CGxFormat& format) {
     return 1;
 }
 
-void CGxDeviceGLL::Draw(CGxBatch* batch, int32_t count) {
+void CGxDeviceGLL::Draw(CGxBatch* batch, int32_t indexed) {
     if (!this->m_context) {
         return;
     }
@@ -343,28 +343,26 @@ void CGxDeviceGLL::Draw(CGxBatch* batch, int32_t count) {
     // unk conditional check early return
 
     this->IStateSync();
-    this->ValidateDraw(batch, count);
+    this->ValidateDraw(batch, indexed);
 
-    int32_t v4 = 0;
+    uint32_t baseIndex = 0;
+    if (!this->m_caps.int10) {
+        baseIndex = this->m_primVertexFormatBuf[0]->m_index / this->m_primVertexFormatBuf[0]->m_itemSize;
+    }
 
-    // TODO
-    // if (!this->unk0[154]) {
-    //     v4 = (this->unk6[56] + 24) / (this->unk6[56] + 12);
-    // }
-
-    if (count) {
+    if (indexed) {
         this->m_glDevice.DrawIndexed(
             CGxDeviceGLL::s_primitiveConversion[batch->m_primType],
             batch->m_minIndex,
             batch->m_maxIndex,
-            v4,
-            batch->m_start + (this->m_primIndexBuf->m_index >> 1),
+            baseIndex,
+            batch->m_start + (this->m_primIndexBuf->m_index / 2),
             batch->m_count
         );
     } else {
         this->m_glDevice.Draw(
             CGxDeviceGLL::s_primitiveConversion[batch->m_primType],
-            v4,
+            baseIndex,
             batch->m_count
         );
     }
@@ -671,6 +669,8 @@ void CGxDeviceGLL::ISetCaps(const CGxFormat& format) {
     this->m_caps.m_colorFormat = GxCF_rgba;
 
     this->m_caps.m_generateMipMaps = 1;
+
+    this->m_caps.int10 = 1;
 
     this->m_caps.m_texFmt[GxTex_Dxt1] = 1;
     this->m_caps.m_texFmt[GxTex_Dxt3] = 1;

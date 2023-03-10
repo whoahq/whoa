@@ -357,7 +357,7 @@ void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
     // TODO
 }
 
-void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t count) {
+void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t indexed) {
     if (!this->m_context || this->intF5C) {
         return;
     }
@@ -369,7 +369,7 @@ void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t count) {
         baseIndex = this->m_primVertexFormatBuf[0]->m_index / this->m_primVertexFormatBuf[0]->m_itemSize;
     }
 
-    if (count) {
+    if (indexed) {
         this->m_d3dDevice->DrawIndexedPrimitive(
             CGxDeviceD3d::s_primitiveConversion[batch->m_primType],
             baseIndex,
