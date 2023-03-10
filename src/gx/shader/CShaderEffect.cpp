@@ -31,7 +31,7 @@ void CShaderEffect::InitShaderSystem(int32_t enableShaders, int32_t usePcf) {
     CShaderEffect::s_usePcfFiltering = enableShaders && usePcf ? 1 : 0;
     CShaderEffect::s_fogMul = 1.0f;
 
-    CShaderEffect::s_useAlphaRef = GxCaps()->int130;
+    CShaderEffect::s_useAlphaRef = GxCaps().int130;
 }
 
 void CShaderEffect::SetAlphaRef(float alphaRef) {
@@ -65,13 +65,13 @@ void CShaderEffect::SetEmissive(const C4Vector& emissive) {
 
 void CShaderEffect::SetFogEnabled(int32_t fogEnabled) {
     if (fogEnabled && GxMasterEnable(GxMasterEnable_Fog)) {
-        if (CShaderEffect::s_enableShaders && !GxCaps()->int138) {
+        if (CShaderEffect::s_enableShaders && !GxCaps().int138) {
             GxShaderConstantsSet(GxSh_Vertex, 30, reinterpret_cast<float*>(&CShaderEffect::s_fogParams), 1);
         } else {
             GxRsSet(GxRs_Fog, 1);
         }
     } else {
-        if (CShaderEffect::s_enableShaders && !GxCaps()->int138) {
+        if (CShaderEffect::s_enableShaders && !GxCaps().int138) {
             float fogParams[] = { 0.0f, 1.0f, 1.0f, 0.0f };
             GxShaderConstantsSet(GxSh_Vertex, 30, fogParams, 1);
         } else {
@@ -92,7 +92,7 @@ void CShaderEffect::SetFogParams(float fogStart, float fogEnd, float fogRate, co
         CShaderEffect::s_fogParams.z = fogRate;
         CShaderEffect::s_fogParams.w = 0.0f;
 
-        if (!GxCaps()->int134) {
+        if (!GxCaps().int134) {
             GxShaderConstantsSet(GxSh_Pixel, 2, reinterpret_cast<float*>(&CShaderEffect::s_fogColorAlphaRef), 1);
             return;
         }

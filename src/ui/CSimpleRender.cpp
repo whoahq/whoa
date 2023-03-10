@@ -97,7 +97,7 @@ void CSimpleRender::DrawBatch(CRenderBatch* batch) {
                     if (mesh->color) {
                         auto& color = mesh->color[i * mesh->colorCount >> 2];
 
-                        if (GxCaps()->m_colorFormat == GxCF_rgba) {
+                        if (GxCaps().m_colorFormat == GxCF_rgba) {
                             vertexBuf->c.r = color.b;
                             vertexBuf->c.g = color.g;
                             vertexBuf->c.b = color.r;

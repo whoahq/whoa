@@ -73,7 +73,7 @@ int32_t CM2Cache::Initialize(uint32_t flags) {
     // TODO
 
     if (flags & 0x8) {
-        if (GxCaps()->m_vertexShaderTarget > GxShVS_none && GxCaps()->m_pixelShaderTarget > GxShPS_none) {
+        if (GxCaps().m_vertexShaderTarget > GxShVS_none && GxCaps().m_pixelShaderTarget > GxShPS_none) {
             this->m_flags |= 0x8;
         }
     }

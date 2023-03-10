@@ -206,7 +206,7 @@ int32_t CGxDeviceGLL::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t,
 
         GLDevice::SetOption(GLDevice::eUseHybridShader, true);
 
-        this->ISetCaps();
+        this->ISetCaps(format);
 
         // TODO
         // CGxDevice::Log(this, this + 604);
@@ -662,11 +662,35 @@ void CGxDeviceGLL::ISceneBegin() {
     // TODO GameMovie::ReadFrame(this);
 }
 
-void CGxDeviceGLL::ISetCaps() {
-    // TODO
+void CGxDeviceGLL::ISetCaps(const CGxFormat& format) {
+    // TODO fill in proper implementation
 
     this->m_caps.m_pixelCenterOnEdge = 1;
     this->m_caps.m_texelCenterOnEdge = 1;
+
+    this->m_caps.m_colorFormat = GxCF_rgba;
+
+    this->m_caps.m_generateMipMaps = 1;
+
+    this->m_caps.m_texFmtDxt1 = 1;
+    this->m_caps.m_texFmtDxt3 = 1;
+    this->m_caps.m_texFmtDxt5 = 1;
+
+    this->m_caps.m_vertexShaderTarget = GxShVS_arbvp1;
+    this->m_caps.m_pixelShaderTarget = GxShPS_arbfp1;
+
+    this->m_caps.m_texFilterAnisotropic = 1;
+    this->m_caps.m_maxTexAnisotropy = 16;
+
+    this->m_caps.m_texTarget[GxTex_2d] = 1;
+    this->m_caps.m_texTarget[GxTex_CubeMap] = 1;
+    this->m_caps.m_texTarget[GxTex_Rectangle] = 1;
+    this->m_caps.m_texTarget[GxTex_NonPow2] = 1;
+
+    this->m_caps.m_texMaxSize[GxTex_2d] = 4096;
+    this->m_caps.m_texMaxSize[GxTex_CubeMap] = 4096;
+    this->m_caps.m_texMaxSize[GxTex_Rectangle] = 4096;
+    this->m_caps.m_texMaxSize[GxTex_NonPow2] = 4096;
 
     // TODO
 }

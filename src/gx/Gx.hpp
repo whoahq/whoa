@@ -10,7 +10,7 @@ class CRect;
 
 extern const char** g_gxShaderProfileNames[GxShTargets_Last];
 
-CGxCaps* GxCaps(void);
+const CGxCaps& GxCaps();
 
 bool GxCapsWindowHasFocus(int32_t);
 

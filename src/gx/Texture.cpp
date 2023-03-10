@@ -243,17 +243,17 @@ int32_t GxTexCreate(EGxTexTarget target, uint32_t width, uint32_t height, uint32
     texId = nullptr;
 
     STORM_ASSERT(target <= GxTexTargets_Last);
-    STORM_ASSERT(GxCaps()->m_texTarget[target] == 1);
+    STORM_ASSERT(GxCaps().m_texTarget[target] == 1);
     STORM_ASSERT(width >= 8);
     STORM_ASSERT(height >= 8);
-    STORM_ASSERT(width <= GxCaps()->m_texMaxSize[target]);
-    STORM_ASSERT(height <= GxCaps()->m_texMaxSize[target]);
+    STORM_ASSERT(width <= GxCaps().m_texMaxSize[target]);
+    STORM_ASSERT(height <= GxCaps().m_texMaxSize[target]);
     STORM_ASSERT((target != GxTex_Rectangle && target != GxTex_NonPow2) ? (width & (width - 1)) == 0 : 1);
     STORM_ASSERT((target != GxTex_Rectangle && target != GxTex_NonPow2) ? (height & (height - 1)) == 0 : 1);
     STORM_ASSERT((target == GxTex_Rectangle) ? flags.m_filter <= GxTex_Linear : 1);
     STORM_ASSERT(format <= GxTexFormats_Last);
-    STORM_ASSERT((flags.m_generateMipMaps) ? (GxCaps()->m_generateMipMaps && !(format >= GxTex_Dxt1 && format <= GxTex_Dxt5)) : 1);
-    STORM_ASSERT((flags.m_filter == GxTex_Anisotropic) ? GxCaps()->m_texFilterAnisotropic : 1);
+    STORM_ASSERT((flags.m_generateMipMaps) ? (GxCaps().m_generateMipMaps && !(format >= GxTex_Dxt1 && format <= GxTex_Dxt5)) : 1);
+    STORM_ASSERT((flags.m_filter == GxTex_Anisotropic) ? GxCaps().m_texFilterAnisotropic : 1);
     STORM_ASSERT(dataFormat <= GxTexFormats_Last);
     STORM_ASSERT(userFunc != nullptr);
 
@@ -394,7 +394,7 @@ void GetDefaultTexture(uint32_t height, uint32_t width) {
 void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL_FORMAT preferredFormat, int32_t alphaBits) {
     switch (preferredFormat) {
         case PIXEL_DXT1:
-            if (GxCaps()->m_texFmtDxt1) {
+            if (GxCaps().m_texFmtDxt1) {
                 *gxTexFormat = GxTex_Dxt1;
                 *pixFormat = PIXEL_DXT1;
             } else if (alphaBits) {
@@ -408,7 +408,7 @@ void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL
             break;
 
         case PIXEL_DXT3:
-            if (GxCaps()->m_texFmtDxt3) {
+            if (GxCaps().m_texFmtDxt3) {
                 *gxTexFormat = GxTex_Dxt3;
                 *pixFormat = PIXEL_DXT3;
             } else {
@@ -443,7 +443,7 @@ void GetTextureFormats(PIXEL_FORMAT* pixFormat, EGxTexFormat* gxTexFormat, PIXEL
             break;
 
         case PIXEL_DXT5:
-            if (GxCaps()->m_texFmtDxt5) {
+            if (GxCaps().m_texFmtDxt5) {
                 *gxTexFormat = GxTex_Dxt5;
                 *pixFormat = PIXEL_DXT5;
             } else {
@@ -508,7 +508,7 @@ uint32_t MippedImgCalcSize(uint32_t fourCC, uint32_t width, uint32_t height) {
 // - order: width, height or height, width?
 void RequestImageDimensions(uint32_t* width, uint32_t* height, uint32_t* bestMip) {
     CGxCaps systemCaps;
-    memcpy(&systemCaps, GxCaps(), sizeof(systemCaps));
+    memcpy(&systemCaps, &GxCaps(), sizeof(systemCaps));
 
     auto maxTextureSize = systemCaps.m_texMaxSize[GxTex_2d];
 
