@@ -220,6 +220,7 @@ class CGxDeviceD3d : public CGxDevice {
     int32_t m_d3dIsHwDevice = 0;
     D3DDISPLAYMODE m_desktopDisplayMode;
     D3DFORMAT m_devAdapterFormat;
+    LPDIRECT3DINDEXBUFFER9 m_d3dCurrentIndexBuf;
     uint32_t m_deviceStates[DeviceStates_Last];
 
     // Virtual member functions

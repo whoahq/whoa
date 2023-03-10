@@ -950,7 +950,18 @@ void CGxDeviceD3d::IStateSyncEnables() {
 }
 
 void CGxDeviceD3d::IStateSyncIndexPtr() {
-    // TODO
+    if (!this->m_primIndexDirty) {
+        return;
+    }
+
+    this->m_primIndexDirty = 0;
+
+    auto d3dIndexBuf = static_cast<LPDIRECT3DINDEXBUFFER9>(this->m_primIndexBuf->m_pool->m_apiSpecific);
+
+    if (this->m_d3dCurrentIndexBuf != d3dIndexBuf) {
+        this->m_d3dDevice->SetIndices(d3dIndexBuf);
+        this->m_d3dCurrentIndexBuf = d3dIndexBuf;
+    }
 }
 
 void CGxDeviceD3d::IStateSyncVertexPtrs() {
