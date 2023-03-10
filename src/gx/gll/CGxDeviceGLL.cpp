@@ -672,9 +672,9 @@ void CGxDeviceGLL::ISetCaps(const CGxFormat& format) {
 
     this->m_caps.m_generateMipMaps = 1;
 
-    this->m_caps.m_texFmtDxt1 = 1;
-    this->m_caps.m_texFmtDxt3 = 1;
-    this->m_caps.m_texFmtDxt5 = 1;
+    this->m_caps.m_texFmt[GxTex_Dxt1] = 1;
+    this->m_caps.m_texFmt[GxTex_Dxt3] = 1;
+    this->m_caps.m_texFmt[GxTex_Dxt5] = 1;
 
     this->m_caps.m_vertexShaderTarget = GxShVS_arbvp1;
     this->m_caps.m_pixelShaderTarget = GxShPS_arbfp1;

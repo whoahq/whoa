@@ -218,6 +218,7 @@ class CGxDeviceD3d : public CGxDevice {
     D3DCAPS9 m_d3dCaps;
     int32_t m_d3dIsHwDevice = 0;
     D3DDISPLAYMODE m_desktopDisplayMode;
+    D3DFORMAT m_devAdapterFormat;
     uint32_t m_deviceStates[DeviceStates_Last];
 
     // Virtual member functions

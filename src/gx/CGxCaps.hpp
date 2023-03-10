@@ -14,11 +14,9 @@ class CGxCaps {
         EGxColorFormat m_colorFormat = GxCF_argb;
         uint32_t m_maxIndex = 0;
         int32_t m_generateMipMaps = 0;
+        int32_t m_texFmt[GxTexFormats_Last] = { 0 };
         int32_t m_texTarget[GxTexTargets_Last];
         uint32_t m_texMaxSize[GxTexTargets_Last];
-        int32_t m_texFmtDxt1 = 0;
-        int32_t m_texFmtDxt3 = 0;
-        int32_t m_texFmtDxt5 = 0;
         EGxShVS m_vertexShaderTarget = GxShVS_none;
         EGxShPS m_pixelShaderTarget = GxShPS_none;
         int32_t m_texFilterTrilinear = 0;
