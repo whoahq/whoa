@@ -1,4 +1,5 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
+#include "gx/CGxBatch.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include <algorithm>
 
@@ -53,6 +54,15 @@ EGxTexFormat CGxDeviceD3d::s_GxTexFmtToUse[] = {
     GxTex_Gr1616F,
     GxTex_R32F,
     GxTex_D24X8,
+};
+
+D3DPRIMITIVETYPE CGxDeviceD3d::s_primitiveConversion[] = {
+    D3DPT_POINTLIST,    // GxPrim_Points
+    D3DPT_LINELIST,     // GxPrim_Lines
+    D3DPT_LINESTRIP,    // GxPrim_LineStrip
+    D3DPT_TRIANGLELIST, // GxPrim_Triangles
+    D3DPT_TRIANGLESTRIP, // GxPrim_TriangleStrip
+    D3DPT_TRIANGLEFAN,  // GxPrim_TriangleFan
 };
 
 EGxTexFormat CGxDeviceD3d::s_tolerableTexFmtMapping[] = {
@@ -345,6 +355,36 @@ int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
 
 void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
     // TODO
+}
+
+void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t count) {
+    if (!this->m_context || this->intF5C) {
+        return;
+    }
+
+    this->IStateSync();
+
+    int32_t baseIndex = 0;
+    if (!this->m_caps.int10) {
+        baseIndex = this->m_primVertexFormatBuf[0]->m_index / this->m_primVertexFormatBuf[0]->m_itemSize;
+    }
+
+    if (count) {
+        this->m_d3dDevice->DrawIndexedPrimitive(
+            CGxDeviceD3d::s_primitiveConversion[batch->m_primType],
+            baseIndex,
+            batch->m_minIndex,
+            batch->m_maxIndex - batch->m_minIndex + 1,
+            batch->m_start + (this->m_primIndexBuf->m_index / 2),
+            CGxDevice::PrimCalcCount(batch->m_primType, batch->m_count)
+        );
+    } else {
+        this->m_d3dDevice->DrawPrimitive(
+            CGxDeviceD3d::s_primitiveConversion[batch->m_primType],
+            baseIndex,
+            CGxDevice::PrimCalcCount(batch->m_primType, batch->m_count)
+        );
+    }
 }
 
 void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
@@ -881,6 +921,10 @@ void CGxDeviceD3d::IShaderCreateVertex(CGxShader* shader) {
         shader->apiSpecific = d3dShader;
         shader->valid = 1;
     }
+}
+
+void CGxDeviceD3d::IStateSync() {
+    // TODO
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {

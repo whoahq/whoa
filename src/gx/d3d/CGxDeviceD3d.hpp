@@ -200,6 +200,7 @@ class CGxDeviceD3d : public CGxDevice {
     static D3DFORMAT s_GxFormatToD3dFormat[];
     static D3DFORMAT s_GxTexFmtToD3dFmt[];
     static EGxTexFormat s_GxTexFmtToUse[];
+    static D3DPRIMITIVETYPE s_primitiveConversion[];
     static EGxTexFormat s_tolerableTexFmtMapping[];
     static D3DTEXTUREADDRESS s_wrapModes[];
 
@@ -229,6 +230,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
+    virtual void Draw(CGxBatch* batch, int32_t count);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
     virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);
@@ -254,6 +256,7 @@ class CGxDeviceD3d : public CGxDevice {
     void ISetTexture(uint32_t tmu, CGxTex* texId);
     void IShaderCreatePixel(CGxShader* shader);
     void IShaderCreateVertex(CGxShader* shader);
+    void IStateSync();
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
 };
