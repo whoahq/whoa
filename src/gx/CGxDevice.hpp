@@ -122,6 +122,7 @@ class CGxDevice {
 
         // Member functions
         CGxDevice();
+        const CGxCaps& Caps() const;
         CGxBuf* BufCreate(CGxPool*, uint32_t, uint32_t, uint32_t);
         CGxBuf* BufStream(EGxPoolTarget, uint32_t, uint32_t);
         void DeviceCreatePools(void);

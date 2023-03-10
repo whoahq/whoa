@@ -9,7 +9,7 @@ CGxTexFlags::CGxTexFlags(EGxTexFilter filter, uint32_t wrapU, uint32_t wrapV, ui
     this->m_forceMipTracking = force;
     this->m_generateMipMaps = generateMipMaps;
     this->m_renderTarget = renderTarget;
-    this->m_maxAnisotropy = std::min(maxAnisotropy, GxCaps()->m_maxTexAnisotropy);
+    this->m_maxAnisotropy = std::min(maxAnisotropy, GxCaps().m_maxTexAnisotropy);
 
     // TODO
     this->m_bit13 = 0;

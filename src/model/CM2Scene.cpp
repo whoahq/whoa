@@ -62,7 +62,7 @@ void CM2Scene::ComputeElementShaders(M2Element* element) {
         }
     }
 
-    int32_t v9 = v18 && (/* TODO !GxCaps()->dword130 ||*/ v8);
+    int32_t v9 = v18 && (/* TODO !GxCaps().dword130 ||*/ v8);
     int32_t v10 = std::min(boneInfluences, 2);
     int32_t v11 = std::min(v8, 2);
 

@@ -24,7 +24,7 @@ int32_t SetProjection() {
     float v14 = 0.0f;
     float v15 = 0.0f;
 
-    if (!GxCaps()->m_pixelCenterOnEdge) {
+    if (!GxCaps().m_pixelCenterOnEdge) {
         v14 = -0.5f;
         v15 = 0.5f;
     }

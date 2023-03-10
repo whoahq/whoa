@@ -167,6 +167,10 @@ int32_t CGxDevice::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
+const CGxCaps& CGxDevice::Caps() const {
+    return this->m_caps;
+}
+
 int32_t CGxDevice::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format) {
     // TODO
     // this->m_windowProc = windowProc;

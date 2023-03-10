@@ -1,10 +1,6 @@
 #include "gx/Gx.hpp"
 #include "gx/Device.hpp"
 
-// TODO
-// - remove placeholder after proper implementation
-static CGxCaps* g_placeholderGxCaps = new CGxCaps();
-
 const char* vsProfileNames[] = {
     "none", "vs_1_1", "vs_2_0", "vs_3_0", "vs_4_0", "vs_5_0", "arbvp1", "arbvp1_cg12", "nvvp", "nvvp2", "nvvp3", "glsl"
 };
@@ -38,37 +34,8 @@ const char** g_gxShaderProfileNames[GxShTargets_Last] = {
     csProfileNames
 };
 
-CGxCaps* GxCaps() {
-    //  TODO
-
-    g_placeholderGxCaps->m_pixelCenterOnEdge = 1;
-    g_placeholderGxCaps->m_texelCenterOnEdge = 1;
-
-    g_placeholderGxCaps->m_colorFormat = GxCF_rgba;
-
-    g_placeholderGxCaps->m_generateMipMaps = 1;
-
-    g_placeholderGxCaps->m_texFmtDxt1 = 1;
-    g_placeholderGxCaps->m_texFmtDxt3 = 1;
-    g_placeholderGxCaps->m_texFmtDxt5 = 1;
-
-    g_placeholderGxCaps->m_vertexShaderTarget = GxShVS_arbvp1;
-    g_placeholderGxCaps->m_pixelShaderTarget = GxShPS_arbfp1;
-
-    g_placeholderGxCaps->m_texFilterAnisotropic = 1;
-    g_placeholderGxCaps->m_maxTexAnisotropy = 16;
-
-    g_placeholderGxCaps->m_texTarget[GxTex_2d] = 1;
-    g_placeholderGxCaps->m_texTarget[GxTex_CubeMap] = 1;
-    g_placeholderGxCaps->m_texTarget[GxTex_Rectangle] = 1;
-    g_placeholderGxCaps->m_texTarget[GxTex_NonPow2] = 1;
-
-    g_placeholderGxCaps->m_texMaxSize[GxTex_2d] = 4096;
-    g_placeholderGxCaps->m_texMaxSize[GxTex_CubeMap] = 4096;
-    g_placeholderGxCaps->m_texMaxSize[GxTex_Rectangle] = 4096;
-    g_placeholderGxCaps->m_texMaxSize[GxTex_NonPow2] = 4096;
-
-    return g_placeholderGxCaps;
+const CGxCaps& GxCaps() {
+    return g_theGxDevicePtr->Caps();
 }
 
 bool GxCapsWindowHasFocus(int32_t a1) {
@@ -81,7 +48,7 @@ void GxCapsWindowSize(CRect& rect) {
 }
 
 void GxFormatColor(CImVector& color) {
-    if (GxCaps()->m_colorFormat == GxCF_rgba) {
+    if (GxCaps().m_colorFormat == GxCF_rgba) {
         CImVector formattedColor = {
             color.r,
             color.g,
