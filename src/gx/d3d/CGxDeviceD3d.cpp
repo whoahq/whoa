@@ -723,6 +723,16 @@ void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
     this->m_caps.m_generateMipMaps = (this->m_d3dCaps.Caps2 & D3DCAPS2_CANAUTOGENMIPMAP) != 0;
 
     // TODO
+
+    // Texture targets
+
+    this->m_caps.m_texTarget[GxTex_2d] = 1;
+    this->m_caps.m_texTarget[GxTex_CubeMap] = (this->m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_CUBEMAP) != 0;
+    this->m_caps.m_texTarget[GxTex_Rectangle] = 0;
+    this->m_caps.m_texTarget[GxTex_NonPow2] =
+        (this->m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_NONPOW2CONDITIONAL) != 0 || (this->m_d3dCaps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0;
+
+    // TODO
 }
 
 void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format) {
