@@ -230,7 +230,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
-    virtual void Draw(CGxBatch* batch, int32_t count);
+    virtual void Draw(CGxBatch* batch, int32_t indexed);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
     virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);

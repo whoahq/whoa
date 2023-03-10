@@ -111,7 +111,7 @@ class CGxDevice {
         virtual void SceneClear(uint32_t, CImVector) {};
         virtual void XformSetProjection(const C44Matrix&);
         virtual void XformSetView(const C44Matrix&);
-        virtual void Draw(CGxBatch*, int32_t) {};
+        virtual void Draw(CGxBatch* batch, int32_t indexed) {};
         virtual void ValidateDraw(CGxBatch*, int32_t);
         virtual void MasterEnableSet(EGxMasterEnables, int32_t);
         virtual void PoolSizeSet(CGxPool*, uint32_t) = 0;
