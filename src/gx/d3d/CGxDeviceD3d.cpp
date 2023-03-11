@@ -483,6 +483,72 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
     switch (state) {
     // TODO handle other device states
 
+    case Ds_TssMagFilter0:
+    case Ds_TssMagFilter1:
+    case Ds_TssMagFilter2:
+    case Ds_TssMagFilter3:
+    case Ds_TssMagFilter4:
+    case Ds_TssMagFilter5:
+    case Ds_TssMagFilter6:
+    case Ds_TssMagFilter7:
+    case Ds_TssMagFilter8:
+    case Ds_TssMagFilter9:
+    case Ds_TssMagFilter10:
+    case Ds_TssMagFilter11:
+    case Ds_TssMagFilter12:
+    case Ds_TssMagFilter13:
+    case Ds_TssMagFilter14:
+    case Ds_TssMagFilter15: {
+        auto tmu = state - Ds_TssMagFilter0;
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_MAGFILTER, val);
+
+        break;
+    }
+
+    case Ds_TssMinFilter0:
+    case Ds_TssMinFilter1:
+    case Ds_TssMinFilter2:
+    case Ds_TssMinFilter3:
+    case Ds_TssMinFilter4:
+    case Ds_TssMinFilter5:
+    case Ds_TssMinFilter6:
+    case Ds_TssMinFilter7:
+    case Ds_TssMinFilter8:
+    case Ds_TssMinFilter9:
+    case Ds_TssMinFilter10:
+    case Ds_TssMinFilter11:
+    case Ds_TssMinFilter12:
+    case Ds_TssMinFilter13:
+    case Ds_TssMinFilter14:
+    case Ds_TssMinFilter15: {
+        auto tmu = state - Ds_TssMinFilter0;
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_MINFILTER, val);
+
+        break;
+    }
+
+    case Ds_TssMipFilter0:
+    case Ds_TssMipFilter1:
+    case Ds_TssMipFilter2:
+    case Ds_TssMipFilter3:
+    case Ds_TssMipFilter4:
+    case Ds_TssMipFilter5:
+    case Ds_TssMipFilter6:
+    case Ds_TssMipFilter7:
+    case Ds_TssMipFilter8:
+    case Ds_TssMipFilter9:
+    case Ds_TssMipFilter10:
+    case Ds_TssMipFilter11:
+    case Ds_TssMipFilter12:
+    case Ds_TssMipFilter13:
+    case Ds_TssMipFilter14:
+    case Ds_TssMipFilter15: {
+        auto tmu = state - Ds_TssMipFilter0;
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_MIPFILTER, val);
+
+        break;
+    }
+
     case Ds_AlphaBlendEnable: {
         this->m_d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, val);
         break;
