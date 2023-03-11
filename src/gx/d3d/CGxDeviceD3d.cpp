@@ -1,4 +1,5 @@
 #include "gx/d3d/CGxDeviceD3d.hpp"
+#include "gx/Blit.hpp"
 #include "gx/CGxBatch.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include <algorithm>
@@ -8,6 +9,15 @@ D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
     D3DCMP_EQUAL,
     D3DCMP_GREATEREQUAL,
     D3DCMP_LESS,
+};
+
+D3DCUBEMAP_FACES CGxDeviceD3d::s_faceTypes[] = {
+    D3DCUBEMAP_FACE_POSITIVE_X,
+    D3DCUBEMAP_FACE_NEGATIVE_X,
+    D3DCUBEMAP_FACE_POSITIVE_Y,
+    D3DCUBEMAP_FACE_NEGATIVE_Y,
+    D3DCUBEMAP_FACE_POSITIVE_Z,
+    D3DCUBEMAP_FACE_NEGATIVE_Z,
 };
 
 D3DTEXTUREFILTERTYPE CGxDeviceD3d::s_filterModes[GxTexFilters_Last][3] = {
@@ -1392,7 +1402,107 @@ void CGxDeviceD3d::ITexMarkAsUpdated(CGxTex* texId) {
 }
 
 void CGxDeviceD3d::ITexUpload(CGxTex* texId) {
-    // TODO
+    uint32_t texelStrideInBytes;
+    const void* texels = nullptr;
+
+    texId->m_userFunc(GxTex_Lock, texId->m_width, texId->m_height, 0, 0, texId->m_userArg, texelStrideInBytes, texels);
+
+    uint32_t width;
+    uint32_t height;
+    uint32_t startLevel;
+    uint32_t endLevel;
+    this->ITexWHDStartEnd(texId, width, height, startLevel, endLevel);
+
+    int32_t numFace = texId->m_target == GxTex_CubeMap ? 6 : 1;
+
+    for (int32_t face = 0; face < numFace; face++) {
+        for (int32_t level = startLevel; level < endLevel; level++) {
+            texels = nullptr;
+
+            texId->m_userFunc(
+                GxTex_Latch,
+                texId->m_width >> level,
+                texId->m_height >> level,
+                face,
+                level,
+                texId->m_userArg,
+                texelStrideInBytes,
+                texels
+            );
+
+            STORM_ASSERT(texels != nullptr || texId->m_flags.m_renderTarget);
+
+            LPDIRECT3DSURFACE9 surface = nullptr;
+            HRESULT surfaceResult;
+
+            if (texId->m_target == GxTex_CubeMap) {
+                auto d3dTexture = static_cast<LPDIRECT3DCUBETEXTURE9>(texId->m_apiSpecificData);
+                surfaceResult = d3dTexture->GetCubeMapSurface(CGxDeviceD3d::s_faceTypes[face], level, &surface);
+            } else {
+                auto d3dTexture = static_cast<LPDIRECT3DTEXTURE9>(texId->m_apiSpecificData);
+                surfaceResult = d3dTexture->GetSurfaceLevel(level, &surface);
+            }
+
+            if (FAILED(surfaceResult)) {
+                goto UNLOCK;
+            }
+
+            RECT rect = {
+                texId->m_updateRect.minX >> level,  // left
+                texId->m_updateRect.minY >> level,  // top
+                texId->m_updateRect.maxX >> level,  // right
+                texId->m_updateRect.maxY >> level,  // bottom
+            };
+
+            rect.right = std::max(rect.right, rect.left + 1);
+            rect.bottom = std::max(rect.bottom, rect.top + 1);
+
+            if (texId->m_format == GxTex_Dxt1 || texId->m_format == GxTex_Dxt3 || texId->m_format == GxTex_Dxt5) {
+                rect.left &= 0xFFFFFFFC;
+                rect.top &= 0xFFFFFFFC;
+                rect.bottom = (rect.bottom + 3) & 0xFFFFFFFC;
+                rect.right = (rect.right + 3) & 0xFFFFFFFC;
+
+                rect.bottom = std::min(rect.bottom, static_cast<LONG>(height));
+                rect.right = std::min(rect.right, static_cast<LONG>(width));
+            }
+
+            D3DLOCKED_RECT lockedRect;
+            if (FAILED(surface->LockRect(&lockedRect, &rect, 0x0))) {
+                surface->Release();
+                goto UNLOCK;
+            }
+
+            if (texId->m_flags.m_bit15) {
+                // TODO
+            }
+
+            C2iVector size = { rect.right - rect.left, rect.bottom - rect.top };
+
+            Blit(
+                size,
+                BlitAlpha_0,
+                texels,
+                texelStrideInBytes,
+                GxGetBlitFormat(texId->m_dataFormat),
+                lockedRect.pBits,
+                lockedRect.Pitch,
+                GxGetBlitFormat(texId->m_format)
+            );
+
+            surface->UnlockRect();
+            surface->Release();
+        }
+    }
+
+UNLOCK:
+    texels = nullptr;
+    texId->m_userFunc(GxTex_Unlock, texId->m_width, texId->m_height, 0, 0, texId->m_userArg, texelStrideInBytes, texels);
+
+    if (texId->m_flags.m_renderTarget) {
+        auto d3dTexture = static_cast<LPDIRECT3DTEXTURE9>(texId->m_apiSpecificData);
+        d3dTexture->PreLoad();
+    }
 }
 
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
