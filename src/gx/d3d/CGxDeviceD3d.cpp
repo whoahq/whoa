@@ -766,7 +766,7 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
 
 void CGxDeviceD3d::ISceneBegin() {
     if (this->m_context) {
-        // TODO
+        this->ShaderConstantsClear();
 
         if (SUCCEEDED(this->m_d3dDevice->BeginScene())) {
             this->m_inScene = 1;
@@ -1046,7 +1046,29 @@ void CGxDeviceD3d::IShaderBindVertex(CGxShader* shader) {
 }
 
 void CGxDeviceD3d::IShaderConstantsFlush() {
-    // TODO
+    // Vertex shader constants
+    auto vsConst = &CGxDevice::s_shadowConstants[1];
+    if (vsConst->unk2 <= vsConst->unk1) {
+        this->m_d3dDevice->SetVertexShaderConstantF(
+            vsConst->unk2,
+            reinterpret_cast<float*>(&vsConst->constants[vsConst->unk2]),
+            vsConst->unk1 - vsConst->unk2 + 1
+        );
+    }
+    vsConst->unk2 = 255;
+    vsConst->unk1 = 0;
+
+    // Pixel shader constants
+    auto psConst = &CGxDevice::s_shadowConstants[0];
+    if (psConst->unk2 <= psConst->unk1) {
+        this->m_d3dDevice->SetPixelShaderConstantF(
+            psConst->unk2,
+            reinterpret_cast<float*>(&psConst->constants[psConst->unk2]),
+            psConst->unk1 - psConst->unk2 + 1
+        );
+    }
+    psConst->unk2 = 255;
+    psConst->unk1 = 0;
 }
 
 void CGxDeviceD3d::IShaderCreate(CGxShader* shader) {
