@@ -480,6 +480,15 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
         this->m_d3dDevice->SetRenderState(D3DRS_ALPHAREF, val);
         break;
     }
+
+    case Ds_ZWriteEnable: {
+        this->m_d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, val);
+        break;
+    }
+
+    case Ds_ZFunc: {
+        this->m_d3dDevice->SetRenderState(D3DRS_ZFUNC, val);
+    }
     }
 
     this->m_deviceStates[state] = val;
