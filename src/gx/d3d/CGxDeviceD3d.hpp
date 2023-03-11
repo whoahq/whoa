@@ -244,6 +244,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
     virtual void ScenePresent();
+    virtual void SceneClear(uint32_t mask, CImVector color);
     virtual void Draw(CGxBatch* batch, int32_t indexed);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);

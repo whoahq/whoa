@@ -1595,6 +1595,30 @@ void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
 }
 
+void CGxDeviceD3d::SceneClear(uint32_t mask, CImVector color) {
+    CGxDevice::SceneClear(mask, color);
+
+    if (!this->m_context) {
+        return;
+    }
+
+    uint32_t flags = 0x0;
+    if (mask & 0x1) {
+        flags |= 0x1;
+    }
+    if (mask & 0x2) {
+        flags |= 0x2;
+    }
+
+    if (this->intF6C) {
+        // TODO
+    }
+
+    D3DCOLOR d3dColor = color.b | (color.g | (color.r << 8) << 8);
+
+    this->m_d3dDevice->Clear(0, nullptr, flags, d3dColor, 1.0f, 0);
+}
+
 void CGxDeviceD3d::ScenePresent() {
     if (this->m_context) {
         CGxDevice::ScenePresent();

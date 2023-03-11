@@ -75,6 +75,7 @@ class CGxDevice {
         int32_t intF5C = 0;
         int32_t m_windowVisible = 0;
         int32_t intF64 = 0;
+        int32_t intF6C = 1;
         CBoundingBox m_viewport;
         C44Matrix m_projection;
         C44Matrix m_projNative;
