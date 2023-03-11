@@ -771,6 +771,19 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
     switch (which) {
     // TODO handle all render states
 
+    case GxRs_AlphaRef: {
+        auto alphaRef = static_cast<int32_t>(state->m_value);
+
+        if (alphaRef <= 0) {
+            this->DsSet(Ds_AlphaTestEnable, 0);
+        } else {
+            this->DsSet(Ds_AlphaRef, alphaRef);
+            this->DsSet(Ds_AlphaTestEnable, 1);
+        }
+
+        break;
+    }
+
     case GxRs_DepthTest:
     case GxRs_DepthFunc: {
         auto depthTest = static_cast<uint32_t>((&this->m_appRenderStates[GxRs_DepthTest])->m_value);
