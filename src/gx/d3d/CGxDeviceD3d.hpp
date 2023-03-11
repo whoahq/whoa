@@ -197,6 +197,10 @@ class CGxDeviceD3d : public CGxDevice {
 
     // Static variables
     static D3DTEXTUREFILTERTYPE s_filterModes[GxTexFilters_Last][3];
+    static uint32_t s_gxAttribToD3dAttribSize[];
+    static D3DDECLTYPE s_gxAttribToD3dAttribType[];
+    static D3DDECLUSAGE s_gxAttribToD3dAttribUsage[];
+    static uint32_t s_gxAttribToD3dAttribUsageIndex[];
     static D3DFORMAT s_GxFormatToD3dFormat[];
     static D3DFORMAT s_GxTexFmtToD3dFmt[];
     static EGxTexFormat s_GxTexFmtToUse[];
@@ -218,9 +222,14 @@ class CGxDeviceD3d : public CGxDevice {
     LPDIRECT3DDEVICE9 m_d3dDevice = nullptr;
     D3DCAPS9 m_d3dCaps;
     int32_t m_d3dIsHwDevice = 0;
+    LPDIRECT3DVERTEXDECLARATION9 m_d3dVertexDecl[GxVertexBufferFormats_Last] = { 0 };
     D3DDISPLAYMODE m_desktopDisplayMode;
     D3DFORMAT m_devAdapterFormat;
+    LPDIRECT3DVERTEXDECLARATION9 m_d3dCurrentVertexDecl;
     LPDIRECT3DINDEXBUFFER9 m_d3dCurrentIndexBuf;
+    LPDIRECT3DVERTEXBUFFER9 m_d3dVertexStreamBuf[8];
+    uint32_t m_d3dVertexStreamOfs[8];
+    uint32_t m_d3dVertexStreamStride[8];
     uint32_t m_deviceStates[DeviceStates_Last];
 
     // Virtual member functions
@@ -249,12 +258,14 @@ class CGxDeviceD3d : public CGxDevice {
     int32_t ICreateD3dDevice(const CGxFormat& format);
     LPDIRECT3DINDEXBUFFER9 ICreateD3dIB(EGxPoolUsage usage, uint32_t size);
     LPDIRECT3DVERTEXBUFFER9 ICreateD3dVB(EGxPoolUsage usage, uint32_t size);
+    LPDIRECT3DVERTEXDECLARATION9 ICreateD3dVertexDecl(D3DVERTEXELEMENT9 elements[], uint32_t count);
     bool ICreateWindow(CGxFormat& format);
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
     void ISetCaps(const CGxFormat& format);
     void ISetTexture(uint32_t tmu, CGxTex* texId);
+    void ISetVertexBuffer(uint32_t stream, LPDIRECT3DVERTEXBUFFER9 buffer, uint32_t offset, uint32_t stride);
     void IShaderConstantsFlush();
     void IShaderCreatePixel(CGxShader* shader);
     void IShaderCreateVertex(CGxShader* shader);

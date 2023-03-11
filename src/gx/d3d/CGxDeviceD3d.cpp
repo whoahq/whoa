@@ -13,6 +13,60 @@ D3DTEXTUREFILTERTYPE CGxDeviceD3d::s_filterModes[GxTexFilters_Last][3] = {
     { D3DTEXF_LINEAR,   D3DTEXF_LINEAR, D3DTEXF_LINEAR  },  // GxTex_Anisotropic
 };
 
+uint32_t CGxDeviceD3d::s_gxAttribToD3dAttribSize[] = {
+    4,                      // type 0
+    4,                      // type 1
+    4,                      // type 2
+    8,                      // type 3
+    12,                     // type 4
+    4,                      // type 5
+    4,                      // type 6
+};
+
+D3DDECLTYPE CGxDeviceD3d::s_gxAttribToD3dAttribType[] = {
+    D3DDECLTYPE_D3DCOLOR,   // type 0
+    D3DDECLTYPE_UBYTE4,     // type 1
+    D3DDECLTYPE_UBYTE4N,    // type 2
+    D3DDECLTYPE_FLOAT2,     // type 3
+    D3DDECLTYPE_FLOAT3,     // type 4
+    D3DDECLTYPE_SHORT2,     // type 5
+    D3DDECLTYPE_FLOAT1,     // type 6
+};
+
+D3DDECLUSAGE CGxDeviceD3d::s_gxAttribToD3dAttribUsage[] = {
+    D3DDECLUSAGE_POSITION,      // GxVA_Position
+    D3DDECLUSAGE_BLENDWEIGHT,   // GxVA_BlendWeight
+    D3DDECLUSAGE_BLENDINDICES,  // GxVA_BlendIndices
+    D3DDECLUSAGE_NORMAL,        // GxVA_Normal
+    D3DDECLUSAGE_COLOR,         // GxVA_Color0
+    D3DDECLUSAGE_COLOR,         // GxVA_Color1
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord0
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord1
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord2
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord3
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord4
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord5
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord6
+    D3DDECLUSAGE_TEXCOORD,      // GxVA_TexCoord7
+};
+
+uint32_t CGxDeviceD3d::s_gxAttribToD3dAttribUsageIndex[] = {
+    0,                          // GxVA_Position
+    0,                          // GxVA_BlendWeight
+    0,                          // GxVA_BlendIndices
+    0,                          // GxVA_Normal
+    0,                          // GxVA_Color0
+    1,                          // GxVA_Color1
+    0,                          // GxVA_TexCoord0
+    1,                          // GxVA_TexCoord1
+    2,                          // GxVA_TexCoord2
+    3,                          // GxVA_TexCoord3
+    4,                          // GxVA_TexCoord4
+    5,                          // GxVA_TexCoord5
+    6,                          // GxVA_TexCoord6
+    7,                          // GxVA_TexCoord7
+};
+
 D3DFORMAT CGxDeviceD3d::s_GxFormatToD3dFormat[] = {
     D3DFMT_R5G6B5,      // Fmt_Rgb565
     D3DFMT_X8R8G8B8,    // Fmt_ArgbX888
@@ -572,6 +626,25 @@ LPDIRECT3DVERTEXBUFFER9 CGxDeviceD3d::ICreateD3dVB(EGxPoolUsage usage, uint32_t 
     return nullptr;
 }
 
+LPDIRECT3DVERTEXDECLARATION9 CGxDeviceD3d::ICreateD3dVertexDecl(D3DVERTEXELEMENT9 elements[], uint32_t count) {
+    if (this->m_primVertexFormat < GxVertexBufferFormats_Last) {
+        for (int32_t i = 0; i < count; i++) {
+            auto& element = elements[i];
+            auto foo = 1;
+        }
+
+        if (!this->m_d3dVertexDecl[this->m_primVertexFormat]) {
+            this->m_d3dDevice->CreateVertexDeclaration(elements, &this->m_d3dVertexDecl[this->m_primVertexFormat]);
+        }
+
+        return this->m_d3dVertexDecl[this->m_primVertexFormat];
+    }
+
+    // TODO new vertex buffer format
+
+    return nullptr;
+}
+
 bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
     auto instance = GetModuleHandle(nullptr);
 
@@ -875,6 +948,20 @@ void CGxDeviceD3d::ISetTexture(uint32_t tmu, CGxTex* texId) {
     }
 }
 
+void CGxDeviceD3d::ISetVertexBuffer(uint32_t stream, LPDIRECT3DVERTEXBUFFER9 buffer, uint32_t offset, uint32_t stride) {
+    if (!this->m_caps.int10) {
+        offset = 0;
+    }
+
+    if (this->m_d3dVertexStreamBuf[stream] != buffer || this->m_d3dVertexStreamOfs[stream] != offset || this->m_d3dVertexStreamStride[stream] != stride) {
+        this->m_d3dDevice->SetStreamSource(stream, buffer, offset, stride);
+
+        this->m_d3dVertexStreamBuf[stream] = buffer;
+        this->m_d3dVertexStreamOfs[stream] = offset;
+        this->m_d3dVertexStreamStride[stream] = stride;
+    }
+}
+
 void CGxDeviceD3d::IShaderConstantsFlush() {
     // TODO
 }
@@ -965,7 +1052,83 @@ void CGxDeviceD3d::IStateSyncIndexPtr() {
 }
 
 void CGxDeviceD3d::IStateSyncVertexPtrs() {
-    // TODO
+    if (this->m_primVertexFormat < GxVertexBufferFormats_Last && this->m_d3dVertexDecl[this->m_primVertexFormat]) {
+        auto d3dVertexDecl = this->m_d3dVertexDecl[this->m_primVertexFormat];
+
+        if (this->m_d3dCurrentVertexDecl != d3dVertexDecl) {
+            this->m_d3dDevice->SetVertexDeclaration(d3dVertexDecl);
+            this->m_d3dCurrentVertexDecl = d3dVertexDecl;
+        }
+
+        this->ISetVertexBuffer(
+            0,
+            static_cast<LPDIRECT3DVERTEXBUFFER9>(this->m_primVertexBuf->m_pool->m_apiSpecific),
+            this->m_primVertexBuf->m_index,
+            this->m_primVertexSize
+        );
+
+        return;
+    }
+
+    CGxBuf* streamBufs[GxVAs_Last] = { 0 };
+    uint32_t streamSizes[GxVAs_Last] = { 0 };
+
+    D3DVERTEXELEMENT9 elements[GxVAs_Last + 1];
+    uint32_t elementCount = 0;
+    uint32_t streamCount = 0;
+
+    for (uint32_t i = 0; i < GxVAs_Last; i++) {
+        if ((1 << i) & this->m_primVertexMask) {
+            uint32_t stream = 0;
+
+            if (streamCount) {
+                do {
+                    if (streamBufs[stream] == this->m_primVertexFormatBuf[i]) {
+                        break;
+                    }
+                    stream++;
+                } while (stream < streamCount);
+            }
+
+            if (stream == streamCount) {
+                streamBufs[stream] = this->m_primVertexFormatBuf[i];
+                streamCount++;
+            }
+
+            auto& attrib = this->m_primVertexFormatAttrib[i];
+
+            streamSizes[stream] += CGxDeviceD3d::s_gxAttribToD3dAttribSize[attrib.type];
+
+            elements[elementCount].Stream = stream;
+            elements[elementCount].Offset = attrib.offset;
+            elements[elementCount].Type = CGxDeviceD3d::s_gxAttribToD3dAttribType[attrib.type];
+            elements[elementCount].Method = D3DDECLMETHOD_DEFAULT;
+            elements[elementCount].Usage = CGxDeviceD3d::s_gxAttribToD3dAttribUsage[attrib.attrib];
+            elements[elementCount].UsageIndex = CGxDeviceD3d::s_gxAttribToD3dAttribUsageIndex[attrib.attrib];
+
+            elementCount++;
+        }
+    }
+
+    elements[elementCount] = D3DDECL_END();
+    elementCount++;
+
+    auto d3dVertexDecl = this->ICreateD3dVertexDecl(elements, elementCount);
+    if (this->m_d3dCurrentVertexDecl != d3dVertexDecl) {
+        this->m_d3dDevice->SetVertexDeclaration(d3dVertexDecl);
+        this->m_d3dCurrentVertexDecl = d3dVertexDecl;
+    }
+
+    for (uint32_t stream = 0; stream < streamCount; stream++) {
+        auto streamBuf = streamBufs[stream];
+
+        this->ISetVertexBuffer(
+            stream,
+            static_cast<LPDIRECT3DVERTEXBUFFER9>(streamBuf->m_pool->m_apiSpecific),
+            streamBuf->m_index,
+            streamSizes[stream]
+        );
+    }
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
