@@ -408,7 +408,24 @@ int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
 }
 
 void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
-    // TODO
+    switch (wm) {
+    case GxWM_Size: {
+        if (param2 == 1 || param2 == 2) {
+            this->m_windowVisible = 0;
+        } else {
+            this->m_windowVisible = 1;
+
+            auto& windowRect = *reinterpret_cast<CRect*>(param1);
+            this->DeviceSetDefWindow(windowRect);
+
+            if (this->m_d3dDevice && this->m_context) {
+                // TODO
+            }
+        }
+
+        break;
+    }
+    }
 }
 
 void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t indexed) {

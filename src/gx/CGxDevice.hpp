@@ -73,6 +73,7 @@ class CGxDevice {
         TSHashTable<CGxShader, HASHKEY_STRI> m_shaderList[GxShTargets_Last];
         int32_t m_context = 0;
         int32_t intF5C = 0;
+        int32_t m_windowVisible = 0;
         int32_t intF64 = 0;
         CBoundingBox m_viewport;
         C44Matrix m_projection;
