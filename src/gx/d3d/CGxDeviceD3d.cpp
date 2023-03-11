@@ -750,6 +750,27 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
     }
 }
 
+void CGxDeviceD3d::ISceneBegin() {
+    if (this->m_context) {
+        // TODO
+
+        if (SUCCEEDED(this->m_d3dDevice->BeginScene())) {
+            this->m_inScene = 1;
+        }
+
+        return;
+    }
+
+    // TODO
+}
+
+void CGxDeviceD3d::ISceneEnd() {
+    if (this->m_inScene) {
+        this->m_d3dDevice->EndScene();
+        this->m_inScene = 0;
+    }
+}
+
 void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
     // Texture stages
 
@@ -1241,6 +1262,27 @@ void CGxDeviceD3d::ITexUpload(CGxTex* texId) {
 
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
+}
+
+void CGxDeviceD3d::ScenePresent() {
+    if (this->m_context) {
+        CGxDevice::ScenePresent();
+        this->ISceneEnd();
+
+        // TODO
+
+        // TODO fixLag
+
+        // TODO
+
+        if (FAILED(this->m_d3dDevice->Present(nullptr, nullptr, nullptr, nullptr))) {
+            this->m_context = 0;
+        }
+
+        // TODO stereo handling
+    }
+
+    this->ISceneBegin();
 }
 
 void CGxDeviceD3d::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations) {

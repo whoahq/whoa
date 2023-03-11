@@ -224,6 +224,7 @@ class CGxDeviceD3d : public CGxDevice {
     int32_t m_d3dIsHwDevice = 0;
     LPDIRECT3DVERTEXDECLARATION9 m_d3dVertexDecl[GxVertexBufferFormats_Last] = { 0 };
     D3DDISPLAYMODE m_desktopDisplayMode;
+    int32_t m_inScene;
     D3DFORMAT m_devAdapterFormat;
     LPDIRECT3DVERTEXDECLARATION9 m_d3dCurrentVertexDecl;
     LPDIRECT3DINDEXBUFFER9 m_d3dCurrentIndexBuf;
@@ -240,6 +241,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
     virtual void CapsWindowSize(CRect& dst);
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
+    virtual void ScenePresent();
     virtual void Draw(CGxBatch* batch, int32_t indexed);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
@@ -263,6 +265,8 @@ class CGxDeviceD3d : public CGxDevice {
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
+    void ISceneBegin();
+    void ISceneEnd();
     void ISetCaps(const CGxFormat& format);
     void ISetTexture(uint32_t tmu, CGxTex* texId);
     void ISetVertexBuffer(uint32_t stream, LPDIRECT3DVERTEXBUFFER9 buffer, uint32_t offset, uint32_t stride);
