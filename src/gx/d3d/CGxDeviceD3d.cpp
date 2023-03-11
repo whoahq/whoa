@@ -459,7 +459,30 @@ void CGxDeviceD3d::Draw(CGxBatch* batch, int32_t indexed) {
 }
 
 void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
-    // TODO
+    if (this->m_deviceStates[state] == val) {
+        return;
+    }
+
+    switch (state) {
+    // TODO handle other device states
+
+    case Ds_AlphaBlendEnable: {
+        this->m_d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, val);
+        break;
+    }
+
+    case Ds_AlphaTestEnable: {
+        this->m_d3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, val);
+        break;
+    }
+
+    case Ds_AlphaRef: {
+        this->m_d3dDevice->SetRenderState(D3DRS_ALPHAREF, val);
+        break;
+    }
+    }
+
+    this->m_deviceStates[state] = val;
 }
 
 char* CGxDeviceD3d::IBufLock(CGxBuf* buf) {
