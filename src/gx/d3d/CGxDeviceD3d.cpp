@@ -879,6 +879,13 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
         break;
     }
 
+    case GxRs_ScissorTest: {
+        auto scissorTestEnable = static_cast<uint32_t>(state->m_value) != 0;
+        this->m_d3dDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, scissorTestEnable);
+
+        break;
+    }
+
     case GxRs_Texture0:
     case GxRs_Texture1:
     case GxRs_Texture2:
