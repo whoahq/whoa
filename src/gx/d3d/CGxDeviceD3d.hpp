@@ -270,6 +270,8 @@ class CGxDeviceD3d : public CGxDevice {
     void ISetCaps(const CGxFormat& format);
     void ISetTexture(uint32_t tmu, CGxTex* texId);
     void ISetVertexBuffer(uint32_t stream, LPDIRECT3DVERTEXBUFFER9 buffer, uint32_t offset, uint32_t stride);
+    void IShaderBindPixel(CGxShader* shader);
+    void IShaderBindVertex(CGxShader* shader);
     void IShaderConstantsFlush();
     void IShaderCreatePixel(CGxShader* shader);
     void IShaderCreateVertex(CGxShader* shader);

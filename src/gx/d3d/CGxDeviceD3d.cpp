@@ -745,6 +745,20 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
         break;
     }
 
+    case GxRs_VertexShader: {
+        auto shader = static_cast<CGxShader*>(static_cast<void*>(state->m_value));
+        this->IShaderBindVertex(shader);
+
+        break;
+    }
+
+    case GxRs_PixelShader: {
+        auto shader = static_cast<CGxShader*>(static_cast<void*>(state->m_value));
+        this->IShaderBindPixel(shader);
+
+        break;
+    }
+
     default:
         break;
     }
@@ -998,6 +1012,37 @@ void CGxDeviceD3d::ISetVertexBuffer(uint32_t stream, LPDIRECT3DVERTEXBUFFER9 buf
         this->m_d3dVertexStreamOfs[stream] = offset;
         this->m_d3dVertexStreamStride[stream] = stride;
     }
+}
+
+void CGxDeviceD3d::IShaderBindPixel(CGxShader* shader) {
+    if (!shader) {
+        this->m_d3dDevice->SetPixelShader(nullptr);
+
+        // TODO FFP handling
+
+        return;
+    }
+
+    if (!shader->loaded) {
+        this->IShaderCreatePixel(shader);
+    }
+
+    auto d3dShader = static_cast<LPDIRECT3DPIXELSHADER9>(shader->apiSpecific);
+    this->m_d3dDevice->SetPixelShader(d3dShader);
+}
+
+void CGxDeviceD3d::IShaderBindVertex(CGxShader* shader) {
+    if (!shader) {
+        this->m_d3dDevice->SetVertexShader(nullptr);
+        return;
+    }
+
+    if (!shader->loaded) {
+        this->IShaderCreateVertex(shader);
+    }
+
+    auto d3dShader = static_cast<LPDIRECT3DVERTEXSHADER9>(shader->apiSpecific);
+    this->m_d3dDevice->SetVertexShader(d3dShader);
 }
 
 void CGxDeviceD3d::IShaderConstantsFlush() {
