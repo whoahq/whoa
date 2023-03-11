@@ -3,6 +3,13 @@
 #include "gx/texture/CGxTex.hpp"
 #include <algorithm>
 
+D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
+    D3DCMP_LESSEQUAL,
+    D3DCMP_EQUAL,
+    D3DCMP_GREATEREQUAL,
+    D3DCMP_LESS,
+};
+
 D3DTEXTUREFILTERTYPE CGxDeviceD3d::s_filterModes[GxTexFilters_Last][3] = {
     // Min, Mag, Mip
     { D3DTEXF_POINT,    D3DTEXF_POINT,  D3DTEXF_NONE    },  // GxTex_Nearest
@@ -753,6 +760,35 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
 
     switch (which) {
     // TODO handle all render states
+
+    case GxRs_DepthTest:
+    case GxRs_DepthFunc: {
+        auto depthTest = static_cast<uint32_t>((&this->m_appRenderStates[GxRs_DepthTest])->m_value);
+        auto depthFunc = static_cast<uint32_t>((&this->m_appRenderStates[GxRs_DepthFunc])->m_value);
+
+        auto d3dDepthFunc = D3DCMP_ALWAYS;
+        if (this->MasterEnable(GxMasterEnable_DepthTest) && depthTest) {
+            d3dDepthFunc = CGxDeviceD3d::s_cmpFunc[depthFunc];
+        }
+
+        this->DsSet(Ds_ZFunc, d3dDepthFunc);
+
+        this->m_appRenderStates[GxRs_DepthTest].m_dirty = 0;
+        this->m_appRenderStates[GxRs_DepthFunc].m_dirty = 0;
+
+        break;
+    }
+
+    case GxRs_DepthWrite: {
+        auto depthWrite = static_cast<uint32_t>(state->m_value);
+        if (!this->MasterEnable(GxMasterEnable_DepthWrite)) {
+            depthWrite = 0;
+        }
+
+        this->DsSet(Ds_ZWriteEnable, depthWrite);
+
+        break;
+    }
 
     case GxRs_Texture0:
     case GxRs_Texture1:
