@@ -611,6 +611,7 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
 
     case Ds_ZFunc: {
         this->m_d3dDevice->SetRenderState(D3DRS_ZFUNC, val);
+        break;
     }
     }
 
