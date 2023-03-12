@@ -385,11 +385,28 @@ int32_t CGxDeviceD3d::BufUnlock(CGxBuf* buf, uint32_t size) {
 }
 
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
-    // TODO
+    dst = this->DeviceCurWindow();
 }
 
 void CGxDeviceD3d::CapsWindowSizeInScreenCoords(CRect& dst) {
-    // TODO
+    if (this->IDevIsWindowed()) {
+        auto windowRect = this->DeviceCurWindow();
+
+        POINT points[2];
+        points[0].x = 0;
+        points[0].y = 0;
+        points[1].x = windowRect.maxX;
+        points[1].y = windowRect.maxY;
+
+        MapWindowPoints(this->m_hwnd, nullptr, points, 2);
+
+        dst.minY = points[0].y;
+        dst.minX = points[0].x;
+        dst.maxY = points[1].y;
+        dst.maxX = points[1].x;
+    } else {
+        dst = this->DeviceCurWindow();
+    }
 }
 
 int32_t CGxDeviceD3d::CreatePoolAPI(CGxPool* pool) {
