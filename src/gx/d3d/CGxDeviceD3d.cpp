@@ -11,6 +11,21 @@ D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
     D3DCMP_LESS,
 };
 
+D3DBLEND CGxDeviceD3d::s_dstBlend[] = {
+    D3DBLEND_ZERO,              // GxBlend_Opaque
+    D3DBLEND_ZERO,              // GxBlend_AlphaKey
+    D3DBLEND_INVSRCALPHA,       // GxBlend_Alpha
+    D3DBLEND_ONE,               // GxBlend_Add
+    D3DBLEND_ZERO,              // GxBlend_Mod
+    D3DBLEND_SRCCOLOR,          // GxBlend_Mod2x
+    D3DBLEND_ONE,               // GxBlend_ModAdd
+    D3DBLEND_ONE,               // GxBlend_InvSrcAlphaAdd
+    D3DBLEND_ZERO,              // GxBlend_InvSrcAlphaOpaque
+    D3DBLEND_ZERO,              // GxBlend_SrcAlphaOpaque
+    D3DBLEND_ONE,               // GxBlend_NoAlphaAdd
+    D3DBLEND_INVBLENDFACTOR,    // GxBlend_ConstantAlpha
+};
+
 D3DCUBEMAP_FACES CGxDeviceD3d::s_faceTypes[] = {
     D3DCUBEMAP_FACE_POSITIVE_X,
     D3DCUBEMAP_FACE_NEGATIVE_X,
@@ -134,6 +149,21 @@ D3DPRIMITIVETYPE CGxDeviceD3d::s_primitiveConversion[] = {
     D3DPT_TRIANGLELIST, // GxPrim_Triangles
     D3DPT_TRIANGLESTRIP, // GxPrim_TriangleStrip
     D3DPT_TRIANGLEFAN,  // GxPrim_TriangleFan
+};
+
+D3DBLEND CGxDeviceD3d::s_srcBlend[] = {
+    D3DBLEND_ONE,           // GxBlend_Opaque
+    D3DBLEND_ONE,           // GxBlend_AlphaKey
+    D3DBLEND_SRCALPHA,      // GxBlend_Alpha
+    D3DBLEND_SRCALPHA,      // GxBlend_Add
+    D3DBLEND_DESTCOLOR,     // GxBlend_Mod
+    D3DBLEND_DESTCOLOR,     // GxBlend_Mod2x
+    D3DBLEND_DESTCOLOR,     // GxBlend_ModAdd
+    D3DBLEND_INVSRCALPHA,   // GxBlend_InvSrcAlphaAdd
+    D3DBLEND_INVSRCALPHA,   // GxBlend_InvSrcAlphaOpaque
+    D3DBLEND_SRCALPHA,      // GxBlend_SrcAlphaOpaque
+    D3DBLEND_ONE,           // GxBlend_NoAlphaAdd
+    D3DBLEND_BLENDFACTOR,   // GxBlend_ConstantAlpha
 };
 
 EGxTexFormat CGxDeviceD3d::s_tolerableTexFmtMapping[] = {
@@ -482,6 +512,16 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
 
     switch (state) {
     // TODO handle other device states
+
+    case Ds_SrcBlend: {
+        this->m_d3dDevice->SetRenderState(D3DRS_SRCBLEND, val);
+        break;
+    }
+
+    case Ds_DstBlend: {
+        this->m_d3dDevice->SetRenderState(D3DRS_DESTBLEND, val);
+        break;
+    }
 
     case Ds_TssMagFilter0:
     case Ds_TssMagFilter1:
@@ -836,6 +876,20 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
 
     switch (which) {
     // TODO handle all render states
+
+    case GxRs_BlendingMode: {
+        auto blendMode = static_cast<EGxBlend>(static_cast<int32_t>(state->m_value));
+
+        if (blendMode < GxBlend_Alpha) {
+            this->DsSet(Ds_AlphaBlendEnable, 0);
+        } else {
+            this->DsSet(Ds_AlphaBlendEnable, 1);
+            this->DsSet(Ds_SrcBlend, CGxDeviceD3d::s_srcBlend[blendMode]);
+            this->DsSet(Ds_DstBlend, CGxDeviceD3d::s_dstBlend[blendMode]);
+        }
+
+        break;
+    }
 
     case GxRs_AlphaRef: {
         auto alphaRef = static_cast<int32_t>(state->m_value);

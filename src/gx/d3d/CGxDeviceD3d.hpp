@@ -197,6 +197,7 @@ class CGxDeviceD3d : public CGxDevice {
 
     // Static variables
     static D3DCMPFUNC s_cmpFunc[];
+    static D3DBLEND s_dstBlend[];
     static D3DCUBEMAP_FACES s_faceTypes[];
     static D3DTEXTUREFILTERTYPE s_filterModes[GxTexFilters_Last][3];
     static uint32_t s_gxAttribToD3dAttribSize[];
@@ -207,6 +208,7 @@ class CGxDeviceD3d : public CGxDevice {
     static D3DFORMAT s_GxTexFmtToD3dFmt[];
     static EGxTexFormat s_GxTexFmtToUse[];
     static D3DPRIMITIVETYPE s_primitiveConversion[];
+    static D3DBLEND s_srcBlend[];
     static EGxTexFormat s_tolerableTexFmtMapping[];
     static D3DTEXTUREADDRESS s_wrapModes[];
 
