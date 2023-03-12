@@ -11,6 +11,12 @@ D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
     D3DCMP_LESS,
 };
 
+D3DCULL CGxDeviceD3d::s_cullMode[] = {
+    D3DCULL_NONE,
+    D3DCULL_CW,
+    D3DCULL_CCW,
+};
+
 D3DBLEND CGxDeviceD3d::s_dstBlend[] = {
     D3DBLEND_ZERO,              // GxBlend_Opaque
     D3DBLEND_ZERO,              // GxBlend_AlphaKey
@@ -609,6 +615,11 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
         break;
     }
 
+    case Ds_CullMode: {
+        this->m_d3dDevice->SetRenderState(D3DRS_CULLMODE, val);
+        break;
+    }
+
     case Ds_ZFunc: {
         this->m_d3dDevice->SetRenderState(D3DRS_ZFUNC, val);
         break;
@@ -930,6 +941,22 @@ void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
         }
 
         this->DsSet(Ds_ZWriteEnable, depthWrite);
+
+        break;
+    }
+
+    case GxRs_Culling: {
+        auto cullMode = static_cast<int32_t>(state->m_value);
+
+        if (!this->MasterEnable(GxMasterEnable_Culling)) {
+            cullMode = 0;
+        }
+
+        if (cullMode > 2) {
+            cullMode = 2;
+        }
+
+        this->DsSet(Ds_CullMode, CGxDeviceD3d::s_cullMode[cullMode]);
 
         break;
     }

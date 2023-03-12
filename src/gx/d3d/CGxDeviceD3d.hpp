@@ -197,6 +197,7 @@ class CGxDeviceD3d : public CGxDevice {
 
     // Static variables
     static D3DCMPFUNC s_cmpFunc[];
+    static D3DCULL s_cullMode[];
     static D3DBLEND s_dstBlend[];
     static D3DCUBEMAP_FACES s_faceTypes[];
     static D3DTEXTUREFILTERTYPE s_filterModes[GxTexFilters_Last][3];
