@@ -248,6 +248,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void CapsWindowSizeInScreenCoords(CRect& dst);
     virtual void ScenePresent();
     virtual void SceneClear(uint32_t mask, CImVector color);
+    virtual void XformSetProjection(const C44Matrix& matrix);
     virtual void Draw(CGxBatch* batch, int32_t indexed);
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
@@ -287,6 +288,7 @@ class CGxDeviceD3d : public CGxDevice {
     void IStateSyncVertexPtrs();
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
+    void IXformSetProjection(const C44Matrix& matrix);
 };
 
 #endif

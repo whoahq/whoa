@@ -2,7 +2,9 @@
 #include "gx/Blit.hpp"
 #include "gx/CGxBatch.hpp"
 #include "gx/texture/CGxTex.hpp"
+#include "math/Utils.hpp"
 #include <algorithm>
+#include <directxmath.h>
 
 D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
     D3DCMP_LESSEQUAL,
@@ -1690,6 +1692,33 @@ UNLOCK:
     }
 }
 
+void CGxDeviceD3d::IXformSetProjection(const C44Matrix& matrix) {
+    DirectX::XMMATRIX projNative;
+    memcpy(&projNative, &matrix, sizeof(projNative));
+
+    if (NotEqual(projNative._34, 1.0f, WHOA_EPSILON_1) && NotEqual(projNative._34, 0.0f, WHOA_EPSILON_1)) {
+        projNative /= projNative._34;
+    }
+
+    if (projNative._44 == 0.0f) {
+        auto v5 = -(projNative._43 / (projNative._33 + 1.0f));
+        auto v6 = -(projNative._43 / (projNative._33 - 1.0f));
+        projNative._33 = v6 / (v6 - v5);
+        projNative._43 = v6 * v5 / (v5 - v6);
+    } else {
+        auto v8 = 1.0f / projNative._33;
+        auto v9 = (-1.0f - projNative._43) * v8;
+        auto v10 = v8 * (1.0f - projNative._43);
+        projNative._33 = 1.0f / (v10 - v9);
+        projNative._43 = v9 / (v9 - v10);
+    }
+
+    // TODO shrink
+
+    this->m_xforms[GxXform_Projection].m_dirty = 1;
+    memcpy(&this->m_projNative, &projNative, sizeof(this->m_projNative));
+}
+
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
 }
@@ -1750,4 +1779,9 @@ void CGxDeviceD3d::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const 
 int32_t CGxDeviceD3d::StereoEnabled() {
     // TODO
     return 0;
+}
+
+void CGxDeviceD3d::XformSetProjection(const C44Matrix& matrix) {
+    CGxDevice::XformSetProjection(matrix);
+    this->IXformSetProjection(matrix);
 }
