@@ -1142,7 +1142,7 @@ void CGxDeviceGLL::ITexUpload(CGxTex* texId) {
 void CGxDeviceGLL::IXformSetProjection(const C44Matrix& matrix) {
     C44Matrix gllMat = matrix;
 
-    if (!this->MasterEnable(GxMasterEnable_NormalProjection) && matrix.d0 != 1.0f) {
+    if (!this->MasterEnable(GxMasterEnable_NormalProjection) && matrix.d3 != 1.0f) {
         C44Matrix shrink = {
             0.2f, 0.0f, 0.0f, 0.0f,
             0.0f, 0.2f, 0.0f, 0.0f,
