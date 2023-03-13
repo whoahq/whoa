@@ -1713,7 +1713,16 @@ void CGxDeviceD3d::IXformSetProjection(const C44Matrix& matrix) {
         projNative._43 = v9 / (v9 - v10);
     }
 
-    // TODO shrink
+    if (!this->MasterEnable(GxMasterEnable_NormalProjection) && projNative._44 != 1.0f) {
+        DirectX::XMMATRIX shrink = {
+            0.2f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.2f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.2f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        projNative *= shrink;
+    }
 
     this->m_xforms[GxXform_Projection].m_dirty = 1;
     memcpy(&this->m_projNative, &projNative, sizeof(this->m_projNative));
