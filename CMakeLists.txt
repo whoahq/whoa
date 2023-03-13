@@ -41,6 +41,11 @@ if(WHOA_SYSTEM_WIN)
         WIN32_LEAN_AND_MEAN
     )
 
+    # Make DirectXMath boring
+    add_definitions(
+        -D_XM_NO_INTRINSICS_
+    )
+
     # Lua uses various "unsafe" C functions
     add_definitions(
         -D_CRT_SECURE_NO_WARNINGS
