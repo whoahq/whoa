@@ -241,7 +241,7 @@ class CGxDeviceD3d : public CGxDevice {
     // Virtual member functions
     virtual void ITexMarkAsUpdated(CGxTex* texId);
     virtual void IRsSendToHw(EGxRenderState which);
-    virtual int32_t DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format);
+    virtual int32_t DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format);
     virtual int32_t DeviceSetFormat(const CGxFormat& format);
     virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2);
     virtual void CapsWindowSize(CRect& dst);

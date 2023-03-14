@@ -29,7 +29,7 @@ class CGxDeviceGLL : public CGxDevice {
         // Virtual member functions
         virtual void ITexMarkAsUpdated(CGxTex*);
         virtual void IRsSendToHw(EGxRenderState);
-        virtual int32_t DeviceCreate(long (*)(void*, uint32_t, uint32_t, long), const CGxFormat&);
+        virtual int32_t DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat&);
         virtual int32_t DeviceSetFormat(const CGxFormat&);
         virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {};
         virtual void CapsWindowSize(CRect&);

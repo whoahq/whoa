@@ -357,7 +357,9 @@ LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
         break;
     }
 
-    // TODO
+    if (device && device->m_windowProc) {
+        return device->m_windowProc(hWnd, uMsg, wParam, lParam);
+    }
 
     return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
@@ -428,7 +430,7 @@ int32_t CGxDeviceD3d::CreatePoolAPI(CGxPool* pool) {
     return 1;
 }
 
-int32_t CGxDeviceD3d::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format) {
+int32_t CGxDeviceD3d::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format) {
     this->m_ownhwnd = 1;
 
     // TODO gamma ramp

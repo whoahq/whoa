@@ -4,7 +4,7 @@
 
 CGxDevice* g_theGxDevicePtr = nullptr;
 
-CGxDevice* GxDevCreate(EGxApi api, long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format) {
+CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format) {
     CGxDevice* device;
 
     #if defined(WHOA_SYSTEM_WIN)
