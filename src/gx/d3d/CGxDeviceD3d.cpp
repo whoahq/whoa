@@ -350,7 +350,7 @@ LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     case WM_SIZING: {
         // TODO
 
-        break;
+        return 1;
     }
 
     default:
