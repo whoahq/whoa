@@ -614,6 +614,50 @@ void CGxDeviceD3d::DsSet(EDeviceState state, uint32_t val) {
         break;
     }
 
+    case Ds_TssWrapU0:
+    case Ds_TssWrapU1:
+    case Ds_TssWrapU2:
+    case Ds_TssWrapU3:
+    case Ds_TssWrapU4:
+    case Ds_TssWrapU5:
+    case Ds_TssWrapU6:
+    case Ds_TssWrapU7:
+    case Ds_TssWrapU8:
+    case Ds_TssWrapU9:
+    case Ds_TssWrapU10:
+    case Ds_TssWrapU11:
+    case Ds_TssWrapU12:
+    case Ds_TssWrapU13:
+    case Ds_TssWrapU14:
+    case Ds_TssWrapU15: {
+        auto tmu = state - Ds_TssWrapU0;
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_ADDRESSU, val);
+
+        break;
+    }
+
+    case Ds_TssWrapV0:
+    case Ds_TssWrapV1:
+    case Ds_TssWrapV2:
+    case Ds_TssWrapV3:
+    case Ds_TssWrapV4:
+    case Ds_TssWrapV5:
+    case Ds_TssWrapV6:
+    case Ds_TssWrapV7:
+    case Ds_TssWrapV8:
+    case Ds_TssWrapV9:
+    case Ds_TssWrapV10:
+    case Ds_TssWrapV11:
+    case Ds_TssWrapV12:
+    case Ds_TssWrapV13:
+    case Ds_TssWrapV14:
+    case Ds_TssWrapV15: {
+        auto tmu = state - Ds_TssWrapV0;
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_ADDRESSV, val);
+
+        break;
+    }
+
     case Ds_AlphaBlendEnable: {
         this->m_d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, val);
         break;
