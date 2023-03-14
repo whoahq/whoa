@@ -293,7 +293,14 @@ LRESULT CGxDeviceD3d::WindowProcD3d(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
     }
 
     case WM_ACTIVATE: {
-        // TODO
+        if (wParam == WA_INACTIVE && !device->IDevIsWindowed()) {
+            CRect windowRect = { 0.0f, 0.f, 0.0f, 0.0f };
+            device->DeviceWM(GxWM_Size, reinterpret_cast<uintptr_t>(&windowRect), 1);
+        } else if (wParam == WA_ACTIVE && !device->IDevIsWindowed()) {
+            CRect windowRect;
+            device->CapsWindowSizeInScreenCoords(windowRect);
+            device->DeviceWM(GxWM_Size, reinterpret_cast<uintptr_t>(&windowRect), 3);
+        }
 
         break;
     }
