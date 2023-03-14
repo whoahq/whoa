@@ -1,11 +1,25 @@
 file(GLOB PRIVATE_SOURCES "*.cpp")
 
+if(WHOA_SYSTEM_WIN)
+    file(GLOB WIN_SOURCES
+        "win/*.cpp"
+    )
+    list(APPEND PRIVATE_SOURCES ${WIN_SOURCES})
+endif()
+
 if(WHOA_SYSTEM_MAC)
     file(GLOB MAC_SOURCES
         "mac/*.cpp"
         "mac/*.mm"
     )
     list(APPEND PRIVATE_SOURCES ${MAC_SOURCES})
+endif()
+
+if(WHOA_SYSTEM_LINUX)
+    file(GLOB LINUX_SOURCES
+        "linux/*.cpp"
+    )
+    list(APPEND PRIVATE_SOURCES ${LINUX_SOURCES})
 endif()
 
 add_library(event STATIC

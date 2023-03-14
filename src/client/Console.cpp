@@ -1,4 +1,5 @@
 #include "client/Console.hpp"
+#include "event/Window.hpp"
 #include "gx/Device.hpp"
 #include "util/CVar.hpp"
 #include <cstring>
@@ -200,7 +201,7 @@ void ConsoleDeviceInitialize(const char* title) {
     api = GxApi_GLL;
 #endif
 
-    CGxDevice* device = GxDevCreate(api, nullptr, format);
+    CGxDevice* device = GxDevCreate(api, OsWindowProc, format);
 
     // TODO
 }
