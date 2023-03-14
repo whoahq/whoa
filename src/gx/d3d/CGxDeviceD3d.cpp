@@ -1686,7 +1686,7 @@ UNLOCK:
     texels = nullptr;
     texId->m_userFunc(GxTex_Unlock, texId->m_width, texId->m_height, 0, 0, texId->m_userArg, texelStrideInBytes, texels);
 
-    if (texId->m_flags.m_renderTarget) {
+    if (!texId->m_flags.m_renderTarget) {
         auto d3dTexture = static_cast<LPDIRECT3DTEXTURE9>(texId->m_apiSpecificData);
         d3dTexture->PreLoad();
     }
