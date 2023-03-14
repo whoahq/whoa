@@ -71,6 +71,7 @@ class CGxDevice {
         CGxCaps m_caps;
         int32_t m_shaderProfiles[GxShTargets_Last] = { 6, 0, 0, 0, 12, 0 }; // TODO placeholder
         TSHashTable<CGxShader, HASHKEY_STRI> m_shaderList[GxShTargets_Last];
+        int32_t (*m_windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam) = nullptr;
         int32_t m_context = 0;
         int32_t intF5C = 0;
         int32_t m_windowVisible = 0;
@@ -104,7 +105,7 @@ class CGxDevice {
         virtual void ITexMarkAsUpdated(CGxTex*) = 0;
         virtual void IRsSendToHw(EGxRenderState) = 0;
         virtual void ICursorCreate(const CGxFormat& format);
-        virtual int32_t DeviceCreate(long (*)(void*, uint32_t, uint32_t, long), const CGxFormat&);
+        virtual int32_t DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat&);
         virtual int32_t DeviceSetFormat(const CGxFormat&);
         virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) = 0;
         virtual void CapsWindowSize(CRect&) = 0;

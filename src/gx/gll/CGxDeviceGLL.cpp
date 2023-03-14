@@ -140,7 +140,7 @@ void CGxDeviceGLL::CapsWindowSizeInScreenCoords(CRect& dst) {
     }
 }
 
-int32_t CGxDeviceGLL::DeviceCreate(long (*windowProc)(void*, uint32_t, uint32_t, long), const CGxFormat& format) {
+int32_t CGxDeviceGLL::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format) {
     CGRect rect;
     Rect* bounds;
     Rect* zoomedBounds = GetSavedZoomedWindowBounds();
