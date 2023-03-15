@@ -4,5 +4,20 @@
 
 int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam) {
     // TODO
-    return 0;
+
+    switch (message) {
+    // TODO handle remaining message types
+
+    case WM_CLOSE: {
+        OsQueuePut(OS_INPUT_CLOSE, 0, 0, 0, 0);
+        return 0;
+    }
+
+    default:
+        break;
+    }
+
+    // TODO
+
+    return DefWindowProc(static_cast<HWND>(window), message, wparam, lparam);
 }
