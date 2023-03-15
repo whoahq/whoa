@@ -198,7 +198,7 @@ const CGxCaps& CGxDevice::Caps() const {
     return this->m_caps;
 }
 
-int32_t CGxDevice::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format) {
+int32_t CGxDevice::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam), const CGxFormat& format) {
     this->m_windowProc = windowProc;
 
     return this->DeviceSetFormat(format);

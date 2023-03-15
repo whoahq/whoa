@@ -430,7 +430,7 @@ int32_t CGxDeviceD3d::CreatePoolAPI(CGxPool* pool) {
     return 1;
 }
 
-int32_t CGxDeviceD3d::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format) {
+int32_t CGxDeviceD3d::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam), const CGxFormat& format) {
     this->m_ownhwnd = 1;
 
     // TODO gamma ramp

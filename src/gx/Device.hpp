@@ -9,7 +9,7 @@ class CGxFormat;
 
 extern CGxDevice* g_theGxDevicePtr;
 
-CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t message, uint32_t wparam, int32_t lparam), const CGxFormat& format);
+CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam), const CGxFormat& format);
 
 EGxApi GxDevApi(void);
 
