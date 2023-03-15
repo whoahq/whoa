@@ -917,6 +917,16 @@ bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
 
     // TODO
 
+    RECT clientArea = {
+        0,             // left
+        0,             // top
+        format.size.x, // right
+        format.size.y  // bottom
+    };
+    AdjustWindowRectEx(&clientArea, dwStyle, false, 0);
+
+    // TODO
+
     int32_t width = format.size.x ? format.size.x : CW_USEDEFAULT;
     int32_t height = format.size.y ? format.size.y : CW_USEDEFAULT;
 
