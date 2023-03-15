@@ -196,6 +196,8 @@ class CGxDeviceD3d : public CGxDevice {
     };
 
     // Static variables
+    static int32_t s_clientAdjustWidth;
+    static int32_t s_clientAdjustHeight;
     static D3DCMPFUNC s_cmpFunc[];
     static D3DCULL s_cullMode[];
     static D3DBLEND s_dstBlend[];

@@ -6,6 +6,9 @@
 #include <algorithm>
 #include <directxmath.h>
 
+int32_t CGxDeviceD3d::s_clientAdjustWidth;
+int32_t CGxDeviceD3d::s_clientAdjustHeight;
+
 D3DCMPFUNC CGxDeviceD3d::s_cmpFunc[] = {
     D3DCMP_LESSEQUAL,
     D3DCMP_EQUAL,
@@ -924,6 +927,8 @@ bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
         format.size.y  // bottom
     };
     AdjustWindowRectEx(&clientArea, dwStyle, false, 0);
+    CGxDeviceD3d::s_clientAdjustWidth = clientArea.right - format.size.x - clientArea.left;
+    CGxDeviceD3d::s_clientAdjustHeight = clientArea.bottom - format.size.y - clientArea.top;
 
     // TODO
 
@@ -931,7 +936,8 @@ bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
     int32_t height = format.size.y ? format.size.y : CW_USEDEFAULT;
 
     if (format.window && format.maximize != 1 && format.size.x && format.size.y) {
-        // TODO adjust width and height
+        width += CGxDeviceD3d::s_clientAdjustWidth;
+        height += CGxDeviceD3d::s_clientAdjustHeight;
     }
 
     this->m_hwnd = CreateWindowEx(
