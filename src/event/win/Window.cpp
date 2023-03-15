@@ -2,6 +2,11 @@
 #include "event/Input.hpp"
 #include <windows.h>
 
+int32_t OsGuiProcessMessage(void* message) {
+    // TODO
+    return 0;
+}
+
 int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam) {
     // TODO
 

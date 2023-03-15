@@ -19,6 +19,8 @@ namespace Input {
     extern int32_t s_numlockState;
     extern int32_t s_simulatedRightButtonClick;
     extern uint32_t s_metaKeyState;
+    extern int32_t s_queueHead;
+    extern int32_t s_queueTail;
 
     #if defined(WHOA_SYSTEM_WIN)
         extern int32_t s_savedMouseSpeed;

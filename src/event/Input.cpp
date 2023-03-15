@@ -19,8 +19,6 @@
 
 namespace Input {
     CRect s_boundingRect;
-    int32_t s_queueHead;
-    int32_t s_queueTail;
     OSEVENT s_queue[32];
 
     MOUSEBUTTON s_buttonConversion[16] = {
@@ -51,6 +49,8 @@ MOUSEMODE Input::s_mouseMode;
 int32_t Input::s_numlockState;
 int32_t Input::s_simulatedRightButtonClick;
 uint32_t Input::s_metaKeyState;
+int32_t Input::s_queueHead;
+int32_t Input::s_queueTail;
 
 #if defined(WHOA_SYSTEM_WIN)
     int32_t Input::s_savedMouseSpeed;
