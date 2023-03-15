@@ -950,7 +950,7 @@ bool CGxDeviceD3d::ICreateWindow(CGxFormat& format) {
     );
 
     if (this->m_hwnd && format.maximize != 2) {
-        ShowWindow(this->m_hwnd, 1);
+        ShowWindow(this->m_hwnd, SW_SHOWNORMAL);
     }
 
     return this->m_hwnd != nullptr;
