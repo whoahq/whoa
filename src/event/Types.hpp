@@ -220,6 +220,10 @@ struct EVENT_DATA_CHAR {
     uint32_t repeat;
 };
 
+struct EVENT_DATA_FOCUS {
+    int32_t focus;
+};
+
 struct EVENT_DATA_IDLE {
     float elapsedSec;
     uint32_t time;

@@ -75,6 +75,18 @@ void PostClose() {
     EventInitiateShutdown();
 }
 
+void PostFocus(EvtContext* context, int32_t focus) {
+    Input::s_buttonState = 0;
+    Input::s_metaKeyState = 0;
+
+    EVENT_DATA_FOCUS data;
+    data.focus = focus;
+
+    IEvtQueueDispatch(context, EVENT_ID_FOCUS, &data);
+
+    CheckMouseModeState();
+}
+
 void PostKeyDown(EvtContext* context, int32_t key, int32_t repeat, int32_t time) {
     if (key <= KEY_LASTMETAKEY) {
         if ((1 << key) & Input::s_metaKeyState) {
@@ -216,7 +228,11 @@ void ProcessInput(const int32_t param[], OSINPUT id, int32_t* shutdown, EvtConte
             break;
 
         case OS_INPUT_FOCUS:
-            // TODO
+            PostFocus(
+                context,
+                param[0]
+            );
+
             break;
 
         case OS_INPUT_KEY_DOWN:
