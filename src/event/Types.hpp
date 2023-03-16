@@ -209,6 +209,12 @@ enum OSINPUT {
     OS_INPUT_SHUTDOWN               = 19
 };
 
+enum OS_MOUSE_MODE {
+    OS_MOUSE_MODE_NORMAL            = 0,
+    OS_MOUSE_MODE_RELATIVE          = 1,
+    OS_MOUSE_MODES                  = 2,
+};
+
 struct OSEVENT {
     OSINPUT id;
     int32_t param[4];

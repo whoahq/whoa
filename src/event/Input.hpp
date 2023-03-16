@@ -16,6 +16,7 @@ namespace Input {
     extern C2iVector s_currentMouse;
     extern uint32_t s_mouseHoldButton;
     extern MOUSEMODE s_mouseMode;
+    extern OS_MOUSE_MODE s_osMouseMode;
     extern int32_t s_numlockState;
     extern int32_t s_simulatedRightButtonClick;
     extern uint32_t s_metaKeyState;
@@ -38,6 +39,8 @@ MOUSEBUTTON ConvertButtonNumberToMOUSEBUTTON(int32_t buttonNumber);
 
 void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y);
 
+void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton);
+
 uint32_t GenerateMouseFlags();
 
 const char* GetButtonName(int32_t button);
@@ -45,6 +48,8 @@ const char* GetButtonName(int32_t button);
 void IEvtInputInitialize();
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown);
+
+void IEvtSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton);
 
 const char* KeyCodeToString(KEY key);
 

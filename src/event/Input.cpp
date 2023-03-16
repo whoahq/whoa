@@ -325,8 +325,7 @@ void ProcessInput(const int32_t param[], OSINPUT id, int32_t* shutdown, EvtConte
 void CheckMouseModeState() {
     if (Input::s_mouseHoldButton) {
         if (Input::s_mouseHoldButton != (Input::s_mouseHoldButton & Input::s_buttonState)) {
-            // TODO
-            // EventSetMouseMode(0, 0);
+            EventSetMouseMode(MOUSE_MODE_NORMAL, 0);
         }
     }
 }
@@ -353,6 +352,30 @@ void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y) {
 
     *x = static_cast<float>(clientx) / static_cast<float>(windowDim.right - windowDim.left);
     *y = 1.0 - (static_cast<float>(clienty) / static_cast<float>(windowDim.bottom - windowDim.top));
+}
+
+void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton) {
+    STORM_ASSERT(mode < MOUSE_MODES);
+    STORM_VALIDATE(mode < MOUSE_MODES, ERROR_INVALID_PARAMETER);
+
+    auto contextId = *reinterpret_cast<uint32_t*>(PropGet(PROP_EVENTCONTEXT));
+    int32_t findMask;
+    auto context = TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Ptr(
+        contextId,
+        0,
+        &findMask
+    );
+
+    if (context) {
+        IEvtSetMouseMode(context, mode, holdButton);
+
+        if (findMask != -1) {
+            TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Unlock(
+                findMask & (INSTANCE_TABLE_SLOT_COUNT - 1),
+                findMask >= INSTANCE_TABLE_SLOT_COUNT
+            );
+        }
+    }
 }
 
 uint32_t GenerateMouseFlags() {
@@ -452,6 +475,10 @@ int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
     }
 
     return v4;
+}
+
+void IEvtSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton) {
+    // TODO
 }
 
 const char* KeyCodeToString(KEY key) {
