@@ -21,6 +21,7 @@ namespace Input {
     extern uint32_t s_metaKeyState;
     extern int32_t s_queueHead;
     extern int32_t s_queueTail;
+    extern int32_t s_windowFocused;
 
     #if defined(WHOA_SYSTEM_WIN)
         extern int32_t s_savedMouseSpeed;

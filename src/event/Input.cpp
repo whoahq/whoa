@@ -51,6 +51,7 @@ int32_t Input::s_simulatedRightButtonClick;
 uint32_t Input::s_metaKeyState;
 int32_t Input::s_queueHead;
 int32_t Input::s_queueTail;
+int32_t Input::s_windowFocused;
 
 #if defined(WHOA_SYSTEM_WIN)
     int32_t Input::s_savedMouseSpeed;
