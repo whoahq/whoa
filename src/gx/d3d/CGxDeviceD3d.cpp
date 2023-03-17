@@ -840,6 +840,10 @@ int32_t CGxDeviceD3d::ICreateD3dDevice(const CGxFormat& format) {
 
         this->ISetCaps(format);
 
+        // TODO logs
+
+        this->IStateSetD3dDefaults();
+
         // TODO
 
         return 1;
@@ -1451,6 +1455,40 @@ void CGxDeviceD3d::IShaderCreateVertex(CGxShader* shader) {
         shader->apiSpecific = d3dShader;
         shader->valid = 1;
     }
+}
+
+void CGxDeviceD3d::IStateSetD3dDefaults() {
+    this->m_d3dDevice->SetRenderState(D3DRS_ZENABLE, 1);
+    this->m_d3dDevice->SetRenderState(D3DRS_LOCALVIEWER, 1);
+    this->m_d3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+    this->m_d3dDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
+    this->m_d3dDevice->SetRenderState(D3DRS_FOGDENSITY, 0);
+
+    for (uint32_t tmu = 0; tmu < 16; tmu++) {
+        this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_ADDRESSW, D3DTADDRESS_CLAMP);
+    }
+
+    // TODO
+
+    this->IRsSync(0);
+
+    this->m_primVertexDirty = -1;
+    this->m_primIndexDirty = 0;
+
+    this->m_d3dDevice->SetIndices(nullptr);
+
+    this->m_d3dCurrentVertexDecl = nullptr;
+    this->m_d3dCurrentIndexBuf = nullptr;
+
+    for (uint32_t i = 0; i < 8; i++) {
+        this->m_d3dVertexStreamBuf[i] = nullptr;
+        this->m_d3dVertexStreamOfs[i] = -1;
+        this->m_d3dVertexStreamStride[i] = -1;
+    }
+
+    // TODO
+
+    this->ISceneBegin();
 }
 
 void CGxDeviceD3d::IStateSync() {

@@ -284,6 +284,7 @@ class CGxDeviceD3d : public CGxDevice {
     void IShaderConstantsFlush();
     void IShaderCreatePixel(CGxShader* shader);
     void IShaderCreateVertex(CGxShader* shader);
+    void IStateSetD3dDefaults();
     void IStateSync();
     void IStateSyncEnables();
     void IStateSyncIndexPtr();
