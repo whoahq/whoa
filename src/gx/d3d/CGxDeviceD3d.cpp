@@ -372,10 +372,6 @@ CGxDeviceD3d::CGxDeviceD3d() : CGxDevice() {
 
     this->m_api = GxApi_D3d9;
 
-    // TODO remove m_shaderProfiles in favor of caps-defined profiles
-    this->m_shaderProfiles[GxSh_Vertex] = GxShVS_vs_3_0;
-    this->m_shaderProfiles[GxSh_Pixel] = GxShPS_ps_3_0;
-
     // TODO
 
     memset(this->m_deviceStates, 0xFF, sizeof(this->m_deviceStates));
@@ -1181,24 +1177,24 @@ void CGxDeviceD3d::ISetCaps(const CGxFormat& format) {
     auto pixelShaderVersion = this->m_d3dCaps.PixelShaderVersion;
 
     if (pixelShaderVersion >= D3DPS_VERSION(3, 0)) {
-        this->m_caps.m_pixelShaderTarget = GxShPS_ps_3_0;
+        this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_ps_3_0;
     } else if (pixelShaderVersion >= D3DPS_VERSION(2, 0)) {
-        this->m_caps.m_pixelShaderTarget = GxShPS_ps_2_0;
+        this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_ps_2_0;
     } else if (pixelShaderVersion >= D3DPS_VERSION(1, 4)) {
-        this->m_caps.m_pixelShaderTarget = GxShPS_ps_1_4;
+        this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_ps_1_4;
     } else if (pixelShaderVersion >= D3DPS_VERSION(1, 1)) {
-        this->m_caps.m_pixelShaderTarget = GxShPS_ps_1_1;
+        this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_ps_1_1;
     }
 
-    if (this->m_caps.m_pixelShaderTarget != GxShPS_none) {
+    if (this->m_caps.m_shaderTargets[GxSh_Pixel] != GxShPS_none) {
         auto vertexShaderVersion = this->m_d3dCaps.VertexShaderVersion;
 
         if (vertexShaderVersion >= D3DVS_VERSION(3, 0)) {
-            this->m_caps.m_vertexShaderTarget = GxShVS_vs_3_0;
+            this->m_caps.m_shaderTargets[GxSh_Vertex] = GxShVS_vs_3_0;
         } else if (vertexShaderVersion >= D3DVS_VERSION(2, 0)) {
-            this->m_caps.m_vertexShaderTarget = GxShVS_vs_2_0;
+            this->m_caps.m_shaderTargets[GxSh_Vertex] = GxShVS_vs_2_0;
         } else if (vertexShaderVersion == D3DVS_VERSION(1, 1)) {
-            this->m_caps.m_vertexShaderTarget = GxShVS_vs_1_1;
+            this->m_caps.m_shaderTargets[GxSh_Vertex] = GxShVS_vs_1_1;
         }
 
         // TODO maxVertexShaderConst

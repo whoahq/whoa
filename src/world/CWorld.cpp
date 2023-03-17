@@ -24,11 +24,11 @@ void CWorld::Initialize() {
 
     // TODO
 
-    if (GxCaps().m_pixelShaderTarget > GxShPS_none) {
+    if (GxCaps().m_shaderTargets[GxSh_Pixel] > GxShPS_none) {
         CWorld::s_enables |= Enables::Enable_PixelShader;
     }
 
-    if (GxCaps().m_vertexShaderTarget > GxShVS_none) {
+    if (GxCaps().m_shaderTargets[GxSh_Vertex] > GxShVS_none) {
         CWorld::s_enables2 |= Enables2::Enable_VertexShader;
     }
 

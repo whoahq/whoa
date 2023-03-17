@@ -444,7 +444,7 @@ void CGxDevice::IRsSync(int32_t force) {
 }
 
 void CGxDevice::IShaderLoad(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations) {
-    int32_t profile = this->m_shaderProfiles[target];
+    int32_t profile = this->m_caps.m_shaderTargets[target];
 
     if (!profile) {
         return;
