@@ -676,8 +676,8 @@ void CGxDeviceGLL::ISetCaps(const CGxFormat& format) {
     this->m_caps.m_texFmt[GxTex_Dxt3] = 1;
     this->m_caps.m_texFmt[GxTex_Dxt5] = 1;
 
-    this->m_caps.m_vertexShaderTarget = GxShVS_arbvp1;
-    this->m_caps.m_pixelShaderTarget = GxShPS_arbfp1;
+    this->m_caps.m_shaderTargets[GxSh_Vertex] = GxShVS_arbvp1;
+    this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_arbfp1;
 
     this->m_caps.m_texFilterAnisotropic = 1;
     this->m_caps.m_maxTexAnisotropy = 16;

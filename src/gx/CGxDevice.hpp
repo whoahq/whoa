@@ -69,7 +69,6 @@ class CGxDevice {
         EGxApi m_api = GxApis_Last;
         CGxFormat m_format;
         CGxCaps m_caps;
-        int32_t m_shaderProfiles[GxShTargets_Last] = { 6, 0, 0, 0, 12, 0 }; // TODO placeholder
         TSHashTable<CGxShader, HASHKEY_STRI> m_shaderList[GxShTargets_Last];
         int32_t (*m_windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam) = nullptr;
         int32_t m_context = 0;
