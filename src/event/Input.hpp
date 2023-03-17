@@ -49,7 +49,7 @@ void IEvtInputInitialize();
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown);
 
-void IEvtSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton);
+void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton);
 
 const char* KeyCodeToString(KEY key);
 
@@ -60,6 +60,8 @@ void OsInputInitialize();
 bool OsInputIsUsingCocoaEventLoop();
 
 void OsInputPostEvent(OSINPUT id, int32_t param0, int32_t param1, int32_t param2, int32_t param3);
+
+void OsInputSetMouseMode(OS_MOUSE_MODE mode);
 
 int32_t OsQueueGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3);
 
