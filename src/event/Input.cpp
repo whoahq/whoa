@@ -47,6 +47,7 @@ C2iVector Input::s_currentMouse;
 uint32_t Input::s_mouseHoldButton;
 MOUSEMODE Input::s_mouseMode;
 int32_t Input::s_numlockState;
+OS_MOUSE_MODE Input::s_osMouseMode;
 int32_t Input::s_simulatedRightButtonClick;
 uint32_t Input::s_metaKeyState;
 int32_t Input::s_queueHead;
@@ -140,6 +141,10 @@ void PostMouseDown(EvtContext* context, MOUSEBUTTON button, int32_t x, int32_t y
     ConvertPosition(x, y, &data.x, &data.y);
 
     IEvtQueueDispatch(context, EVENT_ID_MOUSEDOWN, &data);
+}
+
+void PostMouseModeChanged(EvtContext* context, MOUSEMODE mode) {
+    // TODO
 }
 
 void PostMouseMove(EvtContext* context, int32_t x, int32_t y, int32_t time) {
@@ -367,7 +372,7 @@ void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton) {
     );
 
     if (context) {
-        IEvtSetMouseMode(context, mode, holdButton);
+        IEvtInputSetMouseMode(context, mode, holdButton);
 
         if (findMask != -1) {
             TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Unlock(
@@ -477,8 +482,20 @@ int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
     return v4;
 }
 
-void IEvtSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton) {
-    // TODO
+void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton) {
+    STORM_ASSERT(context);
+    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER);
+
+    if ((Input::s_buttonState & holdButton) == holdButton) {
+        Input::s_mouseHoldButton = holdButton;
+
+        if (Input::s_mouseMode != mode) {
+            OS_MOUSE_MODE osMouseMode = mode == MOUSE_MODE_NORMAL ? OS_MOUSE_MODE_NORMAL : OS_MOUSE_MODE_RELATIVE;
+            OsInputSetMouseMode(osMouseMode);
+
+            PostMouseModeChanged(context, mode);
+        }
+    }
 }
 
 const char* KeyCodeToString(KEY key) {
