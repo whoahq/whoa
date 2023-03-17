@@ -1468,8 +1468,7 @@ void CGxDeviceD3d::IStateSetD3dDefaults() {
         this->m_d3dDevice->SetSamplerState(tmu, D3DSAMP_ADDRESSW, D3DTADDRESS_CLAMP);
     }
 
-    // TODO
-
+    this->IRsForceUpdate();
     this->IRsSync(0);
 
     this->m_primVertexDirty = -1;
