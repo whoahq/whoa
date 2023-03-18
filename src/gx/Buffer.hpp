@@ -37,7 +37,7 @@ void GxPrimVertexPtr(CGxBuf*, EGxVertexBufferFormat);
 
 void GxPrimLockVertexPtrs(uint32_t, const C3Vector*, uint32_t, const C3Vector*, uint32_t, const CImVector*, uint32_t, const unsigned char*, uint32_t, const C2Vector*, uint32_t, const C2Vector*, uint32_t);
 
-void GxPrimDrawElements(EGxPrimType, uint32_t, uint16_t*);
+void GxPrimDrawElements(EGxPrim, uint32_t, uint16_t*);
 
 void GxPrimUnlockVertexPtrs();
 

@@ -216,7 +216,7 @@ void GxPrimLockVertexPtrs(uint32_t vertexCount, const C3Vector* pos, uint32_t po
     // TODO
 }
 
-void GxPrimDrawElements(EGxPrimType primType, uint32_t indexCount, uint16_t* indices) {
+void GxPrimDrawElements(EGxPrim primType, uint32_t indexCount, uint16_t* indices) {
     // TODO
 }
 
