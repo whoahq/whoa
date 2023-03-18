@@ -361,6 +361,22 @@ int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t 
         break;
     }
 
+    case WM_CHAR: {
+        if (wparam < 32) {
+            break;
+        }
+
+        uint32_t character = wparam;
+
+        if (wparam >= 128) {
+            // TODO
+        }
+
+        OsQueuePut(OS_INPUT_CHAR, character, LOWORD(lparam), 0, 0);
+
+        return 0;
+    }
+
     case WM_LBUTTONDOWN:
     case WM_RBUTTONDOWN:
     case WM_MBUTTONDOWN:
