@@ -54,6 +54,8 @@ void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdBut
 
 const char* KeyCodeToString(KEY key);
 
+bool OsGuiIsModifierKeyDown(int32_t key);
+
 int32_t OsGuiProcessMessage(void* message);
 
 int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3);

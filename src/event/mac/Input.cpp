@@ -1,6 +1,11 @@
 #include "event/Input.hpp"
 #include <common/Time.hpp>
 
+bool OsGuiIsModifierKeyDown(int32_t key) {
+    // TODO
+    return false;
+}
+
 int32_t OsGuiProcessMessage(void* message) {
     return 0;
 }
