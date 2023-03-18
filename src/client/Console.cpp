@@ -1,5 +1,5 @@
 #include "client/Console.hpp"
-#include "event/Window.hpp"
+#include "event/Input.hpp"
 #include "gx/Device.hpp"
 #include "util/CVar.hpp"
 #include <cstring>

@@ -53,6 +53,8 @@ void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdBut
 
 const char* KeyCodeToString(KEY key);
 
+int32_t OsGuiProcessMessage(void* message);
+
 int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3);
 
 void OsInputInitialize();
@@ -68,5 +70,7 @@ int32_t OsQueueGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param
 void OsQueuePut(OSINPUT id, int32_t param0, int32_t param1, int32_t param2, int32_t param3);
 
 void OsQueueSetParam(int32_t index, int32_t param);
+
+int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam);
 
 #endif
