@@ -10,6 +10,10 @@ void RestoreMouse() {
     // TODO
 }
 
+void SaveMouse(POINT mousePos, HWND hwnd) {
+    // TODO
+}
+
 int32_t OsGuiProcessMessage(void* message) {
     // TODO
     return 0;
@@ -104,6 +108,20 @@ int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t 
     case WM_CLOSE: {
         OsQueuePut(OS_INPUT_CLOSE, 0, 0, 0, 0);
         return 0;
+    }
+
+    case WM_MOUSEMOVE: {
+        // TODO
+
+        if (Input::s_osMouseMode == OS_MOUSE_MODE_RELATIVE) {
+            // TODO
+        } else {
+            POINT mousePos;
+            GetCursorPos(&mousePos);
+            ScreenToClient(hwnd, &mousePos);
+            OsQueuePut(OS_INPUT_MOUSE_MOVE, 0, mousePos.x, mousePos.y, 0);
+            SaveMouse(mousePos, hwnd);
+        }
     }
 
     default:
