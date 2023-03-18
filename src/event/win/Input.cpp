@@ -68,6 +68,107 @@ int32_t ConvertButton(uint32_t message, uintptr_t wparam, MOUSEBUTTON* button) {
     }
 }
 
+int32_t ConvertKeyCode(uint32_t vkey, KEY* key) {
+    if (vkey >= VK_F1 && vkey <= VK_F12) {
+        *key = static_cast<KEY>(KEY_F1 + (vkey - VK_F1));
+        return 1;
+    }
+
+    if (vkey >= 0x30 && vkey <= 0x39) {
+        *key = static_cast<KEY>(KEY_0 + (vkey - 0x30));
+        return 1;
+    }
+
+    switch (vkey) {
+    case VK_BACK: {
+        *key = KEY_BACKSPACE;
+        return 1;
+    }
+
+    case VK_TAB: {
+        *key = KEY_TAB;
+        return 1;
+    }
+
+    case VK_RETURN: {
+        *key = KEY_ENTER;
+        return 1;
+    }
+
+    case VK_PAUSE: {
+        *key = KEY_PAUSE;
+        return 1;
+    }
+
+    case VK_CAPITAL: {
+        *key = KEY_CAPSLOCK;
+        return 1;
+    }
+
+    case VK_ESCAPE: {
+        *key = KEY_ESCAPE;
+        return 1;
+    }
+
+    case VK_SPACE: {
+        *key = KEY_SPACE;
+        return 1;
+    }
+
+    case VK_PRIOR: {
+        *key = KEY_PAGEUP;
+        return 1;
+    }
+
+    case VK_NEXT: {
+        *key = KEY_PAGEDOWN;
+        return 1;
+    }
+
+    case VK_END: {
+        *key = KEY_END;
+        return 1;
+    }
+
+    case VK_HOME: {
+        *key = KEY_HOME;
+        return 1;
+    }
+
+    case VK_LEFT: {
+        *key = KEY_LEFT;
+        return 1;
+    }
+
+    case VK_UP: {
+        *key = KEY_UP;
+        return 1;
+    }
+
+    case VK_RIGHT: {
+        *key = KEY_RIGHT;
+        return 1;
+    }
+
+    case VK_DOWN: {
+        *key = KEY_DOWN;
+        return 1;
+    }
+
+    // TODO remaining vkeys
+
+    default: {
+        auto character = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
+        *key = static_cast<KEY>(character);
+        if (character && character <= 0xFF) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+    }
+}
+
 bool ProcessMouseEvent(MOUSEBUTTON button, uint32_t message, HWND hwnd, OSINPUT id) {
     POINT mousePos;
 
@@ -128,6 +229,11 @@ int32_t HandleMouseUp(uint32_t message, uintptr_t wparam, bool* xbutton, HWND hw
     }
 
     return 1;
+}
+
+bool OsGuiIsModifierKeyDown(int32_t key) {
+    // TODO
+    return false;
 }
 
 int32_t OsGuiProcessMessage(void* message) {
@@ -224,6 +330,35 @@ int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t 
     case WM_CLOSE: {
         OsQueuePut(OS_INPUT_CLOSE, 0, 0, 0, 0);
         return 0;
+    }
+
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+    case WM_SYSKEYDOWN:
+    case WM_SYSKEYUP: {
+        auto keyDown = message == WM_KEYDOWN || message == WM_SYSKEYDOWN;
+
+        if (wparam == VK_SHIFT) {
+            // TODO
+        } else if (wparam == VK_CONTROL) {
+            // TODO
+        } else if (wparam == VK_MENU) {
+            // TODO
+        }
+
+        KEY key;
+        if (ConvertKeyCode(wparam, &key)) {
+            OsQueuePut(keyDown ? OS_INPUT_KEY_DOWN : OS_INPUT_KEY_UP, key, LOWORD(lparam), 0, 0);
+
+            // Alt + F4
+            if (key == KEY_F4 && OsGuiIsModifierKeyDown(2)) {
+                break;
+            }
+
+            return 0;
+        }
+
+        break;
     }
 
     case WM_LBUTTONDOWN:
