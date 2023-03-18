@@ -16,6 +16,7 @@ namespace Input {
     extern C2iVector s_currentMouse;
     extern uint32_t s_mouseHoldButton;
     extern MOUSEMODE s_mouseMode;
+    extern uint32_t s_osButtonState;
     extern OS_MOUSE_MODE s_osMouseMode;
     extern int32_t s_numlockState;
     extern int32_t s_simulatedRightButtonClick;
