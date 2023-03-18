@@ -6,7 +6,7 @@ Welcome to Whoa, an unofficial open source implementation of the World of Warcra
 
 ## Supported Platforms
 
-Currently, macOS 10.14+ is supported, including recent versions of macOS on M1 processors. Support for Windows and Linux is in progress.
+Currently, Windows 10+ and macOS 10.14+ are supported, including recent versions of macOS on M1 and M2 processors. Support for Linux is in progress.
 
 ## Building
 
@@ -26,7 +26,7 @@ Whoa doesn't currently support reading from MPQ archives. Instead, it assumes yo
 
 Assuming all goes well, you should be greeted by the login screen, complete with its flying dragon animation loop.
 
-Whoa is very much a work-in-progress: it does not fully connect to a login server, does not play back sound or music, and does not support customizing settings. These things will be supported over time.
+Whoa is very much a work-in-progress: it does not fully connect to a realm server, does not play back sound or music, and does not support customizing settings. These things will be supported over time.
 
 ![Whoa in action](./docs/img/login.png)
 
