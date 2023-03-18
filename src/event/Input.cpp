@@ -47,6 +47,7 @@ C2iVector Input::s_currentMouse;
 uint32_t Input::s_mouseHoldButton;
 MOUSEMODE Input::s_mouseMode;
 int32_t Input::s_numlockState;
+uint32_t Input::s_osButtonState;
 OS_MOUSE_MODE Input::s_osMouseMode;
 int32_t Input::s_simulatedRightButtonClick;
 uint32_t Input::s_metaKeyState;
