@@ -30,7 +30,8 @@ class CGxPool : public TSLinkedNode<CGxPool> {
             , m_hint(hint)
             , m_name(name)
             {};
-        void Discard(void);
+        void Discard();
+        void Invalidate();
 };
 
 #endif
