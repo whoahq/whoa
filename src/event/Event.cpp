@@ -109,12 +109,12 @@ void EventRegister(EVENTID id, EVENTHANDLERFUNC handler) {
 }
 
 void EventRegisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, float priority) {
-    if (id < 0 || id > EVENTIDS || handler == nullptr) {
-        // TODO
-        // SErrSetLastError(0x57u);
-
-        return;
-    }
+    STORM_ASSERT(id >= 0);
+    STORM_VALIDATE(id >= 0, ERROR_INVALID_PARAMETER);
+    STORM_ASSERT(id < EVENTIDS);
+    STORM_VALIDATE(id < EVENTIDS, ERROR_INVALID_PARAMETER);
+    STORM_ASSERT(handler);
+    STORM_VALIDATE(handler, ERROR_INVALID_PARAMETER);
 
     HEVENTCONTEXT hContext = PropGet(PROP_EVENTCONTEXT);
 
