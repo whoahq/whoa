@@ -233,6 +233,8 @@ class CGxDeviceD3d : public CGxDevice {
     D3DDISPLAYMODE m_desktopDisplayMode;
     int32_t m_inScene;
     D3DFORMAT m_devAdapterFormat;
+    LPDIRECT3DSURFACE9 m_defColorSurface = nullptr;
+    LPDIRECT3DSURFACE9 m_defDepthSurface = nullptr;
     LPDIRECT3DVERTEXDECLARATION9 m_d3dCurrentVertexDecl;
     LPDIRECT3DINDEXBUFFER9 m_d3dCurrentIndexBuf;
     LPDIRECT3DVERTEXBUFFER9 m_d3dVertexStreamBuf[8];
@@ -274,6 +276,8 @@ class CGxDeviceD3d : public CGxDevice {
     void ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxFormat& format);
     void IDestroyD3d();
     void IDestroyD3dDevice();
+    void IReleaseD3dPools(int32_t a2);
+    void IReleaseD3dResources(int32_t a2);
     void ISceneBegin();
     void ISceneEnd();
     void ISetCaps(const CGxFormat& format);

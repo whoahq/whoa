@@ -499,8 +499,29 @@ void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
             this->DeviceSetDefWindow(windowRect);
 
             if (this->m_d3dDevice && this->m_context) {
-                // TODO
+                this->IReleaseD3dResources(0);
+
+                D3DPRESENT_PARAMETERS d3dpp;
+                this->ISetPresentParms(d3dpp, this->m_format);
+
+                if (SUCCEEDED(this->m_d3dDevice->Reset(&d3dpp))) {
+                    this->IStateSetD3dDefaults();
+                    // TODO
+
+                    this->m_context = 1;
+                    this->intF5C = 0;
+
+                    // TODO
+
+                    this->intF6C = 1;
+
+                    return;
+                } else {
+                    this->m_context = 0;
+                }
             }
+
+            this->intF6C = 1;
         }
 
         break;
@@ -969,6 +990,58 @@ void CGxDeviceD3d::IDestroyD3d() {
 
 void CGxDeviceD3d::IDestroyD3dDevice() {
     // TODO
+}
+
+void CGxDeviceD3d::IReleaseD3dPools(int32_t a2) {
+    for (auto pool = this->m_poolList.Head(); pool; pool = this->m_poolList.Next(pool)) {
+        if (!a2) {
+            if (pool->m_usage != GxPoolUsage_Dynamic && pool->m_usage != GxPoolUsage_Stream) {
+                continue;
+            }
+        }
+
+        if (pool->m_usage == GxPoolUsage_Stream) {
+            pool->unk1C = 0;
+        }
+
+        pool->Invalidate();
+
+        if (pool->m_apiSpecific) {
+            if (pool->m_target == GxPoolTarget_Vertex) {
+                auto d3dBuf = static_cast<LPDIRECT3DVERTEXBUFFER9>(pool->m_apiSpecific);
+                d3dBuf->Release();
+            } else if (pool->m_target == GxPoolTarget_Index) {
+                auto d3dBuf = static_cast<LPDIRECT3DINDEXBUFFER9>(pool->m_apiSpecific);
+                d3dBuf->Release();
+            }
+
+            pool->m_apiSpecific = nullptr;
+        }
+    }
+}
+
+void CGxDeviceD3d::IReleaseD3dResources(int32_t a2) {
+    // TODO
+
+    this->IReleaseD3dPools(a2);
+
+    memset(this->m_deviceStates, 0xFF, sizeof(this->m_deviceStates));
+
+    if (this->m_defColorSurface) {
+        this->m_defColorSurface->Release();
+        this->m_defColorSurface = nullptr;
+    }
+
+    if (this->m_defDepthSurface) {
+        this->m_defDepthSurface->Release();
+        this->m_defDepthSurface = nullptr;
+    }
+
+    // TODO
+
+    if (this->m_d3dDevice) {
+        this->m_d3dDevice->ShowCursor(false);
+    }
 }
 
 void CGxDeviceD3d::IRsSendToHw(EGxRenderState which) {
@@ -1480,6 +1553,9 @@ void CGxDeviceD3d::IStateSetD3dDefaults() {
         this->m_d3dVertexStreamOfs[i] = -1;
         this->m_d3dVertexStreamStride[i] = -1;
     }
+
+    this->m_d3dDevice->GetRenderTarget(0, &this->m_defColorSurface);
+    this->m_d3dDevice->GetDepthStencilSurface(&this->m_defDepthSurface);
 
     // TODO
 
