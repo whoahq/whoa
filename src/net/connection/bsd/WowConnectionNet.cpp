@@ -1,5 +1,3 @@
-#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
-
 #include "net/connection/WowConnectionNet.hpp"
 #include "net/connection/WowConnection.hpp"
 #include <algorithm>
@@ -187,5 +185,3 @@ void WowConnectionNet::PlatformWorkerReady() {
     char buf = '\1';
     write(s_workerPipe[1], &buf, sizeof(buf));
 }
-
-#endif
