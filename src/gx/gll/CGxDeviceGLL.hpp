@@ -43,6 +43,7 @@ class CGxDeviceGLL : public CGxDevice {
         virtual void PoolSizeSet(CGxPool*, uint32_t);
         virtual char* BufLock(CGxBuf*);
         virtual int32_t BufUnlock(CGxBuf*, uint32_t);
+        virtual void BufData(CGxBuf*, void*, size_t, uintptr_t);
         virtual void TexDestroy(CGxTex* texId);
         virtual void IShaderCreate(CGxShader*);
         virtual void ShaderCreate(CGxShader*[], EGxShTarget, const char*, const char*, int32_t);

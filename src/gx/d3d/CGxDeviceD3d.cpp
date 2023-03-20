@@ -394,6 +394,14 @@ int32_t CGxDeviceD3d::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
+void CGxDeviceD3d::BufData(CGxBuf* buf, void* data, size_t size, uintptr_t offset) {
+    CGxDevice::BufData(buf, data, size, offset);
+
+    char* bufData = this->IBufLock(buf);
+    memcpy(reinterpret_cast<void*>(uintptr_t(bufData) + offset), data, size);
+    this->IBufUnlock(buf);
+}
+
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
     dst = this->DeviceCurWindow();
 }

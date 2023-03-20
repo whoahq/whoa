@@ -258,6 +258,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
     virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);
+    virtual void BufData(CGxBuf*, void*, size_t, uintptr_t);
     virtual void IShaderCreate(CGxShader* shader);
     virtual void ShaderCreate(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations);
     virtual int32_t StereoEnabled();
