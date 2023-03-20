@@ -106,6 +106,7 @@ class CGxDevice {
         virtual void ICursorCreate(const CGxFormat& format);
         virtual int32_t DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam), const CGxFormat&);
         virtual int32_t DeviceSetFormat(const CGxFormat&);
+        virtual void* DeviceWindow() = 0;
         virtual void DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) = 0;
         virtual void CapsWindowSize(CRect&) = 0;
         virtual void CapsWindowSizeInScreenCoords(CRect& dst) = 0;
