@@ -33,6 +33,7 @@ target_include_directories(event
 
 target_link_libraries(event
     PRIVATE
+        client
         gx
     PUBLIC
         common

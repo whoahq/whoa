@@ -1,4 +1,5 @@
 #include "event/Input.hpp"
+#include "client/Gui.hpp"
 #include <storm/Error.hpp>
 #include <windows.h>
 
@@ -229,16 +230,6 @@ int32_t HandleMouseUp(uint32_t message, uintptr_t wparam, bool* xbutton, HWND hw
     }
 
     return 1;
-}
-
-bool OsGuiIsModifierKeyDown(int32_t key) {
-    // TODO
-    return false;
-}
-
-int32_t OsGuiProcessMessage(void* message) {
-    // TODO
-    return 0;
 }
 
 int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3) {

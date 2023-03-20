@@ -1,4 +1,5 @@
 #include "client/Console.hpp"
+#include "client/Gui.hpp"
 #include "event/Input.hpp"
 #include "gx/Device.hpp"
 #include "util/CVar.hpp"
@@ -202,6 +203,11 @@ void ConsoleDeviceInitialize(const char* title) {
 #endif
 
     CGxDevice* device = GxDevCreate(api, OsWindowProc, format);
+
+    // TODO
+
+    auto gxWindow = GxDevWindow();
+    OsGuiSetGxWindow(gxWindow);
 
     // TODO
 }
