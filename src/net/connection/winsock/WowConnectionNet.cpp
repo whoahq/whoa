@@ -1,5 +1,3 @@
-#if defined(WHOA_SYSTEM_WIN)
-
 #include "net/connection/WowConnectionNet.hpp"
 
 void WowConnectionNet::PlatformAdd(WowConnection* connection) {
@@ -25,5 +23,3 @@ void WowConnectionNet::PlatformRun() {
 void WowConnectionNet::PlatformWorkerReady() {
     // TODO
 }
-
-#endif
