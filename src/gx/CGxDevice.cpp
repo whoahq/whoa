@@ -194,7 +194,7 @@ int32_t CGxDevice::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
-void CGxDevice::BufData(CGxBuf* buf, void* data, size_t size, uintptr_t offset) {
+void CGxDevice::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
     buf->unk1E = 1;
     buf->unk1F = 0;
 }

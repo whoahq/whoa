@@ -394,7 +394,7 @@ int32_t CGxDeviceD3d::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
-void CGxDeviceD3d::BufData(CGxBuf* buf, void* data, size_t size, uintptr_t offset) {
+void CGxDeviceD3d::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
     CGxDevice::BufData(buf, data, size, offset);
 
     auto bufData = this->IBufLock(buf);
