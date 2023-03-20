@@ -117,6 +117,14 @@ int32_t CGxDeviceGLL::BufUnlock(CGxBuf* buf, uint32_t size) {
     return this->IBufUnlock(buf);
 }
 
+void CGxDeviceGLL::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
+    CGxDevice::BufData(buf, data, size, offset);
+
+    auto bufData = this->IBufLock(buf);
+    memcpy(&bufData[offset], data, size);
+    this->IBufUnlock(buf);
+}
+
 void CGxDeviceGLL::CapsWindowSize(CRect& rect) {
     CRect windowRect = this->DeviceCurWindow();
 

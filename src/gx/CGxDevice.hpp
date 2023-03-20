@@ -120,6 +120,7 @@ class CGxDevice {
         virtual void PoolSizeSet(CGxPool*, uint32_t) = 0;
         virtual char* BufLock(CGxBuf*);
         virtual int32_t BufUnlock(CGxBuf*, uint32_t);
+        virtual void BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset);
         virtual int32_t TexCreate(EGxTexTarget, uint32_t, uint32_t, uint32_t, EGxTexFormat, EGxTexFormat, CGxTexFlags, void*, void (*)(EGxTexCommand, uint32_t, uint32_t, uint32_t, uint32_t, void*, uint32_t&, const void*&), const char*, CGxTex*&);
         virtual void TexDestroy(CGxTex* texId);
         virtual void ShaderCreate(CGxShader*[], EGxShTarget, const char*, const char*, int32_t);
