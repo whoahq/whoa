@@ -398,7 +398,7 @@ void CGxDeviceD3d::BufData(CGxBuf* buf, void* data, size_t size, uintptr_t offse
     CGxDevice::BufData(buf, data, size, offset);
 
     auto bufData = this->IBufLock(buf);
-    memcpy(reinterpret_cast<void*>(uintptr_t(bufData) + offset)), data, size);
+    memcpy(&bufData[offset], data, size);
     this->IBufUnlock(buf);
 }
 
