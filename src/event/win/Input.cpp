@@ -159,7 +159,99 @@ int32_t ConvertKeyCode(uint32_t vkey, KEY* key) {
         return 1;
     }
 
-    // TODO remaining vkeys
+    case VK_SNAPSHOT: {
+        *key = KEY_PRINTSCREEN;
+        return 1;
+    }
+
+    case VK_INSERT: {
+        *key = KEY_INSERT;
+        return 1;
+    }
+
+    case VK_DELETE: {
+        *key = KEY_DELETE;
+        return 1;
+    }
+
+    case VK_NUMPAD0:
+    case VK_NUMPAD1:
+    case VK_NUMPAD2:
+    case VK_NUMPAD3:
+    case VK_NUMPAD4:
+    case VK_NUMPAD5:
+    case VK_NUMPAD6:
+    case VK_NUMPAD7:
+    case VK_NUMPAD8:
+    case VK_NUMPAD9: {
+        *key = static_cast<KEY>(KEY_NUMPAD0 + (vkey - VK_NUMPAD0));
+        return 1;
+    }
+
+    case VK_MULTIPLY: {
+        *key = KEY_NUMPAD_MULTIPLY;
+        return 1;
+    }
+
+    case VK_ADD: {
+        *key = KEY_NUMPAD_PLUS;
+        return 1;
+    }
+
+    case VK_SUBTRACT: {
+        *key = KEY_NUMPAD_MINUS;
+        return 1;
+    }
+
+    case VK_DECIMAL: {
+        *key = KEY_NUMPAD_DECIMAL;
+        return 1;
+    }
+
+    case VK_DIVIDE: {
+        *key = KEY_NUMPAD_DIVIDE;
+        return 1;
+    }
+
+    case VK_NUMLOCK: {
+        *key = KEY_NUMLOCK;
+        return 1;
+    }
+
+    case VK_SCROLL: {
+        *key = KEY_SCROLLLOCK;
+        return 1;
+    }
+
+    case VK_LSHIFT: {
+        *key = KEY_LSHIFT;
+        return 1;
+    }
+
+    case VK_RSHIFT: {
+        *key = KEY_RSHIFT;
+        return 1;
+    }
+
+    case VK_LCONTROL: {
+        *key = KEY_LCONTROL;
+        return 1;
+    }
+
+    case VK_RCONTROL: {
+        *key = KEY_RCONTROL;
+        return 1;
+    }
+
+    case VK_LMENU: {
+        *key = KEY_LALT;
+        return 1;
+    }
+
+    case VK_RMENU: {
+        *key = KEY_RALT;
+        return 1;
+    }
 
     default: {
         auto character = MapVirtualKey(vkey, MAPVK_VK_TO_CHAR);
