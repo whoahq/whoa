@@ -3,6 +3,9 @@
 #include <storm/Error.hpp>
 #include <windows.h>
 
+static RECT s_defaultWindowRect;
+static int32_t s_savedResize;
+
 void CenterMouse() {
     // TODO
 }
@@ -233,7 +236,40 @@ int32_t HandleMouseUp(uint32_t message, uintptr_t wparam, bool* xbutton, HWND hw
 }
 
 int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param2, int32_t* param3) {
-    // TODO window rect comparisons
+    *id = static_cast<OSINPUT>(-1);
+
+    if (s_savedResize) {
+        auto hwnd = static_cast<HWND>(OsGuiGetWindow(0));
+
+        if (!IsIconic(hwnd)) {
+            s_savedResize = 0;
+
+            RECT windowRect;
+            GetWindowRect(hwnd, &windowRect);
+
+            auto style = GetWindowLong(hwnd, GWL_STYLE);
+            RECT clientArea = { 0, 0, 0, 0 };
+            AdjustWindowRectEx(&clientArea, style, false, 0);
+
+            auto width = windowRect.right - clientArea.right - (windowRect.left - clientArea.left);
+            auto height = windowRect.bottom - clientArea.bottom - (windowRect.top - clientArea.top);
+
+            if (s_defaultWindowRect.right != width || s_defaultWindowRect.bottom != height) {
+                s_defaultWindowRect.left = 0;
+                s_defaultWindowRect.top = 0;
+                s_defaultWindowRect.right = width;
+                s_defaultWindowRect.bottom = height;
+
+                *id = OS_INPUT_SIZE;
+                *param0 = width;
+                *param1 = height;
+                *param2 = 0;
+                *param3 = 0;
+
+                return 1;
+            }
+        }
+    }
 
     if (Input::s_queueTail != Input::s_queueHead) {
         OsQueueGet(id, param0, param1, param2, param3);
@@ -303,6 +339,12 @@ int32_t OsWindowProc(void* window, uint32_t message, uintptr_t wparam, intptr_t 
 
     switch (message) {
     // TODO handle remaining message types
+
+    case WM_SIZE:
+    case WM_DISPLAYCHANGE: {
+        s_savedResize = lparam;
+        break;
+    }
 
     case WM_ACTIVATE: {
         auto isMinimized = IsIconic(hwnd);
