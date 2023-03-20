@@ -13,6 +13,8 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
 
 EGxApi GxDevApi(void);
 
+void* GxDevWindow();
+
 int32_t GxMasterEnable(EGxMasterEnables state);
 
 #endif

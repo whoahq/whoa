@@ -487,6 +487,10 @@ int32_t CGxDeviceD3d::DeviceSetFormat(const CGxFormat& format) {
     }
 }
 
+void* CGxDeviceD3d::DeviceWindow() {
+    return this->m_hwnd;
+}
+
 void CGxDeviceD3d::DeviceWM(EGxWM wm, uintptr_t param1, uintptr_t param2) {
     switch (wm) {
     case GxWM_Size: {

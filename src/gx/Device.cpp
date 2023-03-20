@@ -46,6 +46,10 @@ EGxApi GxDevApi() {
     return g_theGxDevicePtr->m_api;
 }
 
+void* GxDevWindow() {
+    return g_theGxDevicePtr->DeviceWindow();
+}
+
 int32_t GxMasterEnable(EGxMasterEnables state) {
     return g_theGxDevicePtr->MasterEnable(state);
 }

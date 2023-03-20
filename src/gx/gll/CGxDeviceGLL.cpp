@@ -334,6 +334,10 @@ int32_t CGxDeviceGLL::DeviceSetFormat(const CGxFormat& format) {
     return 1;
 }
 
+void* CGxDeviceGLL::DeviceWindow() {
+    return &this->m_glWindow;
+}
+
 void CGxDeviceGLL::Draw(CGxBatch* batch, int32_t indexed) {
     if (!this->m_context) {
         return;
