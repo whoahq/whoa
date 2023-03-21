@@ -58,6 +58,7 @@ class WowConnection {
         TSLink<WowConnection> m_netlink;
         SCritSect m_lock;
         ATOMIC32 m_serviceCount;
+        void* m_event;
         WOWC_TYPE m_type;
 
         // Member functions
