@@ -14,7 +14,7 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
-#include "util/CVar.hpp"
+#include "console/CVar.hpp"
 #include "util/Filesystem.hpp"
 #include "util/Log.hpp"
 #include <cstdio>

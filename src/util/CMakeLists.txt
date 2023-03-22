@@ -1,4 +1,6 @@
-file(GLOB PRIVATE_SOURCES "*.cpp")
+file(GLOB PRIVATE_SOURCES
+    "*.cpp"
+)
 
 if(WHOA_SYSTEM_MAC)
     file(GLOB MAC_SOURCES "*.mm")

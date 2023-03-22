@@ -11,7 +11,7 @@
 #include "net/Poll.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
-#include "util/CVar.hpp"
+#include "console/CVar.hpp"
 #include "world/World.hpp"
 #include <cstring>
 #include <bc/Debug.hpp>

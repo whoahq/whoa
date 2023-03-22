@@ -1,5 +1,5 @@
-#ifndef UTIL_C_VAR_HPP
-#define UTIL_C_VAR_HPP
+#ifndef CONSOLE_C_VAR_HPP
+#define CONSOLE_C_VAR_HPP
 
 #include <cstdint>
 #include <common/String.hpp>

@@ -2,7 +2,7 @@
 #include "client/Gui.hpp"
 #include "event/Input.hpp"
 #include "gx/Device.hpp"
-#include "util/CVar.hpp"
+#include "console/CVar.hpp"
 #include <cstring>
 
 CVar* s_cvGxMaximize;

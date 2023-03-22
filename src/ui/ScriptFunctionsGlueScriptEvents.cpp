@@ -7,7 +7,7 @@
 #include "net/connection/ClientConnection.hpp"
 #include "ui/CSimpleTop.hpp"
 #include "ui/Types.hpp"
-#include "util/CVar.hpp"
+#include "console/CVar.hpp"
 #include "util/Lua.hpp"
 #include "util/SFile.hpp"
 #include "util/Unimplemented.hpp"
