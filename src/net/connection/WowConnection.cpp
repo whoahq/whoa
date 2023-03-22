@@ -8,6 +8,7 @@
 #include <storm/String.hpp>
 #include <storm/Thread.hpp>
 #include <algorithm>
+#include <cstring>
 #include <new>
 
 #if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
@@ -767,7 +768,7 @@ WC_SEND_RESULT WowConnection::Send(CDataStore* msg, int32_t a3) {
 
     uint32_t written;
 #if defined(WHOA_SYSTEM_WIN)
-    written = send(this->m_sock, sn->data, sn->size, 0x0);
+    written = send(this->m_sock, reinterpret_cast<char*>(sn->data), sn->size, 0x0);
 #elif defined(WHOA_SYSTEM_MAC)
     written = write(this->m_sock, sn->data, sn->size);
 #endif
