@@ -27,9 +27,51 @@
 
 uint64_t WowConnection::s_countTotalBytes;
 int32_t WowConnection::s_destroyed;
+int32_t WowConnection::s_lagTestDelayMin;
 WowConnectionNet* WowConnection::s_network;
 ATOMIC32 WowConnection::s_numWowConnections;
 bool (*WowConnection::s_verifyAddr)(const NETADDR*);
+
+WowConnection::SENDNODE::SENDNODE(void* data, int32_t size, uint8_t* buf, bool raw) : TSLinkedNode<WowConnection::SENDNODE>() {
+    if (data) {
+        this->data = buf;
+    }
+
+    if (raw) {
+        memcpy(this->data, data, size);
+        this->size = size;
+    } else {
+        uint32_t headerSize = size > 0x7FFF ? 3 : 2;
+
+        if (!data) {
+            this->data = &buf[-headerSize];
+        }
+
+        auto headerBuf = static_cast<uint8_t*>(this->data);
+
+        // Write 2 or 3 byte data size value to header in big endian order
+        if (size > 0x7FFF) {
+            headerBuf[0] = ((size >> (8 * 2)) & 0xff) | 0x80;
+            headerBuf[1] = (size >> (8 * 1)) & 0xff;
+            headerBuf[2] = (size >> (8 * 0)) & 0xff;
+        } else {
+            headerBuf[0] = (size >> (8 * 1)) & 0xff;
+            headerBuf[1] = (size >> (8 * 0)) & 0xff;
+        }
+
+        if (data) {
+            memcpy(static_cast<uint8_t*>(&this->data[headerSize]), data, size);
+        }
+
+        this->size = size + headerSize;
+    }
+
+    this->datasize = size;
+    this->offset = 0;
+    this->allocsize = 0;
+
+    memcpy(this->header, this->data, std::min(this->size, 8u));
+}
 
 int32_t WowConnection::CreateSocket() {
     int32_t sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -556,6 +598,11 @@ void WowConnection::DoWrites() {
     this->Release();
 }
 
+void WowConnection::FreeSendNode(SENDNODE* sn) {
+    // TODO WDataStore::FreeBuffer(sn, sn->datasize + sizeof(SENDNODE) + 3);
+    SMemFree(sn, __FILE__, __LINE__, 0x0);
+}
+
 WOW_CONN_STATE WowConnection::GetState() {
     return this->m_connState;
 }
@@ -565,6 +612,12 @@ void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
 
     this->m_refCount = 1;
     this->m_responseRef = 0;
+
+    // TODO
+
+    this->m_sendDepth = 0;
+    this->m_sendDepthBytes = 0;
+    this->m_maxSendDepth = 100000;
 
     // TODO
 
@@ -591,11 +644,31 @@ void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
     this->m_readBufferSize = 0;
 
     this->m_event = nullptr;
+    this->m_encrypt = false;
 
     // TODO
 
     this->SetState(WOWC_INITIALIZED);
     this->m_type = WOWC_TYPE_MESSAGES;
+}
+
+WowConnection::SENDNODE* WowConnection::NewSendNode(void* data, int32_t size, bool raw) {
+    // TODO counters
+
+    // SENDNODEs are prefixed to their buffers, with an extra 3 bytes reserved for size-prefixing
+    uint32_t allocsize = size + sizeof(SENDNODE) + 3;
+
+    // TODO WDataStore::AllocBuffer(allocsize);
+
+    auto m = SMemAlloc(allocsize, __FILE__, __LINE__, 0x0);
+    auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+    auto sn = new (m) SENDNODE(data, size, buf, raw);
+
+    sn->allocsize = allocsize;
+
+    // TODO latency tracking
+
+    return sn;
 }
 
 void WowConnection::Release() {
@@ -624,6 +697,94 @@ void WowConnection::ReleaseResponseRef() {
     // }
 
     this->m_responseLock.Leave();
+}
+
+WC_SEND_RESULT WowConnection::Send(CDataStore* msg, int32_t a3) {
+    uint8_t* data;
+    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->Size());
+
+    WowConnection::s_countTotalBytes += msg->Size();
+
+    this->m_lock.Enter();
+
+    if (msg->Size() == 0 || this->m_connState != WOWC_CONNECTED) {
+        this->m_lock.Leave();
+        return WC_SEND_ERROR;
+    }
+
+    // Queue send
+
+    if (WowConnection::s_lagTestDelayMin || this->m_sendList.Head()) {
+        auto sn = this->NewSendNode(data, msg->Size(), false);
+
+        if (this->m_encrypt) {
+            // TODO encryption
+        }
+
+        this->m_sendList.LinkToTail(sn);
+
+        this->m_sendDepth++;
+        this->m_sendDepthBytes += sn->size;
+
+        WowConnection::s_network->PlatformChangeState(this, this->m_connState);
+
+        if (this->m_sendDepth < this->m_maxSendDepth) {
+            this->m_lock.Leave();
+            return WC_SEND_QUEUED;
+        } else {
+            // TODO handle max queue send depth reached
+
+            this->m_lock.Leave();
+            return WC_SEND_ERROR;
+        }
+    }
+
+    // Send immediately
+
+    SENDNODE* sn;
+    bool snOnStack;
+
+    if (msg->Size() > 100000) {
+        snOnStack = false;
+        sn = this->NewSendNode(data, msg->Size(), false);
+    } else if (a3 < 3) {
+        snOnStack = true;
+
+        auto m = alloca(msg->Size() + sizeof(SENDNODE) + 3);
+        auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+        sn = new (m) SENDNODE(data, msg->Size(), buf, false);
+    } else {
+        snOnStack = true;
+
+        auto m = alloca(msg->Size() + sizeof(SENDNODE));
+        auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+        sn = new (m) SENDNODE(nullptr, msg->Size(), buf, false);
+    }
+
+    if (this->m_encrypt) {
+        // TODO encryption
+    }
+
+    uint32_t written;
+#if defined(WHOA_SYSTEM_WIN)
+    written = send(this->m_sock, sn->data, sn->size, 0x0);
+#elif defined(WHOA_SYSTEM_MAC)
+    written = write(this->m_sock, sn->data, sn->size);
+#endif
+
+    if (written == sn->size) {
+        if (!snOnStack) {
+            this->FreeSendNode(sn);
+        }
+
+        this->m_lock.Leave();
+        return WC_SEND_SENT;
+    }
+
+    // TODO split writes, errors, etc
+    STORM_ASSERT(false);
+
+    return WC_SEND_ERROR;
 }
 
 WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {

@@ -15,6 +15,7 @@
 #include <winsock2.h>
 #endif
 
+class CDataStore;
 class WowConnectionNet;
 class WowConnectionResponse;
 
@@ -26,11 +27,17 @@ class WowConnection {
             uint32_t size;
             uint32_t offset;
             uint32_t datasize;
+            uint8_t header[8];
+            uint32_t uint20;
+            uint32_t allocsize;
+
+            SENDNODE(void* data, int32_t size, uint8_t* buf, bool raw);
         };
 
         // Static variables
         static uint64_t s_countTotalBytes;
         static int32_t s_destroyed;
+        static int32_t s_lagTestDelayMin;
         static WowConnectionNet* s_network;
         static ATOMIC32 s_numWowConnections;
         static bool (*s_verifyAddr)(const NETADDR*);
@@ -54,12 +61,16 @@ class WowConnection {
         int32_t m_responseRef;
         uintptr_t m_responseRefThread;
         STORM_LIST(SENDNODE) m_sendList;
+        int32_t m_sendDepth;
+        uint32_t m_sendDepthBytes;
+        int32_t m_maxSendDepth;
         uint32_t m_serviceFlags;
         TSLink<WowConnection> m_netlink;
         SCritSect m_lock;
         ATOMIC32 m_serviceCount;
         void* m_event;
         WOWC_TYPE m_type;
+        bool m_encrypt;
 
         // Member functions
         WowConnection(WowConnectionResponse* response, void (*func)(void));
@@ -78,10 +89,13 @@ class WowConnection {
         void DoReads();
         void DoStreamReads();
         void DoWrites();
+        void FreeSendNode(SENDNODE* sn);
         WOW_CONN_STATE GetState();
         void Init(WowConnectionResponse* response, void (*func)(void));
+        SENDNODE* NewSendNode(void* data, int32_t size, bool raw);
         void Release();
         void ReleaseResponseRef();
+        WC_SEND_RESULT Send(CDataStore* msg, int32_t a3);
         WC_SEND_RESULT SendRaw(uint8_t* data, int32_t len, bool a4);
         void SetEncryptionType(WC_ENCRYPT_TYPE encryptType);
         void SetState(WOW_CONN_STATE state);
