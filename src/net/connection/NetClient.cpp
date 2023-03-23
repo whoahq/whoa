@@ -170,6 +170,10 @@ bool NetClient::GetDelete() {
     return this->m_deleteMe;
 }
 
+const LoginData& NetClient::GetLoginData() {
+    return this->m_loginData;
+}
+
 NETSTATE NetClient::GetState() {
     return this->m_netState;
 }

@@ -65,6 +65,7 @@ class NetClient : public WowConnectionResponse {
         int32_t ConnectInternal(const char* host, uint16_t port);
         void DelRef();
         bool GetDelete();
+        const LoginData& GetLoginData();
         NETSTATE GetState();
         void HandleIdle();
         int32_t Initialize();
