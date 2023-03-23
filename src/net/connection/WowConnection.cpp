@@ -375,19 +375,17 @@ void WowConnection::DoMessageReads() {
     // TODO
 
     while (true) {
-        auto v36 = 2;
-        auto v35 = -1;
+        auto headerSize = 2;
+        auto size = -1;
 
-        if (this->m_readBytes >= 2) {
-            uint8_t v14;
-
-            if (*this->m_readBuffer >= 0) {
-                v35 = (this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) + 2;
+        if (this->m_readBytes >= headerSize) {
+            if ((this->m_readBuffer[0] & 0x80) == 0) {
+                size = (this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) + headerSize;
             } else {
-                v36 = 3;
+                headerSize = 3;
 
-                if (this->m_readBytes >= 3) {
-                    v35 = (this->m_readBuffer[2] | ((this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) << 8)) + 3;
+                if (this->m_readBytes >= headerSize) {
+                    size = (this->m_readBuffer[2] | ((this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) << 8)) + headerSize;
                 }
             }
         }
@@ -409,15 +407,15 @@ void WowConnection::DoMessageReads() {
             }
         }
 
-        int32_t v17;
+        int32_t bytesToRead;
 
-        if (v35 >= 0) {
-            v17 = v35 - this->m_readBytes;
-            if (this->m_readBufferSize - this->m_readBytes < v35 - this->m_readBytes) {
-                v17 = this->m_readBufferSize - this->m_readBytes;
+        if (size >= 0) {
+            bytesToRead = size - this->m_readBytes;
+            if (this->m_readBufferSize - this->m_readBytes < size - this->m_readBytes) {
+                bytesToRead = this->m_readBufferSize - this->m_readBytes;
             }
         } else {
-            v17 = v36 - this->m_readBytes;
+            bytesToRead = headerSize - this->m_readBytes;
         }
 
 #if defined(WHOA_SYSTEM_WIN)
@@ -426,11 +424,11 @@ void WowConnection::DoMessageReads() {
         ssize_t bytesRead;
 #endif
 
-        if (v17 <= 0) {
+        if (bytesToRead <= 0) {
             bytesRead = 0;
         } else {
             while (true) {
-                bytesRead = recv(this->m_sock, reinterpret_cast<char*>(&this->m_readBuffer[this->m_readBytes]), v17, 0x0);
+                bytesRead = recv(this->m_sock, reinterpret_cast<char*>(&this->m_readBuffer[this->m_readBytes]), bytesToRead, 0x0);
 
                 if (bytesRead >= 0) {
                     break;
@@ -447,22 +445,22 @@ void WowConnection::DoMessageReads() {
 #endif
             }
 
-            // TODO
+            if (bytesRead <= 0) {
+                break;
+            }
         }
 
-        if (bytesRead <= 0 && v17 > 0) {
-            break;
+        if (this->m_encrypt) {
+            // TODO encryption
         }
-
-        // TODO
 
         this->m_readBytes += bytesRead;
 
-        if (v35 >= 0 && this->m_readBytes >= v35) {
+        if (size >= 0 && this->m_readBytes >= size) {
             CDataStore msg;
-            msg.m_data = &this->m_readBuffer[v36];
+            msg.m_data = &this->m_readBuffer[headerSize];
             msg.m_alloc = -1;
-            msg.m_size = v35 - v36;
+            msg.m_size = size - headerSize;
             msg.m_read = 0;
 
             this->AcquireResponseRef();
