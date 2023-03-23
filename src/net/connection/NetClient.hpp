@@ -70,6 +70,7 @@ class NetClient : public WowConnectionResponse {
         int32_t Initialize();
         void PollEventQueue();
         void PongHandler(WowConnection* conn, CDataStore* msg);
+        void Send(CDataStore* msg);
         void SetDelete();
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);

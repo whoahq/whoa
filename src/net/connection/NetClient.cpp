@@ -240,6 +240,26 @@ void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
 }
 
+void NetClient::Send(CDataStore* msg) {
+    if (this->m_netState != NS_CONNECTED) {
+        return;
+    }
+
+    auto v4 = msg->m_size - msg->m_read;
+
+    if (!v4) {
+        return;
+    }
+
+    if (this->m_suspended) {
+        // TODO
+    } else {
+        this->m_serverConnection->Send(msg, 0);
+
+        // TODO
+    }
+}
+
 void NetClient::SetDelete() {
     this->m_deleteMe = true;
 }
