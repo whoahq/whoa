@@ -209,7 +209,18 @@ int32_t NetClient::HandleConnect() {
 }
 
 int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
-    // TODO
+    // TODO push obj mgr
+
+    CDataStore msg;
+    msg.m_data = static_cast<uint8_t*>(data);
+    msg.m_size = size;
+    msg.m_alloc = -1;
+    msg.m_read = 0;
+
+    this->ProcessMessage(timeReceived, &msg, 0);
+
+    // TODO pop obj mgr
+
     return 1;
 }
 
@@ -257,6 +268,27 @@ void NetClient::PollEventQueue() {
 
 void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
+}
+
+void NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_t a4) {
+    // TODO s_stats.messagesReceived++
+
+    uint16_t msgId;
+    msg->Get(msgId);
+
+    // TODO virtual function call on NetClient
+
+    if (msgId >= NUM_MSG_TYPES || !this->m_handlers[msgId]) {
+        msg->Reset();
+        return;
+    }
+
+    this->m_handlers[msgId](
+        this->m_handlerParams[msgId],
+        static_cast<NETMESSAGE>(msgId),
+        timeReceived,
+        msg
+    );
 }
 
 void NetClient::Send(CDataStore* msg) {
