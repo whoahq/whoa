@@ -64,6 +64,7 @@ class NetClient : public WowConnectionResponse {
         void Connect(const char* addrStr);
         int32_t ConnectInternal(const char* host, uint16_t port);
         void DelRef();
+        void EnableEncryption(WowConnection* conn, uint8_t* seed, uint8_t seedLen);
         bool GetDelete();
         const LoginData& GetLoginData();
         NETSTATE GetState();

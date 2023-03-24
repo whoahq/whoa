@@ -140,7 +140,7 @@ void NetClient::Connect(const char* addrStr) {
         port = atoi(portDelim + 1);
     }
 
-    this->m_serverConnection->SetEncryptionType(WC_ENCRYPT_0);
+    this->m_serverConnection->SetEncryption(false);
     this->m_netState = NS_INITIALIZED;
     this->ConnectInternal(host, port);
 }
@@ -164,6 +164,21 @@ void NetClient::DelRef() {
     if (refCount == 0 && this->m_deleteMe) {
         delete this;
     }
+}
+
+void NetClient::EnableEncryption(WowConnection* conn, uint8_t* seed, uint8_t seedLen) {
+    conn->SetEncryptionKey(
+        this->m_loginData.m_sessionKey,
+        sizeof(this->m_loginData.m_sessionKey),
+        1,
+        seed,
+        seedLen
+    );
+
+    conn->uint375 = 4;
+    conn->uint376 = 2;
+
+    conn->SetEncryption(true);
 }
 
 bool NetClient::GetDelete() {
@@ -261,6 +276,12 @@ void NetClient::Send(CDataStore* msg) {
         this->m_serverConnection->Send(msg, 0);
 
         // TODO
+
+        this->m_bytesSent += v4;
+
+        if (!this->m_serverConnection->m_encrypt) {
+            this->EnableEncryption(this->m_serverConnection, nullptr, 0);
+        }
     }
 }
 

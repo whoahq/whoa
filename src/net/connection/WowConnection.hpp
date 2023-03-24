@@ -4,6 +4,7 @@
 #include "net/Types.hpp"
 #include <cstdint>
 #include <storm/Atomic.hpp>
+#include <storm/Crypto.hpp>
 #include <storm/List.hpp>
 #include <storm/Thread.hpp>
 
@@ -70,7 +71,13 @@ class WowConnection {
         ATOMIC32 m_serviceCount;
         void* m_event;
         WOWC_TYPE m_type;
+        SARC4Key m_sendKey;
+        SARC4Key m_receiveKey;
+        uint8_t m_sendKeyInit[20];
+        uint8_t m_receiveKeyInit[20];
         bool m_encrypt;
+        uint8_t uint375;
+        uint8_t uint376;
 
         // Member functions
         WowConnection(WowConnectionResponse* response, void (*func)(void));
@@ -97,7 +104,8 @@ class WowConnection {
         void ReleaseResponseRef();
         WC_SEND_RESULT Send(CDataStore* msg, int32_t a3);
         WC_SEND_RESULT SendRaw(uint8_t* data, int32_t len, bool a4);
-        void SetEncryptionType(WC_ENCRYPT_TYPE encryptType);
+        void SetEncryption(bool enabled);
+        void SetEncryptionKey(const uint8_t* key, uint8_t keyLen, uint8_t a4, const uint8_t* seed, uint8_t seedLen);
         void SetState(WOW_CONN_STATE state);
         void SetType(WOWC_TYPE type);
         void StartConnect();

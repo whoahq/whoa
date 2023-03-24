@@ -1,6 +1,7 @@
 #include "net/connection/WowConnection.hpp"
 #include "net/connection/WowConnectionNet.hpp"
 #include "net/connection/WowConnectionResponse.hpp"
+#include "util/HMAC.hpp"
 #include <common/DataStore.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
@@ -32,6 +33,15 @@ int32_t WowConnection::s_lagTestDelayMin;
 WowConnectionNet* WowConnection::s_network;
 ATOMIC32 WowConnection::s_numWowConnections;
 bool (*WowConnection::s_verifyAddr)(const NETADDR*);
+
+static uint8_t s_arc4drop1024[1024] = { 0x00 };
+static uint8_t s_arc4seed[] = {
+    // Receive key
+    0xCC, 0x98, 0xAE, 0x04, 0xE8, 0x97, 0xEA, 0xCA, 0x12, 0xDD, 0xC0, 0x93, 0x42, 0x91, 0x53, 0x57,
+
+    // Send key
+    0xC2, 0xB3, 0x72, 0x3C, 0xC6, 0xAE, 0xD9, 0xB5, 0x34, 0x3C, 0x53, 0xEE, 0x2F, 0x43, 0x67, 0xCE,
+};
 
 WowConnection::SENDNODE::SENDNODE(void* data, int32_t size, uint8_t* buf, bool raw) : TSLinkedNode<WowConnection::SENDNODE>() {
     if (data) {
@@ -451,7 +461,18 @@ void WowConnection::DoMessageReads() {
         }
 
         if (this->m_encrypt) {
-            // TODO encryption
+            auto v22 = headerSize + this->uint376 - this->m_readBytes;
+            auto v23 = v22 <= 0 ? 0 : v22;
+            if (v23 >= bytesRead) {
+                v23 = bytesRead;
+            }
+
+            SARC4ProcessBuffer(
+                &this->m_readBuffer[this->m_readBytes],
+                v23,
+                &this->m_receiveKey,
+                &this->m_receiveKey
+            );
         }
 
         this->m_readBytes += bytesRead;
@@ -832,8 +853,43 @@ WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
     return WC_SEND_ERROR;
 }
 
-void WowConnection::SetEncryptionType(WC_ENCRYPT_TYPE encryptType) {
-    // TODO
+void WowConnection::SetEncryption(bool enabled) {
+    this->m_lock.Enter();
+
+    this->m_encrypt = enabled;
+
+    SARC4PrepareKey(this->m_sendKeyInit, sizeof(this->m_sendKeyInit), &this->m_sendKey);
+    SARC4PrepareKey(this->m_receiveKeyInit, sizeof(this->m_receiveKeyInit), &this->m_receiveKey);
+
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_sendKey, &this->m_sendKey);
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_receiveKey, &this->m_receiveKey);
+
+    this->m_lock.Leave();
+}
+
+void WowConnection::SetEncryptionKey(const uint8_t* key, uint8_t keyLen, uint8_t a4, const uint8_t* seedData, uint8_t seedLen) {
+    if (!seedData) {
+        seedData = s_arc4seed;
+        seedLen = sizeof(s_arc4seed);
+    }
+
+    const uint8_t* seeds[] = {
+        seedData,
+        &seedData[seedLen / 2]
+    };
+
+    // Note: The original HMAC-SHA1 implementation uses a second SHA1 implementation shipped in
+    // the client. For simplicity's sake, we're currently using a custom util function built on
+    // top of the SHA1 implementation used for SRP6 authentication.
+
+    HMAC_SHA1(seeds[a4], seedLen / 2, key, keyLen, this->m_sendKeyInit);
+    HMAC_SHA1(seeds[a4 ^ 1], seedLen / 2, key, keyLen, this->m_receiveKeyInit);
+
+    SARC4PrepareKey(this->m_sendKeyInit, sizeof(this->m_sendKeyInit), &this->m_sendKey);
+    SARC4PrepareKey(this->m_receiveKeyInit, sizeof(this->m_receiveKeyInit), &this->m_receiveKey);
+
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_sendKey, &this->m_sendKey);
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_receiveKey, &this->m_receiveKey);
 }
 
 void WowConnection::SetState(WOW_CONN_STATE state) {
