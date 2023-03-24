@@ -63,5 +63,5 @@ void IEvtQueueRegister(EvtContext* context, EVENTID id, int32_t (*handler)(const
         h = handlerList->Link(h)->Next();
     }
 
-    handlerList->LinkNode(evtHandler, 1, h);
+    handlerList->LinkNode(evtHandler, 2, h);
 }
