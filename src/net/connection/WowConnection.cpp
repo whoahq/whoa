@@ -738,7 +738,8 @@ WC_SEND_RESULT WowConnection::Send(CDataStore* msg, int32_t a3) {
         auto sn = this->NewSendNode(data, msg->Size(), false);
 
         if (this->m_encrypt) {
-            // TODO encryption
+            auto bufSize = std::min(sn->size, sn->size + this->uint375 - sn->datasize);
+            SARC4ProcessBuffer(sn->data, bufSize, &this->m_sendKey, &this->m_sendKey);
         }
 
         this->m_sendList.LinkToTail(sn);
@@ -782,7 +783,8 @@ WC_SEND_RESULT WowConnection::Send(CDataStore* msg, int32_t a3) {
     }
 
     if (this->m_encrypt) {
-        // TODO encryption
+        auto bufSize = std::min(sn->size, sn->size + this->uint375 - sn->datasize);
+        SARC4ProcessBuffer(sn->data, bufSize, &this->m_sendKey, &this->m_sendKey);
     }
 
     uint32_t written;
