@@ -12,6 +12,7 @@ target_include_directories(glue
 target_link_libraries(glue
     PRIVATE
         client
+        console
         db
         event
         gx
