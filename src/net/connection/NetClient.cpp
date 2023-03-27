@@ -94,7 +94,7 @@ void NETEVENTQUEUE::Poll() {
 
     client->DelRef();
 
-    this->m_eventQueue.DeleteAll();
+    this->m_eventQueue.Clear();
 
     this->m_critSect.Leave();
 }

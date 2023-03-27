@@ -686,7 +686,7 @@ void CGxFont::ClearGlyphs() {
 
     this->m_activeCharacters.Clear();
 
-    this->m_activeCharacterCache.DeleteAll();
+    this->m_activeCharacterCache.Clear();
 
     this->m_kernInfo.Clear();
 }

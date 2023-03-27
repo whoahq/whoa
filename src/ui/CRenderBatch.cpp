@@ -53,7 +53,7 @@ void CRenderBatch::Clear() {
         this->m_stringbatch = nullptr;
     }
 
-    this->m_callbacks.DeleteAll();
+    this->m_callbacks.Clear();
 
     this->m_count = 0;
 }

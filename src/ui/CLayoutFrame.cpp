@@ -286,7 +286,7 @@ void CLayoutFrame::DestroyLayout() {
         frame->m_flags &= ~0x8;
     }
 
-    this->m_resizeList.DeleteAll();
+    this->m_resizeList.Clear();
 }
 
 void CLayoutFrame::FreePoints() {

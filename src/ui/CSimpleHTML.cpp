@@ -95,7 +95,7 @@ void CSimpleHTML::AddText(const char* text, HTML_TEXT_TYPE type, uint32_t justif
 }
 
 void CSimpleHTML::ClearContent() {
-    this->m_content.DeleteAll();
+    this->m_content.Clear();
 
     this->m_layoutAnchor = nullptr;
     this->m_layoutOffset = 0.0f;
