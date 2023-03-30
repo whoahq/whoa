@@ -43,26 +43,26 @@ int32_t OnPaint(const void* a1, void* a2) {
     baseRect.right = 1.0f;
     baseRect.top = 1.0f;
 
-    SRgnCombineRectf(&rgn.m_handle, &baseRect, 0, 2);
+    SRgnCombineRectf(rgn.m_handle, &baseRect, nullptr, 2);
 
     layer = Screen::s_zorderlist.Head();
 
     while (layer) {
-        SRgnGetBoundingRectf(&rgn.m_handle, &layer->visible);
+        SRgnGetBoundingRectf(rgn.m_handle, &layer->visible);
 
         layer->visible.left = std::max(layer->visible.left, layer->rect.left);
         layer->visible.bottom = std::max(layer->visible.bottom, layer->rect.bottom);
-        layer->visible.right = std::max(layer->visible.right, layer->rect.right);
-        layer->visible.top = std::max(layer->visible.top, layer->rect.top);
+        layer->visible.right = std::min(layer->visible.right, layer->rect.right);
+        layer->visible.top = std::min(layer->visible.top, layer->rect.top);
 
-        if (layer->flags & 0x1) {
-            SRgnCombineRectf(&rgn.m_handle, &layer->rect, 0, 4);
+        if (!(layer->flags & 0x1)) {
+            SRgnCombineRectf(rgn.m_handle, &layer->rect, nullptr, 4);
         }
 
         layer = layer->zorderlink.Next();
     }
 
-    SRgnDelete(&rgn.m_handle);
+    SRgnDelete(rgn.m_handle);
 
     // Save viewport
     float minX, maxX, minY, maxY, minZ, maxZ;
@@ -217,20 +217,4 @@ void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath) {
     float fontHeight = NDCToDDCHeight(Screen::s_stockObjectHeights[stockID]);
     HTEXTFONT font = TextBlockGenerateFont(fontTexturePath, 0, fontHeight);
     Screen::s_stockObjects[stockID] = font;
-}
-
-void SRgnCombineRectf(HSRGN* handle, RECTF* rect, void* param, int32_t combinemode) {
-    // TODO
-}
-
-void SRgnCreate(HSRGN* handle, uint32_t reserved) {
-    // TODO
-}
-
-void SRgnDelete(HSRGN* handle) {
-    // TODO
-}
-
-void SRgnGetBoundingRectf(HSRGN* handle, RECTF* rect) {
-    // TODO
 }

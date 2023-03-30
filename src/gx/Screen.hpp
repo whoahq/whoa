@@ -4,21 +4,14 @@
 #include <cstdint>
 #include <common/Handle.hpp>
 #include <storm/List.hpp>
+#include <storm/Region.hpp>
 
 typedef HOBJECT HLAYER;
-typedef HOBJECT HSRGN;
 
 enum SCRNSTOCK {
     STOCK_SYSFONT = 0,
     STOCK_PERFFONT = 1,
     SCRNSTOCKOBJECTS = 2
-};
-
-struct RECTF {
-    float left;
-    float bottom;
-    float right;
-    float top;
 };
 
 class CILayer : public CHandleObject {
@@ -55,13 +48,5 @@ void ScrnInitialize(int32_t);
 void ScrnLayerCreate(const RECTF*, float, unsigned long, void*, void (*)(void*, const RECTF*, const RECTF*, float), HLAYER*);
 
 void ScrnSetStockFont(SCRNSTOCK, const char*);
-
-void SRgnCombineRectf(HSRGN*, RECTF*, void*, int32_t);
-
-void SRgnCreate(HSRGN*, uint32_t);
-
-void SRgnDelete(HSRGN*);
-
-void SRgnGetBoundingRectf(HSRGN*, RECTF*);
 
 #endif
