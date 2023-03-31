@@ -4,7 +4,6 @@
 #include "gx/Blit.hpp"
 #include "gx/CGxBatch.hpp"
 #include "gx/Shader.hpp"
-#include "gx/Texture.hpp"
 #include "gx/Window.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include <cmath>

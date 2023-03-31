@@ -7,7 +7,6 @@
 #include "util/SFile.hpp"
 #include <algorithm>
 #include <cstdint>
-#include <cstring>
 #include <storm/Array.hpp>
 #include <storm/String.hpp>
 #include <tempest/Vector.hpp>

@@ -1,7 +1,6 @@
 #include "gx/font/FreeType.hpp"
 #include "gx/font/FreeTypeInternal.hpp"
 #include "freetype/ftmodule.h"
-#include <storm/Memory.hpp>
 
 FT_Library g_FTLibrary;
 

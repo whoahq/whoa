@@ -1,8 +1,6 @@
 #include "app/mac/MainApp.h"
-#include "event/Event.hpp"
 #include "event/Input.hpp"
 #include "event/Scheduler.hpp"
-#include "os/Compat.hpp"
 
 @implementation MainApp
 

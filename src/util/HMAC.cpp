@@ -1,5 +1,4 @@
 #include "util/HMAC.hpp"
-#include <cstring>
 #include <common/SHA1.hpp>
 
 #define HMAC_SHA1_IPAD 0x36

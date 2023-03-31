@@ -5,7 +5,6 @@
 #include <new>
 #include <common/DataStore.hpp>
 #include <common/Prop.hpp>
-#include <common/SHA1.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
