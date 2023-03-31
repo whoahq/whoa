@@ -44,6 +44,8 @@ void ScrnInitialize(int32_t a1);
 
 void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layerPtr);
 
+void ScrnLayerSetRect(HLAYER layer, const RECTF* rect);
+
 void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath);
 
 #endif

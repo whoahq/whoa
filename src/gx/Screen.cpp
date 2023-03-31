@@ -208,6 +208,10 @@ void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* para
     *layerPtr = HandleCreate(layer);
 }
 
+void ScrnLayerSetRect(HLAYER layer, const RECTF* rect) {
+    static_cast<CILayer*>(HandleDereference(layer))->rect = *rect;
+}
+
 void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath) {
     if (s_stockObjects[stockID]) {
         HandleClose(s_stockObjects[stockID]);
