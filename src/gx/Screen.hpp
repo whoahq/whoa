@@ -34,8 +34,6 @@ namespace Screen {
     extern int32_t s_captureScreen;
     extern float s_elapsedSec;
     extern int32_t s_presentDisable;
-    extern HOBJECT s_stockObjects[SCRNSTOCKOBJECTS];
-    extern float s_stockObjectHeights[SCRNSTOCKOBJECTS];
 }
 
 void ILayerInitialize();

@@ -6,13 +6,14 @@
 #include "gx/Gx.hpp"
 #include "gx/Transform.hpp"
 #include "util/Filesystem.hpp"
+#include <storm/String.hpp>
 #include <tempest/Matrix.hpp>
 
 int32_t Screen::s_captureScreen = 0;
 float Screen::s_elapsedSec = 0.0f;
 int32_t Screen::s_presentDisable = 0;
-HOBJECT Screen::s_stockObjects[];
-float Screen::s_stockObjectHeights[] = { 0.01953125f, 0.01953125f };
+static HOBJECT s_stockObjects[SCRNSTOCKOBJECTS];
+static float s_stockObjectHeights[SCRNSTOCKOBJECTS] = { 0.01953125f, 0.01953125f };
 static STORM_EXPLICIT_LIST(CILayer, zorderlink) s_zOrderList;
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* a2) {
@@ -152,9 +153,8 @@ void ILayerInitialize() {
 void IStockInitialize() {
     GxuFontInitialize();
 
-    char fontFile[260];
-
-    OsBuildFontFilePath("FRIZQT__.TTF", fontFile, 260);
+    char fontFile[STORM_MAX_PATH];
+    OsBuildFontFilePath("FRIZQT__.TTF", fontFile, sizeof(fontFile));
 
     if (*fontFile) {
         ScrnSetStockFont(STOCK_SYSFONT, fontFile);
@@ -209,11 +209,11 @@ void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* para
 }
 
 void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath) {
-    if (Screen::s_stockObjects[stockID]) {
-        HandleClose(Screen::s_stockObjects[stockID]);
+    if (s_stockObjects[stockID]) {
+        HandleClose(s_stockObjects[stockID]);
     }
 
-    float fontHeight = NDCToDDCHeight(Screen::s_stockObjectHeights[stockID]);
+    float fontHeight = NDCToDDCHeight(s_stockObjectHeights[stockID]);
     HTEXTFONT font = TextBlockGenerateFont(fontTexturePath, 0, fontHeight);
-    Screen::s_stockObjects[stockID] = font;
+    s_stockObjects[stockID] = font;
 }
