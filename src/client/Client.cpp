@@ -4,7 +4,6 @@
 #include "db/Db.hpp"
 #include "async/AsyncFile.hpp"
 #include "glue/CGlueMgr.hpp"
-#include "gx/Device.hpp"
 #include "gx/Screen.hpp"
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
@@ -13,7 +12,6 @@
 #include "ui/FrameXML.hpp"
 #include "console/CVar.hpp"
 #include "world/World.hpp"
-#include <cstring>
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>

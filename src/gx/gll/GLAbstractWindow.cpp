@@ -1,6 +1,5 @@
 #include "gx/gll/GLAbstractWindow.h"
 #include <cmath>
-#include <ApplicationServices/ApplicationServices.h>
 
 int32_t GLAbstractWindow::GetBackingWidth() {
     return static_cast<int32_t>(std::floor(this->GetBackingRect().size.width));

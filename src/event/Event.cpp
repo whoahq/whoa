@@ -4,10 +4,8 @@
 #include "event/Input.hpp"
 #include "event/Queue.hpp"
 #include "event/Scheduler.hpp"
-#include <cstring>
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
-#include <storm/String.hpp>
 
 SEvent Event::s_startEvent = SEvent(1, 0);
 SEvent Event::s_shutdownEvent = SEvent(1, 0);
