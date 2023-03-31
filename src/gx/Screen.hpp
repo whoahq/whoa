@@ -36,17 +36,16 @@ namespace Screen {
     extern int32_t s_presentDisable;
     extern HOBJECT s_stockObjects[SCRNSTOCKOBJECTS];
     extern float s_stockObjectHeights[SCRNSTOCKOBJECTS];
-    extern STORM_EXPLICIT_LIST(CILayer, zorderlink) s_zorderlist;
 }
 
-void ILayerInitialize(void);
+void ILayerInitialize();
 
-void IStockInitialize(void);
+void IStockInitialize();
 
-void ScrnInitialize(int32_t);
+void ScrnInitialize(int32_t a1);
 
-void ScrnLayerCreate(const RECTF*, float, unsigned long, void*, void (*)(void*, const RECTF*, const RECTF*, float), HLAYER*);
+void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layerPtr);
 
-void ScrnSetStockFont(SCRNSTOCK, const char*);
+void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath);
 
 #endif

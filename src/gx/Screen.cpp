@@ -13,7 +13,7 @@ float Screen::s_elapsedSec = 0.0f;
 int32_t Screen::s_presentDisable = 0;
 HOBJECT Screen::s_stockObjects[];
 float Screen::s_stockObjectHeights[] = { 0.01953125f, 0.01953125f };
-STORM_EXPLICIT_LIST(CILayer, zorderlink) Screen::s_zorderlist;
+static STORM_EXPLICIT_LIST(CILayer, zorderlink) s_zOrderList;
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* a2) {
     Screen::s_elapsedSec = data->elapsedSec + Screen::s_elapsedSec;
@@ -45,7 +45,7 @@ int32_t OnPaint(const void* a1, void* a2) {
 
     SRgnCombineRectf(rgn.m_handle, &baseRect, nullptr, 2);
 
-    layer = Screen::s_zorderlist.Head();
+    layer = s_zOrderList.Head();
 
     while (layer) {
         SRgnGetBoundingRectf(rgn.m_handle, &layer->visible);
@@ -68,7 +68,7 @@ int32_t OnPaint(const void* a1, void* a2) {
     float minX, maxX, minY, maxY, minZ, maxZ;
     GxXformViewport(minX, maxX, minY, maxY, minZ, maxZ);
 
-    layer = Screen::s_zorderlist.Head();
+    layer = s_zOrderList.Head();
 
     while (layer) {
         if (layer->visible.right > layer->visible.left && layer->visible.top > layer->visible.bottom) {
@@ -180,33 +180,32 @@ void ScrnInitialize(int32_t a1) {
     IStockInitialize();
 }
 
-void ScrnLayerCreate(const RECTF* rect, float zorder, unsigned long flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layer) {
+void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layerPtr) {
     static RECTF defaultrect = { 0.0f, 0.0f, 1.0f, 1.0f };
-
     const RECTF* r = rect ? rect : &defaultrect;
 
     auto m = SMemAlloc(sizeof(CILayer), __FILE__, __LINE__, 0x0);
-    auto l = new (m) CILayer();
+    auto layer = new (m) CILayer();
 
-    l->rect.left = r->left;
-    l->rect.bottom = r->bottom;
-    l->rect.right = r->right;
-    l->rect.top = r->top;
+    layer->rect.left = r->left;
+    layer->rect.bottom = r->bottom;
+    layer->rect.right = r->right;
+    layer->rect.top = r->top;
 
-    l->zorder = zorder;
-    l->flags = flags;
-    l->param = param;
-    l->paintfunc = paintFunc;
+    layer->zorder = zOrder;
+    layer->flags = flags;
+    layer->param = param;
+    layer->paintfunc = paintFunc;
 
-    auto node = Screen::s_zorderlist.Head();
+    auto node = s_zOrderList.Head();
 
-    while (node && zorder < node->zorder) {
+    while (node && zOrder < node->zorder) {
         node = node->zorderlink.Next();
     }
 
-    Screen::s_zorderlist.LinkNode(l, 1, node);
+    s_zOrderList.LinkNode(layer, 1, node);
 
-    *layer = HandleCreate(l);
+    *layerPtr = HandleCreate(layer);
 }
 
 void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath) {
