@@ -37,6 +37,8 @@ HEVENTCONTEXT EventCreateContextEx(int32_t interactive, int32_t (*initializeHand
 
 void EventDoMessageLoop();
 
+HEVENTCONTEXT EventGetCurrentContext();
+
 void EventInitialize(int32_t threadCount, int32_t netServer);
 
 void EventInitiateShutdown();
@@ -46,6 +48,8 @@ int32_t EventIsControlKeyDown();
 int32_t EventIsKeyDown(KEY key);
 
 int32_t EventIsShiftKeyDown();
+
+void EventPostClose();
 
 void EventPostCloseEx(HEVENTCONTEXT contextHandle);
 

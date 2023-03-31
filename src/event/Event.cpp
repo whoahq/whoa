@@ -71,6 +71,14 @@ void EventDoMessageLoop() {
     IEvtSchedulerProcess();
 }
 
+HEVENTCONTEXT EventGetCurrentContext() {
+    return PropGet(PROP_EVENTCONTEXT);
+}
+
+void EventPostClose() {
+    EventPostCloseEx(nullptr);
+}
+
 void EventPostCloseEx(HEVENTCONTEXT contextHandle) {
     if (!contextHandle) {
         contextHandle = PropGet(PROP_EVENTCONTEXT);
