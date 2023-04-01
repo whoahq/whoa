@@ -31,24 +31,14 @@ int32_t OnPaint(const void* a1, void* a2) {
     //     return 1;
     // }
 
-    CILayer* layer;
-
     CSRgn rgn;
-
     SRgnCreate(&rgn.m_handle, 0);
 
-    RECTF baseRect;
-
-    baseRect.left = 0.0f;
-    baseRect.bottom = 0.0f;
-    baseRect.right = 1.0f;
-    baseRect.top = 1.0f;
-
+    RECTF baseRect = { 0.0f, 0.0f, 1.0f, 1.0f };
     SRgnCombineRectf(rgn.m_handle, &baseRect, nullptr, 2);
 
-    layer = s_zOrderList.Head();
-
-    while (layer) {
+    // Walk the layer list backward (highest z-order to lowest) to establish visibility rects
+    for (auto layer = s_zOrderList.Tail(); layer; layer = layer->zorderlink.Prev()) {
         SRgnGetBoundingRectf(rgn.m_handle, &layer->visible);
 
         layer->visible.left = std::max(layer->visible.left, layer->rect.left);
@@ -59,8 +49,6 @@ int32_t OnPaint(const void* a1, void* a2) {
         if (!(layer->flags & 0x1)) {
             SRgnCombineRectf(rgn.m_handle, &layer->rect, nullptr, 4);
         }
-
-        layer = layer->zorderlink.Next();
     }
 
     SRgnDelete(rgn.m_handle);
@@ -69,9 +57,8 @@ int32_t OnPaint(const void* a1, void* a2) {
     float minX, maxX, minY, maxY, minZ, maxZ;
     GxXformViewport(minX, maxX, minY, maxY, minZ, maxZ);
 
-    layer = s_zOrderList.Head();
-
-    while (layer) {
+    // Walk the layer list forward (lowest z-order to highest) to paint visible layers
+    for (auto layer = s_zOrderList.Head(); layer; layer = layer->zorderlink.Next()) {
         if (layer->visible.right > layer->visible.left && layer->visible.top > layer->visible.bottom) {
             if (layer->flags & 0x4) {
                 GxXformSetViewport(
@@ -117,8 +104,6 @@ int32_t OnPaint(const void* a1, void* a2) {
                 Screen::s_elapsedSec
             );
         }
-
-        layer = layer->zorderlink.Next();
     }
 
     // Restore viewport
