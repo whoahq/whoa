@@ -1,8 +1,8 @@
-#include "client/Console.hpp"
+#include "console/Client.hpp"
 #include "client/Gui.hpp"
+#include "console/CVar.hpp"
 #include "event/Input.hpp"
 #include "gx/Device.hpp"
-#include "console/CVar.hpp"
 #include <cstring>
 
 CVar* s_cvGxMaximize;

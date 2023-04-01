@@ -1,8 +1,9 @@
 #include "client/Client.hpp"
-#include "client/ClientServices.hpp"
-#include "client/Console.hpp"
-#include "db/Db.hpp"
 #include "async/AsyncFile.hpp"
+#include "client/ClientServices.hpp"
+#include "console/CVar.hpp"
+#include "console/Client.hpp"
+#include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Screen.hpp"
 #include "gx/Texture.hpp"
@@ -10,7 +11,6 @@
 #include "net/Poll.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
-#include "console/CVar.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
