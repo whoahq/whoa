@@ -3,6 +3,7 @@
 #include "client/ClientServices.hpp"
 #include "console/CVar.hpp"
 #include "console/Client.hpp"
+#include "console/Device.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Screen.hpp"
