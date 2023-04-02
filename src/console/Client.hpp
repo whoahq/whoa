@@ -1,5 +1,5 @@
-#ifndef CLIENT_CONSOLE_HPP
-#define CLIENT_CONSOLE_HPP
+#ifndef CONSOLE_CLIENT_HPP
+#define CONSOLE_CLIENT_HPP
 
 #include "gx/CGxFormat.hpp"
 

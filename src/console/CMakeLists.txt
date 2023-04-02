@@ -15,4 +15,6 @@ target_link_libraries(console
     PUBLIC
         common
         storm
+    PRIVATE
+        client
 )
