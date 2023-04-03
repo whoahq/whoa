@@ -1,4 +1,5 @@
 #include "net/connection/RealmConnection.hpp"
+#include "net/connection/RealmResponse.hpp"
 #include "net/Types.hpp"
 #include <common/DataStore.hpp>
 #include <common/SHA1.hpp>
@@ -8,8 +9,64 @@ SCritSect RealmConnection::s_AllRealmConnectionsCrit;
 STORM_LIST(RealmConnection::REALMCONNECTIONNODE) RealmConnection::s_AllRealmConnections;
 
 int32_t RealmConnection::MessageHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
-    // TODO
-    return 0;
+    auto connection = static_cast<RealmConnection*>(param);
+    int32_t result = 0;
+
+    switch (msgId) {
+    case SMSG_AUTH_RESPONSE: {
+        result = connection->HandleAuthResponse(msgId, time, msg);
+        break;
+    }
+
+    case SMSG_CREATE_CHAR: {
+        // TODO
+        break;
+    }
+
+    case SMSG_ENUM_CHARACTERS_RESULT: {
+        // TODO
+        break;
+    }
+
+    case SMSG_DELETE_CHAR: {
+        // TODO
+        break;
+    }
+
+    case SMSG_CHARACTER_LOGIN_FAILED: {
+        // TODO
+        break;
+    }
+
+    case SMSG_ADDON_INFO: {
+        // TODO
+        break;
+    }
+
+    case SMSG_LOGOUT_CANCEL_ACK: {
+        // TODO
+        break;
+    }
+
+    case SMSG_LOGOUT_COMPLETE: {
+        // TODO
+        break;
+    }
+
+    case SMSG_LOGOUT_RESPONSE: {
+        // TODO
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    if (!msg->IsRead()) {
+        // TODO
+    }
+
+    return result;
 }
 
 void RealmConnection::PollNet() {
@@ -95,6 +152,43 @@ int32_t RealmConnection::HandleAuthChallenge(AuthenticationChallenge* challenge)
     msg.Finalize();
 
     this->Send(&msg);
+
+    return 1;
+}
+
+int32_t RealmConnection::HandleAuthResponse(uint32_t msgId, uint32_t time, CDataStore* msg) {
+    if (this->m_realmResponse) {
+        this->m_realmResponse->GameServerResult(this, "SMSG_AUTH_RESPONSE", nullptr, nullptr);
+    }
+
+    uint8_t authResult;
+    msg->Get(authResult);
+
+    // AUTH_OK or AUTH_WAIT_QUEUE
+    if (authResult == 12 || authResult == 27) {
+        // AUTH_OK
+        if (authResult == 12) {
+            this->m_authenticated = 1;
+        }
+
+        if (msg->Size() - msg->m_read >= 10 + (authResult == 27 ? 5 : 0)) {
+            msg->Get(this->m_billingTimeRemaining);
+            msg->Get(this->m_billingFlags);
+            msg->Get(this->m_billingTimeRested);
+            msg->Get(this->m_accountExpansion);
+        }
+
+        // AUTH_WAIT_QUEUE
+        if (authResult == 27) {
+            msg->Get(this->m_queuePosition);
+
+            uint8_t freeCharacterMigration;
+            msg->Get(freeCharacterMigration);
+            this->m_freeCharacterMigration = freeCharacterMigration;
+        }
+    }
+
+    this->m_realmResponse->HandleAuthResponse(this, authResult);
 
     return 1;
 }
