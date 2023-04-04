@@ -22,12 +22,12 @@ bool ClientServices::s_selectRealmInfoValid;
 
 void ClientServices::ConnectToSelectedServer() {
     if (!ClientServices::s_selectRealmInfoValid && !ClientServices::SetSelectedRealmInfo(0)) {
-        ClientServices::Connection()->SetStatus(0, 39);
+        ClientServices::Connection()->Complete(0, 39);
         return;
     }
 
     if (ClientServices::Connection()->GetState() != NS_INITIALIZED) {
-        ClientServices::Connection()->SetStatus(0, 39);
+        ClientServices::Connection()->Complete(0, 39);
         return;
     }
 
@@ -210,12 +210,12 @@ void ClientServices::RealmEnumCallback(uint32_t a2) {
     auto connection = ClientServices::Connection();
 
     if (a2 == 1) {
-        connection->SetStatus(0, 23);
+        connection->Complete(0, 23);
         return;
     }
 
     if (a2 == 2 || a2 == 3 || a2 == 4) {
-        connection->SetStatus(0, 37);
+        connection->Complete(0, 37);
         return;
     }
 
