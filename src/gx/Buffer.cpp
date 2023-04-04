@@ -1,6 +1,8 @@
 #include "gx/Buffer.hpp"
 #include "gx/Device.hpp"
 
+#include <bc/Debug.hpp>
+
 CGxVertexAttrib vertexAttribsP[] = {
     { GxVA_Position,        4, GxVertexAttribOffset(GxVBF_P, GxVA_Position),            12 }
 };
