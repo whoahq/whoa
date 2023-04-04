@@ -1,6 +1,7 @@
 #include "gx/Buffer.hpp"
 #include "gx/Device.hpp"
-
+#include "gx/Gx.hpp"
+#include "gx/CGxBatch.hpp"
 #include <bc/Debug.hpp>
 
 CGxVertexAttrib vertexAttribsP[] = {
