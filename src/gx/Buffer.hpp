@@ -4,6 +4,7 @@
 #include "gx/buffer/CGxBuf.hpp"
 #include "gx/buffer/CGxPool.hpp"
 #include "gx/buffer/Types.hpp"
+#include "gx/Types.hpp"
 #include <cstdint>
 
 class CGxBuf;
