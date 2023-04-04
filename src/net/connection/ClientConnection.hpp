@@ -16,6 +16,9 @@ class ClientConnection : public RealmConnection {
         int32_t m_errorCode = 0;
         void (*m_cleanup)() = nullptr;
 
+        // Virtual member functions
+        virtual int32_t HandleConnect();
+
         // Member functions
         ClientConnection(RealmResponse* realmResponse)
             : RealmConnection(realmResponse)

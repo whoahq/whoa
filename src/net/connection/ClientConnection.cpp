@@ -163,6 +163,16 @@ int32_t ClientConnection::Disconnect() {
     return 0;
 }
 
+int32_t ClientConnection::HandleConnect() {
+    this->Complete(1, 5);
+
+    this->m_connected = 1;
+
+    // TODO WardenClient_Initialize();
+
+    return this->NetClient::HandleConnect();
+}
+
 void ClientConnection::Initiate(WOWCS_OPS op, int32_t errorCode, void (*cleanup)()) {
     this->m_cleanup = cleanup;
     this->m_statusCop = op;
