@@ -42,6 +42,10 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
     }
 }
 
+bool GxDevExists() {
+    return g_theGxDevicePtr != nullptr;
+}
+
 EGxApi GxDevApi() {
     return g_theGxDevicePtr->m_api;
 }
