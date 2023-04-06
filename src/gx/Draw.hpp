@@ -12,7 +12,9 @@ void GxDraw(CGxBatch* batch, int32_t indexed);
 
 void GxSceneClear(uint32_t, CImVector);
 
-void GxScenePresent(void);
+void GxScenePresent(uint32_t a2);
+
+void GxSub682A00();
 
 void GxuFlushDrawList(EGxuDrawListCategory, const C3Vector&);
 
