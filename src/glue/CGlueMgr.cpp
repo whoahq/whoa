@@ -202,10 +202,10 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
     if (CGlueMgr::m_idleState == IDLE_NONE) {
         if (CGlueMgr::m_reload) {
             if (!CGlueMgr::m_suspended) {
-                // TODO CGlueMgr::Suspend();
-                // TODO CGlueMgr::Resume();
+                CGlueMgr::Suspend();
+                CGlueMgr::Resume();
                 // TODO Sub4DA360();
-                // TODO CGlueMgr::SetScreen(ByteB6A9E0);
+                CGlueMgr::SetScreen(CGlueMgr::m_currentScreen);
             }
 
             CGlueMgr::m_reload = 0;
@@ -703,6 +703,19 @@ void CGlueMgr::Sub4D8BA0() {
 }
 
 void CGlueMgr::Suspend() {
+    CGlueMgr::m_suspended = 1;
+
+    // TODO
+
+    if (CGlueMgr::m_simpleTop) {
+        delete CGlueMgr::m_simpleTop;
+        CGlueMgr::m_simpleTop = nullptr;
+    }
+
+    // TODO
+
+    FrameXML_FreeHashNodes();
+
     // TODO
 }
 
