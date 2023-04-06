@@ -187,6 +187,15 @@ CGxBuf* GxBufCreate(CGxPool* pool, uint32_t itemSize, uint32_t itemCount, uint32
     return g_theGxDevicePtr->BufCreate(pool, itemSize, itemCount, index);
 }
 
+void GxBufData(CGxBuf* buf, const void* data, uint32_t size, uint32_t offset) {
+    if (size == 0) {
+        size = buf->m_itemSize * buf->m_itemCount;
+    }
+
+    g_theGxDevicePtr->BufData(buf, data, size, offset);
+    buf->unk1C = 1;
+}
+
 char* GxBufLock(CGxBuf* buf) {
     return g_theGxDevicePtr->BufLock(buf);
 }

@@ -25,6 +25,8 @@ uint32_t GxVertexAttribOffset(EGxVertexBufferFormat, EGxVertexAttrib);
 
 CGxBuf* GxBufCreate(CGxPool*, uint32_t, uint32_t, uint32_t);
 
+void GxBufData(CGxBuf* buf, const void* data, uint32_t size, uint32_t offset);
+
 char* GxBufLock(CGxBuf* buf);
 
 void GxBufUnlock(CGxBuf*, uint32_t);
