@@ -1,8 +1,29 @@
+#include "gx/Buffer.hpp"
 #include "gx/Draw.hpp"
 #include "gx/Device.hpp"
+#include <bc/Debug.hpp>
 
 void GxDraw(CGxBatch* batch, int32_t indexed) {
     g_theGxDevicePtr->Draw(batch, indexed);
+}
+
+void GxDrawLockedElements(EGxPrim primType, uint32_t indexCount, const uint16_t* indices) {
+    if (Buffer::s_lockVertexCount == 0) {
+        return;
+    }
+
+    GxPrimIndexPtr(indexCount, indices);
+
+    CGxBatch batch;
+    batch.m_primType = primType;
+    batch.m_minIndex = 0;
+    batch.m_maxIndex = Buffer::s_lockVertexCount - 1;
+    batch.m_start = 0;
+    batch.m_count = indexCount;
+
+    BLIZZARD_ASSERT(batch.m_count > 0);
+
+    g_theGxDevicePtr->Draw(&batch, 1);
 }
 
 void GxSceneClear(uint32_t mask, CImVector color) {

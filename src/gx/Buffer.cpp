@@ -1,5 +1,8 @@
 #include "gx/Buffer.hpp"
 #include "gx/Device.hpp"
+#include "gx/Gx.hpp"
+#include "gx/CGxBatch.hpp"
+#include <bc/Debug.hpp>
 
 CGxVertexAttrib vertexAttribsP[] = {
     { GxVA_Position,        4, GxVertexAttribOffset(GxVBF_P, GxVA_Position),            12 }
@@ -179,6 +182,8 @@ int32_t Buffer::s_vertexBufOffset[GxVertexBufferFormats_Last][GxVAs_Last] = {
     { 0, -1, -1, 12, 24, 28, 32, 40, -1, -1, -1, -1, -1, -1 }
 };
 
+uint32_t Buffer::s_lockVertexCount = 0;
+
 uint32_t GxVertexAttribOffset(EGxVertexBufferFormat format, EGxVertexAttrib attrib) {
     return Buffer::s_vertexBufOffset[format][attrib];
 }
@@ -213,10 +218,140 @@ void GxPrimIndexPtr(CGxBuf* buf) {
     g_theGxDevicePtr->PrimIndexPtr(buf);
 }
 
+void GxPrimIndexPtr(uint32_t indexCount, const uint16_t* indices) {
+    auto buf = g_theGxDevicePtr->BufStream(GxPoolTarget_Index, 2, indexCount);
+
+    g_theGxDevicePtr->BufData(buf, indices, buf->m_itemCount * buf->m_itemSize, 0);
+
+    buf->unk1C = 1;
+
+    g_theGxDevicePtr->PrimIndexPtr(buf);
+}
+
 void GxPrimVertexPtr(CGxBuf* buf, EGxVertexBufferFormat format) {
     auto desc = &Buffer::s_vertexBufDesc[format];
 
     g_theGxDevicePtr->PrimVertexFormat(buf, desc->attribs, desc->attribCount);
     g_theGxDevicePtr->PrimVertexMask(desc->mask);
     g_theGxDevicePtr->PrimVertexPtr(buf, format);
+}
+
+void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStride, const C3Vector* normal, uint32_t normalStride, const CImVector* color, uint32_t colorStride, const C2Vector* tex0, uint32_t tex0Stride, const C2Vector* tex1, uint32_t tex1Stride) {
+    // Select vertex buffer format based on given parameters
+    auto format = GxVBF_P;
+
+    if (pos && normal && color) {
+        format = GxVBF_PNC;
+        if (tex0 && tex1) {
+            format = GxVBF_PNCT2;
+        } else if (tex0) {
+            format = GxVBF_PNCT;
+        }
+    } else if (pos && normal) {
+        format = GxVBF_PN;
+        if (tex0 && tex1) {
+            format = GxVBF_PNT2;
+        } else if (tex0) {
+            format = GxVBF_PNT;
+        }
+    } else if (pos && color) {
+        format = GxVBF_PC;
+        if (tex0 && tex1) {
+            format = GxVBF_PCT2;
+        } else if (tex0) {
+            format = GxVBF_PCT;
+        }
+    } else if (pos) {
+        if (tex0 && tex1) {
+            format = GxVBF_PT2;
+        } else if (tex0) {
+            format = GxVBF_PT;
+        }
+    }
+
+    auto vertexSize = Buffer::s_vertexBufDesc[format].size;
+
+    auto buf = g_theGxDevicePtr->BufStream(GxPoolTarget_Vertex, vertexSize, vertexCount);
+    auto bufData = g_theGxDevicePtr->BufLock(buf);
+
+    C3Vector emptyNormal = { 0.0f, 0.0f, 0.0f };
+    CImVector emptyColor = { 0x00, 0x00, 0x00, 0x00 };
+    C2Vector emptyTex0 = { 0.0f, 0.0f };
+    C2Vector emptyTex1 = { 0.0f, 0.0f };
+
+    auto bufPos = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Position));
+    auto bufPosStride = vertexSize;
+    auto bufNormal = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Normal));
+    auto bufNormalStride = vertexSize;
+    if (!normal) {
+        normal = &emptyNormal;
+        normalStride = 0;
+        bufNormal = &emptyNormal;
+        bufNormalStride = 0;
+    }
+    auto bufColor = reinterpret_cast<CImVector*>(bufData + GxVertexAttribOffset(format, GxVA_Color0));
+    auto bufColorStride = vertexSize;
+    if (!color) {
+        color = &emptyColor;
+        colorStride = 0;
+        bufColor = &emptyColor;
+        bufColorStride = 0;
+    }
+    auto bufTex0 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord0));
+    auto bufTex0Stride = vertexSize;
+    if (!tex0) {
+        tex0 = &emptyTex0;
+        tex0Stride = 0;
+        bufTex0 = &emptyTex0;
+        bufTex0Stride = 0;
+    }
+    auto bufTex1 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord1));
+    auto bufTex1Stride = vertexSize;
+    if (!tex1) {
+        tex1 = &emptyTex1;
+        tex1Stride = 0;
+        bufTex1 = &emptyTex1;
+        bufTex1Stride = 0;
+    }
+
+    if (vertexCount != 0) {
+        C3Vector* bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufData) + uintptr_t(GxVertexAttribOffset(format, GxVA_Position)));
+
+        for (uint32_t i = 0; i < vertexCount; i++) {
+            *bufPos = *pos;
+            pos = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(pos) + posStride);
+            bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufPos) + bufPosStride);
+
+            *bufNormal = *normal;
+            normal = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(normal) + normalStride);
+            bufNormal = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufNormal) + bufNormalStride);
+            *bufColor = *color;
+
+            GxFormatColor(*bufColor);
+            color = reinterpret_cast<const CImVector*>(reinterpret_cast<uintptr_t>(color) + colorStride);
+            bufColor = reinterpret_cast<CImVector*>(reinterpret_cast<uintptr_t>(bufColor) + bufColorStride);
+
+            *bufTex0 = *tex0;
+            tex0 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex0) + tex0Stride);
+            bufTex0 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex0) + bufTex0Stride);
+
+            *bufTex1 = *tex1;
+            tex1 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex1) + tex1Stride);
+            bufTex1 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex1) + bufTex1Stride);
+        }
+    }
+
+    GxBufUnlock(buf, vertexSize * vertexCount);
+    GxPrimVertexPtr(buf, format);
+}
+
+void GxPrimLockVertexPtrs(uint32_t vertexCount, const C3Vector* pos, uint32_t posStride, const C3Vector* normal, uint32_t normalStride, const CImVector* color, uint32_t colorStride, const uint8_t* bone, uint32_t boneStride, const C2Vector* tex0, uint32_t tex0Stride, const C2Vector* tex1, uint32_t tex1Stride) {
+    BLIZZARD_ASSERT(Buffer::s_lockVertexCount == 0);
+    Buffer::s_lockVertexCount = vertexCount;
+
+    GxPrimVertexPtr(vertexCount, pos, posStride, normal, normalStride, color, colorStride, tex0, tex0Stride, tex1, tex1Stride);
+}
+
+void GxPrimUnlockVertexPtrs() {
+    Buffer::s_lockVertexCount = 0;
 }
