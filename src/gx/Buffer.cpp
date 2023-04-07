@@ -279,11 +279,6 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
     C2Vector emptyTex0 = { 0.0f, 0.0f };
     C2Vector emptyTex1 = { 0.0f, 0.0f };
 
-    C3Vector* bufNormal;
-    CImVector* bufColor;
-    C2Vector* bufTex0;
-    C2Vector* bufTex1;
-
     auto bufPos = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Position));
     auto bufPosStride = vertexSize;
     auto bufNormal = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Normal));
