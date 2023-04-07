@@ -238,192 +238,116 @@ void GxPrimVertexPtr(CGxBuf* buf, EGxVertexBufferFormat format) {
 
 void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStride, const C3Vector* normal, uint32_t normalStride, const CImVector* color, uint32_t colorStride, const C2Vector* tex0, uint32_t tex0Stride, const C2Vector* tex1, uint32_t tex1Stride) {
     // Select vertex buffer format based on given parameters
-    EGxVertexBufferFormat bufFmt = GxVBF_P;
+    auto format = GxVBF_P;
 
-    if (pos != nullptr) {
-        if (normal != nullptr) {
-            if (color != nullptr) {
-                if (tex0 != nullptr) {
-                    if (tex1 != nullptr) {
-                        bufFmt = GxVBF_PNCT2;
-                    } else {
-                        bufFmt = GxVBF_PNCT;
-                    }
-                } else {
-                    if (tex1 == nullptr) {
-                        bufFmt = GxVBF_PNC;
-                    }
-                }
-            } else {
-                if (tex0 != nullptr) {
-                    if (tex1 != nullptr) {
-                        bufFmt = GxVBF_PNT2;
-                    } else {
-                        bufFmt = GxVBF_PNT;
-                    }
-                } else {
-                    if (tex1 == nullptr) {
-                        bufFmt = GxVBF_PN;
-                    }
-                }
-            }
-        } else {
-            if (color != nullptr) {
-                if (tex0 != nullptr) {
-                    if (tex1 != nullptr) {
-                        bufFmt = GxVBF_PCT2;
-                    } else {
-                        bufFmt = GxVBF_PCT;
-                    }
-                } else {
-                    if (tex1 == nullptr) {
-                        bufFmt = GxVBF_PC;
-                    }
-                }
-            } else {
-                if (tex0 != nullptr) {
-                    if (tex1 != nullptr) {
-                        bufFmt = GxVBF_PT2;
-                    } else {
-                        bufFmt = GxVBF_PT;
-                    }
-                }
-            }
+    if (pos && normal && color) {
+        format = GxVBF_PNC;
+        if (tex0 && tex1) {
+            format = GxVBF_PNCT2;
+        } else if (tex0) {
+            format = GxVBF_PNCT;
+        }
+    } else if (pos && normal) {
+        format = GxVBF_PN;
+        if (tex0 && tex1) {
+            format = GxVBF_PNT2;
+        } else if (tex0) {
+            format = GxVBF_PNT;
+        }
+    } else if (pos && color) {
+        format = GxVBF_PC;
+        if (tex0 && tex1) {
+            format = GxVBF_PCT2;
+        } else if (tex0) {
+            format = GxVBF_PCT;
+        }
+    } else if (pos) {
+        if (tex0 && tex1) {
+            format = GxVBF_PT2;
+        } else if (tex0) {
+            format = GxVBF_PT;
         }
     }
 
-    auto vertexSize = Buffer::s_vertexBufDesc[bufFmt].size;
+    auto vertexSize = Buffer::s_vertexBufDesc[format].size;
 
     auto buf = g_theGxDevicePtr->BufStream(GxPoolTarget_Vertex, vertexSize, vertexCount);
     auto bufData = g_theGxDevicePtr->BufLock(buf);
 
-    C3Vector genericNormal = {};
-    CImVector genericColor = {};
-    C2Vector genericTexCoord0 = {};
-    C2Vector genericTexCoord1 = {};
+    C3Vector emptyNormal = { 0.0f, 0.0f, 0.0f };
+    CImVector emptyColor = { 0x00, 0x00, 0x00, 0x00 };
+    C2Vector emptyTex0 = { 0.0f, 0.0f };
+    C2Vector emptyTex1 = { 0.0f, 0.0f };
 
-    C3Vector* writeNormal;
-    CImVector* writeColor;
-    C2Vector* writeTexCoord0;
-    C2Vector* writeTexCoord1;
+    C3Vector* bufNormal;
+    CImVector* bufColor;
+    C2Vector* bufTex0;
+    C2Vector* bufTex1;
 
-    uintptr_t writeNormalStride = normal != nullptr ? vertexSize : 0;
-    if (normal == nullptr) {
-        writeNormal = &genericNormal;
-    } else {
-        writeNormal = reinterpret_cast<C3Vector*>(
-            uintptr_t(bufData) + uintptr_t(GxVertexAttribOffset(bufFmt, GxVA_Normal))
-        );
-    }
-
-    uintptr_t writeColorStride = color != nullptr ? vertexSize : 0;
-    if (color == nullptr) {
-        writeColor = &genericColor;
-    } else {
-        writeColor = reinterpret_cast<CImVector*>(
-            uintptr_t(bufData) + uintptr_t(GxVertexAttribOffset(bufFmt, GxVA_Color0))
-        );
-    }
-
-    uintptr_t writeTexCoord0Stride = tex0 != nullptr ? vertexSize : 0;
-    if (tex0 == nullptr) {
-        writeTexCoord0 = &genericTexCoord0;
-    } else {
-        writeTexCoord0 = reinterpret_cast<C2Vector*>(
-            uintptr_t(bufData) + uintptr_t(GxVertexAttribOffset(bufFmt, GxVA_TexCoord0))
-        );
-    }
-
-    uintptr_t writeTexCoord1Stride = tex1 != nullptr ? vertexSize : 0;
-    if (tex1 == nullptr) {
-        writeTexCoord1 = &genericTexCoord1;
-    } else {
-        writeTexCoord1 = reinterpret_cast<C2Vector*>(
-            uintptr_t(bufData) + uintptr_t(GxVertexAttribOffset(bufFmt, GxVA_TexCoord1))
-        );
-    }
-
-    if (normal == nullptr) {
-        normal = &genericNormal;
+    auto bufPos = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Position));
+    auto bufPosStride = vertexSize;
+    auto bufNormal = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Normal));
+    auto bufNormalStride = vertexSize;
+    if (!normal) {
+        normal = &emptyNormal;
         normalStride = 0;
+        bufNormal = &emptyNormal;
+        bufNormalStride = 0;
     }
-
-    if (color == nullptr) {
-        color = &genericColor;
+    auto bufColor = reinterpret_cast<CImVector*>(bufData + GxVertexAttribOffset(format, GxVA_Color0));
+    auto bufColorStride = vertexSize;
+    if (!color) {
+        color = &emptyColor;
         colorStride = 0;
+        bufColor = &emptyColor;
+        bufColorStride = 0;
     }
-
-    if (tex0 == nullptr) {
-        tex0 = &genericTexCoord0;
+    auto bufTex0 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord0));
+    auto bufTex0Stride = vertexSize;
+    if (!tex0) {
+        tex0 = &emptyTex0;
         tex0Stride = 0;
+        bufTex0 = &emptyTex0;
+        bufTex0Stride = 0;
     }
-
-    if (tex1 == nullptr) {
-        tex1 = &genericTexCoord1;
+    auto bufTex1 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord1));
+    auto bufTex1Stride = vertexSize;
+    if (!tex1) {
+        tex1 = &emptyTex1;
         tex1Stride = 0;
+        bufTex1 = &emptyTex1;
+        bufTex1Stride = 0;
     }
 
     if (vertexCount != 0) {
-        auto useRgba = GxCaps().m_colorFormat == GxCF_rgba;
+        C3Vector* bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufData) + uintptr_t(GxVertexAttribOffset(format, GxVA_Position)));
 
-        C3Vector* writePos = reinterpret_cast<C3Vector*>(
-            uintptr_t(bufData) + uintptr_t(GxVertexAttribOffset(bufFmt, GxVA_Position))
-        );
+        for (uint32_t i = 0; i < vertexCount; i++) {
+            *bufPos = *pos;
+            pos = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(pos) + posStride);
+            bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufPos) + bufPosStride);
 
-        for (uint32_t v = 0; v < vertexCount; v++) {
-            *writePos = *pos;
-            pos = reinterpret_cast<C3Vector*>(
-               uintptr_t(pos) + uintptr_t(posStride)
-            );
-            writePos = reinterpret_cast<C3Vector*>(
-                uintptr_t(writePos) + uintptr_t(vertexSize)
-            );
+            *bufNormal = *normal;
+            normal = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(normal) + normalStride);
+            bufNormal = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufNormal) + bufNormalStride);
+            *bufColor = *color;
 
-            *writeNormal = *normal;
-            normal = reinterpret_cast<C3Vector*>(
-                uintptr_t(normal) + uintptr_t(normalStride)
-            );
-            writeNormal = reinterpret_cast<C3Vector*>(
-                uintptr_t(writeNormal) + writeNormalStride
-            );
+            GxFormatColor(*bufColor);
+            color = reinterpret_cast<const CImVector*>(reinterpret_cast<uintptr_t>(color) + colorStride);
+            bufColor = reinterpret_cast<CImVector*>(reinterpret_cast<uintptr_t>(bufColor) + bufColorStride);
 
-            if (useRgba) {
-                uint8_t rgba[4];
-                rgba[0] = color->r;
-                rgba[1] = color->g;
-                rgba[2] = color->b;
-                rgba[3] = color->a;
-                memcpy(writeColor, rgba, 4);
-            } else {
-                *writeColor = *color;
-            }
-            color = reinterpret_cast<CImVector*>(
-                uintptr_t(color) + colorStride
-            );
-            writeColor = reinterpret_cast<CImVector*>(
-                uintptr_t(writeColor) + writeColorStride
-            );
+            *bufTex0 = *tex0;
+            tex0 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex0) + tex0Stride);
+            bufTex0 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex0) + bufTex0Stride);
 
-            *writeTexCoord0 = *tex0;
-            tex0 = reinterpret_cast<C2Vector*>(
-                uintptr_t(tex0) + tex0Stride
-            );
-            writeTexCoord0 = reinterpret_cast<C2Vector*>(
-                uintptr_t(writeTexCoord0) + writeTexCoord0Stride
-            );
-
-            *writeTexCoord1 = *tex1;
-            tex1 = reinterpret_cast<C2Vector*>(
-                uintptr_t(tex1) + tex1Stride
-            );
-            writeTexCoord1 = reinterpret_cast<C2Vector*>(
-                uintptr_t(writeTexCoord1) + writeTexCoord1Stride
-            );
+            *bufTex1 = *tex1;
+            tex1 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex1) + tex1Stride);
+            bufTex1 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex1) + bufTex1Stride);
         }
     }
 
     GxBufUnlock(buf, vertexSize * vertexCount);
-    GxPrimVertexPtr(buf, bufFmt);
+    GxPrimVertexPtr(buf, format);
 }
 
 void GxPrimLockVertexPtrs(uint32_t vertexCount, const C3Vector* pos, uint32_t posStride, const C3Vector* normal, uint32_t normalStride, const CImVector* color, uint32_t colorStride, const uint8_t* bone, uint32_t boneStride, const C2Vector* tex0, uint32_t tex0Stride, const C2Vector* tex1, uint32_t tex1Stride) {
