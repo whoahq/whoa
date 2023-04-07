@@ -242,6 +242,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
 
     if (pos && normal && color) {
         format = GxVBF_PNC;
+
         if (tex0 && tex1) {
             format = GxVBF_PNCT2;
         } else if (tex0) {
@@ -249,6 +250,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         }
     } else if (pos && normal) {
         format = GxVBF_PN;
+
         if (tex0 && tex1) {
             format = GxVBF_PNT2;
         } else if (tex0) {
@@ -256,6 +258,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         }
     } else if (pos && color) {
         format = GxVBF_PC;
+
         if (tex0 && tex1) {
             format = GxVBF_PCT2;
         } else if (tex0) {
@@ -281,6 +284,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
 
     auto bufPos = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Position));
     auto bufPosStride = vertexSize;
+
     auto bufNormal = reinterpret_cast<C3Vector*>(bufData + GxVertexAttribOffset(format, GxVA_Normal));
     auto bufNormalStride = vertexSize;
     if (!normal) {
@@ -289,6 +293,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         bufNormal = &emptyNormal;
         bufNormalStride = 0;
     }
+
     auto bufColor = reinterpret_cast<CImVector*>(bufData + GxVertexAttribOffset(format, GxVA_Color0));
     auto bufColorStride = vertexSize;
     if (!color) {
@@ -297,6 +302,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         bufColor = &emptyColor;
         bufColorStride = 0;
     }
+
     auto bufTex0 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord0));
     auto bufTex0Stride = vertexSize;
     if (!tex0) {
@@ -305,6 +311,7 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         bufTex0 = &emptyTex0;
         bufTex0Stride = 0;
     }
+
     auto bufTex1 = reinterpret_cast<C2Vector*>(bufData + GxVertexAttribOffset(format, GxVA_TexCoord1));
     auto bufTex1Stride = vertexSize;
     if (!tex1) {
@@ -314,31 +321,27 @@ void GxPrimVertexPtr(uint32_t vertexCount, const C3Vector* pos, uint32_t posStri
         bufTex1Stride = 0;
     }
 
-    if (vertexCount != 0) {
-        C3Vector* bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufData) + uintptr_t(GxVertexAttribOffset(format, GxVA_Position)));
+    for (uint32_t i = 0; i < vertexCount; i++) {
+        *bufPos = *pos;
+        pos = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(pos) + posStride);
+        bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufPos) + bufPosStride);
 
-        for (uint32_t i = 0; i < vertexCount; i++) {
-            *bufPos = *pos;
-            pos = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(pos) + posStride);
-            bufPos = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufPos) + bufPosStride);
+        *bufNormal = *normal;
+        normal = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(normal) + normalStride);
+        bufNormal = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufNormal) + bufNormalStride);
 
-            *bufNormal = *normal;
-            normal = reinterpret_cast<const C3Vector*>(reinterpret_cast<uintptr_t>(normal) + normalStride);
-            bufNormal = reinterpret_cast<C3Vector*>(reinterpret_cast<uintptr_t>(bufNormal) + bufNormalStride);
-            *bufColor = *color;
+        *bufColor = *color;
+        GxFormatColor(*bufColor);
+        color = reinterpret_cast<const CImVector*>(reinterpret_cast<uintptr_t>(color) + colorStride);
+        bufColor = reinterpret_cast<CImVector*>(reinterpret_cast<uintptr_t>(bufColor) + bufColorStride);
 
-            GxFormatColor(*bufColor);
-            color = reinterpret_cast<const CImVector*>(reinterpret_cast<uintptr_t>(color) + colorStride);
-            bufColor = reinterpret_cast<CImVector*>(reinterpret_cast<uintptr_t>(bufColor) + bufColorStride);
+        *bufTex0 = *tex0;
+        tex0 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex0) + tex0Stride);
+        bufTex0 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex0) + bufTex0Stride);
 
-            *bufTex0 = *tex0;
-            tex0 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex0) + tex0Stride);
-            bufTex0 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex0) + bufTex0Stride);
-
-            *bufTex1 = *tex1;
-            tex1 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex1) + tex1Stride);
-            bufTex1 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex1) + bufTex1Stride);
-        }
+        *bufTex1 = *tex1;
+        tex1 = reinterpret_cast<const C2Vector*>(reinterpret_cast<uintptr_t>(tex1) + tex1Stride);
+        bufTex1 = reinterpret_cast<C2Vector*>(reinterpret_cast<uintptr_t>(bufTex1) + bufTex1Stride);
     }
 
     GxBufUnlock(buf, vertexSize * vertexCount);
