@@ -433,25 +433,6 @@ void GxPrimLockVertexPtrs(uint32_t vertexCount, const C3Vector* pos, uint32_t po
     GxPrimVertexPtr(vertexCount, pos, posStride, normal, normalStride, color, colorStride, tex0, tex0Stride, tex1, tex1Stride);
 }
 
-void GxDrawLockedElements(EGxPrim primType, uint32_t indexCount, const uint16_t* indices) {
-    if (Buffer::s_lockVertexCount == 0) {
-        return;
-    }
-
-    GxPrimIndexPtr(indexCount, indices);
-
-    CGxBatch batch;
-    batch.m_primType = primType;
-    batch.m_minIndex = 0;
-    batch.m_maxIndex = Buffer::s_lockVertexCount - 1;
-    batch.m_start = 0;
-    batch.m_count = indexCount;
-
-    BLIZZARD_ASSERT(batch.m_count > 0);
-
-    g_theGxDevicePtr->Draw(&batch, 1);
-}
-
 void GxPrimUnlockVertexPtrs() {
     Buffer::s_lockVertexCount = 0;
 }
