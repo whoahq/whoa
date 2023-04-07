@@ -1,3 +1,4 @@
+#include "gx/Buffer.hpp"
 #include "gx/Draw.hpp"
 #include "gx/Device.hpp"
 #include <bc/Debug.hpp>
