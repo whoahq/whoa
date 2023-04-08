@@ -41,6 +41,40 @@ char* OsPathFindExtensionWithDot(char* pathName) {
     return result;
 }
 
+void OsFileToNativeSlashes(char* path, size_t size) {
+#ifdef WHOA_SYSTEM_WIN
+    OsFileToBackSlashes(path, size);
+#else
+    OsFileToForwardSlashes(path, size);
+#endif
+}
+
+void OsFileToForwardSlashes(char* path, size_t size) {
+    if (!path)
+        return;
+
+    for (size_t i = 0; i < size; ++i) {
+        if (!path[i])
+            return;
+
+        if (path[i] == '\\')
+            path[i] = '/';
+    }
+}
+
+void OsFileToBackSlashes(char* path, size_t size) {
+    if (!path)
+        return;
+
+    for (size_t i = 0; i < size; ++i) {
+        if (!path[i])
+            return;
+
+        if (path[i] == '/')
+            path[i] = '\\';
+    }
+}
+
 void OpenPatches(const std::string& language, const std::string& fileName) {
     std::string path("Data/" + language + "/");
     std::string fullPath;

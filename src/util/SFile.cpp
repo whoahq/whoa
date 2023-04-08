@@ -8,19 +8,20 @@
 
 // TODO Proper implementation
 int32_t SFile::Close(SFile* file) {
-    SFileCloseFile(file->m_file);
+    SFileCloseFile(file->m_handle);
     delete file;
     return 1;
 }
 
 // TODO Proper implementation
-size_t SFile::GetFileSize(SFile* file, size_t* filesizeHigh) {
-    DWORD highPart = 0;
-    DWORD lowPart = SFileGetFileSize(file->m_file, &highPart);
+uint32_t SFile::GetFileSize(SFile* file, uint32_t* filesizeHigh) {
+    DWORD high = 0;
+    DWORD low = SFileGetFileSize(file->m_handle, &high);
 
     if (filesizeHigh)
-        *filesizeHigh = highPart;
-    return lowPart;
+        *filesizeHigh = high;
+
+    return low;
 }
 
 int32_t SFile::IsStreamingMode() {
@@ -30,73 +31,39 @@ int32_t SFile::IsStreamingMode() {
 
 // TODO Proper implementation
 int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size_t* bytes, size_t extraBytes, uint32_t flags, SOVERLAPPED* overlapped) {
-    auto pathLen = SStrLen(filename);
+    if (!buffer || !filename)
+        return 0;
 
-    char archivePath[STORM_MAX_PATH] = { 0 };
-    char localPath[STORM_MAX_PATH] = { 0 };
-    char subPath[STORM_MAX_PATH] = { 0 };
-
-    bool containsPath = false;
-
-    for (int32_t i = 0; i < pathLen; ++i) {
-        if (filename[i] == '/') {
-            containsPath = true;
-#ifdef WHOA_SYSTEM_WIN
-            localPath[i] = '\\';
-#else
-            localPath[i] = '/';
-#endif
-            archivePath[i] = '\\';
-        } else if (filename[i] == '\\') {
-            containsPath = true;
-#ifdef WHOA_SYSTEM_WIN
-            localPath[i] = '\\';
-#else
-            localPath[i] = '/';
-#endif
-            archivePath[i] = '\\';
-        } else {
-            localPath[i] = filename[i];
-            archivePath[i] = filename[i];
-        }
-    }
-
-    if (!containsPath) {
-#ifdef WHOA_SYSTEM_WIN
-        SStrCopy(subPath, "Data\\enGB\\", sizeof(subPath));
-#else
-        SStrCopy(subPath, "Data/enGB/", sizeof(subPath));
-#endif
-        strcat(subPath, filename);
-    }
-
-
-    HANDLE file;
-    if (!SFileOpenFileEx(nullptr, localPath, SFILE_OPEN_LOCAL_FILE, &file)) {
-        if (containsPath || !SFileOpenFileEx(nullptr, subPath, SFILE_OPEN_LOCAL_FILE, &file)) {
-            if (!SFileOpenFileEx(g_mpqHandle, archivePath, SFILE_OPEN_FROM_MPQ, &file))
-                return 0;
-        }
-    }
-
-    DWORD highPart = 0;
-    size_t size = SFileGetFileSize(file, &highPart);
-    size |= (highPart << 32);
-
+    *buffer = nullptr;
     if (bytes)
-        *bytes = size;
+        *bytes = 0;
+
+    SFile* file = nullptr;
+    if (!SFile::OpenEx(nullptr, filename, 0, &file))
+        return 0;
+
+    uint32_t high = 0;
+    uint64_t size = SFile::GetFileSize(file, &high);
+    size |= ((uint64_t) high << 32);
 
     char* data = (char*) SMemAlloc(size + extraBytes, __FILE__, __LINE__, 0);
 
-    SFileReadFile(file, data, size, &highPart, nullptr);
+    if (!SFile::Read(file, data, size, nullptr, nullptr, nullptr)) {
+        SMemFree(data, __FILE__, __LINE__, 0);
+        SFile::Close(file);
+        return 0;
+    }
 
     if (extraBytes)
         memset(data + size, 0, extraBytes);
 
+    if (bytes)
+        *bytes = size;
+
     if (buffer)
         *buffer = data;
 
-    SFileCloseFile(file);
+    SFile::Close(file);
 
     return 1;
 }
@@ -107,46 +74,51 @@ int32_t SFile::Open(const char* filename, SFile** file) {
 
 // TODO Proper implementation
 int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, SFile** file) {
-    auto pathLen = SStrLen(filename);
+    if (!file || !filename)
+        return 0;
 
-    char archivePath[STORM_MAX_PATH] = { 0 };
-    char localPath[STORM_MAX_PATH] = { 0 };
+    *file = nullptr;
 
-    for (int32_t i = 0; i < pathLen; ++i) {
-        if (filename[i] == '/') {
-#ifdef  WHOA_SYSTEM_WIN
-            localPath[i] = '\\';
-#else
-            localPath[i] = '/';
-#endif
-            archivePath[i] = '\\';
-        } else if (filename[i] == '\\') {
-#ifdef WHOA_SYSTEM_WIN
-            localPath[i] = '\\';
-#else
-            localPath[i] = '/';
-#endif
-            archivePath[i] = '\\';
-        } else {
-            localPath[i] = filename[i];
-            archivePath[i] = filename[i];
-        }
-    }
+    size_t length = SStrLen(filename);
+    // Overflow protection
+    if (length + 1 > STORM_MAX_PATH)
+        return 0;
+
+    char nativePath[STORM_MAX_PATH] = { 0 };
+    char backslashPath[STORM_MAX_PATH] = { 0 };
+
+    SStrCopy(nativePath, filename, STORM_MAX_PATH);
+    SStrCopy(backslashPath, filename, STORM_MAX_PATH);
+
+    OsFileToNativeSlashes(nativePath);
+    OsFileToBackSlashes(backslashPath);
+
+    char message[512] = { 0 };
 
     HANDLE handle;
     bool local = true;
-    if (!SFileOpenFileEx(nullptr, localPath, SFILE_OPEN_LOCAL_FILE, &handle)) {
+    if (!SFileOpenFileEx(nullptr, nativePath, SFILE_OPEN_LOCAL_FILE, &handle)) {
         local = false;
-        if (!SFileOpenFileEx(g_mpqHandle, archivePath, SFILE_OPEN_FROM_MPQ, &handle)) {
-            *file = nullptr;
+        if (!SFileOpenFileEx(g_mpqHandle, backslashPath, SFILE_OPEN_FROM_MPQ, &handle)) {
+            SStrCopy(message, "[SFile] Unable to open: ", sizeof(message));
+            strcat(message, filename);
+            strcat(message, "\n");
+            OutputDebugStringA(message);
             return 0;
         }
     }
 
-    SFile* fileptr = new SFile;
-    fileptr->m_mpq = local ? nullptr : g_mpqHandle;
-    fileptr->m_file = handle;
-    *file = fileptr;
+    if (local) {
+        SStrCopy(message, "[SFile] Open (file system): ", sizeof(message));
+    } else {
+        SStrCopy(message, "[SFile] Open (archive): ", sizeof(message));
+    }
+    strcat(message, filename);
+    strcat(message, "\n");
+    OutputDebugStringA(message);
+
+    *file = new SFile;
+    (*file)->m_handle = handle;
 
     return 1;
 }
@@ -154,7 +126,7 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
     DWORD read = 0;
-    if (SFileReadFile(file->m_file, buffer, bytestoread, &read, nullptr)) {
+    if (SFileReadFile(file->m_handle, buffer, bytestoread, &read, nullptr)) {
         if (bytesread)
             *bytesread = read;
         return 1;

@@ -10,6 +10,10 @@ void OsBuildFontFilePath(const char*, char*, size_t);
 
 char* OsPathFindExtensionWithDot(char*);
 
+void OsFileToNativeSlashes(char* path, size_t size = (size_t) -1);
+void OsFileToForwardSlashes(char* path, size_t size = (size_t) -1);
+void OsFileToBackSlashes(char* path, size_t size = (size_t) -1);
+
 void OpenArchives();
 
 extern void* g_mpqHandle;
