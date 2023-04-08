@@ -14,6 +14,7 @@ target_include_directories(console
 target_link_libraries(console
     PUBLIC
         common
+        gx
         storm
     PRIVATE
         client

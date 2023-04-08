@@ -4,6 +4,7 @@
 #include "console/CVar.hpp"
 #include "console/Client.hpp"
 #include "console/Device.hpp"
+#include "console/Screen.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Screen.hpp"
@@ -72,7 +73,7 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     // }
 
     ScrnInitialize(0);
-    // ConsoleScreenInitialize(a2);
+    ConsoleScreenInitialize(nullptr); // TODO argument
 
     // s_cvarTextureFilteringMode = CVar::Register(
     //     "textureFilteringMode",
