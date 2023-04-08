@@ -10,4 +10,6 @@ void OsBuildFontFilePath(const char*, char*, size_t);
 
 char* OsPathFindExtensionWithDot(char*);
 
+void OpenArchives();
+
 #endif

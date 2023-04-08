@@ -1,6 +1,7 @@
 #include "util/Filesystem.hpp"
 #include <cstring>
 #include <storm/String.hpp>
+#include <StormLib.h>
 
 void OsCreateDirectory(const char* pathName, int32_t recursive) {
     // TODO
@@ -27,4 +28,9 @@ char* OsPathFindExtensionWithDot(char* pathName) {
     }
 
     return result;
+}
+
+void OpenArchives()
+{
+
 }
