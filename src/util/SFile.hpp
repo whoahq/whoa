@@ -3,8 +3,6 @@
 
 #include <cstdint>
 #include <cstdlib>
-#include <fstream>
-#include <iostream>
 
 class SArchive;
 struct SOVERLAPPED;
@@ -23,9 +21,8 @@ class SFile {
         static int32_t Unload(void*);
 
         // Member variables
-        const char* m_filename;
-        std::ifstream* m_stream; // TODO Proper implementation
-        std::streamsize m_size; // TODO Proper implementation
+        void* m_mpq;
+        void* m_file;
 };
 
 #endif

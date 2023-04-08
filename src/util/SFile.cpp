@@ -1,24 +1,26 @@
 #include "util/SFile.hpp"
 #include <cstring>
 #include <limits>
+#include <StormLib.h>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+#include "util/Filesystem.hpp"
 
 // TODO Proper implementation
 int32_t SFile::Close(SFile* file) {
-    delete file->m_filename;
-
-    file->m_stream->close();
-    delete file->m_stream;
-
+    SFileCloseFile(file->m_file);
     delete file;
-
     return 1;
 }
 
 // TODO Proper implementation
 size_t SFile::GetFileSize(SFile* file, size_t* filesizeHigh) {
-    return file->m_size;
+    DWORD highPart = 0;
+    DWORD lowPart = SFileGetFileSize(file->m_file, &highPart);
+
+    if (filesizeHigh)
+        *filesizeHigh = highPart;
+    return lowPart;
 }
 
 int32_t SFile::IsStreamingMode() {
@@ -32,39 +34,42 @@ int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
 
+    /*
+
     for (int32_t i = 0; i < pathLen; ++i) {
         if (path[i] == '\\') {
             path[i] = '/';
         }
     }
 
-    std::ifstream file (path, std::ios::in | std::ios::binary | std::ios::ate);
-    size_t size;
-    char* data;
+    */
 
-    if (file.is_open()) {
-        size = static_cast<size_t>(file.tellg());
+    HANDLE file;
+    if (!SFileOpenFileEx(nullptr, path, SFILE_OPEN_LOCAL_FILE, &file)) {
+        if (!SFileOpenFileEx(g_mpqHandle, path, SFILE_OPEN_FROM_MPQ, &file))
+            return 0;
+    }
 
-        if (bytes) {
-            *bytes = size;
-        }
+    DWORD highPart = 0;
+    size_t size = SFileGetFileSize(file, &highPart);
+    size |= (highPart << 32);
 
-        data = new char[size + extraBytes];
+    if (bytes)
+        *bytes = size;
 
-        file.seekg(0, std::ios::beg);
-        file.read(data, size);
-        file.close();
+    char* data = (char*) SMemAlloc(size + extraBytes, __FILE__, __LINE__, 0);
 
-        if (extraBytes) {
-            memset(data + size, 0, extraBytes);
-        }
+    SFileReadFile(file, data, size, &highPart, nullptr);
 
+    if (extraBytes)
+        memset(data + size, 0, extraBytes);
+
+    if (buffer)
         *buffer = data;
 
-        return 1;
-    } else {
-        return 0;
-    }
+    SFileCloseFile(file);
+
+    return 1;
 }
 
 int32_t SFile::Open(const char* filename, SFile** file) {
@@ -77,34 +82,29 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
 
+    /*
+
     for (int32_t i = 0; i < pathLen; ++i) {
         if (path[i] == '\\') {
             path[i] = '/';
         }
     }
 
-    SFile* fileptr = new SFile;
+    */
 
-    fileptr->m_filename = strdup(filename);
-
-    std::ifstream* stream = new std::ifstream(path, std::ios::in | std::ios::binary | std::ios::ate);
-
-    if (!stream->is_open()) {
-        *file = nullptr;
-        return 0;
+    HANDLE handle;
+    bool local = true;
+    if (!SFileOpenFileEx(nullptr, path, SFILE_OPEN_LOCAL_FILE, &handle)) {
+        local = false;
+        if (!SFileOpenFileEx(g_mpqHandle, path, SFILE_OPEN_FROM_MPQ, &handle)) {
+            *file = nullptr;
+            return 0;
+        }
     }
 
-    stream->seekg(0, std::ios::beg);
-
-    stream->ignore(std::numeric_limits<std::streamsize>::max());
-    std::streamsize size = stream->gcount();
-    stream->clear();
-
-    stream->seekg(0, std::ios::beg);
-
-    fileptr->m_stream = stream;
-    fileptr->m_size = size;
-
+    SFile* fileptr = new SFile;
+    fileptr->m_mpq = local ? nullptr : g_mpqHandle;
+    fileptr->m_file = handle;
     *file = fileptr;
 
     return 1;
@@ -112,13 +112,16 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
-    file->m_stream->read((char*)buffer, bytestoread);
-
-    if (bytesread) {
-        *bytesread = file->m_stream->gcount();
+    DWORD read = 0;
+    if (SFileReadFile(file->m_file, buffer, bytestoread, &read, nullptr)) {
+        if (bytesread)
+            *bytesread = read;
+        return 1;
+    } else {
+        if (bytesread)
+            *bytesread = 0;
+        return 0;
     }
-
-    return 1;
 }
 
 int32_t SFile::Unload(void* ptr) {
