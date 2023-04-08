@@ -31,23 +31,52 @@ int32_t SFile::IsStreamingMode() {
 // TODO Proper implementation
 int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size_t* bytes, size_t extraBytes, uint32_t flags, SOVERLAPPED* overlapped) {
     auto pathLen = SStrLen(filename);
-    char path[STORM_MAX_PATH];
-    SStrCopy(path, filename, sizeof(path));
 
-    /*
+    char archivePath[STORM_MAX_PATH] = { 0 };
+    char localPath[STORM_MAX_PATH] = { 0 };
+    char subPath[STORM_MAX_PATH] = { 0 };
+
+    bool containsPath = false;
 
     for (int32_t i = 0; i < pathLen; ++i) {
-        if (path[i] == '\\') {
-            path[i] = '/';
+        if (filename[i] == '/') {
+            containsPath = true;
+#ifdef WHOA_SYSTEM_WIN
+            localPath[i] = '\\';
+#else
+            localPath[i] = '/';
+#endif
+            archivePath[i] = '\\';
+        } else if (filename[i] == '\\') {
+            containsPath = true;
+#ifdef WHOA_SYSTEM_WIN
+            localPath[i] = '\\';
+#else
+            localPath[i] = '/';
+#endif
+            archivePath[i] = '\\';
+        } else {
+            localPath[i] = filename[i];
+            archivePath[i] = filename[i];
         }
     }
 
-    */
+    if (!containsPath) {
+#ifdef WHOA_SYSTEM_WIN
+        SStrCopy(subPath, "Data\\enGB\\", sizeof(subPath));
+#else
+        SStrCopy(subPath, "Data/enGB/", sizeof(subPath));
+#endif
+        strcat(subPath, filename);
+    }
+
 
     HANDLE file;
-    if (!SFileOpenFileEx(nullptr, path, SFILE_OPEN_LOCAL_FILE, &file)) {
-        if (!SFileOpenFileEx(g_mpqHandle, path, SFILE_OPEN_FROM_MPQ, &file))
-            return 0;
+    if (!SFileOpenFileEx(nullptr, localPath, SFILE_OPEN_LOCAL_FILE, &file)) {
+        if (containsPath || !SFileOpenFileEx(nullptr, subPath, SFILE_OPEN_LOCAL_FILE, &file)) {
+            if (!SFileOpenFileEx(g_mpqHandle, archivePath, SFILE_OPEN_FROM_MPQ, &file))
+                return 0;
+        }
     }
 
     DWORD highPart = 0;
@@ -79,24 +108,36 @@ int32_t SFile::Open(const char* filename, SFile** file) {
 // TODO Proper implementation
 int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, SFile** file) {
     auto pathLen = SStrLen(filename);
-    char path[STORM_MAX_PATH];
-    SStrCopy(path, filename, sizeof(path));
 
-    /*
+    char archivePath[STORM_MAX_PATH] = { 0 };
+    char localPath[STORM_MAX_PATH] = { 0 };
 
     for (int32_t i = 0; i < pathLen; ++i) {
-        if (path[i] == '\\') {
-            path[i] = '/';
+        if (filename[i] == '/') {
+#ifdef  WHOA_SYSTEM_WIN
+            localPath[i] = '\\';
+#else
+            localPath[i] = '/';
+#endif
+            archivePath[i] = '\\';
+        } else if (filename[i] == '\\') {
+#ifdef WHOA_SYSTEM_WIN
+            localPath[i] = '\\';
+#else
+            localPath[i] = '/';
+#endif
+            archivePath[i] = '\\';
+        } else {
+            localPath[i] = filename[i];
+            archivePath[i] = filename[i];
         }
     }
 
-    */
-
     HANDLE handle;
     bool local = true;
-    if (!SFileOpenFileEx(nullptr, path, SFILE_OPEN_LOCAL_FILE, &handle)) {
+    if (!SFileOpenFileEx(nullptr, localPath, SFILE_OPEN_LOCAL_FILE, &handle)) {
         local = false;
-        if (!SFileOpenFileEx(g_mpqHandle, path, SFILE_OPEN_FROM_MPQ, &handle)) {
+        if (!SFileOpenFileEx(g_mpqHandle, archivePath, SFILE_OPEN_FROM_MPQ, &handle)) {
             *file = nullptr;
             return 0;
         }
