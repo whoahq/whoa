@@ -12,4 +12,6 @@ char* OsPathFindExtensionWithDot(char*);
 
 void OpenArchives();
 
+extern void* g_mpqHandle;
+
 #endif

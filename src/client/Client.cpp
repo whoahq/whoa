@@ -14,6 +14,7 @@
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
 #include "world/World.hpp"
+#include "util/Filesystem.hpp"
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
@@ -155,6 +156,8 @@ int32_t InitializeGlobal() {
     // }
 
     // ClientServices::LoadCDKey();
+
+    OpenArchives();
 
     ConsoleInitializeClientCommand();
 
