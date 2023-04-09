@@ -3,7 +3,6 @@
 #include "console/CVar.hpp"
 #include "event/Input.hpp"
 #include "gx/Device.hpp"
-#include <cstring>
 
 CVar* s_cvGxMaximize;
 CVar* s_cvGxResolution;

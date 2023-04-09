@@ -1,7 +1,7 @@
 #ifndef CONSOLE_C_VAR_HPP
 #define CONSOLE_C_VAR_HPP
 
-#include <cstdint>
+#include "console/Types.hpp"
 #include <common/String.hpp>
 #include <storm/Hash.hpp>
 
