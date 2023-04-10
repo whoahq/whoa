@@ -2,44 +2,48 @@
 #include "event/Event.hpp"
 #include <cstdint>
 
+namespace {
+
 int32_t OnChar(const EVENT_DATA_CHAR* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnIdle(EVENT_DATA_IDLE* data, void* a2) {
+int32_t OnIdle(const EVENT_DATA_IDLE* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyDown(EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyDownRepeat(EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyUp(EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyUp(const EVENT_DATA_KEY* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseDown(EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseDown(const EVENT_DATA_MOUSE* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseMove(EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseMove(const EVENT_DATA_MOUSE* data, void* a2) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseUp(EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseUp(const EVENT_DATA_MOUSE* data, void* a2) {
     // TODO
     return 1;
+}
+
 }
 
 void RegisterHandlers() {
