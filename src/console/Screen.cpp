@@ -1,4 +1,5 @@
 #include "console/Screen.hpp"
+#include "console/Handlers.hpp"
 #include "console/Types.hpp"
 #include "gx/Buffer.hpp"
 #include "gx/Coordinate.hpp"
@@ -79,10 +80,6 @@ void PaintBackground(void* param, const RECTF* rect, const RECTF* visible, float
 }
 
 void PaintText(void* param, const RECTF* rect, const RECTF* visible, float elapsedSec) {
-    // TODO
-}
-
-void RegisterHandlers() {
     // TODO
 }
 
