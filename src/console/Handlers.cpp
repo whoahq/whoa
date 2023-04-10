@@ -4,42 +4,42 @@
 
 namespace {
 
-int32_t OnChar(const EVENT_DATA_CHAR* data, void* a2) {
+int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnIdle(const EVENT_DATA_IDLE* data, void* a2) {
+int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnKeyUp(const EVENT_DATA_KEY* data, void* a2) {
+int32_t OnKeyUp(const EVENT_DATA_KEY* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseDown(const EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseDown(const EVENT_DATA_MOUSE* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseMove(const EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseMove(const EVENT_DATA_MOUSE* data, void* param) {
     // TODO
     return 1;
 }
 
-int32_t OnMouseUp(const EVENT_DATA_MOUSE* data, void* a2) {
+int32_t OnMouseUp(const EVENT_DATA_MOUSE* data, void* param) {
     // TODO
     return 1;
 }
