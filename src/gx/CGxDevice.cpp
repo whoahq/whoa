@@ -432,7 +432,7 @@ void CGxDevice::IRsSync(int32_t force) {
         this->IRsForceUpdate();
     }
 
-    for (int32_t i = 0; i < this->m_dirtyStates.Count(); i++) {
+    for (int32_t i = this->m_dirtyStates.Count() - 1; i >= 0; i--) {
         auto ds = this->m_dirtyStates[i];
         auto rs = &this->m_appRenderStates[ds];
         auto hs = &this->m_hwRenderStates[ds];
