@@ -734,8 +734,11 @@ void CGxDevice::RsPop() {
     auto topOfStack = this->m_stackOffsets[this->m_stackOffsets.Count() - 1];
 
     if (this->m_pushedStates.Count() > topOfStack) {
-        for (int32_t i = this->m_pushedStates.Count() - 1; i > topOfStack; i--) {
-            auto ps = &this->m_pushedStates[i];
+        auto bottomOfStack = this->m_pushedStates.Count() - 1;
+        auto stackSize = this->m_pushedStates.Count() - topOfStack;
+
+        for (uint32_t stackOffset = 0; stackOffset < stackSize; stackOffset++) {
+            auto ps = &this->m_pushedStates[bottomOfStack - stackOffset];
             auto rs = &this->m_appRenderStates[ps->m_which];
 
             if (!rs->m_dirty) {
