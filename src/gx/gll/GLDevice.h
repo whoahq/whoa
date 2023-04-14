@@ -172,6 +172,7 @@ class GLDevice {
         void SetFogParam(GLEnum param, float value);
         void SetIndexBuffer(GLBuffer*);
         void SetLightingEnable(bool enable);
+        void SetModelView(GLEnum view);
         void SetScissor(bool, const GLRect&);
         void SetShader(GLShader::ShaderType, GLShader*);
         void SetShaderConstants(GLShader::ShaderType, uint32_t, const float*, uint32_t);

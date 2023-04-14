@@ -628,8 +628,59 @@ void GLDevice::ApplyGLStates(const GLStates& states, bool force) {
     {
         glMatrixMode(GL_PROJECTION);
 
-        // TODO
-        // - some interesting logic to manipulate the projection matrix before loading
+        GLTransform projection = {
+            true,
+            {
+                1.0f, 0.0f, 0.0f, 0.0f,
+                0.0f, 1.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f,
+            },
+            true
+        };
+
+        if (!states.fixedFunc.transforms.projection.isIdentity) {
+            projection.isIdentity = false;
+
+            memcpy(projection.m, states.fixedFunc.transforms.projection.m, sizeof(projection.m));
+            projection.isDirty = true;
+        }
+
+        if (projection.isIdentity) {
+            projection.SetIdentity();
+        }
+
+        projection.a1 *= -1.0f;
+        projection.b1 *= -1.0f;
+        projection.c1 *= -1.0f;
+        projection.d1 *= -1.0f;
+
+        auto isIdentity = projection.a0 == 1.0f
+            && projection.a1 == 0.0f
+            && projection.a2 == 0.0f
+            && projection.a3 == 0.0f
+            && projection.b0 == 0.0f
+            && projection.b1 == 1.0f
+            && projection.b2 == 0.0f
+            && projection.b3 == 0.0f
+            && projection.c0 == 0.0f
+            && projection.c1 == 0.0f
+            && projection.c2 == 1.0f
+            && projection.c3 == 0.0f
+            && projection.d0 == 0.0f
+            && projection.d1 == 0.0f
+            && projection.d2 == 0.0f
+            && projection.d3 == 1.0f;
+
+        projection.isDirty = true;
+
+        if (isIdentity) {
+            glLoadIdentity();
+        } else {
+            glLoadMatrixf(projection.m);
+        }
+
+        projection.isDirty = false;
     }
 
     glMatrixMode(states.fixedFunc.transforms.matrixMode);
@@ -892,7 +943,53 @@ void GLDevice::ApplyShaderConstants() {
 }
 
 void GLDevice::ApplyTransforms() {
-    // TODO
+    this->SetModelView(GL_MODELVIEW);
+
+    auto& projection = this->m_States.fixedFunc.transforms.projection;
+    if (projection.isDirty) {
+        if (projection.isIdentity) {
+            projection.SetIdentity();
+        }
+
+        projection.a1 *= -1.0f;
+        projection.b1 *= -1.0f;
+        projection.c1 *= -1.0f;
+        projection.d1 *= -1.0f;
+
+        projection.isIdentity = projection.a0 == 1.0f
+            && projection.a1 == 0.0f
+            && projection.a2 == 0.0f
+            && projection.a3 == 0.0f
+            && projection.b0 == 0.0f
+            && projection.b1 == 1.0f
+            && projection.b2 == 0.0f
+            && projection.b3 == 0.0f
+            && projection.c0 == 0.0f
+            && projection.c1 == 0.0f
+            && projection.c2 == 1.0f
+            && projection.c3 == 0.0f
+            && projection.d0 == 0.0f
+            && projection.d1 == 0.0f
+            && projection.d2 == 0.0f
+            && projection.d3 == 1.0f;
+
+        projection.isDirty = true;
+
+        if (this->m_States.fixedFunc.transforms.matrixMode != GL_PROJECTION) {
+            glMatrixMode(GL_PROJECTION);
+            this->m_States.fixedFunc.transforms.matrixMode = GL_PROJECTION;
+        }
+
+        if (projection.isIdentity) {
+            glLoadIdentity();
+        } else {
+            glLoadMatrixf(projection.m);
+        }
+
+        projection.isDirty = false;
+    }
+
+    // TODO texture transforms
 }
 
 void GLDevice::BindBuffer(GLBuffer* buffer, GLEnum target) {
@@ -2315,6 +2412,57 @@ void GLDevice::SetLightingEnable(bool enable) {
     }
 }
 
+void GLDevice::SetModelView(GLEnum transform) {
+    if (transform == 'VIEW') {
+        // TODO
+        return;
+    }
+
+    if (transform == 'WRLD') {
+        // TODO
+        return;
+    }
+
+    if (transform != GL_MODELVIEW) {
+        BLIZZARD_ASSERT(false);
+    }
+
+    auto& world = this->m_States.fixedFunc.transforms.world;
+    auto& view = this->m_States.fixedFunc.transforms.view;
+    auto& modelView = this->m_States.fixedFunc.transforms.modelView;
+
+    if (this->m_States.fixedFunc.transforms.modelviewStatus != transform || modelView.isDirty) {
+        if (world.isIdentity && view.isIdentity) {
+            modelView.isIdentity = true;
+            modelView.isDirty = true;
+        } else if (world.isIdentity) {
+            modelView = view;
+            modelView.isIdentity = false;
+            modelView.isDirty = true;
+        } else if (view.isIdentity) {
+            modelView = world;
+            modelView.isIdentity = false;
+            modelView.isDirty = true;
+        } else {
+            // TODO assign model * view to modelView
+            BLIZZARD_ASSERT(!"Unimplemented");
+        }
+
+        if (this->m_States.fixedFunc.transforms.matrixMode != GL_MODELVIEW) {
+            glMatrixMode(GL_MODELVIEW);
+            this->m_States.fixedFunc.transforms.matrixMode = GL_MODELVIEW;
+        }
+
+        if (modelView.isIdentity) {
+            glLoadIdentity();
+        } else {
+            glLoadMatrixf(modelView.m);
+        }
+
+        this->m_States.fixedFunc.transforms.modelviewStatus = transform;
+    }
+}
+
 void GLDevice::SetScissor(bool a2, const GLRect& a3) {
     // TODO
 }
@@ -2469,15 +2617,13 @@ void GLDevice::SetTransform(GLEnum transform, const float* a3) {
         BLIZZARD_ASSERT(false);
     }
 
-    // TODO
-    // int32_t needsUpdate = !(t == a3); // GLTransform::operator==()
-    // if (needsUpdate) {
-    //     t.Set(a3);
-    // }
+    if (*t != a3) {
+        t->Set(a3);
+    }
 
     if (t->isDirty) {
         if (transform == 'VIEW' || transform == 'WRLD') {
-            this->m_States.fixedFunc.transforms.modelView.isDirty = 1;
+            this->m_States.fixedFunc.transforms.modelView.isDirty = true;
         }
     }
 }
