@@ -217,12 +217,25 @@ void GLVertexArray::ApplyVertexFormat(GLDevice* device) {
     }
 
     for (int32_t s = 0; s < 16; s++) {
-        bool* prevAttribEnable;
-        GLenum glArray;
-
+        // Shader
         if (useVertexShader) {
-            prevAttribEnable = &this->m_GLStates.vertexAttribs[s].enable;
+            auto prevAttribEnable = &this->m_GLStates.vertexAttribs[s].enable;
+
+            if (*prevAttribEnable != attribEnable[s]) {
+                if (attribEnable[s]) {
+                    glEnableVertexAttribArrayARB(s);
+                } else {
+                    glDisableVertexAttribArrayARB(s);
+                }
+            }
+
+            *prevAttribEnable = attribEnable[s];
+
+        // FFP
         } else {
+            bool* prevAttribEnable = nullptr;
+            GLenum glArray = GL_NONE;
+
             switch (s) {
             case 0: {
                 prevAttribEnable = &this->m_GLStates.position.enable;
@@ -262,6 +275,7 @@ void GLVertexArray::ApplyVertexFormat(GLDevice* device) {
             case 13: {
                 auto tmu = s - 6;
                 auto texCoordIndex = device->m_States.fixedFunc.texCoordIndex[tmu];
+
                 prevAttribEnable = &this->m_GLStates.texCoord[texCoordIndex].enable;
                 glArray = GL_TEXTURE_COORD_ARRAY;
 
@@ -269,25 +283,22 @@ void GLVertexArray::ApplyVertexFormat(GLDevice* device) {
 
                 break;
             }
-            }
-        }
 
-        if (*prevAttribEnable != attribEnable[s]) {
-            if (attribEnable[s]) {
-                if (useVertexShader) {
-                    glEnableVertexAttribArrayARB(s);
-                } else {
-                    glEnableClientState(glArray);
-                }
-            } else {
-                if (useVertexShader) {
-                    glDisableVertexAttribArrayARB(s);
-                } else {
-                    glDisableClientState(glArray);
-                }
+            default:
+                break;
             }
 
-            *prevAttribEnable = attribEnable[s];
+            if (prevAttribEnable) {
+                if (*prevAttribEnable != attribEnable[s]) {
+                    if (attribEnable[s]) {
+                        glEnableClientState(glArray);
+                    } else {
+                        glDisableClientState(glArray);
+                    }
+                }
+
+                *prevAttribEnable = attribEnable[s];
+            }
         }
     }
 
