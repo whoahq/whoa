@@ -17,6 +17,7 @@ class CGxMatrixStack {
         void Pop(void);
         void Push(void);
         C44Matrix& Top(void);
+        const C44Matrix& TopConst();
 };
 
 #endif

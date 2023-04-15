@@ -28,3 +28,7 @@ C44Matrix& CGxMatrixStack::Top() {
     this->m_flags[this->m_level] &= 0xFFFFFFFE;
     return this->m_mtx[this->m_level];
 }
+
+const C44Matrix& CGxMatrixStack::TopConst() {
+    return this->m_mtx[this->m_level];
+}
