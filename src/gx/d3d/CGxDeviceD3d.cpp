@@ -1705,12 +1705,12 @@ void CGxDeviceD3d::IStateSyncVertexPtrs() {
 
 void CGxDeviceD3d::IStateSyncXforms() {
     if (this->m_xforms[GxXform_Projection].m_dirty) {
-        this->m_d3dDevice->SetTransform(D3DTS_PROJECTION, reinterpret_cast<LPD3DMATRIX>(&this->m_projNative));
+        this->m_d3dDevice->SetTransform(D3DTS_PROJECTION, reinterpret_cast<D3DMATRIX*>(&this->m_projNative));
         this->m_xforms[GxXform_Projection].m_dirty = 0;
     }
 
     if (this->m_xforms[GxXform_View].m_dirty) {
-        this->m_d3dDevice->SetTransform(D3DTS_VIEW, reinterpret_cast<const LPD3DMATRIX>(&this->m_xforms[GxXform_View].TopConst()));
+        this->m_d3dDevice->SetTransform(D3DTS_VIEW, reinterpret_cast<const D3DMATRIX*>(&this->m_xforms[GxXform_View].TopConst()));
         this->m_xforms[GxXform_View].m_dirty = 0;
     }
 
