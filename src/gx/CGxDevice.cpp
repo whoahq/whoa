@@ -1052,8 +1052,7 @@ void CGxDevice::XformSetViewport(float minX, float maxX, float minY, float maxY,
         return;
     }
 
-    // TODO
-    // this->unk4[4] = 1;
+    this->intF6C = 1;
 
     this->m_viewport.x.l = minX;
     this->m_viewport.x.h = maxX;
