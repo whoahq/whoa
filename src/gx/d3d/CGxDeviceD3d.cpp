@@ -1580,7 +1580,11 @@ void CGxDeviceD3d::IStateSync() {
     this->IShaderConstantsFlush();
     this->IRsSync(0);
 
-    // TODO ffp if vertex shader is disabled
+    if (this->m_hwRenderStates[GxRs_VertexShader] == nullptr && this->m_appRenderStates[GxRs_VertexShader].m_value == nullptr) {
+        this->IStateSyncLights();
+        this->IStateSyncMaterial();
+        this->IStateSyncXforms();
+    }
 
     this->IStateSyncEnables();
 
@@ -1609,6 +1613,14 @@ void CGxDeviceD3d::IStateSyncIndexPtr() {
         this->m_d3dDevice->SetIndices(d3dIndexBuf);
         this->m_d3dCurrentIndexBuf = d3dIndexBuf;
     }
+}
+
+void CGxDeviceD3d::IStateSyncLights() {
+    // TODO
+}
+
+void CGxDeviceD3d::IStateSyncMaterial() {
+    // TODO
 }
 
 void CGxDeviceD3d::IStateSyncVertexPtrs() {
@@ -1689,6 +1701,10 @@ void CGxDeviceD3d::IStateSyncVertexPtrs() {
             streamSizes[stream]
         );
     }
+}
+
+void CGxDeviceD3d::IStateSyncXforms() {
+    // TODO
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
