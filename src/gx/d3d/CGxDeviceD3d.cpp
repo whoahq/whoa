@@ -1594,6 +1594,10 @@ void CGxDeviceD3d::IStateSync() {
     this->IStateSyncIndexPtr();
 
     // TODO
+
+    if (this->intF6C) {
+        this->IXformSetViewport();
+    }
 }
 
 void CGxDeviceD3d::IStateSyncEnables() {
@@ -1946,6 +1950,30 @@ void CGxDeviceD3d::IXformSetProjection(const C44Matrix& matrix) {
     memcpy(&this->m_projNative, &projNative, sizeof(this->m_projNative));
 }
 
+void CGxDeviceD3d::IXformSetViewport() {
+    const auto& gxViewport = this->m_viewport;
+    auto windowRect = this->DeviceCurWindow();
+
+    D3DVIEWPORT9 d3dViewport;
+
+    d3dViewport.X = (gxViewport.x.l * windowRect.maxX) + 0.5;
+    d3dViewport.Y = ((1.0 - gxViewport.y.h) * windowRect.maxY) + 0.5;
+
+    // TODO account for negative X value
+
+    d3dViewport.Width = (gxViewport.x.h * windowRect.maxX) - d3dViewport.X + 0.5;
+    d3dViewport.Height = ((1.0 - gxViewport.y.l) * windowRect.maxY) - d3dViewport.Y + 0.5;
+
+    d3dViewport.MinZ = gxViewport.z.l;
+    d3dViewport.MaxZ = gxViewport.z.h;
+
+    // TODO conditionally adjust Y value
+
+    this->m_d3dDevice->SetViewport(&d3dViewport);
+
+    this->intF6C = 0;
+}
+
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
 }
@@ -1966,7 +1994,7 @@ void CGxDeviceD3d::SceneClear(uint32_t mask, CImVector color) {
     }
 
     if (this->intF6C) {
-        // TODO
+        this->IXformSetViewport();
     }
 
     D3DCOLOR d3dColor = color.b | (color.g | (color.r << 8) << 8);

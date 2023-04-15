@@ -301,6 +301,7 @@ class CGxDeviceD3d : public CGxDevice {
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
     void IXformSetProjection(const C44Matrix& matrix);
+    void IXformSetViewport();
 };
 
 #endif
