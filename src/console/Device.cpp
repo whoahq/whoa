@@ -1,5 +1,6 @@
 #include "console/Device.hpp"
 #include "client/Gui.hpp"
+#include "console/Console.hpp"
 #include "console/CVar.hpp"
 #include "event/Input.hpp"
 #include "gx/Device.hpp"
@@ -146,6 +147,9 @@ void ConsoleDeviceInitialize(const char* title) {
 
     // TODO proper logic
     s_hwDetect = true;
+
+    // TODO ConsoleAccessSetEnabled(CmdLineGetBool(35));
+    ConsoleAccessSetEnabled(1);
 
     // TODO
 
