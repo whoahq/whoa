@@ -1,4 +1,5 @@
 #include "console/Handlers.hpp"
+#include "console/Console.hpp"
 #include "event/Event.hpp"
 #include <cstdint>
 
@@ -15,8 +16,28 @@ int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
 }
 
 int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
-    // TODO
-    return 1;
+    bool active;
+    
+    if (data->key == ConsoleGetHotKey() && ConsoleAccessGetEnabled()) {
+        active = ConsoleGetActive() == false;
+
+        ConsoleSetActive(active);
+
+        if (!active) {
+            // TODO
+            // ResetHighlight();
+        }
+
+        return 0;
+    }
+    else if (EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleGetActive()) {
+        return 1;
+    }
+    else {
+        // TODO
+
+        return 0;
+    }
 }
 
 int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
