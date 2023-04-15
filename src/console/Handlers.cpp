@@ -6,8 +6,22 @@
 namespace {
 
 int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
-    // TODO
-    return 1;
+    char character[2];
+
+    if (!EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleAccessGetEnabled()) {
+        if (!ConsoleGetActive()) {
+            return 1;
+        } else {
+            character[0] = data->ch;
+            character[1] = '\0';
+
+            // TODO
+            // PasteInInputLine(character);
+            // ResetHighlight();
+        }
+    }
+
+    return 0;
 }
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
