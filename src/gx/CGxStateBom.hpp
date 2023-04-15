@@ -11,6 +11,7 @@ class CGxStateBom {
         // Member variables
         union {
             int32_t i[3];
+            uint32_t u[3];
             float f[3];
             void* p;
         } m_data;
@@ -23,6 +24,11 @@ class CGxStateBom {
         const CGxStateBom& operator=(uint32_t);
         const CGxStateBom& operator=(void*);
         const CGxStateBom& operator=(C3Vector&);
+        bool operator==(float);
+        bool operator==(int32_t);
+        bool operator==(uint32_t);
+        bool operator==(void*);
+        bool operator==(C3Vector&);
         bool operator!=(float);
         bool operator!=(int32_t);
         bool operator!=(uint32_t);
