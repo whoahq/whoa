@@ -1704,7 +1704,19 @@ void CGxDeviceD3d::IStateSyncVertexPtrs() {
 }
 
 void CGxDeviceD3d::IStateSyncXforms() {
-    // TODO
+    if (this->m_xforms[GxXform_Projection].m_dirty) {
+        this->m_d3dDevice->SetTransform(D3DTS_PROJECTION, &this->m_projNative);
+        this->m_xforms[GxXform_Projection].m_dirty = 0;
+    }
+
+    if (this->m_xforms[GxXform_View].m_dirty) {
+        this->m_d3dDevice->SetTransform(D3DTS_VIEW, &this->m_xforms[GxXform_View].TopConst());
+        this->m_xforms[GxXform_View].m_dirty = 0;
+    }
+
+    // TODO world
+
+    // TODO tex
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
