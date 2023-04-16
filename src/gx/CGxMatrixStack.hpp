@@ -6,6 +6,11 @@
 
 class CGxMatrixStack {
     public:
+        // Types
+        enum EMatrixFlags {
+            F_Identity = 0x1,
+        };
+
         // Member variables
         uint32_t m_level = 0;
         int8_t m_dirty = 0;
