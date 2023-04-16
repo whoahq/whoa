@@ -1,6 +1,8 @@
 #include "console/Handlers.hpp"
 #include "console/Console.hpp"
+#include "console/Screen.hpp"
 #include "event/Event.hpp"
+#include "gx/Screen.hpp"
 #include <cstdint>
 
 namespace {
@@ -25,7 +27,74 @@ int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
 }
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
-    // TODO
+    double currentPos;
+    double direction;
+    float finalPos;
+    char* repeatBuffer;
+    uint32_t repeatCount;
+    RECTF* rect;
+
+    rect = ConsoleScreenGetRect();
+
+    if (ConsoleGetActive()) {
+        finalPos = 1.0 - ConsoleGetHeight();
+
+        if (finalPos > 1.0) {
+            finalPos = 1.0;
+            goto LABEL_7;
+        }
+    }
+    else {
+        finalPos = 1.0;
+    }
+    if (finalPos <= 0.0) {
+        finalPos = 0.0;
+    }
+LABEL_7:
+    repeatCount = ConsoleGetRepeatCount();
+    repeatBuffer = ConsoleGetRepeatBuffer();
+
+    if (repeatCount && repeatBuffer[0]) {
+        // TODO
+        // ConsoleCommandExecute(repeatBuffer, 1);
+        ConsoleSetRepeatCount(--repeatCount);
+    }
+    else if (rect->bottom != finalPos) {
+        if (ConsoleGetResizeState() == CS_NONE) {
+            rect->bottom = finalPos;
+LABEL_22:
+            ScrnLayerSetRect(ConsoleScreenGetBackgroundLayer(), rect);
+            ScrnLayerSetRect(ConsoleScreenGetTextLayer(), rect);
+
+            return 1;
+        }
+        if (rect->bottom <= finalPos) {
+            direction = 1.0;
+        }
+        else {
+            direction = -1.0;
+        }
+
+        currentPos = direction * data->elapsedSec * 5.0 + rect->bottom;
+
+        if (ConsoleGetActive()) {
+            if ( finalPos > currentPos ) {
+                rect->bottom = finalPos;
+
+                goto LABEL_22;
+            }
+        }
+        else if (finalPos < currentPos) {
+            rect->bottom = finalPos;
+
+            goto LABEL_22;
+        }
+
+        rect->bottom = currentPos;
+        
+        goto LABEL_22;
+    }
+    
     return 1;
 }
 

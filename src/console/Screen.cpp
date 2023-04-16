@@ -1,4 +1,5 @@
 #include "console/Screen.hpp"
+#include "console/Console.hpp"
 #include "console/Handlers.hpp"
 #include "console/Types.hpp"
 #include "gx/Buffer.hpp"
@@ -15,7 +16,6 @@
 static CGxStringBatch* s_batch;
 static float s_caretpixwidth;
 static float s_caretpixheight;
-static float s_fontHeight = 0.02f;
 static char s_fontName[STORM_MAX_PATH];
 static int32_t s_highlightState;
 static HLAYER s_layerBackground;
@@ -83,6 +83,18 @@ void PaintText(void* param, const RECTF* rect, const RECTF* visible, float elaps
     // TODO
 }
 
+HLAYER ConsoleScreenGetBackgroundLayer() {
+    return s_layerBackground;
+}
+
+HLAYER ConsoleScreenGetTextLayer() {
+    return s_layerText;
+}
+
+RECTF* ConsoleScreenGetRect() {
+    return &s_rect;
+}
+
 void ConsoleScreenInitialize(const char* title) {
     CRect windowSize;
     GxCapsWindowSize(windowSize);
@@ -93,7 +105,7 @@ void ConsoleScreenInitialize(const char* title) {
     s_caretpixheight = height == 0.0f ? 1.0f : 1.0f / height;
 
     SStrCopy(s_fontName, "Fonts\\ARIALN.ttf", sizeof(s_fontName));
-    s_textFont = TextBlockGenerateFont(s_fontName, 0, NDCToDDCHeight(s_fontHeight));
+    s_textFont = TextBlockGenerateFont(s_fontName, 0, NDCToDDCHeight(ConsoleGetFontHeight()));
 
     ScrnLayerCreate(&s_rect, 6.0f, 0x1 | 0x2, nullptr, PaintBackground, &s_layerBackground);
     ScrnLayerCreate(&s_rect, 7.0f, 0x1 | 0x2, nullptr, PaintText, &s_layerText);
