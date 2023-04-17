@@ -154,7 +154,9 @@ int32_t Script_ShowTerminationWithoutNoticeNotice(lua_State* L) {
 }
 
 int32_t Script_TerminationWithoutNoticeAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushboolean(L, 1);
+    return 1;
+    //WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t Script_AcceptTerminationWithoutNotice(lua_State* L) {
