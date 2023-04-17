@@ -8,7 +8,7 @@ const CGxStateBom& CGxStateBom::operator=(int32_t value) {
 }
 
 const CGxStateBom& CGxStateBom::operator=(uint32_t value) {
-    this->m_data.i[0] = value;
+    this->m_data.u[0] = value;
 
     return *this;
 }
@@ -86,7 +86,7 @@ bool CGxStateBom::operator!=(CGxStateBom& value) {
 
 CGxStateBom::operator CImVector() const {
     CImVector color;
-    color.value = this->m_data.i[0];
+    color.value = this->m_data.u[0];
     return color;
 }
 
@@ -99,7 +99,7 @@ CGxStateBom::operator int32_t() const {
 }
 
 CGxStateBom::operator uint32_t() const {
-    return this->m_data.i[0];
+    return this->m_data.u[0];
 }
 
 CGxStateBom::operator void*() const {
