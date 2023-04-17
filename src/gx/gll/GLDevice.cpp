@@ -2200,29 +2200,29 @@ void GLDevice::SetAlphaTestEnable(bool enable) {
     }
 }
 
-void GLDevice::SetClearColor(const GLColor4f& a2) {
+void GLDevice::SetClearColor(const GLColor4f& clearColor) {
     if (
-        this->m_States.clear.clearColor.r != a2.r
-        || this->m_States.clear.clearColor.g != a2.g
-        || this->m_States.clear.clearColor.b != a2.b
-        || this->m_States.clear.clearColor.a != a2.a
+        this->m_States.clear.clearColor.r != clearColor.r
+        || this->m_States.clear.clearColor.g != clearColor.g
+        || this->m_States.clear.clearColor.b != clearColor.b
+        || this->m_States.clear.clearColor.a != clearColor.a
     ) {
-        glClearColor(a2.r, a2.g, a2.b, a2.a);
-        this->m_States.clear.clearColor = { a2.r, a2.g, a2.b, a2.a };
+        glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+        this->m_States.clear.clearColor = { clearColor.r, clearColor.g, clearColor.b, clearColor.a };
     }
 }
 
-void GLDevice::SetClearDepth(double depth) {
-    if (this->m_States.clear.clearDepth != depth) {
-        glClearDepth(depth);
-        this->m_States.clear.clearDepth = depth;
+void GLDevice::SetClearDepth(double clearDepth) {
+    if (this->m_States.clear.clearDepth != clearDepth) {
+        glClearDepth(clearDepth);
+        this->m_States.clear.clearDepth = clearDepth;
     }
 }
 
-void GLDevice::SetClearStencil(int32_t s) {
-    if (this->m_States.clear.clearStencil != s) {
-        glClearStencil(s);
-        this->m_States.clear.clearStencil = s;
+void GLDevice::SetClearStencil(int32_t clearStencil) {
+    if (this->m_States.clear.clearStencil != clearStencil) {
+        glClearStencil(clearStencil);
+        this->m_States.clear.clearStencil = clearStencil;
     }
 }
 
