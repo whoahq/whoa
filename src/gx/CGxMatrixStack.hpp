@@ -6,6 +6,11 @@
 
 class CGxMatrixStack {
     public:
+        // Types
+        enum EMatrixFlags {
+            F_Identity = 0x1,
+        };
+
         // Member variables
         uint32_t m_level = 0;
         int8_t m_dirty = 0;
@@ -14,9 +19,10 @@ class CGxMatrixStack {
 
         // Member functions
         CGxMatrixStack();
-        void Pop(void);
-        void Push(void);
-        C44Matrix& Top(void);
+        void Pop();
+        void Push();
+        C44Matrix& Top();
+        const C44Matrix& TopConst();
 };
 
 #endif

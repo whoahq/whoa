@@ -294,10 +294,14 @@ class CGxDeviceD3d : public CGxDevice {
     void IStateSync();
     void IStateSyncEnables();
     void IStateSyncIndexPtr();
+    void IStateSyncLights();
+    void IStateSyncMaterial();
     void IStateSyncVertexPtrs();
+    void IStateSyncXforms();
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
     void IXformSetProjection(const C44Matrix& matrix);
+    void IXformSetViewport();
 };
 
 #endif

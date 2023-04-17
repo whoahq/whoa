@@ -141,9 +141,9 @@ void GxuXformCreateOrtho(float minX, float maxX, float minY, float maxY, float m
     dst.c2 = 2.0 / v12;
     dst.c3 = 0.0f;
 
-    dst.d0 = 0.0f;
-    dst.d1 = 0.0f;
-    dst.d2 = 0.0f;
+    dst.d0 = -((minX + maxX) / v10);
+    dst.d1 = -((minY + maxY) / v11);
+    dst.d2 = -((minZ + maxZ) / v12);
     dst.d3 = 1.0f;
 }
 
