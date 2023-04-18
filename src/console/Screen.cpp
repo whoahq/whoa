@@ -12,6 +12,7 @@
 #include "gx/Screen.hpp"
 #include <storm/String.hpp>
 #include <tempest/Rect.hpp>
+#include <algorithm>
 
 static CGxStringBatch* s_batch;
 static float s_caretpixwidth;
