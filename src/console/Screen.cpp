@@ -1,4 +1,5 @@
 #include "console/Screen.hpp"
+#include "console/Console.hpp"
 #include "console/Handlers.hpp"
 #include "console/Types.hpp"
 #include "gx/Buffer.hpp"
@@ -11,11 +12,14 @@
 #include "gx/Screen.hpp"
 #include <storm/String.hpp>
 #include <tempest/Rect.hpp>
+#include <algorithm>
 
 static CGxStringBatch* s_batch;
 static float s_caretpixwidth;
 static float s_caretpixheight;
+static float s_consoleLines = 10.0f;
 static float s_fontHeight = 0.02f;
+static float s_consoleHeight = s_consoleLines * s_fontHeight;
 static char s_fontName[STORM_MAX_PATH];
 static int32_t s_highlightState;
 static HLAYER s_layerBackground;
@@ -81,6 +85,29 @@ void PaintBackground(void* param, const RECTF* rect, const RECTF* visible, float
 
 void PaintText(void* param, const RECTF* rect, const RECTF* visible, float elapsedSec) {
     // TODO
+}
+
+void ConsoleScreenAnimate(float elapsedSec) {
+    auto finalPos = ConsoleGetActive() ? std::min(1.0f - s_consoleHeight, 1.0f) : 1.0f;
+    finalPos = std::max(finalPos, 0.0f);
+
+    if (s_rect.bottom == finalPos) {
+        return;
+    }
+
+    auto currentPos = finalPos;
+
+    if (ConsoleGetResizeState() == CS_NONE) {
+        auto direction = s_rect.bottom <= finalPos ? 1.0f : -1.0f;
+
+        currentPos = s_rect.bottom + direction * elapsedSec * 5.0f;
+        currentPos = ConsoleGetActive() ? std::max(currentPos, finalPos) : std::min(currentPos, finalPos);
+    }
+
+    s_rect.bottom = currentPos;
+
+    ScrnLayerSetRect(s_layerBackground, &s_rect);
+    ScrnLayerSetRect(s_layerText, &s_rect);
 }
 
 void ConsoleScreenInitialize(const char* title) {
