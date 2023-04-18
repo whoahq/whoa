@@ -1,4 +1,5 @@
 #include "console/Handlers.hpp"
+#include "console/Console.hpp"
 #include "event/Event.hpp"
 #include <cstdint>
 
@@ -15,8 +16,25 @@ int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
 }
 
 int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
+    if (data->key == ConsoleGetHotKey() && ConsoleAccessGetEnabled()) {
+        // Toggle the console on/off if the console hotkey is pressed down
+        // and the console access is enabled for the client
+        ConsoleSetActive(!ConsoleGetActive());
+
+        // Reset the highlight when toggled off
+        if (!ConsoleGetActive()) {
+            // TODO ResetHighlight();
+        }
+
+        return 0;
+    }
+    
+    if (EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleGetActive()) {
+        return 1;
+    }
+
     // TODO
-    return 1;
+    return 0;
 }
 
 int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
