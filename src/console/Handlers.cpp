@@ -1,5 +1,6 @@
 #include "console/Handlers.hpp"
 #include "console/Console.hpp"
+#include "console/Screen.hpp"
 #include "event/Event.hpp"
 #include <cstdint>
 
@@ -11,7 +12,10 @@ int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
 }
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
-    // TODO
+    // TODO repeat buffer logic
+
+    ConsoleScreenAnimate(data->elapsedSec);
+
     return 1;
 }
 
@@ -28,7 +32,7 @@ int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
 
         return 0;
     }
-    
+
     if (EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleGetActive()) {
         return 1;
     }

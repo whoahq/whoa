@@ -14,4 +14,10 @@ enum COLOR_T {
     NUM_COLORTYPES,
 };
 
+enum CONSOLERESIZESTATE {
+    CS_NONE,
+    CS_STRETCH,
+    NUM_CONSOLERESIZESTATES,
+};
+
 #endif
