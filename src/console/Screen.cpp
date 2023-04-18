@@ -95,10 +95,10 @@ void ConsoleScreenAnimate(float elapsedSec) {
         return;
     }
 
-    float currentPos = finalPos;
+    auto currentPos = finalPos;
 
     if (ConsoleGetResizeState() == CS_NONE) {
-        float direction = s_rect.bottom <= finalPos ? 1.0f : -1.0f;
+        auto direction = s_rect.bottom <= finalPos ? 1.0f : -1.0f;
 
         currentPos = s_rect.bottom + direction * elapsedSec * 5.0f;
         currentPos = ConsoleGetActive() ? std::max(currentPos, finalPos) : std::min(currentPos, finalPos);
