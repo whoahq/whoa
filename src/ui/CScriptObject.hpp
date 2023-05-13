@@ -15,6 +15,7 @@ class CScriptObject : public FrameScript_Object {
         static const char* s_objectTypeName;
 
         // Static functions
+        static int32_t GetObjectType();
         static void RegisterScriptMethods(lua_State* L);
         static CScriptObject* GetScriptObjectByName(const char* name, int32_t type);
 
