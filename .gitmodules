@@ -1,15 +1,15 @@
 [submodule "lib/common"]
 	path = lib/common
-	url = https://github.com/whoahq/common.git
+	url = https://github.com/thunderbrewhq/common.git
 [submodule "lib/squall"]
 	path = lib/squall
-	url = https://github.com/whoahq/squall.git
+	url = https://github.com/thunderbrewhq/squall.git
 [submodule "lib/typhoon"]
 	path = lib/typhoon
-	url = https://github.com/whoahq/typhoon.git
+	url = https://github.com/thunderbrewhq/typhoon.git
 [submodule "lib/system"]
 	path = lib/system
-	url = https://github.com/whoahq/system.git
+	url = https://github.com/thunderbrewhq/system.git
 [submodule "lib/bc"]
 	path = lib/bc
-	url = https://github.com/whoahq/bc
+	url = https://github.com/thunderbrewhq/bc.git
