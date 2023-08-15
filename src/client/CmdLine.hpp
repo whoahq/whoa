@@ -44,9 +44,9 @@ enum WOWCMDOPT {
     WOWCMD_OPTS
 };
 
-static int32_t CmdLineProcess();
+int32_t CmdLineProcess();
 
-static void ProcessCommandLine();
+void ProcessCommandLine();
 
 const char* CmdLineGetString(uint32_t opt);
 

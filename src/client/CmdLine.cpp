@@ -7,18 +7,18 @@ int32_t CmdLineProcess() {
     static ARGLIST s_argList[] = {
         {0x0,                       CMD_D3D,         "d3d",        nullptr},
         {0x0,                       CMD_D3D9EX,      "d3d9ex",     nullptr},
-        {STORM_COMMAND_TYPE_STRING, CMD_DATADIR,     "datadir",    nullptr},
+        {STORM_COMMAND_TYPE_STRING, CMD_DATA_DIR,    "datadir",    nullptr},
         {0x0,                       CMD_NO_LAG_FIX,  "nolagfix",   nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_LOADFILE,    "loadfile",   nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_GAMETYPE,    "gametype",   nullptr},
         {0x0,                       CMD_OPENGL,      "opengl",     nullptr},
-        {0x0,                       CMD_SWTNL,       "swtnl",      nullptr},
+        {0x0,                       CMD_SW_TNL,      "swtnl",      nullptr},
         {0x0,                       CMD_TIMEDEMO,    "timedemo",   nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_DEMOREZ,     "rez",        nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_DEMODEPTH,   "depth",      nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_DEMODETAIL,  "detail",     nullptr},
         {STORM_COMMAND_TYPE_STRING, CMD_DEMOSOUND,   "sound",      nullptr},
-        {0x0,                       CMD_FULLSCREEN,  "fullscreen", nullptr},
+        {0x0,                       CMD_FULL_SCREEN, "fullscreen", nullptr},
         {0x0,                       CMD_22050HZ,     "22050",      nullptr},
         {0x0,                       CMD_NO_WARNINGS, "nowarnings", nullptr}
     };
