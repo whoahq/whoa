@@ -1,5 +1,7 @@
 #include "client/CmdLine.hpp"
 
+#include <vector>
+
 #include <storm/Command.hpp>
 
 int32_t CmdLineProcess() {
