@@ -1,7 +1,5 @@
 #include "client/CmdLine.hpp"
 
-#include <vector>
-
 #include <storm/Command.hpp>
 
 int32_t CmdLineProcess() {
@@ -26,7 +24,7 @@ int32_t CmdLineProcess() {
     };
 
     // load engine-specific launch flags
-    SCmdRegisterArgList(s_argList, std::size(s_argList));
+    SCmdRegisterArgList(s_argList, sizeof(s_argList) / sizeof(ARGLIST));
 
     // parse command line
     return SCmdProcessCommandLine(0, 0);
@@ -54,7 +52,7 @@ void ProcessCommandLine() {
     };
 
     // Load wow-specific launch flags
-    SCmdRegisterArgList(s_wowArgList, std::size(s_wowArgList));
+    SCmdRegisterArgList(s_wowArgList, sizeof(s_wowArgList) / sizeof(ARGLIST));
 
     CmdLineProcess();
 }
