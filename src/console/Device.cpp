@@ -1,4 +1,5 @@
 #include "console/Device.hpp"
+#include "client/CmdLine.hpp"
 #include "client/Gui.hpp"
 #include "console/Console.hpp"
 #include "console/CVar.hpp"
@@ -148,8 +149,7 @@ void ConsoleDeviceInitialize(const char* title) {
     // TODO proper logic
     s_hwDetect = true;
 
-    // TODO ConsoleAccessSetEnabled(CmdLineGetBool(35));
-    ConsoleAccessSetEnabled(1);
+    ConsoleAccessSetEnabled(CmdLineGetBool(WOWCMD_CONSOLE));
 
     // TODO
 
