@@ -8,6 +8,8 @@
 #include <storm/List.hpp>
 #include <storm/thread/SCritSect.hpp>
 
+#include <cstdarg>
+
 static SCritSect s_critsect;
 // In this list:
 // The head = the input line.
