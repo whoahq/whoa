@@ -1,6 +1,8 @@
 #ifndef CONSOLE_COMMAND_HPP
 #define CONSOLE_COMMAND_HPP
 
+#include "console/Types.hpp"
+
 #include <storm/Hash.hpp>
 #include <cstdint>
 
@@ -11,20 +13,6 @@
 #define CONSOLE_MAX_CMD_LENGTH 64
 #define CONSOLE_HISTORY_DEPTH 32
 #define CONSOLE_NOHELP nullptr
-
-enum CATEGORY {
-    DEBUG,
-    GRAPHICS,
-    CONSOLE,
-    COMBAT,
-    GAME,
-    DEFAULT,
-    NET,
-    SOUND,
-    GM,
-    NONE,
-    LAST
-};
 
 typedef int32_t (*COMMANDHANDLER)(const char*, const char*);
 
