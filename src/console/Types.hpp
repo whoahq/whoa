@@ -1,6 +1,11 @@
 #ifndef CONSOLE_TYPES_HPP
 #define CONSOLE_TYPES_HPP
 
+#include "gx/Font.hpp"
+
+#include <storm/Hash.hpp>
+#include <storm/List.hpp>
+
 enum COLOR_T {
     DEFAULT_COLOR,
     INPUT_COLOR,
@@ -45,12 +50,12 @@ class CONSOLECOMMAND : public TSHashObject<CONSOLECOMMAND, HASHKEY_STRI> {
 
 class CONSOLELINE : public TSLinkedNode<CONSOLELINE> {
     public:
-        char* buffer;
-        uint32_t chars;
-        uint32_t charsalloc;
-        uint32_t inputpos;
-        uint32_t inputstart;
-        COLOR_T colorType;
+        char*      buffer;
+        uint32_t   chars;
+        uint32_t   charsalloc;
+        uint32_t   inputpos;
+        uint32_t   inputstart;
+        COLOR_T    colorType;
         CGxString* fontPointer;
 
         ~CONSOLELINE();
