@@ -1,4 +1,5 @@
 #include "console/CVar.hpp"
+#include "console/Command.hpp"
 #include "console/Types.hpp"
 #include "console/Line.hpp"
 
