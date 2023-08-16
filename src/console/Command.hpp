@@ -6,7 +6,7 @@
 #include <storm/Hash.hpp>
 #include <cstdint>
 
-#define CONSOLE_REGISTER_LIST(category, list) RegisterConsoleCommandList(category, list, std::size(list))
+#define CONSOLE_REGISTER_LIST(category, list) RegisterConsoleCommandList(category, list, sizeof(list) / sizeof(ConsoleCommandList))
 
 #define CONSOLE_EXEC_BUFFER_SIZE 8192
 #define CONSOLE_CMD_BUFFER_SIZE 1024

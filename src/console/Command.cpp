@@ -85,19 +85,15 @@ void AddToHistory(const char* command) {
 }
 
 uint32_t ConsoleCommandHistoryDepth() {
-    return HISTORY_DEPTH;
-}
-
-void ConsoleCommandInitialize() {
-    ConsoleCommandRegister("help", ConsoleCommand_Help, CONSOLE, "Provides help information about a command.");
+    return CONSOLE_HISTORY_DEPTH;
 }
 
 int32_t ConsoleCommandRegister(const char* command, COMMANDHANDLER handler, CATEGORY category, const char* helpText) {
     STORM_ASSERT(command);
     STORM_ASSERT(handler);
 
-    if (SStrLen(command) > (MAX_CMD_LENGTH - 1) || g_consoleCommandHash.Ptr(command)) {
-        // The command name exceeds MAX_CMD_LENGTH, minus the null terminator
+    if (SStrLen(command) > (CONSOLE_MAX_CMD_LENGTH - 1) || g_consoleCommandHash.Ptr(command)) {
+        // The command name exceeds CONSOLE_MAX_CMD_LENGTH, minus the null terminator
         // or it has already been registered
         return 0;
     }
@@ -216,9 +212,9 @@ void ConsoleCommandExecute(char* commandLine, int32_t addToHistory) {
     }
 
     const char* command = nullptr;
-    auto arguments = reinterpret_cast<char*>(SMemAlloc(CMD_BUFFER_SIZE, __FILE__, __LINE__, 0));
+    auto arguments = reinterpret_cast<char*>(SMemAlloc(CONSOLE_CMD_BUFFER_SIZE, __FILE__, __LINE__, 0));
 
-    auto cmd = ParseCommand(commandLine, &command, arguments, CMD_BUFFER_SIZE);
+    auto cmd = ParseCommand(commandLine, &command, arguments, CONSOLE_CMD_BUFFER_SIZE);
 
     if (cmd) {
         cmd->m_handler(command, arguments);
