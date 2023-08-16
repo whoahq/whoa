@@ -26,7 +26,7 @@ int32_t ValidateFileName(const char* filename) {
 }
 
 TSHashTable<CONSOLECOMMAND, HASHKEY_STRI> g_consoleCommandHash;
-char g_commandHistory[HISTORY_DEPTH][CMD_BUFFER_SIZE];
+char g_commandHistory[CONSOLE_HISTORY_DEPTH][CONSOLE_CMD_BUFFER_SIZE];
 uint32_t g_commandHistoryIndex;
 char g_ExecBuffer[CONSOLE_EXEC_BUFFER_SIZE] = {0};
 EXECMODE g_ExecCreateMode = EM_NOTACTIVE;
@@ -76,12 +76,12 @@ void ConsoleCommandDestroy() {
 
 char* ConsoleCommandHistory(uint32_t index) {
     // Return a pointer to the buffer at the specified index
-    return g_commandHistory[((g_commandHistoryIndex + (HISTORY_DEPTH - 1) - index) & (HISTORY_DEPTH - 1))];
+    return g_commandHistory[((g_commandHistoryIndex + (CONSOLE_HISTORY_DEPTH - 1) - index) & (CONSOLE_HISTORY_DEPTH - 1))];
 }
 
 void AddToHistory(const char* command) {
     SStrCopy(g_commandHistory[g_commandHistoryIndex], command, CONSOLE_LINE_LENGTH);
-    g_commandHistoryIndex = (g_commandHistoryIndex + 1) & (HISTORY_DEPTH-1);
+    g_commandHistoryIndex = (g_commandHistoryIndex + 1) & (CONSOLE_HISTORY_DEPTH-1);
 }
 
 uint32_t ConsoleCommandHistoryDepth() {

@@ -33,6 +33,15 @@ enum CATEGORY {
     LAST
 };
 
+enum EXECMODE {
+    EM_PROMPTOVERWRITE = 0,
+    EM_RECORDING = 1,
+    EM_APPEND = 2,
+    EM_WRITEFILE = 3,
+    EM_NOTACTIVE = 4,
+    EM_NUM_EXECMODES = 5
+};
+
 enum CONSOLERESIZESTATE {
     CS_NONE,
     CS_STRETCH,
