@@ -14,22 +14,6 @@
 #define CONSOLE_HISTORY_DEPTH 32
 #define CONSOLE_NOHELP nullptr
 
-typedef int32_t (*COMMANDHANDLER)(const char*, const char*);
-
-class CONSOLECOMMAND : public TSHashObject<CONSOLECOMMAND, HASHKEY_STRI> {
-    public:
-        COMMANDHANDLER m_handler;
-        const char*    m_helpText;
-        CATEGORY       m_category;
-};
-
-class ConsoleCommandList {
-    public:
-        const char*    m_command;
-        COMMANDHANDLER m_handler;
-        const char*    m_helpText;
-};
-
 extern TSHashTable<CONSOLECOMMAND, HASHKEY_STRI> g_consoleCommandHash;
 extern char g_commandHistory[CONSOLE_HISTORY_DEPTH][CONSOLE_CMD_BUFFER_SIZE];
 extern uint32_t g_commandHistoryIndex;
