@@ -8,6 +8,7 @@
 #include <storm/List.hpp>
 #include <storm/thread/SCritSect.hpp>
 
+#include <cstdio>
 #include <cstdarg>
 
 static SCritSect s_critsect;
