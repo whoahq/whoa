@@ -1,6 +1,7 @@
 #ifndef CONSOLE_CONSOLE_HPP
 #define CONSOLE_CONSOLE_HPP
 
+#include "console/Line.hpp"
 #include "console/Types.hpp"
 #include "event/Types.hpp"
 #include <cstdint>
