@@ -1,7 +1,10 @@
 #include "console/Client.hpp"
+#include "console/Command.hpp"
 
 void ConsoleInitializeClientCommand() {
-    // TODO
+    ConsoleCommandInitialize();
+    ConsoleInitializeCommonCommand();
+    ConsoleInitializeDebugCommand();
 }
 
 void ConsoleInitializeClientCVar(const char* a1) {
