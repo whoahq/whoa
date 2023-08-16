@@ -1,4 +1,7 @@
 #include "console/CVar.hpp"
+#include "console/Types.hpp"
+#include "console/Line.hpp"
+
 #include <storm/String.hpp>
 
 bool CVar::m_needsSave;

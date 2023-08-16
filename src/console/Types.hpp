@@ -14,6 +14,20 @@ enum COLOR_T {
     NUM_COLORTYPES,
 };
 
+enum CATEGORY {
+    DEBUG,
+    GRAPHICS,
+    CONSOLE,
+    COMBAT,
+    GAME,
+    DEFAULT,
+    NET,
+    SOUND,
+    GM,
+    NONE,
+    LAST
+};
+
 enum CONSOLERESIZESTATE {
     CS_NONE,
     CS_STRETCH,
