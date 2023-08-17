@@ -22,7 +22,7 @@ int32_t ConsoleCommand_Help(const char* command, const char* arguments) {
     char buffer[128];
     bool showCategories = *arguments == '\0';
 
-    auto numTranslation = std::size(s_translation);
+    auto numTranslation = sizeof(s_translation) / sizeof(CategoryTranslation);
 
     if (showCategories) {
         memset(buffer, 0, sizeof(buffer));
@@ -70,7 +70,7 @@ int32_t ConsoleCommand_Help(const char* command, const char* arguments) {
                         }
                     }
 
-                    char* wr;
+                    const char* wr = nullptr;
 
                     if (buffer[0]) {
                         auto comma = reinterpret_cast<char*>(SStrChrR(buffer, ','));
