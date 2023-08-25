@@ -132,6 +132,8 @@ int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
         return 0;
     }
 
+    auto anyControl = (1 << KEY_LCONTROL) | (1 << KEY_RCONTROL);
+
     auto line = GetInputLine();
 
     switch (data->key) {
@@ -160,7 +162,6 @@ int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
         // s_completionMode = 0;
         ResetHighlight();
     }
-
 
     return 1;
 }
