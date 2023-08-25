@@ -132,7 +132,7 @@ int32_t SFile::Unload(void* ptr) {
 int32_t SFile::SetBasePath(const char* path) {
     SStrCopy(s_basepath, path, STORM_MAX_PATH);
 
-    if (s_basepath != '\0') {
+    if (*s_basepath != '\0') {
         auto len = SStrLen(s_basepath);
         if (s_basepath[len-1] != '\\') {
             SStrPack(s_basepath, "\\", STORM_MAX_PATH);
@@ -149,7 +149,7 @@ int32_t SFile::SetBasePath(const char* path) {
 int32_t SFile::SetDataPath(const char* path) {
     SStrCopy(s_datapath, path, STORM_MAX_PATH);
 
-    if (s_datapath != '\0') {
+    if (*s_datapath != '\0') {
         auto len = SStrLen(s_datapath);
         if (s_basepath[len-1] != '\\') {
             SStrPack(s_datapath, "\\", STORM_MAX_PATH);
