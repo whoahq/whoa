@@ -18,6 +18,7 @@
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
+#include <bc/os/Path.hpp>
 
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
