@@ -371,7 +371,7 @@ int32_t SetCommandHandler(const char* command, const char* arguments) {
 
     auto var = CVar::Lookup(cvarName);
     if (var) {
-        var->Set(cvarValue, true, false, false);
+        var->Set(cvarValue, true, false, false, true);
     } else {
         CVar::Register(cvarName, "", 0, cvarValue, nullptr, DEFAULT, true, nullptr, false);
     }
