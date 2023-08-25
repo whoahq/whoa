@@ -305,7 +305,7 @@ int32_t CvarResetCommandHandler(const char* command, const char* arguments) {
         // reset all cvars
         ConsoleWrite("Resetting all cvars\n", DEFAULT_COLOR);
 
-        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(i)) {
+        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(cvar)) {
             cvar->Reset();
         }
 
@@ -333,7 +333,7 @@ int32_t CvarDefaultCommandHandler(const char* command, const char* arguments) {
         // restore all cvars
         ConsoleWrite("Restoring all cvars\n", DEFAULT_COLOR);
 
-        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(i)) {
+        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(cvar)) {
             cvar->Default();
         }
 
@@ -383,19 +383,19 @@ int32_t CvarListCommandHandler(const char* command, const char* arguments) {
     char text[256];
     char text2[256];
 
-    for (auto i = CVar::s_registeredCVars.Head(); i != nullptr; i = CVar::s_registeredCVars.Next(i)) {
-        SStrPrintf(text, sizeof(text), "  \"%s\" is \"%s\"", i->m_key.m_str, i->m_stringValue);
+    for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(cvar)) {
+        SStrPrintf(text, sizeof(text), "  \"%s\" is \"%s\"", cvar->m_key.m_str, cvar->m_stringValue);
 
-        if (i->m_defaultValue.GetString()) {
-            if (SStrCmp(i->m_stringValue.GetString(), i->m_defaultValue.GetString(), STORM_MAX_STR)) {
-                SStrPrintf(text2, sizeof(text2), " (default \"%s\")", i->m_defaultValue);
+        if (cvar->m_defaultValue.GetString()) {
+            if (SStrCmp(cvar->m_stringValue.GetString(), cvar->m_defaultValue.GetString(), STORM_MAX_STR)) {
+                SStrPrintf(text2, sizeof(text2), " (default \"%s\")", cvar->m_defaultValue);
                 SStrPack(text, text2, sizeof(text));
             }
         }
 
-        if (i->m_resetValue.GetString()) {
-            if (SStrCmp(i->m_stringValue.GetString(), i->m_resetValue.GetString(), STORM_MAX_STR)) {
-                SStrPrintf(text2, sizeof(text2), " (reset \"%s\")", i->m_resetValue);
+        if (cvar->m_resetValue.GetString()) {
+            if (SStrCmp(cvar->m_stringValue.GetString(), cvar->m_resetValue.GetString(), STORM_MAX_STR)) {
+                SStrPrintf(text2, sizeof(text2), " (reset \"%s\")", cvar->m_resetValue);
                 SStrPack(text, text2, sizeof(text));
             }
         }
