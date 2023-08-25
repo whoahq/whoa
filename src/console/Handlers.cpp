@@ -132,6 +132,8 @@ int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
         return 0;
     }
 
+    auto line = GetInputLine();
+
     switch (data->key) {
     case KEY_PAGEUP:
         MoveLinePtr(1, data->metaKeyState);
