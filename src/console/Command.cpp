@@ -162,7 +162,7 @@ CONSOLECOMMAND* ParseCommand(const char* commandLine, const char** command, char
         auto code = SUniSGetUTF8(reinterpret_cast<const uint8_t*>(string), &chars);
 
         // Discard space
-        while(code != -1 && code == ' ') {
+        while (code != -1 && code == ' ') {
             string += chars;
             code = SUniSGetUTF8(reinterpret_cast<const uint8_t*>(string), &chars);
         }

@@ -388,14 +388,14 @@ int32_t CvarListCommandHandler(const char* command, const char* arguments) {
 
         if (cvar->m_defaultValue.GetString()) {
             if (SStrCmp(cvar->m_stringValue.GetString(), cvar->m_defaultValue.GetString(), STORM_MAX_STR)) {
-                SStrPrintf(text2, sizeof(text2), " (default \"%s\")", cvar->m_defaultValue);
+                SStrPrintf(text2, sizeof(text2), " (default \"%s\")", cvar->m_defaultValue.GetString());
                 SStrPack(text, text2, sizeof(text));
             }
         }
 
         if (cvar->m_resetValue.GetString()) {
             if (SStrCmp(cvar->m_stringValue.GetString(), cvar->m_resetValue.GetString(), STORM_MAX_STR)) {
-                SStrPrintf(text2, sizeof(text2), " (reset \"%s\")", cvar->m_resetValue);
+                SStrPrintf(text2, sizeof(text2), " (reset \"%s\")", cvar->m_resetValue.GetString());
                 SStrPack(text, text2, sizeof(text));
             }
         }
