@@ -372,7 +372,7 @@ int32_t SetCommandHandler(const char* command, const char* arguments) {
     if (var) {
         var->Set(cvarValue, true, false, false);
     } else {
-        CVar::Register(cvarName, "", 0, cvarValue, nullptr, )
+        CVar::Register(cvarName, "", 0, cvarValue, nullptr, DEFAULT, true, nullptr, false);
     }
 
     return 1;
