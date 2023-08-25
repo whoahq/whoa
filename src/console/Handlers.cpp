@@ -127,7 +127,39 @@ int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
 }
 
 int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
-    // TODO
+    if (data->key == ConsoleGetHotKey() && ConsoleAccessGetEnabled()) {
+        ConsoleSetActive(!ConsoleGetActive());
+        return 0;
+    }
+
+    switch (data->key) {
+    case KEY_PAGEUP:
+        MoveLinePtr(1, data->metaKeyState);
+        break;
+    case KEY_PAGEDOWN:
+        MoveLinePtr(0, data->metaKeyState);
+        break;
+    case KEY_LEFT:
+        if (line->inputstart <= line->inputpos && line->inputpos != line->inputstart) {
+            line->inputpos--;
+        }
+        break;
+    case KEY_RIGHT:
+        if (line->inputpos < line->chars) {
+            line->inputpos++;
+        }
+        break;
+    case KEY_BACKSPACE:
+        BackspaceLine(line);
+        break;
+    }
+
+    if (data->key != KEY_TAB && data->key != KEY_LSHIFT && data->key != KEY_RSHIFT && data->key != KEY_LALT && data->key != KEY_RALT && !(data->metaKeyState & anyControl)) {
+        // s_completionMode = 0;
+        ResetHighlight();
+    }
+
+
     return 1;
 }
 
