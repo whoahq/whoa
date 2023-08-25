@@ -305,7 +305,7 @@ int32_t CvarResetCommandHandler(const char* command, const char* arguments) {
         // reset all cvars
         ConsoleWrite("Resetting all cvars\n", DEFAULT_COLOR);
 
-        for (auto cvar = s_registeredCVars.Head(); cvar != nullptr; cvar = s_registeredCVars.Next(i)) {
+        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(i)) {
             cvar->Reset();
         }
 
@@ -333,7 +333,7 @@ int32_t CvarDefaultCommandHandler(const char* command, const char* arguments) {
         // restore all cvars
         ConsoleWrite("Restoring all cvars\n", DEFAULT_COLOR);
 
-        for (auto cvar = s_registeredCVars.Head(); cvar != nullptr; cvar = s_registeredCVars.Next(i)) {
+        for (auto cvar = CVar::s_registeredCVars.Head(); cvar != nullptr; cvar = CVar::s_registeredCVars.Next(i)) {
             cvar->Default();
         }
 
