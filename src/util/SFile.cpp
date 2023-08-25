@@ -4,6 +4,9 @@
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
+static char s_basepath[STORM_MAX_PATH] = {0};
+static char s_datapath[STORM_MAX_PATH] = {0};
+
 // TODO Proper implementation
 int32_t SFile::Close(SFile* file) {
     delete file->m_filename;
@@ -124,4 +127,43 @@ int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytes
 int32_t SFile::Unload(void* ptr) {
     SMemFree(ptr, __FILE__, __LINE__, 0);
     return 1;
+}
+
+int32_t SFile::SetBasePath(const char* path) {
+    SStrCopy(s_basepath, path, STORM_MAX_PATH);
+
+    if (s_basepath != '\0') {
+        auto len = SStrLen(s_basepath);
+        if (s_basepath[len-1] != '\\') {
+            SStrPack(s_basepath, "\\", STORM_MAX_PATH);
+        }
+    }
+
+    // TODO
+
+    // SFileSetBasePath(path);
+
+    return 1;
+}
+
+int32_t SFile::SetDataPath(const char* path) {
+    SStrCopy(s_datapath, path, STORM_MAX_PATH);
+
+    if (s_datapath != '\0') {
+        auto len = SStrLen(s_datapath);
+        if (s_basepath[len-1] != '\\') {
+            SStrPack(s_datapath, "\\", STORM_MAX_PATH);
+        }
+    }
+
+    return 1;
+}
+
+int32_t SFile::GetBasePath(char* buffer, size_t bufferchars) {
+    SStrCopy(buffer, s_basepath, bufferchars);
+    return 1;
+}
+
+int32_t SFile::GetDataPath(char* buffer, size_t bufferchars) {
+    SStrCopy(buffer, s_datapath, bufferchars);
 }

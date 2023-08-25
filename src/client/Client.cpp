@@ -136,6 +136,24 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     return 1;
 }
 
+void SetPaths() {
+    // SFile::DisableSFileCheckDisk();
+    // SFile::EnableDirectAccess(0);
+
+    char buffer[STORM_MAX_PATH] = {0};
+
+    const char* datadir = CmdLineGetString(CMD_DATA_DIR);
+    if (*datadir == '\0') {
+        OsGetExePath(buffer, STORM_MAX_PATH);
+        datadir = buffer;
+    }
+
+    SFile::SetBasePath(datadir);
+    SFile::SetDataPath("Data\\");
+
+    OsSetCurrentDirectory(datadir);
+}
+
 int32_t InitializeGlobal() {
     // TODO
 
@@ -155,10 +173,11 @@ int32_t InitializeGlobal() {
 
     // ClientServices::LoadCDKey();
 
+    SetPaths();
+
     ConsoleInitializeClientCommand();
 
-    ConsoleInitializeClientCVar("Config.wtf");
-
+    CVar::Initialize("Config.wtf");
     // sub_7663F0();
 
     // v18 = 0;

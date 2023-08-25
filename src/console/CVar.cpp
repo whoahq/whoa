@@ -3,6 +3,8 @@
 #include "console/Types.hpp"
 #include "console/Line.hpp"
 
+
+#include <bc/os/File.hpp>
 #include <storm/String.hpp>
 
 bool CVar::m_needsSave;
@@ -163,6 +165,103 @@ int32_t CVar::Update() {
     this->m_latchedValue.Copy(nullptr);
 
     return 1;
+}
+
+static int32_t s_CreatePathDirectories(const char* szPath) {
+    return true == OsCreateDirectory(szPath, 1);
+}
+
+int32_t CVar::Load(HOSFILE file) {
+    char fastData[2048] = {0};
+    char line[2048] = {0};
+
+    auto size = OsGetFileSize(file);
+
+    char* data = nullptr;
+
+    if (0x1fff < size) {
+        data = SMemAlloc(size + 1, __FILE__, __LINE__, 0);
+    } else {
+        data = fastData;
+    }
+
+    auto grown = 0x1FFF >= size;
+
+    int32_t result    = 0;
+    size_t  bytesRead = 0;
+
+    if (OsReadFile(file, data, size, &bytesRead) == 0) {
+        result = 0;
+    } else {
+        data[size] = '\0';
+        auto curr = data;
+
+        // Skip over UTF-8 byte order mark
+        if ((((data != nullptr) && (2 < bytesRead)) && (data[0] == 0xef)) && ((data[1] == 0xbb && (data[2] == 0xbf)))) {
+            curr = data + 3;
+        }
+
+        do {
+            SStrTokenize(&curr, line, 0x800, "\r\n", 0);
+
+            // Do not execute commands other than "set ..."
+            if (SStrCmpI(line, "SET ", 4) == 0) {
+                // Execute without adding to history
+                ConsoleCommandExecute(line, 0);
+            }
+
+            result = 1;
+        } while ((curr != nullptr) && (*curr != '\0'))
+    }
+
+    if (grown) {
+        SMemFree(data, __FILE__, __LINE__, 0);
+    }
+
+    return result;
+}
+
+int32_t CVar::Load(const char* filename) {
+    char path[STORM_MAX_PATH] = {0};
+
+    auto file = OsCreateFile(filename, OS_GENERIC_READ, 0, OS_CREATE_NEW | OS_CREATE_ALWAYS, OS_FILE_ATTRIBUTE_NORMAL, 0x3f3f3f3f);
+
+    if (file == HOSFILE_INVALID) {
+        SStrPrintf(path, STORM_MAX_PATH, "WTF\\%s", filename);
+        file = OsCreateFile(filename, OS_GENERIC_READ, 0, OS_CREATE_NEW | OS_CREATE_ALWAYS, OS_FILE_ATTRIBUTE_NORMAL, 0x3f3f3f3f);
+        if (file == HOSFILE_INVALID) {
+            return 0;
+        }
+    }
+
+    auto result = CVar::Load(file);
+
+    OsCloseFile(file);
+
+    return result;
+}
+
+void CVar::Initialize(const char* filename) {
+    STORM_ASSERT(filename);
+    s_filename = filename;
+
+    // Get data path
+    char path[STORM_MAX_PATH] = {0};
+    SFile::GetBasePath(path, STORM_MAX_PATH);
+    SStrPrintf(path, STORM_MAX_PATH, "%s%s\\", path, "WTF");
+
+    s_CreatePathDirectories(path);
+
+    static ConsoleCommandList baseCommands[] = {
+        { "set",          SetCommandHandler,         "Set the value of a CVar"                             },
+        { "cvar_reset",   CvarResetCommandHandler,   "Set the value of a CVar to it's startup value"       },
+        { "cvar_default", CvarDefaultCommandHandler, "Set the value of a CVar to it's coded default value" },
+        { "cvarlist",     CvarListCommandHandler,    "List cvars"                                          }
+    };
+
+    CONSOLE_REGISTER_LIST(DEFAULT, baseCommands);
+
+    CVar::Load(s_filename);
 }
 
 int32_t CvarCommandHandler(const char* command, const char* arguments) {
