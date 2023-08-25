@@ -2,11 +2,12 @@
 #include "console/Command.hpp"
 #include "console/Types.hpp"
 #include "console/Line.hpp"
-
+#include "util/SFile.hpp"
 
 #include <bc/os/File.hpp>
 #include <storm/String.hpp>
 
+const char* s_filename = nullptr;
 bool CVar::m_needsSave;
 TSHashTable<CVar, HASHKEY_STRI> CVar::s_registeredCVars;
 
@@ -152,6 +153,25 @@ bool CVar::Set(const char* value, bool setValue, bool setReset, bool setDefault,
     return true;
 }
 
+bool CVar::Reset() {
+    auto value = this->m_resetValue;
+    if (value.GetString() == nullptr) {
+        value = this->m_defaultValue;
+    }
+
+    this->InternalSet(value.GetString(), true, false, false, true);
+}
+
+bool CVar::Default() {
+    auto value = this->m_defaultValue;
+    if (value.GetString() == nullptr) {
+        value = this->m_resetValue;
+    }
+
+    this->InternalSet(value.GetString(), true, false, false, true);
+    return true;
+}
+
 int32_t CVar::Update() {
     if (!(this->m_flags & 0x2)) {
         return 0;
@@ -194,7 +214,7 @@ int32_t CVar::Load(HOSFILE file) {
         result = 0;
     } else {
         data[size] = '\0';
-        auto curr = data;
+        const char* curr = data;
 
         // Skip over UTF-8 byte order mark
         if ((((data != nullptr) && (2 < bytesRead)) && (data[0] == 0xef)) && ((data[1] == 0xbb && (data[2] == 0xbf)))) {
@@ -211,7 +231,7 @@ int32_t CVar::Load(HOSFILE file) {
             }
 
             result = 1;
-        } while ((curr != nullptr) && (*curr != '\0'))
+        } while ((curr != nullptr) && (*curr != '\0'));
     }
 
     if (grown) {
@@ -264,6 +284,62 @@ void CVar::Initialize(const char* filename) {
     CVar::Load(s_filename);
 }
 
+int32_t CvarResetCommandHandler(const char* command, const char* arguments) {
+    char cvarName[256] = {0};
+    auto string        = arguments;
+
+    SStrTokenize(&string, cvarName, sizeof(cvarName), " ,;\t\"\r\n", nullptr);
+
+    if (*cvarName) {
+        // reset a specific cvar
+        auto cvar = CVar::Lookup(cvarName);
+        if (cvar) {
+            cvar->Reset();
+        } else {
+            ConsoleWriteA("No such cvar \"%s\"\n", ERROR_COLOR, cvarName);
+        }
+
+        return 1;
+    } else {
+        // reset all cvars
+        ConsoleWrite("Resetting all cvars\n", DEFAULT_COLOR);
+
+        for (auto cvar = s_registeredCVars.Head(); cvar != nullptr; cvar = s_registeredCVars.Next(i)) {
+            cvar->Reset();
+        }
+
+        return 1;
+    }
+}
+
+int32_t CvarDefaultCommandHandler(const char* command, const char* arguments) {
+    char cvarName[256] = {0};
+    auto string        = arguments;
+
+    SStrTokenize(&string, cvarName, sizeof(cvarName), " ,;\t\"\r\n", nullptr);
+
+    if (*cvarName) {
+        // restore a specific cvar
+        auto cvar = CVar::Lookup(cvarName);
+        if (cvar) {
+            cvar->Default();
+        } else {
+            ConsoleWriteA("No such cvar \"%s\"\n", ERROR_COLOR, cvarName);
+        }
+
+        return 1;
+    } else {
+        // restore all cvars
+        ConsoleWrite("Restoring all cvars\n", DEFAULT_COLOR);
+
+        for (auto cvar = s_registeredCVars.Head(); cvar != nullptr; cvar = s_registeredCVars.Next(i)) {
+            cvar->Default();
+        }
+
+        return 1;
+    }
+}
+
 int32_t CvarCommandHandler(const char* command, const char* arguments) {
     auto cvar = CVar::Lookup(command);
     STORM_ASSERT(cvar);
@@ -280,6 +356,25 @@ int32_t CvarCommandHandler(const char* command, const char* arguments) {
     auto value = cvar->m_stringValue.GetString();
 
     ConsoleWriteA("CVar \"%s\" is \"%s\"", DEFAULT_COLOR, command, value ? value : "");
+    return 1;
+}
+
+int32_t SetCommandHandler(const char* command, const char* arguments) {
+    char cvarValue[2048] = {0};
+    char cvarName[256]   = {0};
+
+    auto str = arguments;
+
+    SStrTokenize(&str, cvarName, sizeof(cvarName), " ,;\t\"\r\n", nullptr);
+    SStrTokenize(&str, cvarValue, sizeof(cvarValue), " ,;\t\"\r\n", nullptr);
+
+    auto var = CVar::Lookup(cvarName);
+    if (var) {
+        var->Set(cvarValue, true, false, false);
+    } else {
+        CVar::Register(cvarName, "", 0, cvarValue, nullptr, )
+    }
+
     return 1;
 }
 

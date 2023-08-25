@@ -39,6 +39,8 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
         int32_t Load(HOSFILE fileHandle);
         void InternalSet(const char*, bool, bool, bool, bool);
         bool Set(const char*, bool, bool, bool, bool);
+        bool Reset();
+        bool Default();
         int32_t Update();
 };
 
