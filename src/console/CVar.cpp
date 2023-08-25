@@ -262,11 +262,6 @@ int32_t CVar::Load(const char* filename) {
     return result;
 }
 
-int32_t SetCommandHandler(const char* command, const char* arguments);
-int32_t CvarResetCommandHandler(const char* command, const char* arguments);
-int32_t CvarDefaultCommandHandler(const char* command, const char* arguments);
-int32_t CvarListCommandHandler(const char* command, const char* arguments);
-
 void CVar::Initialize(const char* filename) {
     STORM_ASSERT(filename);
     s_filename = filename;
