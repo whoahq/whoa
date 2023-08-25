@@ -166,4 +166,5 @@ int32_t SFile::GetBasePath(char* buffer, size_t bufferchars) {
 
 int32_t SFile::GetDataPath(char* buffer, size_t bufferchars) {
     SStrCopy(buffer, s_datapath, bufferchars);
+    return 1;
 }

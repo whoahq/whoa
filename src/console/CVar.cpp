@@ -160,6 +160,7 @@ bool CVar::Reset() {
     }
 
     this->InternalSet(value.GetString(), true, false, false, true);
+    return true;
 }
 
 bool CVar::Default() {
@@ -200,7 +201,7 @@ int32_t CVar::Load(HOSFILE file) {
     char* data = nullptr;
 
     if (0x1fff < size) {
-        data = SMemAlloc(size + 1, __FILE__, __LINE__, 0);
+        data = reinterpret_cast<char*>(SMemAlloc(size + 1, __FILE__, __LINE__, 0));
     } else {
         data = fastData;
     }
@@ -260,6 +261,11 @@ int32_t CVar::Load(const char* filename) {
 
     return result;
 }
+
+int32_t SetCommandHandler(const char* command, const char* arguments);
+int32_t CvarResetCommandHandler(const char* command, const char* arguments);
+int32_t CvarDefaultCommandHandler(const char* command, const char* arguments);
+int32_t CvarListCommandHandler(const char* command, const char* arguments);
 
 void CVar::Initialize(const char* filename) {
     STORM_ASSERT(filename);
