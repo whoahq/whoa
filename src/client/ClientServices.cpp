@@ -4,6 +4,7 @@
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
 #include "console/CVar.hpp"
+#include "console/Types.hpp"
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 #include <new>
@@ -16,7 +17,6 @@ ClientConnection* ClientServices::s_currentConnection;
 ClientServices* ClientServices::s_instance;
 Login* ClientServices::s_loginObj;
 bool ClientServices::s_newLogin;
-CVar* ClientServices::s_realmNameVar;
 REALM_INFO ClientServices::s_selectRealmInfo;
 bool ClientServices::s_selectRealmInfoValid;
 
@@ -138,9 +138,19 @@ void ClientServices::Logon(const char* accountName, const char* password) {
 
     ClientServices::s_loginObj->SetLogonCreds(accountName, password);
 
+    auto loginServerType = ClientServices::s_loginObj->GetLoginServerType();
+
+    auto portal = loginServerType == 1 ?
+        ClientServices::s_darkPortalVar->GetString() :
+        "";
+
+    auto realmList = loginServerType == 1 ?
+        ClientServices::s_realmListBNVar->GetString() :
+        ClientServices::s_realmListVar->GetString();
+
     // TODO
 
-    ClientServices::s_loginObj->Logon(nullptr, nullptr);
+    ClientServices::s_loginObj->Logon(realmList, portal);
 }
 
 void ClientServices::SelectRealm(const char* realmName) {
@@ -228,4 +238,108 @@ void ClientServices::RealmEnumCallback(uint32_t a2) {
     }
 
     ClientServices::ConnectToSelectedServer();
+}
+
+const char* ClientServices::GetDefaultRealmlistString() {
+    // TODO
+
+    // return default us realmlist for now
+
+    return "us.logon.worldofwarcraft.com:3724";
+}
+
+const char* ClientServices::GetDefaultPatchListString() {
+    // TODO
+
+    // Return default patchlist for now
+
+    return "public-test.patch.battle.net:1119/patch";
+}
+
+void ClientServices::InitLoginServerCVars(int32_t overwrite, const char* locale) {
+    if ((ClientServices::s_realmListBNVar == nullptr || ClientServices::s_realmListVar == nullptr) || overwrite != 0 ) {
+        ClientServices::s_decorateAccountName = CVar::Register(
+            "decorateAccountName",
+            "",
+            0,
+            "0",
+            nullptr,
+            CATEGORY::NET,
+            false,
+            nullptr,
+            false);
+    }
+
+    char localRealmList[260] = {0};
+    char localDataDir[272]   = {0};
+
+    if (locale == nullptr || *locale == '\0') {
+        localDataDir[0] = '\0';
+    } else {
+        SStrPrintf(localDataDir, STORM_MAX_PATH, "data\\%s\\", locale);
+    }
+
+    if ((ClientServices::s_realmListBNVar == nullptr) || overwrite != 0) {
+        ClientServices::s_realmListBNVar = CVar::Register(
+            "realmListbn",
+            "Address of Battle.net server",
+            0,
+            "",
+            nullptr,
+            CATEGORY::NET,
+            false,
+            nullptr,
+            false);
+
+        SStrPrintf(localRealmList, STORM_MAX_PATH, "%srealmlistbn.wtf", localDataDir);
+
+        if (ConsoleLoadClientCVar(localRealmList) == 0) {
+            ConsoleLoadClientCVar("realmlistbn.wtf");
+        }
+    }
+
+    if (ClientServices::s_darkPortalVar == nullptr || overwrite != 0) {
+        ClientServices::s_darkPortalVar = CVar::Register(
+            "portal",
+            "Name of Battle.net portal to use",
+            0,
+            "public-test",
+            nullptr,
+            CATEGORY::NET,
+            false,
+            nullptr,
+            false);
+    }
+
+    if (ClientServices::s_ServerAlertVar == nullptr || overwrite != 0) {
+        ClientServices::s_ServerAlertVar = CVar::Register(
+            "serverAlert",
+            "Get the glue-string tag for the URL",
+            0,
+            "SERVER_ALERT_URL",
+            nullptr,
+            CATEGORY::NET,
+            false,
+            nullptr,
+            false);
+    }
+
+    if (ClientServices::s_ServerAlertVar == nullptr || overwrite != 0) {
+        ClientServices::s_realmListVar = CVar::Register(
+            "realmList",
+            "Address of realm list server",
+            0,
+            ClientServices::GetDefaultRealmlistString(),
+            nullptr,
+            CATEGORY::NET,
+            false,
+            nullptr,
+            false);
+
+        SStrPrintf(localRealmList, STORM_MAX_PATH, "%srealmlist.wtf", localDataDir);
+
+        if (ConsoleLoadClientCVar(localRealmList) == 0) {
+            ConsoleLoadClientCVar("realmlist.wtf");
+        }
+    }
 }

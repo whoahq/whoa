@@ -178,7 +178,12 @@ int32_t InitializeGlobal() {
 
     ConsoleInitializeClientCommand();
 
-    CVar::Initialize("Config.wtf");
+    ConsoleInitializeClientCVar("Config.wtf");
+
+    // TODO
+    // replace enUS with detected locale
+    ClientServices::InitLoginServerCVars(1, "enUS");
+
     // sub_7663F0();
 
     // v18 = 0;

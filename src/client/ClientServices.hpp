@@ -17,9 +17,17 @@ class ClientServices : public LoginResponse {
         static ClientServices* s_instance;
         static Login* s_loginObj;
         static bool s_newLogin;
-        static CVar* s_realmNameVar;
         static REALM_INFO s_selectRealmInfo;
         static bool s_selectRealmInfoValid;
+
+        // Static console variables
+        static CVar* s_realmNameVar;
+        static CVar* s_decorateAccountName;
+        static CVar* s_realmListBNVar;
+        static CVar* s_darkPortalVar;
+        static CVar* s_ServerAlertVar;
+        static CVar* s_realmListVar;
+        static CVar* s_patchListVar;
 
         // Static functions
         static void ConnectToSelectedServer();
@@ -34,6 +42,9 @@ class ClientServices : public LoginResponse {
         static void SelectRealm(const char* realmName);
         static void SetAccountName(const char* accountName);
         static int32_t SetSelectedRealmInfo(int32_t a1);
+        static void InitLoginServerCVars(int32_t overwrite, const char* locale)
+        const char* GetDefaultRealmlistString();
+        const char* GetDefaultPatchListString();
 
         // Virtual member functions
         virtual int32_t GetLoginServerType();

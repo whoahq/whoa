@@ -22,6 +22,10 @@ bool CVGxMaximizeCallback(CVar*, const char*, const char*, void*) {
 }
 
 bool CVGxResolutionCallback(CVar*, const char*, const char*, void*) {
+    static C2iVector legalSizes[] = {
+        {}
+    }
+
     // TODO
     return true;
 }
