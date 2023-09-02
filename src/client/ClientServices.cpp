@@ -21,6 +21,13 @@ bool ClientServices::s_newLogin;
 REALM_INFO ClientServices::s_selectRealmInfo;
 bool ClientServices::s_selectRealmInfoValid;
 
+CVar* s_realmNameVar = nullptr;
+CVar* s_decorateAccountName = nullptr;
+CVar* s_realmListBNVar = nullptr;
+CVar* s_darkPortalVar = nullptr;
+CVar* s_ServerAlertVar = nullptr;
+CVar* s_realmListVar = nullptr;
+
 void ClientServices::ConnectToSelectedServer() {
     if (!ClientServices::s_selectRealmInfoValid && !ClientServices::SetSelectedRealmInfo(0)) {
         ClientServices::Connection()->Complete(0, 39);
