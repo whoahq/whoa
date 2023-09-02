@@ -42,7 +42,7 @@ class ClientServices : public LoginResponse {
         static void SelectRealm(const char* realmName);
         static void SetAccountName(const char* accountName);
         static int32_t SetSelectedRealmInfo(int32_t a1);
-        static void InitLoginServerCVars(int32_t overwrite, const char* locale)
+        static void InitLoginServerCVars(int32_t overwrite, const char* locale);
         const char* GetDefaultRealmlistString();
         const char* GetDefaultPatchListString();
 
