@@ -3,6 +3,7 @@
 #include "glue/CGlueMgr.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
+#include "console/Client.hpp"
 #include "console/CVar.hpp"
 #include "console/Types.hpp"
 #include <storm/Memory.hpp>
