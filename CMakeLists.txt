@@ -65,6 +65,17 @@ if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     find_package(Threads REQUIRED)
 endif()
 
+# Library search paths
+if(WHOA_SYSTEM_MAC)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "@executable_path")
+elseif(WHOA_SYSTEM_LINUX)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+endif()
+
 add_subdirectory(lib)
 add_subdirectory(src)
 add_subdirectory(test)
