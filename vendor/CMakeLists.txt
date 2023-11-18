@@ -1,6 +1,16 @@
 add_subdirectory(freetype-2.0.9)
 add_subdirectory(lua-5.1.3)
 
+if (WHOA_SYSTEM_WIN OR WHOA_SYSTEM_LINUX)
+    set(SDL_SHARED OFF)
+    set(SDL_STATIC ON)
+    add_subdirectory(sdl-3.0.0)
+
+    set(glew-cmake_BUILD_SHARED OFF)
+    set(glew-cmake_BUILD_STATIC ON)
+    add_subdirectory(glew-cmake-2.2.0)
+endif()
+
 # FMOD Ex
 set(FMODEX_DIR "./fmodex-4.32.09")
 add_library(fmodex SHARED IMPORTED)

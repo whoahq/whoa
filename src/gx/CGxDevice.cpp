@@ -14,6 +14,10 @@
     #include "gx/d3d/CGxDeviceD3d.hpp"
 #endif
 
+#if defined(WHOA_SYSTEM_LINUX) || defined(WHOA_SYSTEM_WIN)
+    #include "gx/glsdl/CGxDeviceGLSDL.hpp"
+#endif
+
 #if defined(WHOA_SYSTEM_MAC)
     #include "gx/gll/CGxDeviceGLL.hpp"
 #endif
@@ -119,13 +123,13 @@ CGxDevice* CGxDevice::NewGLL() {
 }
 #endif
 
-CGxDevice* CGxDevice::NewOpenGl() {
-    // TODO
-    // auto m = SMemAlloc(sizeof(CGxDeviceOpenGl), __FILE__, __LINE__, 0x0);
-    // return new (m) CGxDeviceOpenGl();
 
-    return nullptr;
+#if defined(WHOA_SYSTEM_WIN) || defined(WHOA_SYSTEM_LINUX)
+CGxDevice* CGxDevice::NewOpenGl() {
+    auto m = SMemAlloc(sizeof(CGxDeviceGLSDL), __FILE__, __LINE__, 0x0);
+    return new (m) CGxDeviceGLSDL();
 }
+#endif
 
 uint32_t CGxDevice::PrimCalcCount(EGxPrim primType, uint32_t count) {
     auto div = CGxDevice::s_primVtxDiv[primType];

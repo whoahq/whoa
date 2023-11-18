@@ -198,6 +198,10 @@ void ConsoleDeviceInitialize(const char* title) {
     EGxApi api = GxApi_OpenGl;
 #if defined(WHOA_SYSTEM_WIN)
     api = GxApi_D3d9;
+
+    if (CmdLineGetBool(CMD_OPENGL)) {
+        api = GxApi_OpenGl;
+    }
 #elif defined(WHOA_SYSTEM_MAC)
     api = GxApi_GLL;
 #endif
