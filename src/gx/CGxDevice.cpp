@@ -129,6 +129,10 @@ CGxDevice* CGxDevice::NewOpenGl() {
     auto m = SMemAlloc(sizeof(CGxDeviceGLSDL), __FILE__, __LINE__, 0x0);
     return new (m) CGxDeviceGLSDL();
 }
+#else
+CGxDevice* CGxDevice::NewOpenGl() {
+    return nullptr;
+}
 #endif
 
 uint32_t CGxDevice::PrimCalcCount(EGxPrim primType, uint32_t count) {
