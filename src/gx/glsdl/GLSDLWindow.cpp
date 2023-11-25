@@ -118,6 +118,25 @@ static const std::map<SDL_Scancode, KEY> s_keyConversion = {
     {SDL_SCANCODE_F19,          KEY_F19}
 };
 
+static MOUSEBUTTON s_buttonConversion[16] = {
+    MOUSE_BUTTON_NONE,
+    MOUSE_BUTTON_LEFT,
+    MOUSE_BUTTON_RIGHT,
+    MOUSE_BUTTON_MIDDLE,
+    MOUSE_BUTTON_XBUTTON1,
+    MOUSE_BUTTON_XBUTTON2,
+    MOUSE_BUTTON_XBUTTON3,
+    MOUSE_BUTTON_XBUTTON4,
+    MOUSE_BUTTON_XBUTTON5,
+    MOUSE_BUTTON_XBUTTON6,
+    MOUSE_BUTTON_XBUTTON7,
+    MOUSE_BUTTON_XBUTTON8,
+    MOUSE_BUTTON_XBUTTON9,
+    MOUSE_BUTTON_XBUTTON10,
+    MOUSE_BUTTON_XBUTTON11,
+    MOUSE_BUTTON_XBUTTON12
+};
+
 void GLSDLWindow::Create(const char* title, const GLSDLWindowRect& rect, GLTextureFormat depthFormat, uint32_t sampleCount) {
     BLIZZARD_ASSERT(this->m_sdlWindow == nullptr);
 
@@ -255,6 +274,10 @@ void GLSDLWindow::DispatchSDLEvent(const SDL_Event& event) {
     case SDL_EVENT_KEY_UP:
         this->DispatchSDLKeyboardEvent(event);
         break;
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+    case SDL_EVENT_MOUSE_BUTTON_UP:
+        this->DispatchSDLMouseButtonEvent(event);
+        break;
     case SDL_EVENT_MOUSE_MOTION:
         this->DispatchSDLMouseMotionEvent(event);
         break;
@@ -284,4 +307,23 @@ void GLSDLWindow::DispatchSDLMouseMotionEvent(const SDL_Event& event) {
     auto y = static_cast<int32_t>(event.motion.y);
 
     OsQueuePut(OS_INPUT_MOUSE_MOVE, 0, x, y, 0);
+}
+
+void GLSDLWindow::DispatchSDLMouseButtonEvent(const SDL_Event& event) {
+    // Is this an up or down mouse click?
+    OSINPUT inputclass = event.type == SDL_EVENT_MOUSE_BUTTON_UP ? OS_INPUT_MOUSE_UP : OS_INPUT_MOUSE_DOWN;
+
+    // XY click coordinates
+    auto x = static_cast<int32_t>(event.button.x);
+    auto y = static_cast<int32_t>(event.button.y);
+
+    // Convert SDL button index into internal MOUSEBUTTON ID
+    auto buttonIndex = event.button.button;
+    if (buttonIndex > 15) {
+        return;
+    }
+    auto button = s_buttonConversion[buttonIndex];
+
+    // Push mousebutton event into input queue
+    OsQueuePut(inputclass, button, x, y, 0);
 }
