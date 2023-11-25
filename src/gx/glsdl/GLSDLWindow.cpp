@@ -121,8 +121,8 @@ static const std::map<SDL_Scancode, KEY> s_keyConversion = {
 static MOUSEBUTTON s_buttonConversion[16] = {
     MOUSE_BUTTON_NONE,
     MOUSE_BUTTON_LEFT,
-    MOUSE_BUTTON_RIGHT,
     MOUSE_BUTTON_MIDDLE,
+    MOUSE_BUTTON_RIGHT,
     MOUSE_BUTTON_XBUTTON1,
     MOUSE_BUTTON_XBUTTON2,
     MOUSE_BUTTON_XBUTTON3,
@@ -280,6 +280,8 @@ void GLSDLWindow::DispatchSDLEvent(const SDL_Event& event) {
         break;
     case SDL_EVENT_MOUSE_MOTION:
         this->DispatchSDLMouseMotionEvent(event);
+        break;
+    case SDL_EVENT_QUIT:
         break;
     default:
         break;
