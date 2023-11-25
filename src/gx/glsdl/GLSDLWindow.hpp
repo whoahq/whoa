@@ -30,6 +30,9 @@ class GLSDLWindow {
         void Create(const char* title, const GLSDLWindowRect& rect, GLTextureFormat depthFormat, uint32_t sampleCount);
         void Destroy();
         void Swap();
+        void DispatchSDLEvent(const SDL_Event& event);
+        void DispatchSDLKeyboardEvent(const SDL_Event& event);
+        void DispatchSDLMouseMotionEvent(const SDL_Event& event);
         void Resize(const GLSDLWindowRect& rect);
 
         GLSDLWindowRect GetRect();
