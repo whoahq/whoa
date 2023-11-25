@@ -1,6 +1,7 @@
 #include "gx/glsdl/GLSDLWindow.hpp"
 #include "event/Types.hpp"
 #include "event/Input.hpp"
+#include "event/Event.hpp"
 
 #include <bc/Debug.hpp>
 #include <map>
@@ -282,6 +283,7 @@ void GLSDLWindow::DispatchSDLEvent(const SDL_Event& event) {
         this->DispatchSDLMouseMotionEvent(event);
         break;
     case SDL_EVENT_QUIT:
+        EventPostClose();
         break;
     default:
         break;
