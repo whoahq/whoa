@@ -43,6 +43,8 @@ void GLSDLContext::MakeCurrent(GLSDLWindow* window) {
 int32_t GLSDLContext::GetSampleCount() {
     int samples;
     auto status = SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &samples);
-    BLIZZARD_ASSERT(status == 0);
+    if (status != 0) {
+        return 1;
+    }
     return static_cast<int32_t>(samples);
 }
