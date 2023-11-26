@@ -2017,20 +2017,20 @@ void GLSDLDevice::LoadDefaultStates() {
 void GLSDLDevice::ResetBackbuffer(uint32_t width, uint32_t height, GLTextureFormat colorFormat, GLTextureFormat depthFormat, uint32_t sampleCount) {
     BLIZZARD_ASSERT(this->m_Context.IsCurrentContext());
 
-    if (
-        this->m_BackBufferColor
-        && this->m_BackBufferColor->m_Width == width
-        && this->m_BackBufferColor->m_Height == height
-        && this->m_BackBufferColor->m_Format == colorFormat
-        && this->m_BackBufferDepth
-        && this->m_BackBufferDepth->m_Format == depthFormat
-    ) {
-        if (this->m_UseWindowSystemBuffer && this->m_CurrentTarget->GetSampleCount() != sampleCount) {
-            // this->m_Context.SetContextFormat(depthFormat, sampleCount);
-        }
+    // if (
+    //     this->m_BackBufferColor
+    //     && this->m_BackBufferColor->m_Width == width
+    //     && this->m_BackBufferColor->m_Height == height
+    //     && this->m_BackBufferColor->m_Format == colorFormat
+    //     && this->m_BackBufferDepth
+    //     && this->m_BackBufferDepth->m_Format == depthFormat
+    // ) {
+    //     if (this->m_UseWindowSystemBuffer && this->m_CurrentTarget->GetSampleCount() != sampleCount) {
+    //         // this->m_Context.SetContextFormat(depthFormat, sampleCount);
+    //     }
 
-        return;
-    }
+    //     return;
+    // }
 
     auto v24 = this->m_BackBufferColor != 0;
 
