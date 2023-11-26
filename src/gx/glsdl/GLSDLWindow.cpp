@@ -347,7 +347,7 @@ void GLSDLWindow::DispatchSDLTextInputEvent(const SDL_Event& event) {
     // individual OS_INPUT_CHAR events
     while (*text != '\0') {
         // byte size of current UTF-8 character
-        uint32_t charactersize = 0;
+        int32_t charactersize = 0;
 
         // Read UTF-8 character
         auto character = static_cast<int32_t>(SUniSGetUTF8(text, &charactersize));
