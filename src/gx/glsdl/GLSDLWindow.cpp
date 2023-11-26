@@ -2,6 +2,7 @@
 #include "event/Types.hpp"
 #include "event/Input.hpp"
 #include "event/Event.hpp"
+#include "gx/Window.hpp"
 
 #include <bc/Debug.hpp>
 #include <storm/Unicode.hpp>
@@ -287,6 +288,9 @@ void GLSDLWindow::DispatchSDLEvent(const SDL_Event& event) {
     case SDL_EVENT_TEXT_INPUT:
         this->DispatchSDLTextInputEvent(event);
         break;
+    case SDL_EVENT_WINDOW_RESIZED:
+        this->DispatchSDLWindowResizedEvent(event);
+        break;
     case SDL_EVENT_QUIT:
         EventPostClose();
         break;
@@ -362,4 +366,20 @@ void GLSDLWindow::DispatchSDLTextInputEvent(const SDL_Event& event) {
         // Advance text pointer
         text += charactersize;
     }
+}
+
+void GLSDLWindow::DispatchSDLWindowResizedEvent(const SDL_Event& event) {
+    auto width = static_cast<int32_t>(event.window.data1);
+    auto height = static_cast<int32_t>(event.window.data2);
+
+    OsQueuePut(OS_INPUT_SIZE, width, height, 0, 0);
+
+    auto bounds = GetSavedWindowBounds();
+    Rect newBounds = {
+        bounds->top,
+        bounds->left,
+        static_cast<int16_t>(bounds->top + height),
+        static_cast<int16_t>(bounds->left + width)
+    };
+    SetSavedWindowBounds(newBounds);
 }
