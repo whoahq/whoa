@@ -350,7 +350,7 @@ void GLSDLWindow::DispatchSDLTextInputEvent(const SDL_Event& event) {
         uint32_t charactersize = 0;
 
         // Read UTF-8 character
-        auto character = static_cast<int32_t>(SUniGetUTF8(text, &charactersize));
+        auto character = static_cast<int32_t>(SUniSGetUTF8(text, &charactersize));
         if (character < 0) {
             // Cancel in case of invalid input
             break;
