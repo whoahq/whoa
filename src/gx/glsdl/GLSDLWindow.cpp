@@ -3,6 +3,7 @@
 #include "event/Input.hpp"
 #include "event/Event.hpp"
 #include "gx/Window.hpp"
+#include "gx/Device.hpp"
 
 #include <bc/Debug.hpp>
 #include <storm/Unicode.hpp>
@@ -371,6 +372,8 @@ void GLSDLWindow::DispatchSDLTextInputEvent(const SDL_Event& event) {
 void GLSDLWindow::DispatchSDLWindowResizedEvent(const SDL_Event& event) {
     auto width = static_cast<int32_t>(event.window.data1);
     auto height = static_cast<int32_t>(event.window.data2);
+
+    static_cast<CGxDeviceGLSDL*>(g_theGxDevicePtr)->Resize(width, height);
 
     OsQueuePut(OS_INPUT_SIZE, width, height, 0, 0);
 
