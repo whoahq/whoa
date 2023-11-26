@@ -4,6 +4,7 @@
 #include "event/Event.hpp"
 #include "gx/Window.hpp"
 #include "gx/Device.hpp"
+#include "gx/glsdl/CGxDeviceGLSDL.hpp"
 
 #include <bc/Debug.hpp>
 #include <storm/Unicode.hpp>
