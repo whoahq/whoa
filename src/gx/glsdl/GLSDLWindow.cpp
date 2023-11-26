@@ -4,6 +4,7 @@
 #include "event/Event.hpp"
 
 #include <bc/Debug.hpp>
+#include <storm/Unicode.hpp>
 #include <map>
 
 static bool s_GLSDL_Initialized = false;
