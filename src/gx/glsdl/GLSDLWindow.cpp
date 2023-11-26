@@ -199,6 +199,8 @@ void GLSDLWindow::Create(const char* title, const GLSDLWindowRect& rect, GLTextu
     );
 
     BLIZZARD_ASSERT(this->m_sdlWindow != nullptr);
+
+    SDL_StartTextInput();
 }
 
 void GLSDLWindow::Swap() {
@@ -209,7 +211,6 @@ void GLSDLWindow::Swap() {
         this->DispatchSDLEvent(event);
     }
 }
-
 
 void GLSDLWindow::Destroy() {
     SDL_DestroyWindow(this->m_sdlWindow);
@@ -282,6 +283,9 @@ void GLSDLWindow::DispatchSDLEvent(const SDL_Event& event) {
     case SDL_EVENT_MOUSE_MOTION:
         this->DispatchSDLMouseMotionEvent(event);
         break;
+    case SDL_EVENT_TEXT_INPUT:
+        this->DispatchSDLTextInputEvent(event);
+        break;
     case SDL_EVENT_QUIT:
         EventPostClose();
         break;
@@ -296,14 +300,15 @@ void GLSDLWindow::DispatchSDLKeyboardEvent(const SDL_Event& event) {
 
     // What key does this SDL scancode correspond to?
     auto lookup = s_keyConversion.find(event.key.keysym.scancode);
-    if (lookup == s_keyConversion.end()) {
-        // No corresponding KEY to this scancode
+    if (lookup != s_keyConversion.end()) {
+        // Scancode was found
+        KEY key = lookup->second;
+
+        // Push key event into input queue
+        OsQueuePut(inputclass, key, 0, 0, 0);
         return;
     }
-    KEY key = lookup->second;
 
-    // Push key event into input queue
-    OsQueuePut(inputclass, key, 0, 0, 0);
 }
 
 void GLSDLWindow::DispatchSDLMouseMotionEvent(const SDL_Event& event) {
@@ -330,4 +335,30 @@ void GLSDLWindow::DispatchSDLMouseButtonEvent(const SDL_Event& event) {
 
     // Push mousebutton event into input queue
     OsQueuePut(inputclass, button, x, y, 0);
+}
+
+void GLSDLWindow::DispatchSDLTextInputEvent(const SDL_Event& event) {
+    // text input string holding one or more UTF-8 characters
+    auto text = reinterpret_cast<const uint8_t*>(event.text.text);
+
+    // Because SDL_TextInputEvent can hold multiple UTF-8 characters
+    // explode variable number of these characters into
+    // individual OS_INPUT_CHAR events
+    while (*text != '\0') {
+        // byte size of current UTF-8 character
+        uint32_t charactersize = 0;
+
+        // Read UTF-8 character
+        auto character = static_cast<int32_t>(SUniGetUTF8(text, &charactersize));
+        if (character < 0) {
+            // Cancel in case of invalid input
+            break;
+        }
+
+        // Push character to input queue
+        OsQueuePut(OS_INPUT_CHAR, character, 1, 0, 0);
+
+        // Advance text pointer
+        text += charactersize;
+    }
 }

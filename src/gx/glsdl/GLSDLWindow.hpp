@@ -34,6 +34,7 @@ class GLSDLWindow {
         void DispatchSDLKeyboardEvent(const SDL_Event& event);
         void DispatchSDLMouseMotionEvent(const SDL_Event& event);
         void DispatchSDLMouseButtonEvent(const SDL_Event& event);
+        void DispatchSDLTextInputEvent(const SDL_Event& event);
         void Resize(const GLSDLWindowRect& rect);
 
         GLSDLWindowRect GetRect();
