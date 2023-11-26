@@ -1604,6 +1604,8 @@ void GLSDLDevice::DrawRect() {
         this->m_States.binding.framebuffer = 0;
     }
 
+    glFlush();
+
     this->m_Window->Swap();
 
     if (!this->m_UseWindowSystemBuffer || this->m_FlippedSystemBuffer) {
