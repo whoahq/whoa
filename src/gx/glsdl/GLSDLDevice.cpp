@@ -2739,32 +2739,28 @@ void GLSDLDevice::Sub38460(bool a2) {
 }
 
 void GLSDLDevice::Swap() {
-    // if (this->m_Context.m_Window) {
-    //     if (this->m_FlippedSystemBuffer) {
-    //         GLRect rect = {
-    //             0,
-    //             0,
-    //             static_cast<int32_t>(this->m_BackBufferColor->m_Width),
-    //             static_cast<int32_t>(this->m_BackBufferColor->m_Height)
-    //         };
+    if (this->m_Window) {
+        if (this->m_FlippedSystemBuffer) {
+            GLRect rect = {
+                0,
+                0,
+                static_cast<int32_t>(this->m_BackBufferColor->m_Width),
+                static_cast<int32_t>(this->m_BackBufferColor->m_Height)
+            };
 
-    //         GLMipmap* image = this->m_BackBufferColor->GetMipmap(0, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
-    //         this->CopyTex(0, 0, image, &rect);
-    //     }
+            GLMipmap* image = this->m_BackBufferColor->GetMipmap(0, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+            this->CopyTex(0, 0, image, &rect);
+        }
 
-    //     this->DrawRect();
+        this->DrawRect();
 
-    //     this->m_FrameNumber++;
-    //     this->m_DrawCount = 0;
-    // } else {
-    //     // glFlushRender();
-    //     this->m_DrawCount = 0;
-    // }
-
-    this->DrawRect();
-    this->m_FrameNumber++;
-    this->m_DrawCount = 0;
-}
+        this->m_FrameNumber++;
+        this->m_DrawCount = 0;
+    } else {
+        // glFlushRender();
+        this->m_DrawCount = 0;
+    }
+}s
 
 void GLSDLDevice::UpdateFFPTexturing() {
     // TODO

@@ -186,7 +186,7 @@ int32_t CGxDeviceGLSDL::DeviceCreate(int32_t (*windowProc)(void* window, uint32_
     }
 
     this->m_GLSDLWindow.Create("World of Warcraft", rect, GLTF_D24, 1);
-    this->m_GLSDLDevice.Init(&this->m_GLSDLWindow, "WoW", 0);
+    this->m_GLSDLDevice.Init(&this->m_GLSDLWindow, "WoW", 0x4);
     // this->m_GLSDLDevice.Init(&this->m_GLSDLWindow, "WoW", 4);
 
     GLSDLDevice::SetOption(GLSDLDevice::eShaderConstantBindings, false);
