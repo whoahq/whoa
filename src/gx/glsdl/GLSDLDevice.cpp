@@ -2760,7 +2760,7 @@ void GLSDLDevice::Swap() {
         // glFlushRender();
         this->m_DrawCount = 0;
     }
-}s
+}
 
 void GLSDLDevice::UpdateFFPTexturing() {
     // TODO
