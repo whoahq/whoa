@@ -2468,8 +2468,26 @@ void GLSDLDevice::SetModelView(GLEnum transform) {
     }
 }
 
-void GLSDLDevice::SetScissor(bool a2, const GLRect& a3) {
-    // TODO
+void GLSDLDevice::SetScissor(bool enable, const GLRect& rect) {
+    if (enable) {
+        if (this->m_States.rasterizer.scissorEnable) {
+            glEnable(GL_SCISSOR_TEST);
+        }
+
+        if (rect.left   == this->m_States.rasterizer.scissor.left  &&
+            rect.top    == this->m_States.rasterizer.scissor.top   &&
+            rect.width  == this->m_States.rasterizer.scissor.width &&
+            rect.height == this->m_States.rasterizer.scissor.height) {
+            return;
+        }
+
+        glScissor(rect.left, rect.top, rect.width, rect.height);
+
+        this->m_States.rasterizer.scissor = rect;
+    } else if (this->m_States.rasterizer.scissorEnable) {
+        glDisable(GL_SCISSOR_TEST);
+        this->m_States.rasterizer.scissorEnable = false;
+    }
 }
 
 void GLSDLDevice::SetShader(GLShader::ShaderType shaderType, GLShader* shader) {
