@@ -29,6 +29,14 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
         }
     #endif
 
+    #if defined(WHOA_SYSTEM_LINUX)
+        if (api == GxApi_OpenGl) {
+            device = CGxDevice::NewOpenGl();
+        } else {
+            // Error
+        }
+    #endif
+
     g_theGxDevicePtr = device;
 
     if (g_theGxDevicePtr->DeviceCreate(windowProc, format)) {
