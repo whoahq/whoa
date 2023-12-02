@@ -4,6 +4,7 @@
 #include "gx/glsdl/GL.hpp"
 #include <bc/Debug.hpp>
 #include <bc/Memory.hpp>
+#include <cstring>
 
 bool GLBuffer::m_UsingVBO = 1;
 

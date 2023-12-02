@@ -5,6 +5,7 @@
 #include "gx/glsdl/GLVertexShader.hpp"
 #include "gx/glsdl/GL.hpp"
 #include <bc/Debug.hpp>
+#include <cstring>
 
 // TODO
 // - threaded compiler support
