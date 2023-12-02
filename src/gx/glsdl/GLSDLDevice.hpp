@@ -171,7 +171,7 @@ class GLSDLDevice {
         void SetIndexBuffer(GLBuffer* buffer);
         void SetLightingEnable(bool enable);
         void SetModelView(GLEnum transform);
-        void SetScissor(bool a2, const GLRect& a3);
+        void SetScissor(bool enable, const GLRect& rect);
         void SetShader(GLShader::ShaderType shaderType, GLShader* shader);
         void SetShaderConstants(GLShader::ShaderType shaderType, uint32_t index, const float* constants, uint32_t count);
         void SetShaderConstantsInternal(GLShader::ShaderType shaderType, uint32_t index, const float* constants, uint32_t count);
