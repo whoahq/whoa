@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <bc/file/File.hpp>
+
 class SArchive;
 struct SOVERLAPPED;
 struct TASYNCPARAMBLOCK;
@@ -28,8 +30,8 @@ class SFile {
 
         // Member variables
         const char* m_filename;
-        std::ifstream* m_stream; // TODO Proper implementation
-        std::streamsize m_size; // TODO Proper implementation
+        Blizzard::File::StreamRecord* m_stream; // TODO Proper implementation
+        uint64_t m_size; // TODO Proper implementation
 };
 
 #endif

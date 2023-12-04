@@ -3,6 +3,7 @@
 #include <limits>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+#include <bc/file/File.hpp>
 
 static char s_basepath[STORM_MAX_PATH] = {0};
 static char s_datapath[STORM_MAX_PATH] = {0};
@@ -11,8 +12,7 @@ static char s_datapath[STORM_MAX_PATH] = {0};
 int32_t SFile::Close(SFile* file) {
     delete file->m_filename;
 
-    file->m_stream->close();
-    delete file->m_stream;
+    Blizzard::File::Close(file->m_stream);
 
     delete file;
 
@@ -35,18 +35,14 @@ int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
 
-    for (int32_t i = 0; i < pathLen; ++i) {
-        if (path[i] == '\\') {
-            path[i] = '/';
-        }
-    }
-
-    std::ifstream file (path, std::ios::in | std::ios::binary | std::ios::ate);
+    uint32_t openflags = BC_FILE_OPEN_MUST_EXIST | BC_FILE_OPEN_SHARE_READ | BC_FILE_OPEN_READ;
+    Blizzard::File::StreamRecord* stream;
+    bool opened = Blizzard::File::Open(path, openflags, stream);
     size_t size;
     char* data;
 
-    if (file.is_open()) {
-        size = static_cast<size_t>(file.tellg());
+    if (opened) {
+        size = static_cast<size_t>(Blizzard::File::GetFileInfo(stream)->size);
 
         if (bytes) {
             *bytes = size;
@@ -54,9 +50,9 @@ int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size
 
         data = new char[size + extraBytes];
 
-        file.seekg(0, std::ios::beg);
-        file.read(data, size);
-        file.close();
+        Blizzard::File::SetPos(stream, 0, BC_FILE_SEEK_START);
+        Blizzard::File::Read(stream, data, size, nullptr);
+        Blizzard::File::Close(stream);
 
         if (extraBytes) {
             memset(data + size, 0, extraBytes);
@@ -80,33 +76,23 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
 
-    for (int32_t i = 0; i < pathLen; ++i) {
-        if (path[i] == '\\') {
-            path[i] = '/';
-        }
-    }
-
     SFile* fileptr = new SFile;
 
     fileptr->m_filename = strdup(filename);
 
-    std::ifstream* stream = new std::ifstream(path, std::ios::in | std::ios::binary | std::ios::ate);
+    uint32_t openflags = BC_FILE_OPEN_MUST_EXIST | BC_FILE_OPEN_SHARE_READ | BC_FILE_OPEN_READ;
 
-    if (!stream->is_open()) {
+    Blizzard::File::StreamRecord* stream;
+    auto opened = Blizzard::File::Open(fileptr->m_filename, openflags, stream);
+    if (!opened) {
         *file = nullptr;
         return 0;
     }
 
-    stream->seekg(0, std::ios::beg);
-
-    stream->ignore(std::numeric_limits<std::streamsize>::max());
-    std::streamsize size = stream->gcount();
-    stream->clear();
-
-    stream->seekg(0, std::ios::beg);
+    auto fileinfo = Blizzard::File::GetFileInfo(stream);
 
     fileptr->m_stream = stream;
-    fileptr->m_size = size;
+    fileptr->m_size = fileinfo->size;
 
     *file = fileptr;
 
@@ -115,11 +101,7 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
-    file->m_stream->read((char*)buffer, bytestoread);
-
-    if (bytesread) {
-        *bytesread = file->m_stream->gcount();
-    }
+    Blizzard::File::Read(file->m_stream, buffer, bytestoread, bytesRead);
 
     return 1;
 }
