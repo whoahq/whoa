@@ -25,6 +25,7 @@ target_link_libraries(util
     PUBLIC
         freetype-2.0
         lua-5.1
+        bc
         common
         storm
         tempest
