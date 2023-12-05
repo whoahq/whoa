@@ -6,11 +6,10 @@
 #include <fstream>
 #include <iostream>
 
-#include <bc/file/File.hpp>
-
 class SArchive;
 struct SOVERLAPPED;
 struct TASYNCPARAMBLOCK;
+class Blizzard::File::StreamRecord;
 
 class SFile {
     public:
