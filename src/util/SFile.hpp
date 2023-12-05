@@ -9,7 +9,12 @@
 class SArchive;
 struct SOVERLAPPED;
 struct TASYNCPARAMBLOCK;
-class Blizzard::File::StreamRecord;
+namespace Blizzard {
+namespace File {
+class StreamRecord;
+};
+};
+
 
 class SFile {
     public:
