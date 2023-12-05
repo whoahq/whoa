@@ -101,7 +101,7 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
-    Blizzard::File::Read(file->m_stream, buffer, bytestoread, bytesRead);
+    Blizzard::File::Read(file->m_stream, buffer, bytestoread, bytesread);
 
     return 1;
 }
