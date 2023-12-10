@@ -14,6 +14,8 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
             device = CGxDevice::NewD3d();
         } else if (api == GxApi_D3d9Ex) {
             device = CGxDevice::NewD3d9Ex();
+        } else if (api == GxApi_GLSDL) {
+            device = CGxDevice::NewGLSDL();
         } else {
             // Error
         }
@@ -30,8 +32,8 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
     #endif
 
     #if defined(WHOA_SYSTEM_LINUX)
-        if (api == GxApi_OpenGl) {
-            device = CGxDevice::NewOpenGl();
+        if (api == GxApi_GLSDL) {
+            device = CGxDevice::NewGLSDL();
         } else {
             // Error
         }
