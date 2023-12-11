@@ -297,6 +297,8 @@ void ConsoleDeviceInitialize(const char* title) {
         }
     }
 
+    s_cvGxApi->Set(g_gxApiNames[api], true, false, false, true);
+
     CGxDevice* device = GxDevCreate(api, OsWindowProc, format);
 
     // TODO
