@@ -291,7 +291,7 @@ void ConsoleDeviceInitialize(const char* title) {
     // Sanitize chosen gxApi against list of supported gxApis
     for (size_t i = 0; i < g_numGxApiSupported; i++) {
         EGxApi supportedApi = g_gxApiSupported[i];
-        if (SStrCmp(gxApiName, g_gxApiNames[supported], STORM_MAX_STR) == 0) {
+        if (SStrCmp(gxApiName, g_gxApiNames[supportedApi], STORM_MAX_STR) == 0) {
             api = supportedApi;
             break;
         }
