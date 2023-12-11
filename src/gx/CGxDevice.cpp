@@ -123,14 +123,17 @@ CGxDevice* CGxDevice::NewGLL() {
 }
 #endif
 
+CGxDevice* CGxDevice::NewOpenGl() {
+    return nullptr;
+}
 
 #if defined(WHOA_SYSTEM_WIN) || defined(WHOA_SYSTEM_LINUX)
-CGxDevice* CGxDevice::NewOpenGl() {
+CGxDevice* CGxDevice::NewGLSDL() {
     auto m = SMemAlloc(sizeof(CGxDeviceGLSDL), __FILE__, __LINE__, 0x0);
     return new (m) CGxDeviceGLSDL();
 }
 #else
-CGxDevice* CGxDevice::NewOpenGl() {
+CGxDevice* CGxDevice::NewGLSDL() {
     return nullptr;
 }
 #endif
