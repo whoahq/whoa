@@ -94,7 +94,7 @@ GLEnum CGxDeviceGLSDL::s_primitiveConversion[] = {
 CGxDeviceGLSDL::CGxDeviceGLSDL() : CGxDevice() {
     // TODO
 
-    this->m_api = GxApi_OpenGl;
+    this->m_api = GxApi_GLSDL;
     this->m_caps.m_colorFormat = GxCF_rgba;
 
     // TODO
