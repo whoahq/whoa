@@ -297,7 +297,9 @@ void ConsoleDeviceInitialize(const char* title) {
         }
     }
 
-    s_cvGxApi->Set(g_gxApiNames[api], true, false, false, true);
+    // Set internally (CVar value reflects the current gxApi at launch),
+    // this will not Set() as CVar gxApi is latched
+    s_cvGxApi->InternalSet(g_gxApiNames[api], true, false, false, true);
 
     CGxDevice* device = GxDevCreate(api, OsWindowProc, format);
 
