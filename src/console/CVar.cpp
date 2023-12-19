@@ -206,7 +206,7 @@ int32_t CVar::Load(HOSFILE file) {
         data = fastData;
     }
 
-    auto grown = 0x1FFF >= size;
+    auto grown = 0x1fff < size;
 
     int32_t result    = 0;
     size_t  bytesRead = 0;
