@@ -249,7 +249,7 @@ int32_t CVar::Load(const char* filename) {
 
     if (file == HOSFILE_INVALID) {
         SStrPrintf(path, STORM_MAX_PATH, "WTF\\%s", filename);
-        file = OsCreateFile(filename, OS_GENERIC_READ, 0, OS_OPEN_EXISTING, OS_FILE_ATTRIBUTE_NORMAL, 0x3f3f3f3f);
+        file = OsCreateFile(path, OS_GENERIC_READ, 0, OS_OPEN_EXISTING, OS_FILE_ATTRIBUTE_NORMAL, 0x3f3f3f3f);
         if (file == HOSFILE_INVALID) {
             return 0;
         }
