@@ -54,6 +54,8 @@ uint32_t Input::s_metaKeyState;
 int32_t Input::s_queueHead;
 int32_t Input::s_queueTail;
 int32_t Input::s_windowFocused;
+int (*s_confirmCloseCallback)(void*);
+void* s_confirmCloseParam;
 
 #if defined(WHOA_SYSTEM_WIN)
     int32_t Input::s_savedMouseSpeed;
@@ -360,6 +362,10 @@ void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y) {
     *y = 1.0 - (static_cast<float>(clienty) / static_cast<float>(windowDim.bottom - windowDim.top));
 }
 
+void EventSetConfirmCloseCallback(int32_t (*callback)(void*), void* param) {
+    IEvtInputSetConfirmCloseCallback(callback, param);
+}
+
 void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton) {
     STORM_ASSERT(mode < MOUSE_MODES);
     STORM_VALIDATE(mode < MOUSE_MODES, ERROR_INVALID_PARAMETER);
@@ -481,6 +487,11 @@ int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
     }
 
     return v4;
+}
+
+void IEvtInputSetConfirmCloseCallback(int32_t (*callback)(void*),void* param) {
+    s_confirmCloseCallback = callback;
+    s_confirmCloseParam = param;
 }
 
 void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton) {

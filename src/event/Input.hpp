@@ -40,6 +40,8 @@ MOUSEBUTTON ConvertButtonNumberToMOUSEBUTTON(int32_t buttonNumber);
 
 void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y);
 
+void EventSetConfirmCloseCallback(int32_t (*callback)(void*), void* param);
+
 void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton);
 
 uint32_t GenerateMouseFlags();
@@ -49,6 +51,8 @@ const char* GetButtonName(int32_t button);
 void IEvtInputInitialize();
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown);
+
+void IEvtInputSetConfirmCloseCallback(int32_t (*callback)(void*),void* param);
 
 void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton);
 
