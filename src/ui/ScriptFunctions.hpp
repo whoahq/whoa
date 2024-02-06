@@ -11,7 +11,7 @@ struct lua_State;
 #define NUM_SCRIPT_FUNCTIONS_GLUE_SCRIPT_EVENTS 113
 #define NUM_SCRIPT_FUNCTIONS_REALM_LIST 14
 #define NUM_SCRIPT_FUNCTIONS_SIMPLE_FRAME 7
-#define NUM_SCRIPT_FUNCTIONS_SYSTEM 7
+#define NUM_SCRIPT_FUNCTIONS_SYSTEM 13
 
 namespace FrameScript {
     extern FrameScript_Method s_ScriptFunctions_CharCreate[NUM_SCRIPT_FUNCTIONS_CHAR_CREATE];
@@ -210,5 +210,6 @@ int32_t Script_GetTime(lua_State*);
 int32_t Script_GetGameTime(lua_State*);
 int32_t Script_ConsoleExec(lua_State*);
 int32_t Script_AccessDenied(lua_State*);
+int32_t Script_GetCurrentResolution(lua_State*);
 
 #endif
