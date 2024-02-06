@@ -79,43 +79,22 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 
     *file = nullptr;
 
-    size_t length = SStrLen(filename);
+    char path[STORM_MAX_PATH];
+
     // Overflow protection
-    if (length + 1 > STORM_MAX_PATH)
+    if (SStrLen(filename) + 1 > sizeof(path))
         return 0;
 
-    char nativePath[STORM_MAX_PATH] = { 0 };
-    char backslashPath[STORM_MAX_PATH] = { 0 };
-
-    SStrCopy(nativePath, filename, STORM_MAX_PATH);
-    SStrCopy(backslashPath, filename, STORM_MAX_PATH);
-
-    OsFileToNativeSlashes(nativePath);
-    OsFileToBackSlashes(backslashPath);
-
-    char message[512] = { 0 };
+    SStrCopy(path, filename, sizeof(path));
+    OsFileToNativeSlashes(path);
 
     HANDLE handle;
-    bool local = true;
-    if (!SFileOpenFileEx(nullptr, nativePath, SFILE_OPEN_LOCAL_FILE, &handle)) {
-        local = false;
-        if (!SFileOpenFileEx(g_mpqHandle, backslashPath, SFILE_OPEN_FROM_MPQ, &handle)) {
-            SStrCopy(message, "[SFile] Unable to open: ", sizeof(message));
-            strcat(message, filename);
-            strcat(message, "\n");
-            OutputDebugStringA(message);
+    if (!SFileOpenFileEx(nullptr, path, SFILE_OPEN_LOCAL_FILE, &handle)) {
+        OsFileToBackSlashes(path);
+        if (!SFileOpenFileEx(g_mpqHandle, path, SFILE_OPEN_FROM_MPQ, &handle)) {
             return 0;
         }
     }
-
-    if (local) {
-        SStrCopy(message, "[SFile] Open (file system): ", sizeof(message));
-    } else {
-        SStrCopy(message, "[SFile] Open (archive): ", sizeof(message));
-    }
-    strcat(message, filename);
-    strcat(message, "\n");
-    OutputDebugStringA(message);
 
     *file = new SFile;
     (*file)->m_handle = handle;
@@ -126,7 +105,7 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
     DWORD read = 0;
-    if (SFileReadFile(file->m_handle, buffer, bytestoread, &read, nullptr)) {
+    if (SFileReadFile(file->m_handle, buffer, static_cast<DWORD>(bytestoread), &read, nullptr)) {
         if (bytesread)
             *bytesread = read;
         return 1;
