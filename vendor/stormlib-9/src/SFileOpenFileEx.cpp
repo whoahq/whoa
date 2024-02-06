@@ -16,11 +16,13 @@
 /* Local functions                                                           */
 /*****************************************************************************/
 
+// Finds hash index of the entry that was open by pseudo-name
 static DWORD FindHashIndex(TMPQArchive * ha, DWORD dwFileIndex)
 {
     TMPQHash * pHashTableEnd;
     TMPQHash * pHash;
-    DWORD dwFirstIndex = HASH_ENTRY_FREE;
+    DWORD dwHashIndex = HASH_ENTRY_FREE;
+    DWORD dwCount = 0;
 
     // Should only be called if the archive has hash table
     assert(ha->pHashTable != NULL);
@@ -32,15 +34,18 @@ static DWORD FindHashIndex(TMPQArchive * ha, DWORD dwFileIndex)
     {
         if(MPQ_BLOCK_INDEX(pHash) == dwFileIndex)
         {
-            // Duplicate hash entry found
-            if(dwFirstIndex != HASH_ENTRY_FREE)
+            // Example: MPQ_2023_v1_Lusin2Rpg1.28.w3x, file index 24483
+            // ReplaceableTextures\CommandButtons\BTNHaboss79.blp
+            // Hash Table Index #1 = 18
+            // Hash Table Index #2 = 8446
+            if(dwCount++ > 0)
                 return HASH_ENTRY_FREE;
-            dwFirstIndex = (DWORD)(pHash - ha->pHashTable);
+            dwHashIndex = (DWORD)(pHash - ha->pHashTable);
         }
     }
 
-    // Return the hash table entry index
-    return dwFirstIndex;
+    // Return the found hash index, if there are no duplicities
+    return dwHashIndex;
 }
 
 static const char * GetPatchFileName(TMPQArchive * ha, const char * szFileName, char * szBuffer)
@@ -298,32 +303,32 @@ bool WINAPI SFileOpenFileEx(HANDLE hMpq, const char * szFileName, DWORD dwSearch
     if(dwErrCode == ERROR_SUCCESS)
     {
         // If we didn't find the file, try to open it using pseudo file name ("File
-        if (pFileEntry == NULL || (pFileEntry->dwFlags & MPQ_FILE_EXISTS) == 0)
+        if(pFileEntry == NULL || (pFileEntry->dwFlags & MPQ_FILE_EXISTS) == 0)
         {
             // Check the pseudo-file name ("File00000001.ext")
-            if ((bOpenByIndex = IsPseudoFileName(szFileName, &dwFileIndex)) == true)
+            if((bOpenByIndex = IsPseudoFileName(szFileName, &dwFileIndex)) == true)
             {
                 // Get the file entry for the file
-                if (dwFileIndex < ha->dwFileTableSize)
+                if(dwFileIndex < ha->dwFileTableSize)
                 {
                     pFileEntry = ha->pFileTable + dwFileIndex;
                 }
             }
 
             // Still not found?
-            if (pFileEntry == NULL)
+            if(pFileEntry == NULL || (pFileEntry->dwFlags & MPQ_FILE_EXISTS) == 0)
             {
                 dwErrCode = ERROR_FILE_NOT_FOUND;
             }
         }
 
         // Perform some checks of invalid files
-        if (pFileEntry != NULL)
+        if(pFileEntry != NULL)
         {
             // MPQ protectors use insanely amount of fake files, often with very high size.
             // We won't open any files whose compressed size is bigger than archive size
             // If the file is not compressed, its size cannot be bigger than archive size
-            if ((pFileEntry->dwFlags & MPQ_FILE_COMPRESS_MASK) == 0 && (pFileEntry->dwFileSize > ha->FileSize))
+            if((pFileEntry->dwFlags & MPQ_FILE_COMPRESS_MASK) == 0 && (pFileEntry->dwFileSize > ha->FileSize))
             {
                 dwErrCode = ERROR_FILE_CORRUPT;
                 pFileEntry = NULL;

@@ -143,8 +143,8 @@ extern "C" {
 //-----------------------------------------------------------------------------
 // Defines
 
-#define STORMLIB_VERSION                0x0918  // Current version of StormLib (9.24)
-#define STORMLIB_VERSION_STRING         "9.24"  // String version of StormLib version
+#define STORMLIB_VERSION                0x0919  // Current version of StormLib
+#define STORMLIB_VERSION_STRING         "9.25"  // Current version of StormLib as string
 
 #define ID_MPQ                      0x1A51504D  // MPQ archive header ID ('MPQ\x1A')
 #define ID_MPQ_USERDATA             0x1B51504D  // MPQ userdata entry ('MPQ\x1B')
@@ -194,15 +194,16 @@ extern "C" {
 #define MPQ_FLAG_CHECK_SECTOR_CRC   0x00000020  // Checking sector CRC when reading files
 #define MPQ_FLAG_SAVING_TABLES      0x00000040  // If set, we are saving MPQ internal files and MPQ tables
 #define MPQ_FLAG_PATCH              0x00000080  // If set, this MPQ is a patch archive
-#define MPQ_FLAG_WAR3_MAP           0x00000100  // If set, this MPQ is a Warcraft III map
-#define MPQ_FLAG_STARCRAFT_BETA     0x00000200  // If set, this MPQ is StarDat.mpq from Starcraft I BETA
-#define MPQ_FLAG_LISTFILE_NONE      0x00000400  // Set when no (listfile) was found in InvalidateInternalFiles
-#define MPQ_FLAG_LISTFILE_NEW       0x00000800  // Set when (listfile) invalidated by InvalidateInternalFiles
-#define MPQ_FLAG_LISTFILE_FORCE     0x00001000  // Save updated listfile on exit
-#define MPQ_FLAG_ATTRIBUTES_NONE    0x00002000  // Set when no (attributes) was found in InvalidateInternalFiles
-#define MPQ_FLAG_ATTRIBUTES_NEW     0x00004000  // Set when (attributes) invalidated by InvalidateInternalFiles
-#define MPQ_FLAG_SIGNATURE_NONE     0x00008000  // Set when no (signature) was found in InvalidateInternalFiles
-#define MPQ_FLAG_SIGNATURE_NEW      0x00010000  // Set when (signature) invalidated by InvalidateInternalFiles
+#define MPQ_FLAG_STARCRAFT_BETA     0x00000100  // If set, this MPQ is from Starcraft I BETA
+#define MPQ_FLAG_STARCRAFT          0x00000200  // If set, this MPQ is from Starcraft I
+#define MPQ_FLAG_WAR3_MAP           0x00000400  // If set, this MPQ is a Warcraft III map
+#define MPQ_FLAG_LISTFILE_NONE      0x00000800  // Set when no (listfile) was found in InvalidateInternalFiles
+#define MPQ_FLAG_LISTFILE_NEW       0x00001000  // Set when (listfile) invalidated by InvalidateInternalFiles
+#define MPQ_FLAG_LISTFILE_FORCE     0x00002000  // Save updated listfile on exit
+#define MPQ_FLAG_ATTRIBUTES_NONE    0x00004000  // Set when no (attributes) was found in InvalidateInternalFiles
+#define MPQ_FLAG_ATTRIBUTES_NEW     0x00008000  // Set when (attributes) invalidated by InvalidateInternalFiles
+#define MPQ_FLAG_SIGNATURE_NONE     0x00010000  // Set when no (signature) was found in InvalidateInternalFiles
+#define MPQ_FLAG_SIGNATURE_NEW      0x00020000  // Set when (signature) invalidated by InvalidateInternalFiles
 
 // Values for TMPQArchive::dwSubType
 #define MPQ_SUBTYPE_MPQ             0x00000000  // The file is a MPQ file (Blizzard games)
@@ -214,11 +215,11 @@ extern "C" {
 #define SFILE_INVALID_POS           0xFFFFFFFF
 #define SFILE_INVALID_ATTRIBUTES    0xFFFFFFFF
 
-// Flags for SFileAddFile
+// Flags for TMPQBlock::dwFlags
 #define MPQ_FILE_IMPLODE            0x00000100  // Implode method (By PKWARE Data Compression Library)
 #define MPQ_FILE_COMPRESS           0x00000200  // Compress methods (By multiple methods)
-#define MPQ_FILE_ENCRYPTED          0x00010000  // Indicates whether file is encrypted
-#define MPQ_FILE_FIX_KEY            0x00020000  // File decryption key has to be fixed
+#define MPQ_FILE_ENCRYPTED          0x00010000  // Indicates an encrypted file
+#define MPQ_FILE_KEY_V2             0x00020000  // Indicates an encrypted file with key v2
 #define MPQ_FILE_PATCH_FILE         0x00100000  // The file is a patch file. Raw file data begin with TPatchInfo structure
 #define MPQ_FILE_SINGLE_UNIT        0x01000000  // File is stored as a single unit, rather than split into sectors (Thx, Quantam)
 #define MPQ_FILE_DELETE_MARKER      0x02000000  // File is a deletion marker. Used in MPQ patches, indicating that the file no longer exists.
@@ -232,10 +233,12 @@ extern "C" {
 
 #define MPQ_FILE_DEFAULT_INTERNAL   0xFFFFFFFF  // Use default flags for internal files
 
+#define MPQ_FILE_FIX_KEY            0x00020000  // Obsolete, do not use
+
 #define MPQ_FILE_VALID_FLAGS     (MPQ_FILE_IMPLODE       |  \
                                   MPQ_FILE_COMPRESS      |  \
                                   MPQ_FILE_ENCRYPTED     |  \
-                                  MPQ_FILE_FIX_KEY       |  \
+                                  MPQ_FILE_KEY_V2        |  \
                                   MPQ_FILE_PATCH_FILE    |  \
                                   MPQ_FILE_SINGLE_UNIT   |  \
                                   MPQ_FILE_DELETE_MARKER |  \
@@ -246,7 +249,7 @@ extern "C" {
 #define MPQ_FILE_VALID_FLAGS_W3X (MPQ_FILE_IMPLODE       |  \
                                   MPQ_FILE_COMPRESS      |  \
                                   MPQ_FILE_ENCRYPTED     |  \
-                                  MPQ_FILE_FIX_KEY       |  \
+                                  MPQ_FILE_KEY_V2        |  \
                                   MPQ_FILE_DELETE_MARKER |  \
                                   MPQ_FILE_SECTOR_CRC    |  \
                                   MPQ_FILE_SIGNATURE     |  \
@@ -255,8 +258,11 @@ extern "C" {
 #define MPQ_FILE_VALID_FLAGS_SCX (MPQ_FILE_IMPLODE       |  \
                                   MPQ_FILE_COMPRESS      |  \
                                   MPQ_FILE_ENCRYPTED     |  \
-                                  MPQ_FILE_FIX_KEY       |  \
+                                  MPQ_FILE_KEY_V2        |  \
                                   MPQ_FILE_EXISTS)
+
+// Flags for TPatchInfo::dwFlags
+#define MPQ_PATCH_INFO_VALID        0x80000000  // Set if the patch info is valid
 
 // We need to mask out the upper 4 bits of the block table index.
 // This is because it gets shifted out when calculating block table offset
@@ -471,6 +477,8 @@ typedef enum _SFileInfoClass
     SFileInfoEncryptionKey,                 // File encryption key
     SFileInfoEncryptionKeyRaw,              // Unfixed value of the file key
     SFileInfoCRC32,                         // CRC32 of the file
+
+    SFileInfoInvalid = 0xFFF,               // Invalid file info class
 } SFileInfoClass;
 
 //-----------------------------------------------------------------------------
@@ -675,7 +683,7 @@ typedef struct _TMPQBlock
 typedef struct _TPatchInfo
 {
     DWORD dwLength;                             // Length of patch info header, in bytes
-    DWORD dwFlags;                              // Flags. 0x80000000 = MD5 (?)
+    DWORD dwFlags;                              // Flags. 0x80000000 = valid (?)
     DWORD dwDataSize;                           // Uncompressed size of the patch file
     BYTE  md5[0x10];                            // MD5 of the entire patch file after decompression
 
@@ -822,6 +830,7 @@ typedef struct _TMPQArchive
     ULONGLONG      UserDataPos;                 // Position of user data (relative to the begin of the file)
     ULONGLONG      MpqPos;                      // MPQ header offset (relative to the begin of the file)
     ULONGLONG      FileSize;                    // Size of the file at the moment of file open
+    ULONGLONG      FileOffsetMask;              // 0xFFFFFFFF for MPQ v 1, otherwise 0xFFFFFFFFFFFFFFFFull
 
     struct _TMPQArchive * haPatch;              // Pointer to patch archive, if any
     struct _TMPQArchive * haBase;               // Pointer to base ("previous version") archive, if any
@@ -1025,6 +1034,7 @@ bool   WINAPI SFileCloseArchive(HANDLE hMpq);
 // so you can use this API to combining more listfiles.
 // Note that this function is internally called by SFileFindFirstFile
 DWORD  WINAPI SFileAddListFile(HANDLE hMpq, const TCHAR * szListFile);
+DWORD  WINAPI SFileAddListFileEntries(HANDLE hMpq, const char ** listFileEntries, DWORD dwEntryCount);
 
 // Archive compacting
 bool   WINAPI SFileSetCompactCallback(HANDLE hMpq, SFILE_COMPACT_CALLBACK CompactCB, void * pvUserData);
@@ -1120,7 +1130,6 @@ int    WINAPI SCompExplode    (void * pvOutBuffer, int * pcbOutBuffer, void * pv
 int    WINAPI SCompCompress   (void * pvOutBuffer, int * pcbOutBuffer, void * pvInBuffer, int cbInBuffer, unsigned uCompressionMask, int nCmpType, int nCmpLevel);
 int    WINAPI SCompDecompress (void * pvOutBuffer, int * pcbOutBuffer, void * pvInBuffer, int cbInBuffer);
 int    WINAPI SCompDecompress2(void * pvOutBuffer, int * pcbOutBuffer, void * pvInBuffer, int cbInBuffer);
-int    WINAPI SCompDecompress_SC1B(void * pvOutBuffer, int * pcbOutBuffer, void * pvInBuffer, int cbInBuffer);
 
 //-----------------------------------------------------------------------------
 // Non-Windows support for SetLastError/GetLastError

@@ -387,7 +387,7 @@ bool WINAPI SFileOpenArchive(
                 }
 
                 // Check for MPK archives (Longwu Online - MPQ fork)
-                if(MapType == MapTypeNotRecognized && dwHeaderID == ID_MPK)
+                if(MapType == MapTypeNotRecognized && (dwFlags & MPQ_OPEN_FORCE_MPQ_V1) == 0 && dwHeaderID == ID_MPK)
                 {
                     // Now convert the MPK header to MPQ Header version 4
                     dwErrCode = ConvertMpkHeaderToFormat4(ha, FileSize, dwFlags);
@@ -463,16 +463,24 @@ bool WINAPI SFileOpenArchive(
         if(IsStarcraftBetaArchive(ha->pHeader))
             ha->dwFlags |= MPQ_FLAG_STARCRAFT_BETA;
 
-        // Remember whether whis is a map for Warcraft III
-        if(MapType == MapTypeWarcraft3)
-        {
-            ha->dwValidFileFlags = MPQ_FILE_VALID_FLAGS_W3X;
-            ha->dwFlags |= MPQ_FLAG_WAR3_MAP;
-        }
+        // Set the mask for the file offset. In MPQs version 1,
+        // all offsets are 32-bit and overflow is allowed.
+        // For MPQs v2+, file offset if 64-bit.
+        ha->FileOffsetMask = GetFileOffsetMask(ha);
 
-        // If this is starcraft map, set the flag mask
-        if(MapType == MapTypeStarcraft)
-            ha->dwValidFileFlags = MPQ_FILE_VALID_FLAGS_SCX;
+        // Maps from StarCraft and Warcraft III need special treatment
+        switch(MapType)
+        {
+            case MapTypeStarcraft:
+                ha->dwValidFileFlags = MPQ_FILE_VALID_FLAGS_SCX;
+                ha->dwFlags |= MPQ_FLAG_STARCRAFT;
+                break;
+
+            case MapTypeWarcraft3:
+                ha->dwValidFileFlags = MPQ_FILE_VALID_FLAGS_W3X;
+                ha->dwFlags |= MPQ_FLAG_WAR3_MAP;
+                break;
+        }
 
         // Set the size of file sector
         ha->dwSectorSize = (0x200 << ha->pHeader->wSectorSize);

@@ -246,6 +246,14 @@ static DWORD WriteDataToMpqFile(
                     BSWAP_ARRAY32_UNSIGNED(pbToWrite, dwBytesInSector);
                 }
 
+                // Do not allow Warcraft III maps to go over 2GB. 
+                // https://github.com/ladislav-zezula/StormLib/issues/306
+                if((ha->dwFlags & MPQ_FLAG_WAR3_MAP) && (ByteOffset + dwBytesInSector) > 0x7FFFFFFF)
+                {
+                    dwErrCode = ERROR_DISK_FULL;
+                    break;
+                }
+
                 // Write the file sector
                 if(!FileStream_Write(ha->pStream, &ByteOffset, pbToWrite, dwBytesInSector))
                 {
@@ -425,7 +433,7 @@ DWORD SFileAddFile_Init(
 
     // Fix Key is not allowed if the file is not encrypted
     if(!(dwFlags & MPQ_FILE_ENCRYPTED))
-        dwFlags &= ~MPQ_FILE_FIX_KEY;
+        dwFlags &= ~MPQ_FILE_KEY_V2;
 
     // If the MPQ is of version 3.0 or higher, we ignore file locale.
     // This is because HET and BET tables have no known support for it
@@ -1295,7 +1303,7 @@ bool WINAPI SFileSetFileLocale(HANDLE hFile, LCID lcNewLocale)
     }
 
     // We have to check if the file+locale is not already there
-    pFileEntry = GetFileEntryLocale(ha, hf->pFileEntry->szFileName, lcNewLocale, NULL);
+    pFileEntry = GetFileEntryExact(ha, hf->pFileEntry->szFileName, lcNewLocale, NULL);
     if(pFileEntry != NULL)
     {
         SetLastError(ERROR_ALREADY_EXISTS);

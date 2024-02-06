@@ -82,7 +82,7 @@
 #endif
 
 //-----------------------------------------------------------------------------
-// MTYPE definition - specifies what kind of MPQ is the map type
+// MTYPE definition - specifies what kind of MPQ is the file
 
 typedef enum _MTYPE
 {
@@ -251,6 +251,7 @@ TMPQFile * IsValidFileHandle(HANDLE hFile);
 //-----------------------------------------------------------------------------
 // Support for MPQ file tables
 
+ULONGLONG GetFileOffsetMask(TMPQArchive * ha);
 ULONGLONG FileOffsetFromMpqOffset(TMPQArchive * ha, ULONGLONG MpqOffset);
 ULONGLONG CalculateRawSectorOffset(TMPQFile * hf, DWORD dwSectorOffset);
 

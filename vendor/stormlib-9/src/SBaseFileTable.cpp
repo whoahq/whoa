@@ -312,34 +312,38 @@ static ULONGLONG DetermineArchiveSize_V1(
     return (EndOfMpq - MpqOffset);
 }
 
-static ULONGLONG DetermineArchiveSize_V2(
-    TMPQHeader * pHeader,
-    ULONGLONG MpqOffset,
-    ULONGLONG FileSize)
+static ULONGLONG DetermineBlockTableSize_V2(TMPQHeader * pHeader, ULONGLONG MpqHeaderPos, ULONGLONG FileSize)
 {
-    ULONGLONG EndOfMpq = FileSize;
-    DWORD dwArchiveSize32;
+    ULONGLONG BlockTablePos = MAKE_OFFSET64(pHeader->wBlockTablePosHi, pHeader->dwBlockTablePos);
+    ULONGLONG ArchiveSize = FileSize - MpqHeaderPos;
 
-    // This could only be called for MPQs version 2.0
-    assert(pHeader->wFormatVersion == MPQ_FORMAT_VERSION_2);
-
-    // Check if we can rely on the archive size in the header
-    if((FileSize >> 0x20) == 0)
+    // If there is a hi-block table and it is beyond the block table,
+    // we can determine the block table size from it
+    if(pHeader->HiBlockTablePos64 != 0)
     {
-        if(pHeader->dwBlockTablePos < pHeader->dwArchiveSize)
+        if(pHeader->HiBlockTablePos64 > BlockTablePos)
         {
-            if((pHeader->dwArchiveSize - pHeader->dwBlockTablePos) <= (pHeader->dwBlockTableSize * sizeof(TMPQBlock)))
-                return pHeader->dwArchiveSize;
-
-            // If the archive size in the header is less than real file size
-            dwArchiveSize32 = (DWORD)(FileSize - MpqOffset);
-            if(pHeader->dwArchiveSize <= dwArchiveSize32)
-                return pHeader->dwArchiveSize;
+            return (pHeader->HiBlockTablePos64 - BlockTablePos);
         }
     }
 
-    // Return the calculated archive size
-    return (EndOfMpq - MpqOffset);
+    // If we have valid archive size, we can determine the block table size from the archive size
+    else
+    {
+        if((BlockTablePos >> 0x20) == 0 && (ArchiveSize >> 0x20) == 0)
+        {
+            DWORD dwBlockTablePos32 = (DWORD)(BlockTablePos);
+            DWORD dwArchiveSize32 = (DWORD)(ArchiveSize);
+
+            if(pHeader->dwArchiveSize == dwArchiveSize32)
+            {
+                return (dwArchiveSize32 - dwBlockTablePos32);
+            }
+        }
+    }
+
+    // Default is the block table size from MPQ header
+    return (ULONGLONG)(pHeader->dwBlockTableSize) * sizeof(TMPQBlock);
 }
 
 static ULONGLONG DetermineArchiveSize_V4(
@@ -381,19 +385,38 @@ static ULONGLONG DetermineArchiveSize_V4(
     return ArchiveSize;
 }
 
+ULONGLONG GetFileOffsetMask(TMPQArchive * ha)
+{
+    ULONGLONG FileOffsetMask = (ULONGLONG)(-1);
+
+    // Sanity checks
+    assert(ha != NULL);
+    assert(ha->pHeader != NULL);
+
+    // MPQs of format 1 are 32-bit only
+    if(ha->pHeader->wFormatVersion == MPQ_FORMAT_VERSION_1)
+        FileOffsetMask = (ULONGLONG)(DWORD)(-1);
+    return FileOffsetMask;
+}
+
 ULONGLONG FileOffsetFromMpqOffset(TMPQArchive * ha, ULONGLONG MpqOffset)
 {
-    if(ha->pHeader->wFormatVersion == MPQ_FORMAT_VERSION_1)
-    {
-        // For MPQ archive v1, any file offset is only 32-bit
-        return (ULONGLONG)((DWORD)ha->MpqPos + (DWORD)MpqOffset);
-    }
-    else
-    {
-        // For MPQ archive v2+, file offsets are full 64-bit
-        return ha->MpqPos + MpqOffset;
-    }
+    return (ha->MpqPos + MpqOffset) & ha->FileOffsetMask;
 }
+
+//ULONGLONG FileOffsetFromMpqOffset(TMPQArchive * ha, ULONGLONG MpqOffset)
+//{
+//    if(ha->pHeader->wFormatVersion == MPQ_FORMAT_VERSION_1)
+//    {
+//        // For MPQ archive v1, any file offset is only 32-bit
+//        return (ULONGLONG)((DWORD)ha->MpqPos + (DWORD)MpqOffset);
+//    }
+//    else
+//    {
+//        // For MPQ archive v2+, file offsets are full 64-bit
+//        return ha->MpqPos + MpqOffset;
+//    }
+//}
 
 ULONGLONG CalculateRawSectorOffset(
     TMPQFile * hf,
@@ -414,9 +437,7 @@ ULONGLONG CalculateRawSectorOffset(
     // For MPQs version 1.0, the offset is purely 32-bit
     //
 
-    RawFilePos = hf->RawFilePos + dwSectorOffset;
-    if(hf->ha->pHeader->wFormatVersion == MPQ_FORMAT_VERSION_1)
-        RawFilePos = (DWORD)hf->ha->MpqPos + (DWORD)hf->pFileEntry->ByteOffset + dwSectorOffset;
+    RawFilePos = (hf->RawFilePos + dwSectorOffset) & hf->ha->FileOffsetMask;
 
     // We also have to add patch header size, if patch header is present
     if(hf->pPatchInfo != NULL)
@@ -541,34 +562,14 @@ DWORD ConvertMpqHeaderToFormat4(
             // We require the block table to follow hash table
             if(BlockTablePos64 >= HashTablePos64)
             {
-                // HashTableSize64 may be less than TblSize * sizeof(TMPQHash).
-                // That means that the hash table is compressed.
+                // Determine whether the hash table is compressed. This can be detected
+                // by subtracting hash table position from the block table position.
                 pHeader->HashTableSize64 = BlockTablePos64 - HashTablePos64;
 
-                // Calculate the compressed block table size
-                if(pHeader->HiBlockTablePos64 != 0)
-                {
-                    // BlockTableSize64 may be less than TblSize * sizeof(TMPQBlock).
-                    // That means that the block table is compressed.
-                    pHeader->BlockTableSize64 = pHeader->HiBlockTablePos64 - BlockTablePos64;
-                    assert(pHeader->BlockTableSize64 <= (pHeader->dwBlockTableSize * sizeof(TMPQBlock)));
-
-                    // Determine real archive size
-                    pHeader->ArchiveSize64 = DetermineArchiveSize_V2(pHeader, ByteOffset, FileSize);
-
-                    // Calculate the size of the hi-block table
-                    pHeader->HiBlockTableSize64 = pHeader->ArchiveSize64 - pHeader->HiBlockTablePos64;
-                    assert(pHeader->HiBlockTableSize64 == (pHeader->dwBlockTableSize * sizeof(USHORT)));
-                }
-                else
-                {
-                    // Determine real archive size
-                    pHeader->ArchiveSize64 = DetermineArchiveSize_V2(pHeader, ByteOffset, FileSize);
-
-                    // Calculate size of the block table
-                    pHeader->BlockTableSize64 = pHeader->ArchiveSize64 - BlockTablePos64;
-                    assert(pHeader->BlockTableSize64 <= (pHeader->dwBlockTableSize * sizeof(TMPQBlock)));
-                }
+                // Also, block table may be compressed. We check whether the HiBlockTable is there.
+                // If not, we try to use the archive size. Note that ArchiveSize may have
+                // an arbitrary value, because it is not tested by Blizzard games anymore
+                pHeader->BlockTableSize64 = DetermineBlockTableSize_V2(pHeader, ByteOffset, FileSize);
             }
             else
             {
@@ -2816,17 +2817,17 @@ DWORD DefragmentFileTable(TMPQArchive * ha)
             {
                 TMPQHash * pHashTableEnd = ha->pHashTable + ha->pHeader->dwHashTableSize;
                 TMPQHash * pHash;
-				DWORD dwNewBlockIndex;
+                DWORD dwNewBlockIndex;
 
                 for(pHash = ha->pHashTable; pHash < pHashTableEnd; pHash++)
                 {
                     if(MPQ_BLOCK_INDEX(pHash) < ha->dwFileTableSize)
-					{
-						// If that block entry is there, set it to the hash entry
-						// If not, set it as DELETED
-						dwNewBlockIndex = DefragmentTable[MPQ_BLOCK_INDEX(pHash)];
-						pHash->dwBlockIndex = (dwNewBlockIndex != HASH_ENTRY_FREE) ? dwNewBlockIndex : HASH_ENTRY_DELETED;
-					}
+                    {
+                        // If that block entry is there, set it to the hash entry
+                        // If not, set it as DELETED
+                        dwNewBlockIndex = DefragmentTable[MPQ_BLOCK_INDEX(pHash)];
+                        pHash->dwBlockIndex = (dwNewBlockIndex != HASH_ENTRY_FREE) ? dwNewBlockIndex : HASH_ENTRY_DELETED;
+                    }
                 }
             }
         }
