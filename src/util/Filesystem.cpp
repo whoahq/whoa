@@ -1,16 +1,8 @@
 #include "util/Filesystem.hpp"
 #include <cstring>
-#include <vector>
-#include <string>
 #include <sys/stat.h>
 #include <storm/String.hpp>
 #include <StormLib.h>
-
-static const std::vector<std::string> s_languages = {
-    "enUS", "enGB", "enTW", "zhTW", "esES",
-    "ruRU", "koKR", "ptPT", "esMX", "itIT",
-    "deDE", "frFR", "enCN", "zhCN", "ptBR"
-};
 
 void* g_mpqHandle = nullptr;
 
@@ -75,16 +67,26 @@ void OsFileToBackSlashes(char* path, size_t size) {
     }
 }
 
-void OpenPatches(const std::string& language, const std::string& fileName) {
-    std::string path("Data/" + language + "/");
-    std::string fullPath;
-    for (int i = 1; i < 20; ++i) {
-        if (i < 2) {
-            fullPath = path + fileName + ".MPQ";
+void OpenExtraArchives(const char* basePath, const char* language, const char* fileNamePrefix) {
+    char path[STORM_MAX_PATH] = { 0 };
+
+    for (unsigned int i = 1; i < 20; ++i) {
+        if (language) {
+            if (i > 1) {
+                SStrPrintf(path, sizeof(path), "%s/%s-%s-%u.MPQ", basePath, fileNamePrefix, language, i);
+            } else {
+                SStrPrintf(path, sizeof(path), "%s/%s-%s.MPQ", basePath, fileNamePrefix, language);
+            }
         } else {
-            fullPath = path + fileName + "-" + std::to_string(i) + ".MPQ";
+            if (i > 1) {
+                SStrPrintf(path, sizeof(path), "%s/%s-%u.MPQ", basePath, fileNamePrefix, i);
+            } else {
+                SStrPrintf(path, sizeof(path), "%s/%s.MPQ", basePath, fileNamePrefix);
+            }
         }
-        if (!SFileOpenPatchArchive(g_mpqHandle, fullPath.c_str(), nullptr, 0))
+
+        OsFileToNativeSlashes(path);
+        if (!SFileOpenPatchArchive(g_mpqHandle, path, nullptr, MPQ_OPEN_NO_LISTFILE))
             return;
     }
 }
@@ -93,38 +95,71 @@ void OpenArchives()
 {
     struct stat info = { 0 };
 
-    std::string dataPath("Data/");
-    if (stat(dataPath.c_str(), &info) != 0 || (info.st_mode & S_IFDIR) == 0)
+    const char* languages[] = {
+        "enUS", "enGB", "enTW", "zhTW", "esES",
+        "ruRU", "koKR", "ptPT", "esMX", "itIT",
+        "deDE", "frFR", "enCN", "zhCN", "ptBR"
+    };
+
+    const char* baseFiles[] = {
+        "common.MPQ",
+        "common-2.MPQ",
+        "expansion.MPQ",
+        "lichking.MPQ"
+    };
+
+    const char* extraFiles[] = {
+        "locale",
+        "speech",
+        "expansion-locale",
+        "lichking-locale",
+        "expansion-speech",
+        "lichking-speech",
+        "patch"
+    };
+
+    char path[STORM_MAX_PATH] = { 0 };
+
+    SStrCopy(path, "Data", sizeof(path));
+    if (stat(path, &info) != 0 || (info.st_mode & S_IFDIR) == 0)
         return;
 
-    if (!SFileOpenArchive((dataPath + "common.MPQ").c_str(), 0, STREAM_FLAG_READ_ONLY, &g_mpqHandle))
-        return;
+    for (size_t i = 0; i < sizeof(baseFiles) / sizeof(baseFiles[0]); ++i) {
+        SStrCopy(path, "Data/", sizeof(path));
+        SStrPack(path, baseFiles[i], sizeof(path));
+        OsFileToNativeSlashes(path);
 
-    if (!SFileOpenPatchArchive(g_mpqHandle, (dataPath + "common-2.MPQ").c_str(), nullptr, 0))
-        return;
+        if (i == 0) {
+            if (!SFileOpenArchive(path, 0, MPQ_OPEN_NO_LISTFILE, &g_mpqHandle))
+                return;
+        } else if (!SFileOpenPatchArchive(g_mpqHandle, path, nullptr, MPQ_OPEN_NO_LISTFILE)) {
+            return;
+        }
+    }
 
-    if (!SFileOpenPatchArchive(g_mpqHandle, (dataPath + "expansion.MPQ").c_str(), nullptr, 0))
-        return;
+    const char* language = nullptr;
+    for (size_t i = 0; i < sizeof(languages) / sizeof(languages[0]); ++i) {
+        SStrCopy(path, "Data/", sizeof(path));
+        SStrPack(path, languages[i], sizeof(path));
+        OsFileToNativeSlashes(path);
 
-    if (!SFileOpenPatchArchive(g_mpqHandle, (dataPath + "lichking.MPQ").c_str(), nullptr, 0))
-        return;
-
-    std::string language;
-
-    for (size_t i = 0; i < s_languages.size(); ++i) {
-        if (stat((dataPath + s_languages[i]).c_str(), &info) == 0 && (info.st_mode & S_IFDIR) != 0) {
-            language = s_languages[i];
+        if (stat(path, &info) == 0 && (info.st_mode & S_IFDIR) != 0) {
+            language = languages[i];
             break;
         }
     }
 
-    OpenPatches(language, "locale-" + language);
-    OpenPatches(language, "speech-" + language);
-    OpenPatches(language, "expansion-locale-" + language);
-    OpenPatches(language, "lichking-locale-" + language);
-    OpenPatches(language, "expansion-speech-" + language);
-    OpenPatches(language, "lichking-speech-" + language);
-    OpenPatches(language, "patch-" + language);
-    OpenPatches(language, "patch");
-    OpenPatches(".", "patch");
+    if (language) {
+        SStrCopy(path, "Data/", sizeof(path));
+        SStrPack(path, language, sizeof(path));
+
+        for (size_t i = 0; i < sizeof(extraFiles) / sizeof(extraFiles[0]); ++i)
+            OpenExtraArchives(path, language, extraFiles[i]);
+
+        // Special case
+        OpenExtraArchives(path, nullptr, "patch");
+    }
+
+    SStrCopy(path, "Data", sizeof(path));
+    OpenExtraArchives(path, nullptr, "patch");
 }
