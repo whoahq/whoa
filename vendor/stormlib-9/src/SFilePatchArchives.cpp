@@ -1126,7 +1126,7 @@ bool WINAPI SFileOpenPatchArchive(
     // Open the archive like it is normal archive
     if(dwErrCode == ERROR_SUCCESS)
     {
-        if(SFileOpenArchive(szPatchMpqName, 0, MPQ_OPEN_READ_ONLY | MPQ_OPEN_PATCH, &hPatchMpq))
+        if(SFileOpenArchive(szPatchMpqName, 0, MPQ_OPEN_READ_ONLY | MPQ_OPEN_PATCH | dwFlags, &hPatchMpq))
         {
             // Cast the archive handle to structure pointer
             haPatch = (TMPQArchive *)hPatchMpq;
