@@ -1,5 +1,6 @@
 file(GLOB PRIVATE_SOURCES
     "*.cpp"
+    "command/*/*.cpp"
 )
 
 add_library(console STATIC

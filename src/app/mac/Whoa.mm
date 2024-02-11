@@ -1,12 +1,15 @@
 #include "app/mac/WoWApplication.h"
 #include "app/mac/MacClient.h"
 #include "client/Client.hpp"
+#include "bc/os/CommandLine.hpp"
 #include <AppKit/AppKit.h>
 #include <Foundation/Foundation.h>
 
 int32_t main(int32_t argc, char* argv[]) {
     // TODO
     // MacClient::SetupCommandLine(argc, argv, v10);
+
+    OsSetCommandLine(argc, argv);
 
     if (MacClient::IsUsingGLLayer()) {
         // TODO

@@ -337,6 +337,16 @@ int32_t GxuFontDestroyBatch(CGxStringBatch* batch) {
     return 1;
 }
 
+int32_t GxuFontClearBatch(CGxStringBatch* batch) {
+    if (!batch) {
+        return 0;
+    }
+
+    batch->m_fontBatch.Clear();
+
+    return batch != 0;
+}
+
 void GxuFontDestroyFont(CGxFont*& font) {
     if (font) {
         g_fonts.DeleteNode(font);

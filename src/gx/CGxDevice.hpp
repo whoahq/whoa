@@ -57,6 +57,9 @@ class CGxDevice {
 #if defined(WHOA_SYSTEM_MAC)
         static CGxDevice* NewGLL();
 #endif
+#if defined(WHOA_SYSTEM_LINUX) || defined(WHOA_SYSTEM_WIN)
+        static CGxDevice* NewGLSDL();
+#endif
         static CGxDevice* NewOpenGl();
         static uint32_t PrimCalcCount(EGxPrim primType, uint32_t count);
 

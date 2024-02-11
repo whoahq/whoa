@@ -112,7 +112,7 @@ void IEvtSchedulerInitialize(int32_t threadCount, int32_t netServer) {
 }
 
 void IEvtSchedulerProcess() {
-    #if defined(WHOA_SYSTEM_WIN)
+    #if defined(WHOA_SYSTEM_WIN) || defined(WHOA_SYSTEM_LINUX)
         Event::s_startEvent.Set();
 
         SchedulerThreadProc(reinterpret_cast<void*>(1));
