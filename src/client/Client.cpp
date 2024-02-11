@@ -1,6 +1,7 @@
 #include "client/Client.hpp"
 #include "async/AsyncFile.hpp"
 #include "client/ClientServices.hpp"
+#include "client/CmdLine.hpp"
 #include "console/CVar.hpp"
 #include "console/Client.hpp"
 #include "console/Device.hpp"
@@ -18,6 +19,7 @@
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
+#include <bc/os/Path.hpp>
 
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
@@ -136,12 +138,28 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     return 1;
 }
 
+void SetPaths() {
+    // SFile::DisableSFileCheckDisk();
+    // SFile::EnableDirectAccess(0);
+
+    char buffer[STORM_MAX_PATH] = {0};
+
+    const char* datadir = CmdLineGetString(CMD_DATA_DIR);
+    if (*datadir == '\0') {
+        OsGetExePath(buffer, STORM_MAX_PATH);
+        datadir = buffer;
+    }
+
+    SFile::SetBasePath(datadir);
+    SFile::SetDataPath("Data\\");
+
+    OsSetCurrentDirectory(datadir);
+}
+
 int32_t InitializeGlobal() {
     // TODO
 
-    // SCmdRegisterArgList(&ProcessCommandLine(void)::s_wowArgList, 17u);
-
-    // CmdLineProcess();
+    ProcessCommandLine();
 
     // sub_403600("WoW.mfil");
 
@@ -159,9 +177,15 @@ int32_t InitializeGlobal() {
 
     OpenArchives();
 
+    SetPaths();
+
     ConsoleInitializeClientCommand();
 
     ConsoleInitializeClientCVar("Config.wtf");
+
+    // TODO
+    // replace enUS with detected locale
+    ClientServices::InitLoginServerCVars(1, "enUS");
 
     // sub_7663F0();
 

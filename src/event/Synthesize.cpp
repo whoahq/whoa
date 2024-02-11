@@ -3,9 +3,17 @@
 #include "event/Queue.hpp"
 #include <common/Time.hpp>
 
+#if defined(WHOA_SYSTEM_WIN)
+#include <windows.h>
+#endif
+
 void SynthesizeDestroy(EvtContext* context) {
     // TODO
+#if defined(WHOA_SYSTEM_WIN)
+    ExitProcess(0);
+#else
     exit(0);
+#endif
 }
 
 void SynthesizeIdle(EvtContext* context, uint32_t currTime, float elapsedSec) {

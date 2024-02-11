@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <common/String.hpp>
 #include <storm/Hash.hpp>
+#include <bc/os/File.hpp>
 
 class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
     public:
@@ -14,7 +15,9 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
         // Static functions
         static CVar* Lookup(const char* name);
         static CVar* Register(const char*, const char*, uint32_t, const char*, bool (*)(CVar*, const char*, const char*, void*), uint32_t, bool, void*, bool);
-
+        static void  Initialize(const char* filename);
+        static int32_t Load(const char* filename);
+        static int32_t Load(HOSFILE fileHandle);
         // Member variables
         uint32_t m_category = 0;
         uint32_t m_flags = 0;
@@ -35,7 +38,16 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
         const char* GetString(void);
         void InternalSet(const char*, bool, bool, bool, bool);
         bool Set(const char*, bool, bool, bool, bool);
+        bool Reset();
+        bool Default();
         int32_t Update();
 };
+
+
+int32_t SetCommandHandler(const char* command, const char* arguments);
+int32_t CvarResetCommandHandler(const char* command, const char* arguments);
+int32_t CvarDefaultCommandHandler(const char* command, const char* arguments);
+int32_t CvarListCommandHandler(const char* command, const char* arguments);
+int32_t CvarCommandHandler(const char* command, const char* arguments);
 
 #endif

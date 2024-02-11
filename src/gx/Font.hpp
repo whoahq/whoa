@@ -67,6 +67,8 @@ int32_t GxuFontCreateString(CGxFont*, const char*, float, const C3Vector&, float
 
 int32_t GxuFontDestroyBatch(CGxStringBatch*);
 
+int32_t GxuFontClearBatch(CGxStringBatch* batch);
+
 void GxuFontDestroyFont(CGxFont*& font);
 
 void GxuFontDestroyString(CGxString*&);

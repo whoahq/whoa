@@ -6,10 +6,6 @@
 
 void* g_mpqHandle = nullptr;
 
-void OsCreateDirectory(const char* pathName, int32_t recursive) {
-    // TODO
-}
-
 void OsBuildFontFilePath(const char* fileName, char* buffer, size_t size) {
     SStrPrintf(buffer, size, "%s\\%s", "Fonts", fileName);
 }
