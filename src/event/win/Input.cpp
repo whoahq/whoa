@@ -408,8 +408,9 @@ int32_t OsInputGet(OSINPUT* id, int32_t* param0, int32_t* param1, int32_t* param
 }
 
 void OsInputSetMouseMode(OS_MOUSE_MODE mode) {
-    STORM_ASSERT(mode < OS_MOUSE_MODES);
-    STORM_VALIDATE(mode < OS_MOUSE_MODES, ERROR_INVALID_PARAMETER);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(mode < OS_MOUSE_MODES);
+    STORM_VALIDATE_END_VOID;
 
     if (Input::s_osMouseMode == mode) {
         return;

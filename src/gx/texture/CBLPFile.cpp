@@ -132,8 +132,9 @@ int32_t CBLPFile::LockChain2(const char* fileName, PIXEL_FORMAT format, MipBits*
 }
 
 int32_t CBLPFile::Open(const char* filename, int32_t a3) {
-    STORM_ASSERT(filename);
-    STORM_VALIDATE(filename, ERROR_INVALID_PARAMETER, 0);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(filename);
+    STORM_VALIDATE_END;
 
     this->m_inMemoryImage = nullptr;
 
