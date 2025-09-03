@@ -24,8 +24,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(CMAKE_BUILD_TYPE Debug)
-
 include(lib/system/cmake/system.cmake)
 
 # Some templates abuse offsetof
