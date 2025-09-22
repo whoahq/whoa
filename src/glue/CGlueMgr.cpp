@@ -1,10 +1,11 @@
 #include "glue/CGlueMgr.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "console/CVar.hpp"
 #include "glue/CRealmList.hpp"
-#include "glue/LoadingScreen.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
+#include "gx/LoadingScreen.hpp"
 #include "math/Utils.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
@@ -15,11 +16,10 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
-#include "console/CVar.hpp"
 #include "util/Filesystem.hpp"
 #include "util/Log.hpp"
-#include <cstdio>
 #include <common/MD5.hpp>
+#include <cstdio>
 
 unsigned char InterfaceKey[256] = {
     0xC3, 0x5B, 0x50, 0x84, 0xB9, 0x3E, 0x32, 0x42, 0x8C, 0xD0, 0xC7, 0x48, 0xFA, 0x0E, 0x5D, 0x54,
