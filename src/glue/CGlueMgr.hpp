@@ -21,7 +21,7 @@ class CGlueMgr {
             IDLE_7 = 7,
             IDLE_8 = 8,
             IDLE_9 = 9,
-            IDLE_10 = 10,
+            IDLE_ENTER_WORLD = 10,
             IDLE_11 = 11,
             IDLE_12 = 12,
             IDLE_13 = 13
@@ -64,6 +64,7 @@ class CGlueMgr {
         static void LoginServerLogin(const char* accountName, const char* password);
         static void QuitGame();
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
+        static void PollEnterWorld();
         static void PollLoginServerLogin();
         static void Resume();
         static void SetCurrentAccount(const char* accountName);

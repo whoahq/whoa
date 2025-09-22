@@ -1,7 +1,8 @@
 #include "glue/CGlueMgr.hpp"
-#include "glue/CRealmList.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "glue/CRealmList.hpp"
+#include "glue/LoadingScreen.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
 #include "math/Utils.hpp"
@@ -241,6 +242,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
         break;
     }
 
+    case IDLE_ENTER_WORLD: {
+        CGlueMgr::PollEnterWorld();
+        break;
+    }
+
     // TODO other idle states
 
     default:
@@ -405,6 +411,29 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
             return;
         }
     }
+}
+
+void CGlueMgr::PollEnterWorld() {
+    if (!LoadingScreenDrawing()) {
+        return;
+    }
+
+    if (CGlueMgr::m_suspended) {
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+
+        // TODO SI Logic
+        // TODO ClientConnection::CharacterLogin()
+
+        return;
+    }
+
+    // TODO Get map ID and position from character info
+    uint32_t mapId = 0;
+    C3Vector position = { 0.0f, 0.0f, 0.0f };
+
+    CGlueMgr::Suspend();
+    ClientInitializeGame(mapId, position);
 }
 
 void CGlueMgr::PollLoginServerLogin() {
@@ -655,7 +684,7 @@ void CGlueMgr::StatusDialogClick() {
         case IDLE_4:
         case IDLE_5:
         case IDLE_6:
-        case IDLE_10: {
+        case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
 
             CGlueMgr::m_showedDisconnect = 0;

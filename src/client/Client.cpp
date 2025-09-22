@@ -48,6 +48,10 @@ void ClientMiscInitialize() {
     // TODO
 }
 
+void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+}
+
 void ClientPostClose(int32_t a1) {
     // TODO s_finalDialog = a1;
     EventPostCloseEx(nullptr);
