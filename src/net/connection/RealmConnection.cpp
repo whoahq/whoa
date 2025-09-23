@@ -171,7 +171,7 @@ int32_t RealmConnection::HandleAuthResponse(uint32_t msgId, uint32_t time, CData
             this->m_authenticated = 1;
         }
 
-        if (msg->Size() - msg->m_read >= 10 + (authResult == 27 ? 5 : 0)) {
+        if (msg->Size() - msg->Tell() >= 10 + (authResult == 27 ? 5 : 0)) {
             msg->Get(this->m_billingTimeRemaining);
             msg->Get(this->m_billingFlags);
             msg->Get(this->m_billingTimeRested);

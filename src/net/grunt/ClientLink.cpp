@@ -47,7 +47,7 @@ void Grunt::ClientLink::Call() {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+    if (msg.Tell() > msg.Size() || msg.Size() - msg.Tell() < 2) {
         return 0;
     }
 
@@ -63,7 +63,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
     // Auth failure (success == 0)
     if (result != 0) {
-        if (msg.m_read > msg.m_size) {
+        if (msg.Tell() > msg.Size()) {
             return 1;
         }
 
@@ -78,11 +78,11 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
         return 2;
     }
 
-    if (msg.m_read > msg.m_size) {
+    if (msg.Tell() > msg.Size()) {
         return 0;
     }
 
-    if (msg.m_size - msg.m_read < 33) {
+    if (msg.Size() - msg.Tell() < 33) {
         return 0;
     }
 
@@ -177,7 +177,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
         msg.Get(tokenRequired);
     }
 
-    if (msg.m_read > msg.m_size) {
+    if (msg.Tell() > msg.Size()) {
         return 1;
     }
 
@@ -204,7 +204,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
-    if (msg.m_read >= msg.m_size) {
+    if (msg.Tell() >= msg.Size()) {
         return 0;
     }
 
@@ -217,7 +217,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
             // TODO
         }
 
-        if (msg.m_read > msg.m_size) {
+        if (msg.Tell() > msg.Size()) {
             return 1;
         }
 
@@ -233,7 +233,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     }
 
     // Authentication success
-    if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 24) {
+    if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 24) {
         void* serverProof;
         msg.GetDataInSitu(serverProof, 20);
 
@@ -243,11 +243,11 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         uint32_t surveyID;
         msg.Get(surveyID);
 
-        if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 2) {
+        if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 2) {
             uint16_t logonFlags = 0x0;
             msg.Get(logonFlags);
 
-            if (msg.m_read <= msg.m_size) {
+            if (msg.Tell() <= msg.Size()) {
                 if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
                     this->SetState(2);
                     this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
@@ -282,28 +282,28 @@ int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+    if (msg.Tell() > msg.Size() || msg.Size() - msg.Tell() < 2) {
         return 0;
     }
 
     uint16_t size;
     msg.Get(size);
 
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < size) {
+    if (msg.Tell() > msg.Size() || msg.Size() - msg.Tell() < size) {
         return 0;
     }
 
-    uint32_t startData = msg.m_read;
+    uint32_t startData = msg.Tell();
 
     uint32_t padding;
     msg.Get(padding);
 
-    uint32_t startList = msg.m_read;
+    uint32_t startList = msg.Tell();
 
     uint16_t count;
     msg.Get(count);
 
-    for (uint32_t i = 0; i < count && msg.m_read < msg.m_size; i++) {
+    for (uint32_t i = 0; i < count && msg.Tell() < msg.Size(); i++) {
         uint8_t realmType;
         msg.Get(realmType);
 
@@ -350,13 +350,13 @@ int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
     uint16_t padding2;
     msg.Get(padding2);
 
-    if (msg.m_read <= msg.m_size && msg.m_read - startData == size) {
-        uint32_t endData = msg.m_read;
-        msg.m_read = startList;
+    if (msg.Tell() <= msg.Size() && msg.Tell() - startData == size) {
+        uint32_t endData = msg.Tell();
+        msg.Seek(startList);
 
         this->m_clientResponse->RealmListResult(&msg);
 
-        msg.m_read = endData;
+        msg.Seek(endData);
 
         return 2;
     }
@@ -457,7 +457,7 @@ void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
 }
 
 void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
-    uint32_t startPos = msg.m_size;
+    uint32_t startPos = msg.Size();
     uint16_t tmpSize = 0;
     msg.Put(tmpSize);
 
@@ -477,7 +477,7 @@ void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
     msg.Put(accountNameLen);
     msg.PutData(this->m_accountName, accountNameLen);
 
-    msg.Set(startPos, msg.m_size - startPos - 2);
+    msg.Set(startPos, msg.Size() - startPos - 2);
 }
 
 void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
@@ -522,9 +522,9 @@ void Grunt::ClientLink::Send(CDataStore& msg) {
 
     if (this->m_connection) {
         void* data;
-        msg.GetDataInSitu(data, msg.m_size);
+        msg.GetDataInSitu(data, msg.Size());
 
-        this->m_connection->SendRaw(static_cast<uint8_t*>(data), msg.m_size, false);
+        this->m_connection->SendRaw(static_cast<uint8_t*>(data), msg.Size(), false);
     }
 
     this->m_critSect.Leave();
@@ -565,15 +565,15 @@ void Grunt::ClientLink::WCDataReady(WowConnection* conn, uint32_t timeStamp, uin
 
     uint32_t pos = 0;
     if (Grunt::Command<Grunt::ClientLink>::Process(this->m_datastore1B0, Grunt::s_clientCommands, 7u, *this, pos)) {
-        auto remainingBytes = this->m_datastore1B0.m_size - pos;
-        this->m_datastore1B0.m_read = pos;
+        auto remainingBytes = this->m_datastore1B0.Size() - pos;
+        this->m_datastore1B0.Seek(pos);
         void* remainingData;
         this->m_datastore1B0.GetDataInSitu(remainingData, remainingBytes);
-        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Seek(-1);
         this->m_datastore1B0.Reset();
         this->m_datastore1B0.PutData(remainingData, remainingBytes);
     } else {
-        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Seek(-1);
         this->m_datastore1B0.Reset();
         this->Disconnect();
     }

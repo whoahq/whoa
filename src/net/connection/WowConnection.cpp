@@ -478,11 +478,7 @@ void WowConnection::DoMessageReads() {
         this->m_readBytes += bytesRead;
 
         if (size >= 0 && this->m_readBytes >= size) {
-            CDataStore msg;
-            msg.m_data = &this->m_readBuffer[headerSize];
-            msg.m_alloc = -1;
-            msg.m_size = size - headerSize;
-            msg.m_read = 0;
+            CDataStore msg = CDataStore(&this->m_readBuffer[headerSize], size - headerSize);
 
             this->AcquireResponseRef();
 
