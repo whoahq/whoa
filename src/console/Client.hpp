@@ -3,6 +3,6 @@
 
 void ConsoleInitializeClientCommand();
 
-void ConsoleInitializeClientCVar(const char* a1);
+void ConsoleInitializeClientCVar(const char* filename);
 
 #endif

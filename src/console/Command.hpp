@@ -48,10 +48,4 @@ int32_t ConsoleCommandRegister(const char* command, int32_t (*handler)(const cha
 
 void ConsoleCommandUnregister(const char* command);
 
-int32_t ConsoleCommand_Help(const char* command, const char* arguments);
-
-int32_t ConsoleCommand_Quit(const char* command, const char* arguments);
-
-int32_t ConsoleCommand_Ver(const char* command, const char* arguments);
-
 #endif
