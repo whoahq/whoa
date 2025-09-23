@@ -1,0 +1,3 @@
+#include "util/Locale.hpp"
+
+WOW_LOCALE CURRENT_LANGUAGE = DEFAULT_LANGUAGE;
