@@ -1,7 +1,7 @@
-#include "console/Client.hpp"
-#include "CommandHandlers.hpp"
-#include "console/CVar.hpp"
+#include "console/Initialize.hpp"
 #include "console/Command.hpp"
+#include "console/CommandHandlers.hpp"
+#include "console/CVar.hpp"
 
 static const char* s_filename;
 

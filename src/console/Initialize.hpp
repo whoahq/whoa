@@ -1,5 +1,5 @@
-#ifndef CONSOLE_CLIENT_HPP
-#define CONSOLE_CLIENT_HPP
+#ifndef CONSOLE_INITIALIZE_HPP
+#define CONSOLE_INITIALIZE_HPP
 
 void ConsoleInitializeClientCommand();
 
