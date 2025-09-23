@@ -31,7 +31,19 @@ void BaseInitializeGlobal() {
     PropInitialize();
 }
 
+int32_t ClientIdle(const void* data, void* param) {
+    // TODO
+    // ClientGameTimeTickHandler(data, param);
+    // Player_C_ZoneUpdateHandler(data, param);
+
+    return 1;
+}
+
 void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+
+    EventRegister(EVENT_ID_IDLE, ClientIdle);
+
     // TODO
 
     ClientServices::SetMessageHandler(SMSG_NOTIFICATION, NotifyHandler, nullptr);
