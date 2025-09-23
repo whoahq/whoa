@@ -1,5 +1,6 @@
 #include "client/Client.hpp"
 #include "async/AsyncFile.hpp"
+#include "client/ClientHandlers.hpp"
 #include "client/ClientServices.hpp"
 #include "console/CVar.hpp"
 #include "console/Client.hpp"
@@ -30,6 +31,21 @@ void BaseInitializeGlobal() {
     PropInitialize();
 }
 
+void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+
+    ClientServices::SetMessageHandler(SMSG_NOTIFICATION, NotifyHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_PLAYED_TIME, PlayedTimeHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_NEW_WORLD, NewWorldHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_PENDING, TransferPendingHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_ABORTED, TransferAbortedHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_LOGIN_VERIFY_WORLD, LoginVerifyWorldHandler, nullptr);
+
+    ClientServices::SetMessageHandler(SMSG_KICK_REASON, CGlueMgr::OnKickReasonMsg, nullptr);
+
+    // TODO
+}
+
 void ClientMiscInitialize() {
     // TODO
 
@@ -45,10 +61,6 @@ void ClientMiscInitialize() {
         false
     );
 
-    // TODO
-}
-
-void ClientInitializeGame(uint32_t mapId, C3Vector position) {
     // TODO
 }
 

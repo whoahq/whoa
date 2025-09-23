@@ -1,6 +1,7 @@
 #ifndef CLIENT_CLIENT_SERVICES_HPP
 #define CLIENT_CLIENT_SERVICES_HPP
 
+#include "net/connection/NetClient.hpp"
 #include "net/login/LoginResponse.hpp"
 
 class ClientConnection;
@@ -33,6 +34,7 @@ class ClientServices : public LoginResponse {
         static void Logon(const char* accountName, const char* password);
         static void SelectRealm(const char* realmName);
         static void SetAccountName(const char* accountName);
+        static void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
         static int32_t SetSelectedRealmInfo(int32_t a1);
 
         // Virtual member functions

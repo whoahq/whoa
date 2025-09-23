@@ -154,6 +154,13 @@ void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
 }
 
+void ClientServices::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
+    STORM_ASSERT(handler);
+    STORM_ASSERT(ClientServices::s_currentConnection);
+
+    ClientServices::s_currentConnection->SetMessageHandler(msgId, handler, param);
+}
+
 int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
     auto instance = ClientServices::GetInstance();
 

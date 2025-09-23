@@ -340,8 +340,10 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
     memset(const_cast<char*>(password), 0, SStrLen(password));
 }
 
-void CGlueMgr::QuitGame() {
-    ClientPostClose(0);
+int32_t CGlueMgr::OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    // TODO
+
+    return 0;
 }
 
 void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
@@ -495,6 +497,10 @@ void CGlueMgr::PollLoginServerLogin() {
     default:
         break;
     }
+}
+
+void CGlueMgr::QuitGame() {
+    ClientPostClose(0);
 }
 
 void CGlueMgr::Resume() {
