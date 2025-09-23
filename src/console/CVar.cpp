@@ -1,8 +1,26 @@
 #include "console/CVar.hpp"
+#include "console/Command.hpp"
+#include "console/CVarHandlers.hpp"
 #include <storm/String.hpp>
 
+bool CVar::m_initialized;
 bool CVar::m_needsSave;
 TSHashTable<CVar, HASHKEY_STRI> CVar::s_registeredCVars;
+
+void CVar::Initialize() {
+    CVar::m_initialized = true;
+
+    char basePath[STORM_MAX_PATH];
+    // TODO
+    // SFile::GetBasePath(basePath, 260);
+    // SStrPrintf(basePath, sizeof(basePath), "%s%s\\", basePath, "WTF");
+    // s_CreatePathDirectories(basePath);
+
+    ConsoleCommandRegister("set", CVarSetCommandHandler, DEFAULT, "Set the value of a CVar");
+    ConsoleCommandRegister("cvar_reset", CVarResetCommandHandler, DEFAULT, "Set the value of a CVar to it's startup value");
+    ConsoleCommandRegister("cvar_default", CVarDefaultCommandHandler, DEFAULT, "Set the value of a CVar to it's coded default value");
+    ConsoleCommandRegister("cvarlist", CVarListCommandHandler, DEFAULT, "List cvars");
+}
 
 CVar* CVar::Lookup(const char* name) {
     return name

@@ -8,10 +8,12 @@
 class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
     public:
         // Static variables
+        static bool m_initialized;
         static TSHashTable<CVar, HASHKEY_STRI> s_registeredCVars;
         static bool m_needsSave;
 
         // Static functions
+        static void Initialize();
         static CVar* Lookup(const char* name);
         static CVar* Register(const char*, const char*, uint32_t, const char*, bool (*)(CVar*, const char*, const char*, void*), uint32_t, bool, void*, bool);
 
