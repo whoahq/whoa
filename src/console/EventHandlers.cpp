@@ -1,5 +1,5 @@
-#include "console/Handlers.hpp"
 #include "console/Console.hpp"
+#include "console/EventHandlers.hpp"
 #include "console/Screen.hpp"
 #include "event/Event.hpp"
 #include <cstdint>
