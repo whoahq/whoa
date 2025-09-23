@@ -210,11 +210,7 @@ int32_t NetClient::HandleConnect() {
 int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
     // TODO push obj mgr
 
-    CDataStore msg;
-    msg.m_data = static_cast<uint8_t*>(data);
-    msg.m_size = size;
-    msg.m_alloc = -1;
-    msg.m_read = 0;
+    CDataStore msg = CDataStore(static_cast<uint8_t*>(data), size);
 
     this->ProcessMessage(timeReceived, &msg, 0);
 
@@ -295,7 +291,7 @@ void NetClient::Send(CDataStore* msg) {
         return;
     }
 
-    auto v4 = msg->m_size - msg->m_read;
+    auto v4 = msg->Size() - msg->Tell();
 
     if (!v4) {
         return;
@@ -358,12 +354,12 @@ void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNA
 
 void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg) {
     uint8_t* data;
-    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->m_size);
+    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->Size());
 
     // TODO increment byte counter
     // SInterlockedExchangeAdd(this->m_bytesReceived, msg->m_size);
 
-    msg->m_read = 0;
+    msg->Seek(0);
 
     uint16_t msgId;
     msg->Get(msgId);
@@ -381,8 +377,8 @@ void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataSto
     }
 
     if (conn == this->m_serverConnection && !this->m_suspended) {
-        msg->m_read = msg->m_size;
-        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DATA, conn, this, data, msg->m_size);
+        msg->Seek(msg->Size());
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DATA, conn, this, data, msg->Size());
     } else {
         conn->Disconnect();
     }

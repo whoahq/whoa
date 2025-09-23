@@ -29,7 +29,7 @@ FT_Face FontFaceGetFace(HFACE handle) {
 const char* FontFaceGetFontName(HFACE handle) {
     STORM_ASSERT(handle);
 
-    return reinterpret_cast<FACEDATA*>(handle)->m_key.m_str;
+    return reinterpret_cast<FACEDATA*>(handle)->m_key.GetString();
 }
 
 HFACE FontFaceGetHandle(const char* fileName, FT_Library library) {
