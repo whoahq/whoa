@@ -93,7 +93,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     msg.Get(generatorLen);
 
     // TODO
-    // if (!msg.Sub8CBBF0(v31 + 1)) {
+    // if (!CanRead(msg, v31 + 1)) {
     //     return 0;
     // }
 
@@ -104,7 +104,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     msg.Get(largeSafePrimeLen);
 
     // TODO
-    // if (!msg.sub_8CBBF0(v32 + 48)) {
+    // if (!CanRead(msg, v32 + 48)) {
     //     return 0;
     // }
 
@@ -118,7 +118,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), 16);
 
     // TODO
-    // if (!msg.Sub8CBBF0(1)) {
+    // if (!CanRead(msg, 1)) {
     //     return 0;
     // }
 
@@ -139,7 +139,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     // PIN
     if (logonFlags & 0x1) {
         // TODO
-        // if (!msg.Sub8CBBF0(20)) {
+        // if (!CanRead(msg, 20) {
         //     return 0;
         // }
 
@@ -151,7 +151,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     if (logonFlags & 0x2) {
         // TODO
         /*
-        if (msg.Sub8CBBF0(12)) {
+        if (CanRead(msg, 12)) {
             msg.Get(matrixWidth);
             msg.Get(matrixHeight);
             msg.Get(matrixDigitCount);
@@ -170,7 +170,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     // TOKEN (authenticator)
     if (logonFlags & 0x4) {
         // TODO
-        // if (!msg.Sub8CBBF0(1)) {
+        // if (!CanRead(msg, 1)) {
         //     return 0;
         // }
 

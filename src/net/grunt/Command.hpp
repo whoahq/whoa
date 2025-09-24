@@ -2,6 +2,7 @@
 #define NET_GRUNT_COMMAND_HPP
 
 #include "net/Grunt.hpp"
+#include "net/grunt/Util.hpp"
 
 template <class T>
 class Grunt::Command {
@@ -19,7 +20,7 @@ class Grunt::Command {
 template <class T>
 int32_t Grunt::Command<T>::Process(CDataStore& msg, Command<T>* commands, uint32_t commandCount, T& a4, uint32_t& pos) {
     while (true) {
-        if (!msg.Sub8CBBF0(1)) {
+        if (!CanRead(msg, 1)) {
             return 1;
         }
 
