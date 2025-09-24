@@ -47,6 +47,7 @@ void Grunt::ClientLink::Call() {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
+    // sizeof(protocol) + sizeof(result)
     if (!CanRead(msg, 2)) {
         return 0;
     }
@@ -78,6 +79,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
         return 2;
     }
 
+    // sizeof(serverPublicKey) + sizeof(generatorLen)
     if (!CanRead(msg, 33)) {
         return 0;
     }
@@ -88,6 +90,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t generatorLen;
     msg.Get(generatorLen);
 
+    // generatorLen + sizeof(largeSafePrimeLen)
     if (!CanRead(msg, generatorLen + 1)) {
         return 0;
     }
@@ -98,6 +101,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t largeSafePrimeLen;
     msg.Get(largeSafePrimeLen);
 
+    // largeSafePrimeLen + sizeof(salt) + sizeof(versionChallenge)
     if (!CanRead(msg, largeSafePrimeLen + 48)) {
         return 0;
     }
@@ -111,6 +115,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t* versionChallenge;
     msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), 16);
 
+    // sizeof(logonFlags)
     if (!CanRead(msg, 1)) {
         return 0;
     }
@@ -131,6 +136,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
     // PIN
     if (logonFlags & 0x1) {
+        // sizeof(pinGridSeed) + sizeof(pinSalt)
         if (!CanRead(msg, 20)) {
             return 0;
         }
@@ -161,6 +167,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
     // TOKEN (authenticator)
     if (logonFlags & 0x4) {
+        // sizeof(tokenRequired)
         if (!CanRead(msg, 1)) {
             return 0;
         }
