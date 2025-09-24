@@ -14,6 +14,7 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
 
         // Static functions
         static void Initialize();
+        static void Load(const char* filename);
         static CVar* Lookup(const char* name);
         static CVar* Register(const char*, const char*, uint32_t, const char*, bool (*)(CVar*, const char*, const char*, void*), uint32_t, bool, void*, bool);
 

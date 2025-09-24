@@ -26,6 +26,5 @@ void ConsoleInitializeClientCVar(const char* filename) {
 
     CVar::Initialize();
 
-    // TODO
-    // CVar::Load(s_filename);
+    CVar::Load(s_filename);
 }
