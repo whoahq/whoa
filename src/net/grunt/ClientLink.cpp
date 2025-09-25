@@ -13,6 +13,7 @@
 #define VERSION_CHALLENGE_LEN 16
 #define PIN_SALT_LEN 16
 #define SERVER_PROOF_LEN 20
+#define RECONNECT_KEY_LEN 16
 
 Grunt::Command<Grunt::ClientLink> Grunt::s_clientCommands[] = {
     { Grunt::ClientLink::CMD_AUTH_LOGON_CHALLENGE, "ClientLink::CMD_AUTH_LOGON_CHALLENGE", &Grunt::ClientLink::CmdAuthLogonChallenge, 0 },
@@ -329,8 +330,39 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
-    // TODO
-    return 0;
+    uint8_t result;
+    uint8_t* reconnectKey;
+    uint8_t* versionChallenge;
+
+    if (!CanRead(msg, sizeof(result) + RECONNECT_KEY_LEN)) {
+        return 0;
+    }
+
+    msg.Get(result);
+
+    // Reconnect auth failure (result != 0)
+
+    if (result != 0) {
+        return 1;
+    }
+
+    // Reconnect auth success (result == 0)
+
+    msg.GetDataInSitu(reinterpret_cast<void*&>(reconnectKey), RECONNECT_KEY_LEN);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), VERSION_CHALLENGE_LEN);
+
+    if (!msg.IsValid()) {
+        return 1;
+    }
+
+    // The client appears to overwrite the first half of m_serverPublicKey during reconnects
+    memcpy(this->m_serverPublicKey, reconnectKey, RECONNECT_KEY_LEN);
+
+    this->SetState(STATE_RECONNECT_VERSION);
+
+    this->m_clientResponse->GetVersionProof(versionChallenge);
+
+    return 2;
 }
 
 int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
