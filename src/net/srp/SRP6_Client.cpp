@@ -5,7 +5,7 @@
 
 int32_t SRP6_Client::BeginAuthentication(const char* accountName, const char* password) {
     if (!accountName || !password) {
-        return -1;
+        return SRP6_INVALID;
     }
 
     SHA1_Init(&this->ctx);
@@ -22,7 +22,7 @@ int32_t SRP6_Client::BeginAuthentication(const char* accountName, const char* pa
     SHA1_Update(&ctx, reinterpret_cast<const uint8_t*>(password), strlen(password));
     SHA1_Final(this->interimDigest, &ctx);
 
-    return 0;
+    return SRP6_OK;
 }
 
 int32_t SRP6_Client::CalculateProof(const uint8_t* largeSafePrime, uint32_t largeSafePrimeLen, const uint8_t* generator, uint32_t generatorLen, const uint8_t* salt, uint32_t saltLen, const uint8_t* publicKey, uint32_t publicKeyLen, SRP6_Random& random) {
@@ -39,25 +39,25 @@ int32_t SRP6_Client::CalculateProof(const uint8_t* largeSafePrime, uint32_t larg
     auto k = BigIntegerFromInt(0);
     auto S = BigIntegerFromInt(0);
 
-    int32_t result = 0;
+    int32_t result = SRP6_OK;
 
     if (!largeSafePrime || largeSafePrimeLen - 1 > 31) {
-        result = -1;
+        result = SRP6_INVALID;
         goto cleanup;
     }
 
     if (!generator || generatorLen - 1 > 31) {
-        result = -1;
+        result = SRP6_INVALID;
         goto cleanup;
     }
 
     if (!salt || saltLen - 1 > 31) {
-        result = -1;
+        result = SRP6_INVALID;
         goto cleanup;
     }
 
     if (!publicKey || publicKeyLen < 31) {
-        result = -1;
+        result = SRP6_INVALID;
         goto cleanup;
     }
 
@@ -150,12 +150,12 @@ int32_t SRP6_Client::CalculateProof(const uint8_t* largeSafePrime, uint32_t larg
             SHA1_Update(&this->ctx, this->clientProof, sizeof(this->clientProof));
             SHA1_Update(&this->ctx, this->sessionKey, sizeof(this->sessionKey));
 
-            result = 0;
+            result = SRP6_OK;
         } else {
-            result = -2;
+            result = SRP6_FAILURE;
         }
     } else {
-        result = -1;
+        result = SRP6_INVALID;
     }
 
 cleanup:
@@ -177,7 +177,7 @@ cleanup:
 
 int32_t SRP6_Client::VerifyServerProof(const uint8_t* serverProof, uint32_t serverProofLen) {
     if (serverProofLen != 20) {
-        return -2;
+        return SRP6_FAILURE;
     }
 
     // Calculate expected server proof
