@@ -28,7 +28,7 @@ Grunt::ClientLink::ClientLink(Grunt::ClientResponse& clientResponse) {
 
     this->m_clientResponse = &clientResponse;
 
-    this->SetState(0);
+    this->SetState(STATE_NONE);
 
     if (this->m_timer.m_thread.Valid()) {
         this->m_interval = 100;
@@ -42,9 +42,9 @@ void Grunt::ClientLink::Call() {
 
     this->m_critSect.Enter();
 
-    if (this->m_state == 2) {
+    if (this->m_state == STATE_CONNECTED) {
         this->m_clientResponse->GetLogonMethod();
-    } else if (this->m_state == 6 && !this->m_clientResponse->OnlineIdle()) {
+    } else if (this->m_state == STATE_AUTHENTICATED && !this->m_clientResponse->OnlineIdle()) {
         this->Disconnect();
     }
 
@@ -73,7 +73,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
             return 1;
         }
 
-        this->SetState(2);
+        this->SetState(STATE_CONNECTED);
 
         if (result >= GRUNT_RESULT_LAST) {
             // TODO WLog error
@@ -190,11 +190,11 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     SRP6_Random srpRandom(randomSeed, sizeof(randomSeed));
 
     if (this->m_srpClient.CalculateProof(largeSafePrime, largeSafePrimeLen, generator, generatorLen, salt, 32, serverPublicKey, 32, srpRandom)) {
-        this->SetState(2);
+        this->SetState(STATE_CONNECTED);
 
         this->m_clientResponse->LogonResult(GRUNT_RESULT_5, nullptr, 0, 0);
     } else {
-        this->SetState(4);
+        this->SetState(STATE_CONNECT_VERSION);
 
         this->m_clientResponse->SetPinInfo(pinEnabled, pinGridSeed, pinSalt);
 
@@ -238,7 +238,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         }
 
         if (result != 10) {
-            this->SetState(2);
+            this->SetState(STATE_CONNECTED);
 
             // TODO range check on result
 
@@ -265,7 +265,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
 
             if (msg.Tell() <= msg.Size()) {
                 if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
-                    this->SetState(2);
+                    this->SetState(STATE_CONNECTED);
                     this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
                 } else {
                     this->m_accountFlags = accountFlags;
@@ -273,7 +273,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
                     // this->uint94 = 0;
                     this->m_surveyID = surveyID;
 
-                    this->SetState(6);
+                    this->SetState(STATE_AUTHENTICATED);
                     this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
                 }
 
@@ -395,7 +395,7 @@ void Grunt::ClientLink::Connect(const char* a2) {
         return;
     }
 
-    this->SetState(1);
+    this->SetState(STATE_CONNECTING);
 
     auto connectionMem = SMemAlloc(sizeof(WowConnection), __FILE__, __LINE__, 0x0);
     auto connection = new (connectionMem) WowConnection(this, nullptr);
@@ -422,7 +422,7 @@ void Grunt::ClientLink::Disconnect() {
 }
 
 void Grunt::ClientLink::GetRealmList() {
-    if (this->m_state != 6) {
+    if (this->m_state != STATE_AUTHENTICATED) {
         return;
     }
 
@@ -440,7 +440,7 @@ void Grunt::ClientLink::GetRealmList() {
 }
 
 void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
-    this->SetState(3);
+    this->SetState(STATE_AUTH_CHALLENGE);
 
     SStrCopy(this->m_accountName, logon.accountName, sizeof(this->m_accountName));
     SStrUpper(this->m_accountName);
@@ -505,7 +505,7 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
     //     cdKeys.int0 = 0;
     // }
 
-    if (this->m_state == 4) {
+    if (this->m_state == STATE_CONNECT_VERSION) {
         command.Put(static_cast<uint8_t>(CMD_AUTH_LOGON_PROOF));
         command.PutData(this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
         command.PutData(this->m_srpClient.clientProof, sizeof(this->m_srpClient.clientProof));
@@ -546,7 +546,7 @@ void Grunt::ClientLink::Send(CDataStore& msg) {
     this->m_critSect.Leave();
 }
 
-void Grunt::ClientLink::SetState(int32_t state) {
+void Grunt::ClientLink::SetState(STATE state) {
     this->m_critSect.Enter();
 
     this->m_state = state;
@@ -561,7 +561,7 @@ void Grunt::ClientLink::WCCantConnect(WowConnection* conn, uint32_t timeStamp, N
 void Grunt::ClientLink::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr) {
     this->m_critSect.Enter();
 
-    this->SetState(2);
+    this->SetState(STATE_CONNECTED);
 
     int32_t connected = this->m_clientResponse->Connected(addr->peerAddr);
 
