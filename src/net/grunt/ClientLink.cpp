@@ -12,6 +12,7 @@
 #define SALT_LEN 32
 #define VERSION_CHALLENGE_LEN 16
 #define PIN_SALT_LEN 16
+#define SERVER_PROOF_LEN 20
 
 Grunt::Command<Grunt::ClientLink> Grunt::s_clientCommands[] = {
     { Grunt::ClientLink::CMD_AUTH_LOGON_CHALLENGE, "ClientLink::CMD_AUTH_LOGON_CHALLENGE", &Grunt::ClientLink::CmdAuthLogonChallenge, 0 },
@@ -220,7 +221,11 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
-    if (msg.Tell() >= msg.Size()) {
+    if (!msg.IsValid()) {
+        return 0;
+    }
+
+    if (msg.IsRead()) {
         return 0;
     }
 
@@ -228,12 +233,13 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     msg.Get(result);
 
     // Authentication failure (result for success is 0)
+
     if (result != 0) {
         if (result == 4) {
             // TODO
         }
 
-        if (msg.Tell() > msg.Size()) {
+        if (!msg.IsValid()) {
             return 1;
         }
 
@@ -249,42 +255,47 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     }
 
     // Authentication success
-    if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 24) {
-        void* serverProof;
-        msg.GetDataInSitu(serverProof, 20);
 
-        uint32_t accountFlags = 0x0;
-        msg.Get(accountFlags);
+    void* serverProof;
+    uint32_t accountFlags = 0x0;
+    uint32_t surveyID;
 
-        uint32_t surveyID;
-        msg.Get(surveyID);
-
-        if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 2) {
-            uint16_t logonFlags = 0x0;
-            msg.Get(logonFlags);
-
-            if (msg.Tell() <= msg.Size()) {
-                if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
-                    this->SetState(STATE_CONNECTED);
-                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
-                } else {
-                    this->m_accountFlags = accountFlags;
-                    // TODO
-                    // this->uint94 = 0;
-                    this->m_surveyID = surveyID;
-
-                    this->SetState(STATE_AUTHENTICATED);
-                    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
-                }
-
-                return 2;
-            }
-
-            return 1;
-        }
+    if (!CanRead(msg, SERVER_PROOF_LEN + sizeof(accountFlags))) {
+        return 0;
     }
 
-    return 0;
+    msg.GetDataInSitu(serverProof, SERVER_PROOF_LEN);
+    msg.Get(accountFlags);
+    msg.Get(surveyID);
+
+    uint16_t logonFlags = 0x0;
+
+    if (!CanRead(msg, sizeof(logonFlags))) {
+        return 0;
+    }
+
+    msg.Get(logonFlags);
+
+    if (!msg.IsValid()) {
+        return 1;
+    }
+
+    if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), SERVER_PROOF_LEN)) {
+        this->SetState(STATE_CONNECTED);
+
+        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
+    } else {
+        this->m_accountFlags = accountFlags;
+        // TODO
+        // this->uint94 = 0;
+        this->m_surveyID = surveyID;
+
+        this->SetState(STATE_AUTHENTICATED);
+
+        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
+    }
+
+    return 2;
 }
 
 int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
