@@ -190,32 +190,52 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     // OsSecureRandom(randomSeed, sizeof(randomSeed));
     SRP6_Random srpRandom(randomSeed, sizeof(randomSeed));
 
-    if (this->m_srpClient.CalculateProof(largeSafePrime, largeSafePrimeLen, generator, generatorLen, salt, 32, serverPublicKey, 32, srpRandom)) {
+    // Calculate proof
+
+    auto calculateResult = this->m_srpClient.CalculateProof(
+            largeSafePrime,
+            largeSafePrimeLen,
+            generator,
+            generatorLen,
+            salt,
+            SALT_LEN,
+            serverPublicKey,
+            SERVER_PUBLIC_KEY_LEN,
+            srpRandom
+        );
+
+    // Calculate proof failure
+
+    if (calculateResult != SRP6_OK) {
         this->SetState(STATE_CONNECTED);
 
         this->m_clientResponse->LogonResult(GRUNT_RESULT_5, nullptr, 0, 0);
-    } else {
-        this->SetState(STATE_CONNECT_VERSION);
 
-        this->m_clientResponse->SetPinInfo(pinEnabled, pinGridSeed, pinSalt);
-
-        this->m_clientResponse->SetMatrixInfo(
-            matrixEnabled,
-            matrixWidth,
-            matrixHeight,
-            matrixDigitCount,
-            matrixDigitCount,
-            false,
-            matrixChallengeCount,
-            matrixSeed,
-            this->m_srpClient.sessionKey,
-            40
-        );
-
-        this->m_clientResponse->SetTokenInfo(tokenEnabled, tokenRequired);
-
-        this->m_clientResponse->GetVersionProof(versionChallenge);
+        return 2;
     }
+
+    // Calculate proof success
+
+    this->SetState(STATE_CONNECT_VERSION);
+
+    this->m_clientResponse->SetPinInfo(pinEnabled, pinGridSeed, pinSalt);
+
+    this->m_clientResponse->SetMatrixInfo(
+        matrixEnabled,
+        matrixWidth,
+        matrixHeight,
+        matrixDigitCount,
+        matrixDigitCount,
+        false,
+        matrixChallengeCount,
+        matrixSeed,
+        this->m_srpClient.sessionKey,
+        40
+    );
+
+    this->m_clientResponse->SetTokenInfo(tokenEnabled, tokenRequired);
+
+    this->m_clientResponse->GetVersionProof(versionChallenge);
 
     return 2;
 }
@@ -256,7 +276,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
 
     // Authentication success
 
-    void* serverProof;
+    uint8_t* serverProof;
     uint32_t accountFlags = 0x0;
     uint32_t surveyID;
 
@@ -264,7 +284,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         return 0;
     }
 
-    msg.GetDataInSitu(serverProof, SERVER_PROOF_LEN);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(serverProof), SERVER_PROOF_LEN);
     msg.Get(accountFlags);
     msg.Get(surveyID);
 
@@ -280,20 +300,30 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         return 1;
     }
 
-    if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), SERVER_PROOF_LEN)) {
+    // Verify server proof
+
+    auto verifyResult = this->m_srpClient.VerifyServerProof(serverProof, SERVER_PROOF_LEN);
+
+    // Verify server proof failure
+
+    if (verifyResult != SRP6_OK) {
         this->SetState(STATE_CONNECTED);
 
-        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
-    } else {
-        this->m_accountFlags = accountFlags;
-        // TODO
-        // this->uint94 = 0;
-        this->m_surveyID = surveyID;
+        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0x0);
 
-        this->SetState(STATE_AUTHENTICATED);
-
-        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
+        return 2;
     }
+
+    // Verify server proof success
+
+    this->m_accountFlags = accountFlags;
+    // TODO
+    // this->uint94 = 0;
+    this->m_surveyID = surveyID;
+
+    this->SetState(STATE_AUTHENTICATED);
+
+    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
 
     return 2;
 }
