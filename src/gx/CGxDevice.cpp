@@ -194,6 +194,11 @@ int32_t CGxDevice::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
+void CGxDevice::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
+    buf->unk1E = 1;
+    buf->unk1F = 0;
+}
+
 const CGxCaps& CGxDevice::Caps() const {
     return this->m_caps;
 }
@@ -427,7 +432,7 @@ void CGxDevice::IRsSync(int32_t force) {
         this->IRsForceUpdate();
     }
 
-    for (int32_t i = 0; i < this->m_dirtyStates.Count(); i++) {
+    for (int32_t i = this->m_dirtyStates.Count() - 1; i >= 0; i--) {
         auto ds = this->m_dirtyStates[i];
         auto rs = &this->m_appRenderStates[ds];
         auto hs = &this->m_hwRenderStates[ds];
@@ -729,8 +734,11 @@ void CGxDevice::RsPop() {
     auto topOfStack = this->m_stackOffsets[this->m_stackOffsets.Count() - 1];
 
     if (this->m_pushedStates.Count() > topOfStack) {
-        for (int32_t i = this->m_pushedStates.Count() - 1; i > topOfStack; i--) {
-            auto ps = &this->m_pushedStates[i];
+        auto bottomOfStack = this->m_pushedStates.Count() - 1;
+        auto stackSize = this->m_pushedStates.Count() - topOfStack;
+
+        for (uint32_t stackOffset = 0; stackOffset < stackSize; stackOffset++) {
+            auto ps = &this->m_pushedStates[bottomOfStack - stackOffset];
             auto rs = &this->m_appRenderStates[ps->m_which];
 
             if (!rs->m_dirty) {
@@ -1044,8 +1052,7 @@ void CGxDevice::XformSetViewport(float minX, float maxX, float minY, float maxY,
         return;
     }
 
-    // TODO
-    // this->unk4[4] = 1;
+    this->intF6C = 1;
 
     this->m_viewport.x.l = minX;
     this->m_viewport.x.h = maxX;

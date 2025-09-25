@@ -4,13 +4,8 @@
 #include <cstdint>
 
 int32_t CScriptObject_GetObjectType(lua_State* L) {
-    if (!CScriptObject::s_objectType) {
-        CScriptObject::s_objectType = ++FrameScript_Object::s_objectTypes;
-    }
-
-    CScriptObject* object = (CScriptObject*)FrameScript_GetObjectThis(L, CScriptObject::s_objectType);
-
-    const char* type = object->GetObjectTypeName();
+    auto object = static_cast<CScriptObject*>(FrameScript_GetObjectThis(L, CScriptObject::GetObjectType()));
+    auto type = object->GetObjectTypeName();
 
     lua_pushstring(L, type);
 
@@ -18,24 +13,14 @@ int32_t CScriptObject_GetObjectType(lua_State* L) {
 }
 
 int32_t CScriptObject_IsObjectType(lua_State* L) {
-    if (!CScriptObject::s_objectType) {
-        CScriptObject::s_objectType = ++FrameScript_Object::s_objectTypes;
-    }
-
-    CScriptObject* object = (CScriptObject*)FrameScript_GetObjectThis(L, CScriptObject::s_objectType);
+    auto object = static_cast<CScriptObject*>(FrameScript_GetObjectThis(L, CScriptObject::GetObjectType()));
 
     if (!lua_isstring(L, 2)) {
-        const char* name = object->GetName();
-
-        if (!name) {
-            name = "<unnamed>";
-        }
-
-        luaL_error(L, "Usage: %s:IsObjectType(\"type\")", name);
-        return 0;
+        auto name = object->GetDisplayName();
+        return luaL_error(L, "Usage: %s:IsObjectType(\"type\")", name);
     }
 
-    const char* type = lua_tolstring(L, 2, 0);
+    auto type = lua_tolstring(L, 2, nullptr);
 
     if (object->IsA(type)) {
         lua_pushnumber(L, 1.0);
@@ -47,13 +32,8 @@ int32_t CScriptObject_IsObjectType(lua_State* L) {
 }
 
 int32_t CScriptObject_GetName(lua_State* L) {
-    if (!CScriptObject::s_objectType) {
-        CScriptObject::s_objectType = ++FrameScript_Object::s_objectTypes;
-    }
-
-    CScriptObject* object = (CScriptObject*)FrameScript_GetObjectThis(L, CScriptObject::s_objectType);
-
-    char* name = object->GetName();
+    auto object = static_cast<CScriptObject*>(FrameScript_GetObjectThis(L, CScriptObject::GetObjectType()));
+    auto name = object->GetName();
 
     if (name && *name) {
         lua_pushstring(L, name);
@@ -65,17 +45,12 @@ int32_t CScriptObject_GetName(lua_State* L) {
 }
 
 int32_t CScriptObject_GetParent(lua_State* L) {
-    if (!CScriptObject::s_objectType) {
-        CScriptObject::s_objectType = ++FrameScript_Object::s_objectTypes;
-    }
-
-    CScriptObject* object = (CScriptObject*)FrameScript_GetObjectThis(L, CScriptObject::s_objectType);
-
+    auto object = static_cast<CScriptObject*>(FrameScript_GetObjectThis(L, CScriptObject::GetObjectType()));
     CScriptObject* parent = object->GetScriptObjectParent();
 
     if (parent) {
         if (!parent->lua_registered) {
-            parent->RegisterScriptObject(0);
+            parent->RegisterScriptObject(nullptr);
         }
 
         lua_rawgeti(L, LUA_REGISTRYINDEX, parent->lua_objectRef);

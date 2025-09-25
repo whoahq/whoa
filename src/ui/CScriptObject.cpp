@@ -13,6 +13,14 @@ void CScriptObject::RegisterScriptMethods(lua_State* L) {
     FrameScript_Object::FillScriptMethodTable(L, ScriptObjectMethods, NUM_SCRIPT_OBJECT_SCRIPT_METHODS);
 }
 
+int32_t CScriptObject::GetObjectType() {
+    if (!CScriptObject::s_objectType) {
+        CScriptObject::s_objectType = ++FrameScript_Object::s_objectTypes;
+    }
+
+    return CScriptObject::s_objectType;
+}
+
 CScriptObject* CScriptObject::GetScriptObjectByName(const char* name, int32_t type) {
     lua_State* L = FrameScript_GetContext();
 

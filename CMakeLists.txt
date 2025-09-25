@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.1...3.5)
 
 if (${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
     message(FATAL_ERROR
@@ -23,8 +23,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 set(CMAKE_CXX_STANDARD 11)
-
-set(CMAKE_BUILD_TYPE Debug)
 
 include(lib/system/cmake/system.cmake)
 
@@ -63,6 +61,17 @@ endif()
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
     find_package(Threads REQUIRED)
+endif()
+
+# Library search paths
+if(WHOA_SYSTEM_MAC)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "@executable_path")
+elseif(WHOA_SYSTEM_LINUX)
+    set(CMAKE_SKIP_BUILD_RPATH FALSE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
 endif()
 
 add_subdirectory(lib)

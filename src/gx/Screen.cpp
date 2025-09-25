@@ -6,14 +6,15 @@
 #include "gx/Gx.hpp"
 #include "gx/Transform.hpp"
 #include "util/Filesystem.hpp"
+#include <storm/String.hpp>
 #include <tempest/Matrix.hpp>
 
 int32_t Screen::s_captureScreen = 0;
 float Screen::s_elapsedSec = 0.0f;
 int32_t Screen::s_presentDisable = 0;
-HOBJECT Screen::s_stockObjects[];
-float Screen::s_stockObjectHeights[] = { 0.01953125f, 0.01953125f };
-STORM_EXPLICIT_LIST(CILayer, zorderlink) Screen::s_zorderlist;
+static HOBJECT s_stockObjects[SCRNSTOCKOBJECTS];
+static float s_stockObjectHeights[SCRNSTOCKOBJECTS] = { 0.01953125f, 0.01953125f };
+static STORM_EXPLICIT_LIST(CILayer, zorderlink) s_zOrderList;
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* a2) {
     Screen::s_elapsedSec = data->elapsedSec + Screen::s_elapsedSec;
@@ -30,47 +31,34 @@ int32_t OnPaint(const void* a1, void* a2) {
     //     return 1;
     // }
 
-    CILayer* layer;
-
     CSRgn rgn;
-
     SRgnCreate(&rgn.m_handle, 0);
 
-    RECTF baseRect;
+    RECTF baseRect = { 0.0f, 0.0f, 1.0f, 1.0f };
+    SRgnCombineRectf(rgn.m_handle, &baseRect, nullptr, 2);
 
-    baseRect.left = 0.0f;
-    baseRect.bottom = 0.0f;
-    baseRect.right = 1.0f;
-    baseRect.top = 1.0f;
-
-    SRgnCombineRectf(&rgn.m_handle, &baseRect, 0, 2);
-
-    layer = Screen::s_zorderlist.Head();
-
-    while (layer) {
-        SRgnGetBoundingRectf(&rgn.m_handle, &layer->visible);
+    // Walk the layer list backward (highest z-order to lowest) to establish visibility rects
+    for (auto layer = s_zOrderList.Tail(); layer; layer = layer->zorderlink.Prev()) {
+        SRgnGetBoundingRectf(rgn.m_handle, &layer->visible);
 
         layer->visible.left = std::max(layer->visible.left, layer->rect.left);
         layer->visible.bottom = std::max(layer->visible.bottom, layer->rect.bottom);
-        layer->visible.right = std::max(layer->visible.right, layer->rect.right);
-        layer->visible.top = std::max(layer->visible.top, layer->rect.top);
+        layer->visible.right = std::min(layer->visible.right, layer->rect.right);
+        layer->visible.top = std::min(layer->visible.top, layer->rect.top);
 
-        if (layer->flags & 0x1) {
-            SRgnCombineRectf(&rgn.m_handle, &layer->rect, 0, 4);
+        if (!(layer->flags & 0x1)) {
+            SRgnCombineRectf(rgn.m_handle, &layer->rect, nullptr, 4);
         }
-
-        layer = layer->zorderlink.Next();
     }
 
-    SRgnDelete(&rgn.m_handle);
+    SRgnDelete(rgn.m_handle);
 
     // Save viewport
     float minX, maxX, minY, maxY, minZ, maxZ;
     GxXformViewport(minX, maxX, minY, maxY, minZ, maxZ);
 
-    layer = Screen::s_zorderlist.Head();
-
-    while (layer) {
+    // Walk the layer list forward (lowest z-order to highest) to paint visible layers
+    for (auto layer = s_zOrderList.Head(); layer; layer = layer->zorderlink.Next()) {
         if (layer->visible.right > layer->visible.left && layer->visible.top > layer->visible.bottom) {
             if (layer->flags & 0x4) {
                 GxXformSetViewport(
@@ -116,8 +104,6 @@ int32_t OnPaint(const void* a1, void* a2) {
                 Screen::s_elapsedSec
             );
         }
-
-        layer = layer->zorderlink.Next();
     }
 
     // Restore viewport
@@ -129,14 +115,14 @@ int32_t OnPaint(const void* a1, void* a2) {
         if (Screen::s_captureScreen) {
             // TODO
 
-            GxScenePresent();
+            GxSub682A00();
 
             // TODO
 
             return 1;
         }
 
-        GxScenePresent();
+        GxSub682A00();
     }
 
     Screen::s_elapsedSec = 0.0f;
@@ -152,9 +138,8 @@ void ILayerInitialize() {
 void IStockInitialize() {
     GxuFontInitialize();
 
-    char fontFile[260];
-
-    OsBuildFontFilePath("FRIZQT__.TTF", fontFile, 260);
+    char fontFile[STORM_MAX_PATH];
+    OsBuildFontFilePath("FRIZQT__.TTF", fontFile, sizeof(fontFile));
 
     if (*fontFile) {
         ScrnSetStockFont(STOCK_SYSFONT, fontFile);
@@ -180,57 +165,44 @@ void ScrnInitialize(int32_t a1) {
     IStockInitialize();
 }
 
-void ScrnLayerCreate(const RECTF* rect, float zorder, unsigned long flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layer) {
+void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layerPtr) {
     static RECTF defaultrect = { 0.0f, 0.0f, 1.0f, 1.0f };
-
     const RECTF* r = rect ? rect : &defaultrect;
 
     auto m = SMemAlloc(sizeof(CILayer), __FILE__, __LINE__, 0x0);
-    auto l = new (m) CILayer();
+    auto layer = new (m) CILayer();
 
-    l->rect.left = r->left;
-    l->rect.bottom = r->bottom;
-    l->rect.right = r->right;
-    l->rect.top = r->top;
+    layer->rect.left = r->left;
+    layer->rect.bottom = r->bottom;
+    layer->rect.right = r->right;
+    layer->rect.top = r->top;
 
-    l->zorder = zorder;
-    l->flags = flags;
-    l->param = param;
-    l->paintfunc = paintFunc;
+    layer->zorder = zOrder;
+    layer->flags = flags;
+    layer->param = param;
+    layer->paintfunc = paintFunc;
 
-    auto node = Screen::s_zorderlist.Head();
+    auto node = s_zOrderList.Head();
 
-    while (node && zorder < node->zorder) {
+    while (node && zOrder < node->zorder) {
         node = node->zorderlink.Next();
     }
 
-    Screen::s_zorderlist.LinkNode(l, 1, node);
+    s_zOrderList.LinkNode(layer, 1, node);
 
-    *layer = HandleCreate(l);
+    *layerPtr = HandleCreate(layer);
+}
+
+void ScrnLayerSetRect(HLAYER layer, const RECTF* rect) {
+    static_cast<CILayer*>(HandleDereference(layer))->rect = *rect;
 }
 
 void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath) {
-    if (Screen::s_stockObjects[stockID]) {
-        HandleClose(Screen::s_stockObjects[stockID]);
+    if (s_stockObjects[stockID]) {
+        HandleClose(s_stockObjects[stockID]);
     }
 
-    float fontHeight = NDCToDDCHeight(Screen::s_stockObjectHeights[stockID]);
+    float fontHeight = NDCToDDCHeight(s_stockObjectHeights[stockID]);
     HTEXTFONT font = TextBlockGenerateFont(fontTexturePath, 0, fontHeight);
-    Screen::s_stockObjects[stockID] = font;
-}
-
-void SRgnCombineRectf(HSRGN* handle, RECTF* rect, void* param, int32_t combinemode) {
-    // TODO
-}
-
-void SRgnCreate(HSRGN* handle, uint32_t reserved) {
-    // TODO
-}
-
-void SRgnDelete(HSRGN* handle) {
-    // TODO
-}
-
-void SRgnGetBoundingRectf(HSRGN* handle, RECTF* rect) {
-    // TODO
+    s_stockObjects[stockID] = font;
 }

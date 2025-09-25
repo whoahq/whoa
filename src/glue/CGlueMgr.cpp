@@ -1,9 +1,11 @@
 #include "glue/CGlueMgr.hpp"
-#include "glue/CRealmList.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "console/CVar.hpp"
+#include "glue/CRealmList.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
+#include "gx/LoadingScreen.hpp"
 #include "math/Utils.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
@@ -14,11 +16,10 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
-#include "util/CVar.hpp"
 #include "util/Filesystem.hpp"
 #include "util/Log.hpp"
-#include <cstdio>
 #include <common/MD5.hpp>
+#include <cstdio>
 
 unsigned char InterfaceKey[256] = {
     0xC3, 0x5B, 0x50, 0x84, 0xB9, 0x3E, 0x32, 0x42, 0x8C, 0xD0, 0xC7, 0x48, 0xFA, 0x0E, 0x5D, 0x54,
@@ -202,10 +203,10 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
     if (CGlueMgr::m_idleState == IDLE_NONE) {
         if (CGlueMgr::m_reload) {
             if (!CGlueMgr::m_suspended) {
-                // TODO CGlueMgr::Suspend();
-                // TODO CGlueMgr::Resume();
+                CGlueMgr::Suspend();
+                CGlueMgr::Resume();
                 // TODO Sub4DA360();
-                // TODO CGlueMgr::SetScreen(ByteB6A9E0);
+                CGlueMgr::SetScreen(CGlueMgr::m_currentScreen);
             }
 
             CGlueMgr::m_reload = 0;
@@ -238,6 +239,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
 
     case IDLE_ACCOUNT_LOGIN: {
         CGlueMgr::PollAccountLogin(errorCode, msg, complete, result, op);
+        break;
+    }
+
+    case IDLE_ENTER_WORLD: {
+        CGlueMgr::PollEnterWorld();
         break;
     }
 
@@ -334,8 +340,10 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
     memset(const_cast<char*>(password), 0, SStrLen(password));
 }
 
-void CGlueMgr::QuitGame() {
-    ClientPostClose(0);
+int32_t CGlueMgr::OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    // TODO
+
+    return 0;
 }
 
 void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
@@ -407,6 +415,29 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
     }
 }
 
+void CGlueMgr::PollEnterWorld() {
+    if (!LoadingScreenDrawing()) {
+        return;
+    }
+
+    if (CGlueMgr::m_suspended) {
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+
+        // TODO SI Logic
+        // TODO ClientConnection::CharacterLogin()
+
+        return;
+    }
+
+    // TODO Get map ID and position from character info
+    uint32_t mapId = 0;
+    C3Vector position = { 0.0f, 0.0f, 0.0f };
+
+    CGlueMgr::Suspend();
+    ClientInitializeGame(mapId, position);
+}
+
 void CGlueMgr::PollLoginServerLogin() {
     if (CGlueMgr::m_loginState != LOGIN_STATE_PIN_WAIT) {
         CGlueMgr::DisplayLoginStatus();
@@ -466,6 +497,10 @@ void CGlueMgr::PollLoginServerLogin() {
     default:
         break;
     }
+}
+
+void CGlueMgr::QuitGame() {
+    ClientPostClose(0);
 }
 
 void CGlueMgr::Resume() {
@@ -655,7 +690,7 @@ void CGlueMgr::StatusDialogClick() {
         case IDLE_4:
         case IDLE_5:
         case IDLE_6:
-        case IDLE_10: {
+        case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
 
             CGlueMgr::m_showedDisconnect = 0;
@@ -703,6 +738,19 @@ void CGlueMgr::Sub4D8BA0() {
 }
 
 void CGlueMgr::Suspend() {
+    CGlueMgr::m_suspended = 1;
+
+    // TODO
+
+    if (CGlueMgr::m_simpleTop) {
+        delete CGlueMgr::m_simpleTop;
+        CGlueMgr::m_simpleTop = nullptr;
+    }
+
+    // TODO
+
+    FrameXML_FreeHashNodes();
+
     // TODO
 }
 

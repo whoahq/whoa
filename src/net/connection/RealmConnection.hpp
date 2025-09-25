@@ -24,12 +24,20 @@ class RealmConnection : public NetClient {
 
         // Member variables
         RealmResponse* m_realmResponse;
+        uint8_t m_authenticated = 0;
+        uint32_t m_queuePosition = 0;
+        uint32_t m_freeCharacterMigration = 0;
+        uint32_t m_billingTimeRemaining = 0;
+        uint32_t m_billingTimeRested = 0;
+        uint8_t m_billingFlags = 0;
+        uint8_t m_accountExpansion = 0;
 
         // Virtual member functions
         virtual int32_t HandleAuthChallenge(AuthenticationChallenge* challenge);
 
         // Member functions
         RealmConnection(RealmResponse* realmResponse);
+        int32_t HandleAuthResponse(uint32_t msgId, uint32_t time, CDataStore* msg);
         void SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4);
 };
 

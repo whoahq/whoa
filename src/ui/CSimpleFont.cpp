@@ -44,7 +44,7 @@ CSimpleFont* CSimpleFont::GetFont(const char* name, int32_t a2) {
         font->UnregisterScriptObject(font->m_name);
     }
 
-    font->m_name = hashed->m_key.m_str;
+    font->m_name = hashed->m_key.GetString();
 
     if (font->m_name) {
         font->RegisterScriptObject(font->m_name);

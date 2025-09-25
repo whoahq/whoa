@@ -138,6 +138,11 @@ struct GLTransform {
     };
 
     bool isIdentity;
+
+    bool operator==(const float m[16]) const;
+    bool operator!=(const float m[16]) const;
+    void Set(const float m[16]);
+    void SetIdentity();
 };
 
 struct GLStates {

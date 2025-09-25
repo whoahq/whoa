@@ -8,6 +8,11 @@
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
+#define SERVER_PUBLIC_KEY_LEN 32
+#define SALT_LEN 32
+#define VERSION_CHALLENGE_LEN 16
+#define PIN_SALT_LEN 16
+
 Grunt::Command<Grunt::ClientLink> Grunt::s_clientCommands[] = {
     { Grunt::ClientLink::CMD_AUTH_LOGON_CHALLENGE, "ClientLink::CMD_AUTH_LOGON_CHALLENGE", &Grunt::ClientLink::CmdAuthLogonChallenge, 0 },
     { Grunt::ClientLink::CMD_AUTH_LOGON_PROOF, "ClientLink::CMD_AUTH_LOGON_PROOF", &Grunt::ClientLink::CmdAuthLogonProof, 0 },
@@ -47,23 +52,24 @@ void Grunt::ClientLink::Call() {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+    uint8_t protocol;
+    uint8_t result;
+
+    if (!CanRead(msg, sizeof(protocol) + sizeof(result))) {
         return 0;
     }
 
-    uint8_t v30;
-    msg.Get(v30);
+    msg.Get(protocol);
 
-    if (v30 != 0) {
+    if (protocol != 0) {
         return 1;
     }
 
-    uint8_t result;
     msg.Get(result);
 
     // Auth failure (success == 0)
     if (result != 0) {
-        if (msg.m_read > msg.m_size) {
+        if (!msg.IsValid()) {
             return 1;
         }
 
@@ -78,55 +84,65 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
         return 2;
     }
 
-    if (msg.m_read > msg.m_size) {
-        return 0;
-    }
-
-    if (msg.m_size - msg.m_read < 33) {
-        return 0;
-    }
-
     uint8_t* serverPublicKey;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(serverPublicKey), 32);
-
     uint8_t generatorLen;
+
+    if (!CanRead(msg, SERVER_PUBLIC_KEY_LEN + sizeof(generatorLen))) {
+        return 0;
+    }
+
+    msg.GetDataInSitu(reinterpret_cast<void*&>(serverPublicKey), SERVER_PUBLIC_KEY_LEN);
     msg.Get(generatorLen);
 
-    // TODO
-    // if (!msg.Sub8CBBF0(v31 + 1)) {
-    //     return 0;
-    // }
-
     uint8_t* generator;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(generator), generatorLen);
-
     uint8_t largeSafePrimeLen;
+
+    if (!CanRead(msg, generatorLen + sizeof(largeSafePrimeLen))) {
+        return 0;
+    }
+
+    msg.GetDataInSitu(reinterpret_cast<void*&>(generator), generatorLen);
     msg.Get(largeSafePrimeLen);
 
-    // TODO
-    // if (!msg.sub_8CBBF0(v32 + 48)) {
-    //     return 0;
-    // }
-
     uint8_t* largeSafePrime;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(largeSafePrime), largeSafePrimeLen);
-
     uint8_t* salt;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(salt), 32);
-
     uint8_t* versionChallenge;
-    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), 16);
 
-    // TODO
-    // if (!msg.Sub8CBBF0(1)) {
-    //     return 0;
-    // }
+    if (!CanRead(msg, largeSafePrimeLen + SALT_LEN + VERSION_CHALLENGE_LEN)) {
+        return 0;
+    }
+
+    msg.GetDataInSitu(reinterpret_cast<void*&>(largeSafePrime), largeSafePrimeLen);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(salt), SALT_LEN);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), VERSION_CHALLENGE_LEN);
 
     uint8_t logonFlags;
+
+    if (!CanRead(msg, sizeof(logonFlags))) {
+        return 0;
+    }
+
     msg.Get(logonFlags);
+
+    bool pinEnabled = logonFlags & 0x1;
+    bool matrixEnabled = logonFlags & 0x2;
+    bool tokenEnabled = logonFlags & 0x4;
+
+    // PIN (0x1)
 
     uint32_t pinGridSeed = 0;
     uint8_t* pinSalt = nullptr;
+
+    if (pinEnabled) {
+        if (!CanRead(msg, sizeof(pinGridSeed) + PIN_SALT_LEN)) {
+            return 0;
+        }
+
+        msg.Get(pinGridSeed);
+        msg.GetDataInSitu(reinterpret_cast<void*&>(pinSalt), 16);
+    }
+
+    // MATRIX (0x2)
 
     uint8_t matrixWidth = 0;
     uint8_t matrixHeight = 0;
@@ -134,50 +150,35 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t matrixChallengeCount = 0;
     uint64_t matrixSeed = 0;
 
-    uint8_t tokenRequired = 0;
-
-    // PIN
-    if (logonFlags & 0x1) {
-        // TODO
-        // if (!msg.Sub8CBBF0(20)) {
-        //     return 0;
-        // }
-
-        msg.Get(pinGridSeed);
-        msg.GetDataInSitu(reinterpret_cast<void*&>(pinSalt), 16);
-    }
-
-    // MATRIX
-    if (logonFlags & 0x2) {
-        // TODO
-        /*
-        if (msg.Sub8CBBF0(12)) {
-            msg.Get(matrixWidth);
-            msg.Get(matrixHeight);
-            msg.Get(matrixDigitCount);
-            msg.Get(matrixChallengeCount);
-            msg.Get(matrixSeed);
-
-            if ((logonFlags & 0x2) && matrixChallengeCount == 0) {
-                return 1;
-            }
-        } else {
+    if (matrixEnabled) {
+        if (!CanRead(msg, sizeof(matrixWidth) + sizeof(matrixHeight) + sizeof(matrixDigitCount) + sizeof(matrixChallengeCount) + sizeof(matrixSeed))) {
             return 0;
         }
-        */
+
+        msg.Get(matrixWidth);
+        msg.Get(matrixHeight);
+        msg.Get(matrixDigitCount);
+        msg.Get(matrixChallengeCount);
+        msg.Get(matrixSeed);
+
+        if (matrixChallengeCount == 0) {
+            return 1;
+        }
     }
 
-    // TOKEN (authenticator)
-    if (logonFlags & 0x4) {
-        // TODO
-        // if (!msg.Sub8CBBF0(1)) {
-        //     return 0;
-        // }
+    // TOKEN (aka authenticator) (0x4)
+
+    uint8_t tokenRequired = 0;
+
+    if (tokenEnabled) {
+        if (!CanRead(msg, sizeof(tokenRequired))) {
+            return 0;
+        }
 
         msg.Get(tokenRequired);
     }
 
-    if (msg.m_read > msg.m_size) {
+    if (!msg.IsValid()) {
         return 1;
     }
 
@@ -190,13 +191,28 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
     if (this->m_srpClient.CalculateProof(largeSafePrime, largeSafePrimeLen, generator, generatorLen, salt, 32, serverPublicKey, 32, srpRandom)) {
         this->SetState(STATE_CONNECTED);
+
         this->m_clientResponse->LogonResult(GRUNT_RESULT_5, nullptr, 0, 0);
     } else {
         this->SetState(STATE_CONNECT_VERSION);
-        this->m_clientResponse->SetPinInfo(logonFlags & 0x1, pinGridSeed, pinSalt);
-        // TODO
-        // this->m_clientResponse->SetMatrixInfo(logonFlags & 0x2, matrixWidth, matrixHeight, matrixDigitCount, matrixDigitCount, 0, matrixChallengeCount, matrixSeed, this->m_srpClient.buf20, 40);
-        this->m_clientResponse->SetTokenInfo(logonFlags & 0x4, tokenRequired);
+
+        this->m_clientResponse->SetPinInfo(pinEnabled, pinGridSeed, pinSalt);
+
+        this->m_clientResponse->SetMatrixInfo(
+            matrixEnabled,
+            matrixWidth,
+            matrixHeight,
+            matrixDigitCount,
+            matrixDigitCount,
+            false,
+            matrixChallengeCount,
+            matrixSeed,
+            this->m_srpClient.sessionKey,
+            40
+        );
+
+        this->m_clientResponse->SetTokenInfo(tokenEnabled, tokenRequired);
+
         this->m_clientResponse->GetVersionProof(versionChallenge);
     }
 
@@ -204,7 +220,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
-    if (msg.m_read >= msg.m_size) {
+    if (msg.Tell() >= msg.Size()) {
         return 0;
     }
 
@@ -217,7 +233,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
             // TODO
         }
 
-        if (msg.m_read > msg.m_size) {
+        if (msg.Tell() > msg.Size()) {
             return 1;
         }
 
@@ -233,7 +249,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     }
 
     // Authentication success
-    if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 24) {
+    if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 24) {
         void* serverProof;
         msg.GetDataInSitu(serverProof, 20);
 
@@ -243,11 +259,11 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         uint32_t surveyID;
         msg.Get(surveyID);
 
-        if (msg.m_read <= msg.m_size && msg.m_size - msg.m_read >= 2) {
+        if (msg.Tell() <= msg.Size() && msg.Size() - msg.Tell() >= 2) {
             uint16_t logonFlags = 0x0;
             msg.Get(logonFlags);
 
-            if (msg.m_read <= msg.m_size) {
+            if (msg.Tell() <= msg.Size()) {
                 if (this->m_srpClient.VerifyServerProof(static_cast<uint8_t*>(serverProof), 20)) {
                     this->SetState(STATE_CONNECTED);
                     this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0);
@@ -282,28 +298,28 @@ int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < 2) {
+    if (msg.Tell() > msg.Size() || msg.Size() - msg.Tell() < 2) {
         return 0;
     }
 
     uint16_t size;
     msg.Get(size);
 
-    if (msg.m_read > msg.m_size || msg.m_size - msg.m_read < size) {
+    if (msg.Tell() > msg.Size() || msg.Size() - msg.Tell() < size) {
         return 0;
     }
 
-    uint32_t startData = msg.m_read;
+    uint32_t startData = msg.Tell();
 
     uint32_t padding;
     msg.Get(padding);
 
-    uint32_t startList = msg.m_read;
+    uint32_t startList = msg.Tell();
 
     uint16_t count;
     msg.Get(count);
 
-    for (uint32_t i = 0; i < count && msg.m_read < msg.m_size; i++) {
+    for (uint32_t i = 0; i < count && msg.Tell() < msg.Size(); i++) {
         uint8_t realmType;
         msg.Get(realmType);
 
@@ -350,13 +366,13 @@ int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
     uint16_t padding2;
     msg.Get(padding2);
 
-    if (msg.m_read <= msg.m_size && msg.m_read - startData == size) {
-        uint32_t endData = msg.m_read;
-        msg.m_read = startList;
+    if (msg.Tell() <= msg.Size() && msg.Tell() - startData == size) {
+        uint32_t endData = msg.Tell();
+        msg.Seek(startList);
 
         this->m_clientResponse->RealmListResult(&msg);
 
-        msg.m_read = endData;
+        msg.Seek(endData);
 
         return 2;
     }
@@ -457,7 +473,7 @@ void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
 }
 
 void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
-    uint32_t startPos = msg.m_size;
+    uint32_t startPos = msg.Size();
     uint16_t tmpSize = 0;
     msg.Put(tmpSize);
 
@@ -477,7 +493,7 @@ void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
     msg.Put(accountNameLen);
     msg.PutData(this->m_accountName, accountNameLen);
 
-    msg.Set(startPos, msg.m_size - startPos - 2);
+    msg.Set(startPos, msg.Size() - startPos - 2);
 }
 
 void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
@@ -522,9 +538,9 @@ void Grunt::ClientLink::Send(CDataStore& msg) {
 
     if (this->m_connection) {
         void* data;
-        msg.GetDataInSitu(data, msg.m_size);
+        msg.GetDataInSitu(data, msg.Size());
 
-        this->m_connection->SendRaw(static_cast<uint8_t*>(data), msg.m_size, false);
+        this->m_connection->SendRaw(static_cast<uint8_t*>(data), msg.Size(), false);
     }
 
     this->m_critSect.Leave();
@@ -565,15 +581,15 @@ void Grunt::ClientLink::WCDataReady(WowConnection* conn, uint32_t timeStamp, uin
 
     uint32_t pos = 0;
     if (Grunt::Command<Grunt::ClientLink>::Process(this->m_datastore1B0, Grunt::s_clientCommands, 7u, *this, pos)) {
-        auto remainingBytes = this->m_datastore1B0.m_size - pos;
-        this->m_datastore1B0.m_read = pos;
+        auto remainingBytes = this->m_datastore1B0.Size() - pos;
+        this->m_datastore1B0.Seek(pos);
         void* remainingData;
         this->m_datastore1B0.GetDataInSitu(remainingData, remainingBytes);
-        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Seek(-1);
         this->m_datastore1B0.Reset();
         this->m_datastore1B0.PutData(remainingData, remainingBytes);
     } else {
-        this->m_datastore1B0.m_read = -1;
+        this->m_datastore1B0.Seek(-1);
         this->m_datastore1B0.Reset();
         this->Disconnect();
     }

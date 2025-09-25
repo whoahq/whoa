@@ -258,6 +258,7 @@ class CGxDeviceD3d : public CGxDevice {
     virtual void PoolSizeSet(CGxPool* pool, uint32_t size);
     virtual char* BufLock(CGxBuf* buf);
     virtual int32_t BufUnlock(CGxBuf* buf, uint32_t size);
+    virtual void BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset);
     virtual void IShaderCreate(CGxShader* shader);
     virtual void ShaderCreate(CGxShader* shaders[], EGxShTarget target, const char* a4, const char* a5, int32_t permutations);
     virtual int32_t StereoEnabled();
@@ -293,10 +294,14 @@ class CGxDeviceD3d : public CGxDevice {
     void IStateSync();
     void IStateSyncEnables();
     void IStateSyncIndexPtr();
+    void IStateSyncLights();
+    void IStateSyncMaterial();
     void IStateSyncVertexPtrs();
+    void IStateSyncXforms();
     void ITexCreate(CGxTex* texId);
     void ITexUpload(CGxTex* texId);
     void IXformSetProjection(const C44Matrix& matrix);
+    void IXformSetViewport();
 };
 
 #endif

@@ -4,7 +4,6 @@
 #include "gx/Blit.hpp"
 #include "gx/CGxBatch.hpp"
 #include "gx/Shader.hpp"
-#include "gx/Texture.hpp"
 #include "gx/Window.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include <cmath>
@@ -115,6 +114,14 @@ char* CGxDeviceGLL::BufLock(CGxBuf* buf) {
 int32_t CGxDeviceGLL::BufUnlock(CGxBuf* buf, uint32_t size) {
     CGxDevice::BufUnlock(buf, size);
     return this->IBufUnlock(buf);
+}
+
+void CGxDeviceGLL::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
+    CGxDevice::BufData(buf, data, size, offset);
+
+    auto bufData = this->IBufLock(buf);
+    memcpy(&bufData[offset], data, size);
+    this->IBufUnlock(buf);
 }
 
 void CGxDeviceGLL::CapsWindowSize(CRect& rect) {
@@ -785,7 +792,7 @@ void CGxDeviceGLL::IShaderCreatePixel(CGxShader* ps) {
             GLShader::ShaderType::ePixelShader,
             codeStr,
             codeLen,
-            ps->m_key.m_str
+            ps->m_key.GetString()
         );
 
         glShader->Compile(nullptr);
@@ -811,7 +818,7 @@ void CGxDeviceGLL::IShaderCreateVertex(CGxShader* vs) {
             GLShader::ShaderType::eVertexShader,
             code,
             codeLen,
-            vs->m_key.m_str
+            vs->m_key.GetString()
         );
 
         glShader->Compile(nullptr);

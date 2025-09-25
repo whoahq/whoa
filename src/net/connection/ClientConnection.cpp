@@ -110,15 +110,22 @@ const char* s_errorCodeTokens[] = {
     "CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME",
 };
 
+void ClientConnection::AccountLogin_Finish(int32_t errorCode) {
+    this->Complete(errorCode == 12, errorCode);
+}
+
+void ClientConnection::AccountLogin_Queued() {
+    this->m_statusCop = COP_WAIT_QUEUE;
+    this->m_errorCode = 27;
+    this->m_statusComplete = 0;
+
+    // TODO LogConnectionStatus(this->m_statusCop, 27, 1);
+
+    // TODO CGlueMgr::UpdateWaitQueue(this->m_queuePosition);
+}
+
 void ClientConnection::Cancel(int32_t errorCode) {
-    this->Cleanup();
-
-    this->m_statusResult = 0;
-    this->m_errorCode = errorCode;
-    this->m_statusComplete = 1;
-
-    // TODO
-    // LogConnectionStatus(this->m_statusCop, errorCode, 0);
+    this->Complete(0, errorCode);
 }
 
 void ClientConnection::Cleanup() {
@@ -126,6 +133,16 @@ void ClientConnection::Cleanup() {
         this->m_cleanup();
         this->m_cleanup = nullptr;
     }
+}
+
+void ClientConnection::Complete(int32_t result, int32_t errorCode) {
+    this->Cleanup();
+
+    this->m_statusResult = result;
+    this->m_errorCode = errorCode;
+    this->m_statusComplete = 1;
+
+    // TODO LogConnectionStatus(this->m_statusCop, errorCode, 0);
 }
 
 void ClientConnection::Connect() {
@@ -144,6 +161,25 @@ void ClientConnection::Connect() {
 int32_t ClientConnection::Disconnect() {
     // TODO
     return 0;
+}
+
+int32_t ClientConnection::HandleConnect() {
+    this->Complete(1, 5);
+
+    this->m_connected = 1;
+
+    // TODO WardenClient_Initialize();
+
+    return this->NetClient::HandleConnect();
+}
+
+void ClientConnection::Initiate(WOWCS_OPS op, int32_t errorCode, void (*cleanup)()) {
+    this->m_cleanup = cleanup;
+    this->m_statusCop = op;
+    this->m_errorCode = errorCode;
+    this->m_statusComplete = 0;
+
+    // TODO LogConnectionStatus(this->m_statusCop, errorCode, 1);
 }
 
 int32_t ClientConnection::IsConnected() {
@@ -178,14 +214,4 @@ int32_t ClientConnection::PollStatus(WOWCS_OPS& op, const char** msg, int32_t& r
     *msg = "";
 
     return this->m_statusComplete;
-}
-
-void ClientConnection::SetStatus(int32_t result, int32_t errorCode) {
-    this->Cleanup();
-
-    this->m_statusResult = result;
-    this->m_errorCode = errorCode;
-    this->m_statusComplete = 1;
-
-    // TODO LogConnectionStatus(this->m_statusCop, errorCode, 0);
 }

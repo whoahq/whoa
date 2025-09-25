@@ -1,5 +1,4 @@
 #include "ui/FrameXML.hpp"
-#include "gx/Coordinate.hpp"
 #include "ui/CSimpleButton.hpp"
 #include "ui/CSimpleCheckbox.hpp"
 #include "ui/CSimpleEditBox.hpp"

@@ -192,8 +192,9 @@ void PostSize(EvtContext* context, int32_t w, int32_t h) {
 }
 
 void ProcessInput(const int32_t param[], OSINPUT id, int32_t* shutdown, EvtContext* context) {
-    STORM_ASSERT(context);
-    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(context);
+    STORM_VALIDATE_END_VOID;
 
     switch (id) {
         case OS_INPUT_CAPTURE_CHANGED:
@@ -361,8 +362,9 @@ void ConvertPosition(int32_t clientx, int32_t clienty, float* x, float* y) {
 }
 
 void EventSetMouseMode(MOUSEMODE mode, uint32_t holdButton) {
-    STORM_ASSERT(mode < MOUSE_MODES);
-    STORM_VALIDATE(mode < MOUSE_MODES, ERROR_INVALID_PARAMETER);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(mode < MOUSE_MODES);
+    STORM_VALIDATE_END_VOID;
 
     auto contextId = *reinterpret_cast<uint32_t*>(PropGet(PROP_EVENTCONTEXT));
     int32_t findMask;
@@ -468,8 +470,9 @@ void IEvtInputInitialize() {
 }
 
 int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
-    STORM_ASSERT(context);
-    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER, 0);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(context);
+    STORM_VALIDATE_END;
 
     int32_t v4 = 0;
     OSINPUT id;
@@ -484,8 +487,9 @@ int32_t IEvtInputProcess(EvtContext* context, int32_t* shutdown) {
 }
 
 void IEvtInputSetMouseMode(EvtContext* context, MOUSEMODE mode, uint32_t holdButton) {
-    STORM_ASSERT(context);
-    STORM_VALIDATE(context, ERROR_INVALID_PARAMETER);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(context);
+    STORM_VALIDATE_END_VOID;
 
     if ((Input::s_buttonState & holdButton) == holdButton) {
         Input::s_mouseHoldButton = holdButton;

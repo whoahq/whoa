@@ -4,10 +4,8 @@
 #include "event/Input.hpp"
 #include "event/Queue.hpp"
 #include "event/Scheduler.hpp"
-#include <cstring>
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
-#include <storm/String.hpp>
 
 SEvent Event::s_startEvent = SEvent(1, 0);
 SEvent Event::s_shutdownEvent = SEvent(1, 0);
@@ -71,6 +69,14 @@ void EventDoMessageLoop() {
     IEvtSchedulerProcess();
 }
 
+HEVENTCONTEXT EventGetCurrentContext() {
+    return PropGet(PROP_EVENTCONTEXT);
+}
+
+void EventPostClose() {
+    EventPostCloseEx(nullptr);
+}
+
 void EventPostCloseEx(HEVENTCONTEXT contextHandle) {
     if (!contextHandle) {
         contextHandle = PropGet(PROP_EVENTCONTEXT);
@@ -109,12 +115,11 @@ void EventRegister(EVENTID id, EVENTHANDLERFUNC handler) {
 }
 
 void EventRegisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, float priority) {
-    STORM_ASSERT(id >= 0);
-    STORM_VALIDATE(id >= 0, ERROR_INVALID_PARAMETER);
-    STORM_ASSERT(id < EVENTIDS);
-    STORM_VALIDATE(id < EVENTIDS, ERROR_INVALID_PARAMETER);
-    STORM_ASSERT(handler);
-    STORM_VALIDATE(handler, ERROR_INVALID_PARAMETER);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(id >= 0);
+    STORM_VALIDATE(id < EVENTIDS);
+    STORM_VALIDATE(handler);
+    STORM_VALIDATE_END_VOID;
 
     HEVENTCONTEXT hContext = PropGet(PROP_EVENTCONTEXT);
 

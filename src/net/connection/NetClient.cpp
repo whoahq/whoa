@@ -5,7 +5,6 @@
 #include <new>
 #include <common/DataStore.hpp>
 #include <common/Prop.hpp>
-#include <common/SHA1.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
@@ -94,7 +93,7 @@ void NETEVENTQUEUE::Poll() {
 
     client->DelRef();
 
-    this->m_eventQueue.DeleteAll();
+    this->m_eventQueue.Clear();
 
     this->m_critSect.Leave();
 }
@@ -140,7 +139,7 @@ void NetClient::Connect(const char* addrStr) {
         port = atoi(portDelim + 1);
     }
 
-    this->m_serverConnection->SetEncryptionType(WC_ENCRYPT_0);
+    this->m_serverConnection->SetEncryption(false);
     this->m_netState = NS_INITIALIZED;
     this->ConnectInternal(host, port);
 }
@@ -166,8 +165,27 @@ void NetClient::DelRef() {
     }
 }
 
+void NetClient::EnableEncryption(WowConnection* conn, uint8_t* seed, uint8_t seedLen) {
+    conn->SetEncryptionKey(
+        this->m_loginData.m_sessionKey,
+        sizeof(this->m_loginData.m_sessionKey),
+        1,
+        seed,
+        seedLen
+    );
+
+    conn->uint375 = 4;
+    conn->uint376 = 2;
+
+    conn->SetEncryption(true);
+}
+
 bool NetClient::GetDelete() {
     return this->m_deleteMe;
+}
+
+const LoginData& NetClient::GetLoginData() {
+    return this->m_loginData;
 }
 
 NETSTATE NetClient::GetState() {
@@ -190,7 +208,14 @@ int32_t NetClient::HandleConnect() {
 }
 
 int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
-    // TODO
+    // TODO push obj mgr
+
+    CDataStore msg = CDataStore(static_cast<uint8_t*>(data), size);
+
+    this->ProcessMessage(timeReceived, &msg, 0);
+
+    // TODO pop obj mgr
+
     return 1;
 }
 
@@ -240,6 +265,53 @@ void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
 }
 
+void NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_t a4) {
+    // TODO s_stats.messagesReceived++
+
+    uint16_t msgId;
+    msg->Get(msgId);
+
+    // TODO virtual function call on NetClient
+
+    if (msgId >= NUM_MSG_TYPES || !this->m_handlers[msgId]) {
+        msg->Reset();
+        return;
+    }
+
+    this->m_handlers[msgId](
+        this->m_handlerParams[msgId],
+        static_cast<NETMESSAGE>(msgId),
+        timeReceived,
+        msg
+    );
+}
+
+void NetClient::Send(CDataStore* msg) {
+    if (this->m_netState != NS_CONNECTED) {
+        return;
+    }
+
+    auto v4 = msg->Size() - msg->Tell();
+
+    if (!v4) {
+        return;
+    }
+
+    if (this->m_suspended) {
+        // TODO
+    } else {
+        this->m_serverConnection->Send(msg, 0);
+
+        // TODO
+
+        this->m_bytesSent += v4;
+
+        if (!this->m_serverConnection->m_encrypt) {
+            this->EnableEncryption(this->m_serverConnection, nullptr, 0);
+        }
+    }
+}
+
 void NetClient::SetDelete() {
     this->m_deleteMe = true;
 }
@@ -282,12 +354,12 @@ void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNA
 
 void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg) {
     uint8_t* data;
-    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->m_size);
+    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->Size());
 
     // TODO increment byte counter
     // SInterlockedExchangeAdd(this->m_bytesReceived, msg->m_size);
 
-    msg->m_read = 0;
+    msg->Seek(0);
 
     uint16_t msgId;
     msg->Get(msgId);
@@ -305,8 +377,8 @@ void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataSto
     }
 
     if (conn == this->m_serverConnection && !this->m_suspended) {
-        msg->m_read = msg->m_size;
-        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DATA, conn, this, data, msg->m_size);
+        msg->Seek(msg->Size());
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DATA, conn, this, data, msg->Size());
     } else {
         conn->Disconnect();
     }

@@ -1,6 +1,7 @@
 #include "net/connection/WowConnection.hpp"
 #include "net/connection/WowConnectionNet.hpp"
 #include "net/connection/WowConnectionResponse.hpp"
+#include "util/HMAC.hpp"
 #include <common/DataStore.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
@@ -8,6 +9,7 @@
 #include <storm/String.hpp>
 #include <storm/Thread.hpp>
 #include <algorithm>
+#include <cstring>
 #include <new>
 
 #if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
@@ -27,9 +29,60 @@
 
 uint64_t WowConnection::s_countTotalBytes;
 int32_t WowConnection::s_destroyed;
+int32_t WowConnection::s_lagTestDelayMin;
 WowConnectionNet* WowConnection::s_network;
 ATOMIC32 WowConnection::s_numWowConnections;
 bool (*WowConnection::s_verifyAddr)(const NETADDR*);
+
+static uint8_t s_arc4drop1024[1024] = { 0x00 };
+static uint8_t s_arc4seed[] = {
+    // Receive key
+    0xCC, 0x98, 0xAE, 0x04, 0xE8, 0x97, 0xEA, 0xCA, 0x12, 0xDD, 0xC0, 0x93, 0x42, 0x91, 0x53, 0x57,
+
+    // Send key
+    0xC2, 0xB3, 0x72, 0x3C, 0xC6, 0xAE, 0xD9, 0xB5, 0x34, 0x3C, 0x53, 0xEE, 0x2F, 0x43, 0x67, 0xCE,
+};
+
+WowConnection::SENDNODE::SENDNODE(void* data, int32_t size, uint8_t* buf, bool raw) : TSLinkedNode<WowConnection::SENDNODE>() {
+    if (data) {
+        this->data = buf;
+    }
+
+    if (raw) {
+        memcpy(this->data, data, size);
+        this->size = size;
+    } else {
+        uint32_t headerSize = size > 0x7FFF ? 3 : 2;
+
+        if (!data) {
+            this->data = &buf[-headerSize];
+        }
+
+        auto headerBuf = static_cast<uint8_t*>(this->data);
+
+        // Write 2 or 3 byte data size value to header in big endian order
+        if (size > 0x7FFF) {
+            headerBuf[0] = ((size >> (8 * 2)) & 0xff) | 0x80;
+            headerBuf[1] = (size >> (8 * 1)) & 0xff;
+            headerBuf[2] = (size >> (8 * 0)) & 0xff;
+        } else {
+            headerBuf[0] = (size >> (8 * 1)) & 0xff;
+            headerBuf[1] = (size >> (8 * 0)) & 0xff;
+        }
+
+        if (data) {
+            memcpy(static_cast<uint8_t*>(&this->data[headerSize]), data, size);
+        }
+
+        this->size = size + headerSize;
+    }
+
+    this->datasize = size;
+    this->offset = 0;
+    this->allocsize = 0;
+
+    memcpy(this->header, this->data, std::min(this->size, 8u));
+}
 
 int32_t WowConnection::CreateSocket() {
     int32_t sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -332,19 +385,17 @@ void WowConnection::DoMessageReads() {
     // TODO
 
     while (true) {
-        auto v36 = 2;
-        auto v35 = -1;
+        auto headerSize = 2;
+        auto size = -1;
 
-        if (this->m_readBytes >= 2) {
-            uint8_t v14;
-
-            if (*this->m_readBuffer >= 0) {
-                v35 = (this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) + 2;
+        if (this->m_readBytes >= headerSize) {
+            if ((this->m_readBuffer[0] & 0x80) == 0) {
+                size = (this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) + headerSize;
             } else {
-                v36 = 3;
+                headerSize = 3;
 
-                if (this->m_readBytes >= 3) {
-                    v35 = (this->m_readBuffer[2] | ((this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) << 8)) + 3;
+                if (this->m_readBytes >= headerSize) {
+                    size = (this->m_readBuffer[2] | ((this->m_readBuffer[1] | ((this->m_readBuffer[0] & 0x7F) << 8)) << 8)) + headerSize;
                 }
             }
         }
@@ -366,15 +417,15 @@ void WowConnection::DoMessageReads() {
             }
         }
 
-        int32_t v17;
+        int32_t bytesToRead;
 
-        if (v35 >= 0) {
-            v17 = v35 - this->m_readBytes;
-            if (this->m_readBufferSize - this->m_readBytes < v35 - this->m_readBytes) {
-                v17 = this->m_readBufferSize - this->m_readBytes;
+        if (size >= 0) {
+            bytesToRead = size - this->m_readBytes;
+            if (this->m_readBufferSize - this->m_readBytes < size - this->m_readBytes) {
+                bytesToRead = this->m_readBufferSize - this->m_readBytes;
             }
         } else {
-            v17 = v36 - this->m_readBytes;
+            bytesToRead = headerSize - this->m_readBytes;
         }
 
 #if defined(WHOA_SYSTEM_WIN)
@@ -383,11 +434,11 @@ void WowConnection::DoMessageReads() {
         ssize_t bytesRead;
 #endif
 
-        if (v17 <= 0) {
+        if (bytesToRead <= 0) {
             bytesRead = 0;
         } else {
             while (true) {
-                bytesRead = recv(this->m_sock, reinterpret_cast<char*>(&this->m_readBuffer[this->m_readBytes]), v17, 0x0);
+                bytesRead = recv(this->m_sock, reinterpret_cast<char*>(&this->m_readBuffer[this->m_readBytes]), bytesToRead, 0x0);
 
                 if (bytesRead >= 0) {
                     break;
@@ -404,23 +455,30 @@ void WowConnection::DoMessageReads() {
 #endif
             }
 
-            // TODO
+            if (bytesRead <= 0) {
+                break;
+            }
         }
 
-        if (bytesRead <= 0 && v17 > 0) {
-            break;
-        }
+        if (this->m_encrypt) {
+            auto v22 = headerSize + this->uint376 - this->m_readBytes;
+            auto v23 = v22 <= 0 ? 0 : v22;
+            if (v23 >= bytesRead) {
+                v23 = bytesRead;
+            }
 
-        // TODO
+            SARC4ProcessBuffer(
+                &this->m_readBuffer[this->m_readBytes],
+                v23,
+                &this->m_receiveKey,
+                &this->m_receiveKey
+            );
+        }
 
         this->m_readBytes += bytesRead;
 
-        if (v35 >= 0 && this->m_readBytes >= v35) {
-            CDataStore msg;
-            msg.m_data = &this->m_readBuffer[v36];
-            msg.m_alloc = -1;
-            msg.m_size = v35 - v36;
-            msg.m_read = 0;
+        if (size >= 0 && this->m_readBytes >= size) {
+            CDataStore msg = CDataStore(&this->m_readBuffer[headerSize], size - headerSize);
 
             this->AcquireResponseRef();
 
@@ -556,6 +614,11 @@ void WowConnection::DoWrites() {
     this->Release();
 }
 
+void WowConnection::FreeSendNode(SENDNODE* sn) {
+    // TODO WDataStore::FreeBuffer(sn, sn->datasize + sizeof(SENDNODE) + 3);
+    SMemFree(sn, __FILE__, __LINE__, 0x0);
+}
+
 WOW_CONN_STATE WowConnection::GetState() {
     return this->m_connState;
 }
@@ -565,6 +628,12 @@ void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
 
     this->m_refCount = 1;
     this->m_responseRef = 0;
+
+    // TODO
+
+    this->m_sendDepth = 0;
+    this->m_sendDepthBytes = 0;
+    this->m_maxSendDepth = 100000;
 
     // TODO
 
@@ -590,10 +659,32 @@ void WowConnection::Init(WowConnectionResponse* response, void (*func)(void)) {
     this->m_readBytes = 0;
     this->m_readBufferSize = 0;
 
+    this->m_event = nullptr;
+    this->m_encrypt = false;
+
     // TODO
 
     this->SetState(WOWC_INITIALIZED);
     this->m_type = WOWC_TYPE_MESSAGES;
+}
+
+WowConnection::SENDNODE* WowConnection::NewSendNode(void* data, int32_t size, bool raw) {
+    // TODO counters
+
+    // SENDNODEs are prefixed to their buffers, with an extra 3 bytes reserved for size-prefixing
+    uint32_t allocsize = size + sizeof(SENDNODE) + 3;
+
+    // TODO WDataStore::AllocBuffer(allocsize);
+
+    auto m = SMemAlloc(allocsize, __FILE__, __LINE__, 0x0);
+    auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+    auto sn = new (m) SENDNODE(data, size, buf, raw);
+
+    sn->allocsize = allocsize;
+
+    // TODO latency tracking
+
+    return sn;
 }
 
 void WowConnection::Release() {
@@ -624,6 +715,96 @@ void WowConnection::ReleaseResponseRef() {
     this->m_responseLock.Leave();
 }
 
+WC_SEND_RESULT WowConnection::Send(CDataStore* msg, int32_t a3) {
+    uint8_t* data;
+    msg->GetDataInSitu(reinterpret_cast<void*&>(data), msg->Size());
+
+    WowConnection::s_countTotalBytes += msg->Size();
+
+    this->m_lock.Enter();
+
+    if (msg->Size() == 0 || this->m_connState != WOWC_CONNECTED) {
+        this->m_lock.Leave();
+        return WC_SEND_ERROR;
+    }
+
+    // Queue send
+
+    if (WowConnection::s_lagTestDelayMin || this->m_sendList.Head()) {
+        auto sn = this->NewSendNode(data, msg->Size(), false);
+
+        if (this->m_encrypt) {
+            auto bufSize = std::min(sn->size, sn->size + this->uint375 - sn->datasize);
+            SARC4ProcessBuffer(sn->data, bufSize, &this->m_sendKey, &this->m_sendKey);
+        }
+
+        this->m_sendList.LinkToTail(sn);
+
+        this->m_sendDepth++;
+        this->m_sendDepthBytes += sn->size;
+
+        WowConnection::s_network->PlatformChangeState(this, this->m_connState);
+
+        if (this->m_sendDepth < this->m_maxSendDepth) {
+            this->m_lock.Leave();
+            return WC_SEND_QUEUED;
+        } else {
+            // TODO handle max queue send depth reached
+
+            this->m_lock.Leave();
+            return WC_SEND_ERROR;
+        }
+    }
+
+    // Send immediately
+
+    SENDNODE* sn;
+    bool snOnStack;
+
+    if (msg->Size() > 100000) {
+        snOnStack = false;
+        sn = this->NewSendNode(data, msg->Size(), false);
+    } else if (a3 < 3) {
+        snOnStack = true;
+
+        auto m = alloca(msg->Size() + sizeof(SENDNODE) + 3);
+        auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+        sn = new (m) SENDNODE(data, msg->Size(), buf, false);
+    } else {
+        snOnStack = true;
+
+        auto m = alloca(msg->Size() + sizeof(SENDNODE));
+        auto buf = &static_cast<uint8_t*>(m)[sizeof(SENDNODE)];
+        sn = new (m) SENDNODE(nullptr, msg->Size(), buf, false);
+    }
+
+    if (this->m_encrypt) {
+        auto bufSize = std::min(sn->size, sn->size + this->uint375 - sn->datasize);
+        SARC4ProcessBuffer(sn->data, bufSize, &this->m_sendKey, &this->m_sendKey);
+    }
+
+    uint32_t written;
+#if defined(WHOA_SYSTEM_WIN)
+    written = send(this->m_sock, reinterpret_cast<char*>(sn->data), sn->size, 0x0);
+#elif defined(WHOA_SYSTEM_MAC)
+    written = write(this->m_sock, sn->data, sn->size);
+#endif
+
+    if (written == sn->size) {
+        if (!snOnStack) {
+            this->FreeSendNode(sn);
+        }
+
+        this->m_lock.Leave();
+        return WC_SEND_SENT;
+    }
+
+    // TODO split writes, errors, etc
+    STORM_ASSERT(false);
+
+    return WC_SEND_ERROR;
+}
+
 WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
     WowConnection::s_countTotalBytes += len;
 
@@ -635,7 +816,20 @@ WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
         STORM_ASSERT(this->m_sock >= 0);
 
 #if defined (WHOA_SYSTEM_WIN)
-        // TODO
+        if (this->m_sendList.Head()) {
+            // TODO
+        } else {
+            auto written = send(this->m_sock, reinterpret_cast<char*>(data), len, 0x0);
+
+            if (written == len) {
+                this->m_lock.Leave();
+                return WC_SEND_SENT;
+            }
+
+            if (written < 0) {
+                // TODO
+            }
+        }
 #elif defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
         if (this->m_sendList.Head()) {
             // TODO
@@ -657,8 +851,43 @@ WC_SEND_RESULT WowConnection::SendRaw(uint8_t* data, int32_t len, bool a4) {
     return WC_SEND_ERROR;
 }
 
-void WowConnection::SetEncryptionType(WC_ENCRYPT_TYPE encryptType) {
-    // TODO
+void WowConnection::SetEncryption(bool enabled) {
+    this->m_lock.Enter();
+
+    this->m_encrypt = enabled;
+
+    SARC4PrepareKey(this->m_sendKeyInit, sizeof(this->m_sendKeyInit), &this->m_sendKey);
+    SARC4PrepareKey(this->m_receiveKeyInit, sizeof(this->m_receiveKeyInit), &this->m_receiveKey);
+
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_sendKey, &this->m_sendKey);
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_receiveKey, &this->m_receiveKey);
+
+    this->m_lock.Leave();
+}
+
+void WowConnection::SetEncryptionKey(const uint8_t* key, uint8_t keyLen, uint8_t a4, const uint8_t* seedData, uint8_t seedLen) {
+    if (!seedData) {
+        seedData = s_arc4seed;
+        seedLen = sizeof(s_arc4seed);
+    }
+
+    const uint8_t* seeds[] = {
+        seedData,
+        &seedData[seedLen / 2]
+    };
+
+    // Note: The original HMAC-SHA1 implementation uses a second SHA1 implementation shipped in
+    // the client. For simplicity's sake, we're currently using a custom util function built on
+    // top of the SHA1 implementation used for SRP6 authentication.
+
+    HMAC_SHA1(seeds[a4], seedLen / 2, key, keyLen, this->m_sendKeyInit);
+    HMAC_SHA1(seeds[a4 ^ 1], seedLen / 2, key, keyLen, this->m_receiveKeyInit);
+
+    SARC4PrepareKey(this->m_sendKeyInit, sizeof(this->m_sendKeyInit), &this->m_sendKey);
+    SARC4PrepareKey(this->m_receiveKeyInit, sizeof(this->m_receiveKeyInit), &this->m_receiveKey);
+
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_sendKey, &this->m_sendKey);
+    SARC4ProcessBuffer(s_arc4drop1024, sizeof(s_arc4drop1024), &this->m_receiveKey, &this->m_receiveKey);
 }
 
 void WowConnection::SetState(WOW_CONN_STATE state) {
@@ -697,11 +926,15 @@ void WowConnection::StartConnect() {
         return;
     }
 
-#if defined(WHOA_SYSTEM_MAC)
+#if defined(WHOA_SYSTEM_WIN)
+    u_long argp = 1;
+    ioctlsocket(this->m_sock, FIONBIO, &argp);
+#elif defined(WHOA_SYSTEM_MAC)
     fcntl(this->m_sock, F_SETFL, O_NONBLOCK);
 
     uint32_t opt = 1;
     setsockopt(this->m_sock, SOL_SOCKET, 4130, &opt, sizeof(opt));
+#endif
 
     sockaddr_in addr;
     addr.sin_family = AF_INET;
@@ -720,11 +953,19 @@ void WowConnection::StartConnect() {
         return;
     }
 
+#if defined(WHOA_SYSTEM_WIN)
+    if (WSAGetLastError() == WSAEWOULDBLOCK) {
+        this->m_lock.Leave();
+
+        return;
+    }
+#elif defined(WHOA_SYSTEM_MAC)
     if (errno == EAGAIN || errno == EINTR || errno == EINPROGRESS) {
         this->m_lock.Leave();
 
         return;
     }
+#endif
 
     WowConnection::s_network->Remove(this);
     this->CloseSocket(this->m_sock);
@@ -733,5 +974,4 @@ void WowConnection::StartConnect() {
     this->SetState(WOWC_ERROR);
 
     this->m_lock.Leave();
-#endif
 }

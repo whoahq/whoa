@@ -1,0 +1,12 @@
+Which library do I link?
+------------------------
+
+If you want to use fmodex.dll: (all plugins compiled into the dll, larger main dll size)
+
+Visual Studio users          - fmodex_vc.lib.
+No other compilers are supported for 64bit libraries.
+
+If you want to use fmodexp.dll: (plugins left external, smaller main dll size).
+
+Visual Studio users          - fmodexp_vc.lib.
+No other compilers are supported for 64bit libraries.

@@ -29,6 +29,7 @@ class WowConnectionNet {
         STORM_EXPLICIT_LIST(WowConnection, m_netlink) m_connections;
         SSemaphore m_workerSem;
         void (*m_threadinit)();
+        void* event8E8;
 
         // Member functions
         WowConnectionNet(uint32_t numThreads, void (*threadinit)())

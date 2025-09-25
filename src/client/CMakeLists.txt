@@ -36,6 +36,7 @@ target_include_directories(client
 target_link_libraries(client
     PRIVATE
         async
+        console
         db
         event
         gx

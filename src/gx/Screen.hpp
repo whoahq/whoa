@@ -4,21 +4,14 @@
 #include <cstdint>
 #include <common/Handle.hpp>
 #include <storm/List.hpp>
+#include <storm/Region.hpp>
 
 typedef HOBJECT HLAYER;
-typedef HOBJECT HSRGN;
 
 enum SCRNSTOCK {
     STOCK_SYSFONT = 0,
     STOCK_PERFFONT = 1,
     SCRNSTOCKOBJECTS = 2
-};
-
-struct RECTF {
-    float left;
-    float bottom;
-    float right;
-    float top;
 };
 
 class CILayer : public CHandleObject {
@@ -41,27 +34,18 @@ namespace Screen {
     extern int32_t s_captureScreen;
     extern float s_elapsedSec;
     extern int32_t s_presentDisable;
-    extern HOBJECT s_stockObjects[SCRNSTOCKOBJECTS];
-    extern float s_stockObjectHeights[SCRNSTOCKOBJECTS];
-    extern STORM_EXPLICIT_LIST(CILayer, zorderlink) s_zorderlist;
 }
 
-void ILayerInitialize(void);
+void ILayerInitialize();
 
-void IStockInitialize(void);
+void IStockInitialize();
 
-void ScrnInitialize(int32_t);
+void ScrnInitialize(int32_t a1);
 
-void ScrnLayerCreate(const RECTF*, float, unsigned long, void*, void (*)(void*, const RECTF*, const RECTF*, float), HLAYER*);
+void ScrnLayerCreate(const RECTF* rect, float zOrder, uint32_t flags, void* param, void (*paintFunc)(void*, const RECTF*, const RECTF*, float), HLAYER* layerPtr);
 
-void ScrnSetStockFont(SCRNSTOCK, const char*);
+void ScrnLayerSetRect(HLAYER layer, const RECTF* rect);
 
-void SRgnCombineRectf(HSRGN*, RECTF*, void*, int32_t);
-
-void SRgnCreate(HSRGN*, uint32_t);
-
-void SRgnDelete(HSRGN*);
-
-void SRgnGetBoundingRectf(HSRGN*, RECTF*);
+void ScrnSetStockFont(SCRNSTOCK stockID, const char* fontTexturePath);
 
 #endif

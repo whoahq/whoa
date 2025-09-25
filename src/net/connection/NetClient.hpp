@@ -64,12 +64,16 @@ class NetClient : public WowConnectionResponse {
         void Connect(const char* addrStr);
         int32_t ConnectInternal(const char* host, uint16_t port);
         void DelRef();
+        void EnableEncryption(WowConnection* conn, uint8_t* seed, uint8_t seedLen);
         bool GetDelete();
+        const LoginData& GetLoginData();
         NETSTATE GetState();
         void HandleIdle();
         int32_t Initialize();
         void PollEventQueue();
         void PongHandler(WowConnection* conn, CDataStore* msg);
+        void ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_t a4);
+        void Send(CDataStore* msg);
         void SetDelete();
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);

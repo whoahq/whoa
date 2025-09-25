@@ -1,7 +1,7 @@
 #include "model/Model2.hpp"
 #include "model/CM2Cache.hpp"
 #include "model/M2Internal.hpp"
-#include "util/CVar.hpp"
+#include "console/CVar.hpp"
 #include "util/Filesystem.hpp"
 #include <cstring>
 #include <new>

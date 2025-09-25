@@ -1,19 +1,20 @@
 #include "client/Client.hpp"
-#include "client/ClientServices.hpp"
-#include "client/Console.hpp"
-#include "db/Db.hpp"
 #include "async/AsyncFile.hpp"
+#include "client/ClientHandlers.hpp"
+#include "client/ClientServices.hpp"
+#include "console/CVar.hpp"
+#include "console/Device.hpp"
+#include "console/Initialize.hpp"
+#include "console/Screen.hpp"
+#include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
-#include "gx/Device.hpp"
 #include "gx/Screen.hpp"
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
 #include "net/Poll.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
-#include "util/CVar.hpp"
 #include "world/World.hpp"
-#include <cstring>
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
@@ -28,6 +29,33 @@ void AsyncFileInitialize() {
 
 void BaseInitializeGlobal() {
     PropInitialize();
+}
+
+int32_t ClientIdle(const void* data, void* param) {
+    // TODO
+    // ClientGameTimeTickHandler(data, param);
+    // Player_C_ZoneUpdateHandler(data, param);
+
+    return 1;
+}
+
+void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+
+    EventRegister(EVENT_ID_IDLE, ClientIdle);
+
+    // TODO
+
+    ClientServices::SetMessageHandler(SMSG_NOTIFICATION, NotifyHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_PLAYED_TIME, PlayedTimeHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_NEW_WORLD, NewWorldHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_PENDING, TransferPendingHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_ABORTED, TransferAbortedHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_LOGIN_VERIFY_WORLD, LoginVerifyWorldHandler, nullptr);
+
+    ClientServices::SetMessageHandler(SMSG_KICK_REASON, CGlueMgr::OnKickReasonMsg, nullptr);
+
+    // TODO
 }
 
 void ClientMiscInitialize() {
@@ -73,7 +101,7 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     // }
 
     ScrnInitialize(0);
-    // ConsoleScreenInitialize(a2);
+    ConsoleScreenInitialize(nullptr); // TODO argument
 
     // s_cvarTextureFilteringMode = CVar::Register(
     //     "textureFilteringMode",

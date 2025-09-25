@@ -394,6 +394,14 @@ int32_t CGxDeviceD3d::BufUnlock(CGxBuf* buf, uint32_t size) {
     return 1;
 }
 
+void CGxDeviceD3d::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t offset) {
+    CGxDevice::BufData(buf, data, size, offset);
+
+    auto bufData = this->IBufLock(buf);
+    memcpy(&bufData[offset], data, size);
+    this->IBufUnlock(buf);
+}
+
 void CGxDeviceD3d::CapsWindowSize(CRect& dst) {
     dst = this->DeviceCurWindow();
 }
@@ -1572,7 +1580,11 @@ void CGxDeviceD3d::IStateSync() {
     this->IShaderConstantsFlush();
     this->IRsSync(0);
 
-    // TODO ffp if vertex shader is disabled
+    if (this->m_hwRenderStates[GxRs_VertexShader] == nullptr && this->m_appRenderStates[GxRs_VertexShader].m_value == nullptr) {
+        this->IStateSyncLights();
+        this->IStateSyncMaterial();
+        this->IStateSyncXforms();
+    }
 
     this->IStateSyncEnables();
 
@@ -1582,6 +1594,10 @@ void CGxDeviceD3d::IStateSync() {
     this->IStateSyncIndexPtr();
 
     // TODO
+
+    if (this->intF6C) {
+        this->IXformSetViewport();
+    }
 }
 
 void CGxDeviceD3d::IStateSyncEnables() {
@@ -1601,6 +1617,14 @@ void CGxDeviceD3d::IStateSyncIndexPtr() {
         this->m_d3dDevice->SetIndices(d3dIndexBuf);
         this->m_d3dCurrentIndexBuf = d3dIndexBuf;
     }
+}
+
+void CGxDeviceD3d::IStateSyncLights() {
+    // TODO
+}
+
+void CGxDeviceD3d::IStateSyncMaterial() {
+    // TODO
 }
 
 void CGxDeviceD3d::IStateSyncVertexPtrs() {
@@ -1681,6 +1705,22 @@ void CGxDeviceD3d::IStateSyncVertexPtrs() {
             streamSizes[stream]
         );
     }
+}
+
+void CGxDeviceD3d::IStateSyncXforms() {
+    if (this->m_xforms[GxXform_Projection].m_dirty) {
+        this->m_d3dDevice->SetTransform(D3DTS_PROJECTION, reinterpret_cast<D3DMATRIX*>(&this->m_projNative));
+        this->m_xforms[GxXform_Projection].m_dirty = 0;
+    }
+
+    if (this->m_xforms[GxXform_View].m_dirty) {
+        this->m_d3dDevice->SetTransform(D3DTS_VIEW, reinterpret_cast<const D3DMATRIX*>(&this->m_xforms[GxXform_View].TopConst()));
+        this->m_xforms[GxXform_View].m_dirty = 0;
+    }
+
+    // TODO world
+
+    // TODO tex
 }
 
 void CGxDeviceD3d::ITexCreate(CGxTex* texId) {
@@ -1910,6 +1950,30 @@ void CGxDeviceD3d::IXformSetProjection(const C44Matrix& matrix) {
     memcpy(&this->m_projNative, &projNative, sizeof(this->m_projNative));
 }
 
+void CGxDeviceD3d::IXformSetViewport() {
+    const auto& gxViewport = this->m_viewport;
+    auto windowRect = this->DeviceCurWindow();
+
+    D3DVIEWPORT9 d3dViewport;
+
+    d3dViewport.X = (gxViewport.x.l * windowRect.maxX) + 0.5;
+    d3dViewport.Y = ((1.0 - gxViewport.y.h) * windowRect.maxY) + 0.5;
+
+    // TODO account for negative X value
+
+    d3dViewport.Width = (gxViewport.x.h * windowRect.maxX) - d3dViewport.X + 0.5;
+    d3dViewport.Height = ((1.0 - gxViewport.y.l) * windowRect.maxY) - d3dViewport.Y + 0.5;
+
+    d3dViewport.MinZ = gxViewport.z.l;
+    d3dViewport.MaxZ = gxViewport.z.h;
+
+    // TODO conditionally adjust Y value
+
+    this->m_d3dDevice->SetViewport(&d3dViewport);
+
+    this->intF6C = 0;
+}
+
 void CGxDeviceD3d::PoolSizeSet(CGxPool* pool, uint32_t size) {
     // TODO
 }
@@ -1930,7 +1994,7 @@ void CGxDeviceD3d::SceneClear(uint32_t mask, CImVector color) {
     }
 
     if (this->intF6C) {
-        // TODO
+        this->IXformSetViewport();
     }
 
     D3DCOLOR d3dColor = color.b | (color.g | (color.r << 8) << 8);
