@@ -3,10 +3,12 @@
 #include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Command.hpp"
 #include "net/srp/SRP6_Random.hpp"
-#include <cstring>
-#include <new>
+#include <common/MD5.hpp>
+#include <storm/Error.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+#include <cstring>
+#include <new>
 
 #define SERVER_PUBLIC_KEY_LEN 32
 #define SALT_LEN 32
@@ -615,6 +617,8 @@ void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
 }
 
 void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
+    STORM_ASSERT(this->m_state == STATE_CONNECT_VERSION || this->m_state == STATE_RECONNECT_VERSION);
+
     CDataStoreCache<1024> command;
 
     // TODO cd keys
@@ -643,7 +647,51 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
         uint8_t authFlags = 0x0;
         command.Put(authFlags);
     } else {
+        command.Put(static_cast<uint8_t>(CMD_AUTH_RECONNECT_PROOF));
+
+        MD5_CTX md5;
+        SHA1_CONTEXT sha1;
+
+        // Client salt
+
+        uint8_t clientSalt[16];
+
+        MD5Init(&md5);
+        MD5Update(&md5, reinterpret_cast<uint8_t*>(this->m_accountName), SStrLen(this->m_accountName));
+        char randomSeed[16];
         // TODO
+        // OsSecureRandom(randomSeed, sizeof(randomSeed));
+        MD5Update(&md5, reinterpret_cast<uint8_t*>(randomSeed), sizeof(randomSeed));
+        MD5Final(clientSalt, &md5);
+
+        command.PutData(clientSalt, sizeof(clientSalt));
+
+        // Client proof
+
+        uint8_t clientProof[SHA1_DIGEST_SIZE];
+
+        SHA1_Init(&sha1);
+        SHA1_Update(&sha1, reinterpret_cast<uint8_t*>(this->m_accountName), SStrLen(this->m_accountName));
+        SHA1_Update(&sha1, clientSalt, sizeof(clientSalt));
+        SHA1_Update(&sha1, reinterpret_cast<uint8_t*>(this->m_serverPublicKey), RECONNECT_KEY_LEN);
+        SHA1_Update(&sha1, this->m_reconnectSessionKey, sizeof(this->m_reconnectSessionKey));
+        SHA1_Final(clientProof, &sha1);
+
+        command.PutData(clientProof, sizeof(clientProof));
+
+        // Client checksum
+
+        uint8_t clientChecksum[SHA1_DIGEST_SIZE];
+
+        SHA1_Init(&sha1);
+        SHA1_Update(&sha1, clientSalt, sizeof(clientSalt));
+        SHA1_Update(&sha1, versionChecksum, 20);
+        SHA1_Final(clientChecksum, &sha1);
+
+        command.PutData(clientChecksum, sizeof(clientChecksum));
+
+        // TODO cd keys
+        command.Put(static_cast<uint8_t>(0));
     }
 
     command.Finalize();
