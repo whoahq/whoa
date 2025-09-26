@@ -1,14 +1,15 @@
 #ifndef NET_LOGIN_GRUNT_LOGIN_HPP
 #define NET_LOGIN_GRUNT_LOGIN_HPP
 
-#include "net/grunt/Grunt.hpp"
 #include "net/grunt/ClientResponse.hpp"
+#include "net/grunt/Grunt.hpp"
+#include "net/grunt/Types.hpp"
 #include "net/login/Login.hpp"
 
 class GruntLogin : public Login {
     public:
         // Member variables
-        uint8_t m_versionChallenge[16];
+        uint8_t m_versionChallenge[GRUNT_VERSION_CHALLENGE_LEN];
         Grunt::ClientLink* m_clientLink = nullptr;
 
         // Virtual member functions
