@@ -69,7 +69,8 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
     msg.Get(result);
 
-    // Auth failure (success == 0)
+    // Auth challenge failure (result != 0)
+
     if (result != 0) {
         if (!msg.IsValid()) {
             return 1;
@@ -85,6 +86,8 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
 
         return 2;
     }
+
+    // Auth challenge success (result == 0)
 
     uint8_t* serverPublicKey;
     uint8_t generatorLen;
@@ -253,7 +256,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     uint8_t result;
     msg.Get(result);
 
-    // Authentication failure (result for success is 0)
+    // Auth proof failure (result != 0)
 
     if (result != 0) {
         if (result == 4) {
@@ -275,7 +278,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
         return 2;
     }
 
-    // Authentication success
+    // Auth proof success (result == 0)
 
     uint8_t* serverProof;
     uint32_t accountFlags = 0x0;
@@ -340,13 +343,13 @@ int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
 
     msg.Get(result);
 
-    // Reconnect auth failure (result != 0)
+    // Reconnect challenge failure (result != 0)
 
     if (result != 0) {
         return 1;
     }
 
-    // Reconnect auth success (result == 0)
+    // Reconnect challenge success (result == 0)
 
     msg.GetDataInSitu(reinterpret_cast<void*&>(reconnectKey), RECONNECT_KEY_LEN);
     msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), VERSION_CHALLENGE_LEN);
