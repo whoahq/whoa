@@ -61,6 +61,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         ClientResponse* m_clientResponse;
         char m_accountName[1280];
         char m_serverPublicKey[32];
+        uint8_t m_reconnectSessionKey[40];
 
         // Virtual member functions
         virtual void WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {};

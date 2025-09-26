@@ -17,6 +17,7 @@ class Grunt::ClientResponse {
         virtual void SetMatrixInfo(bool enabled, uint8_t width, uint8_t height, uint8_t a5, uint8_t a6, bool a7, uint8_t challengeCount, uint64_t seed, const uint8_t* sessionKey, uint32_t a11) = 0;
         virtual void SetTokenInfo(bool enabled, uint8_t required) = 0;
         virtual void LogonResult(Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) = 0;
+        virtual void ReconnectResult(Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) = 0;
         virtual void RealmListResult(CDataStore* msg) = 0;
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state) = 0;
         virtual int32_t GetServerId() = 0;

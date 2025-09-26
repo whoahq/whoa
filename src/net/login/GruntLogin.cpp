@@ -282,6 +282,10 @@ void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
     );
 }
 
+void GruntLogin::ReconnectResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
+    // TODO
+}
+
 void GruntLogin::SetMatrixInfo(bool enabled, uint8_t width, uint8_t height, uint8_t a5, uint8_t a6, bool a7, uint8_t challengeCount, uint64_t seed, const uint8_t* sessionKey, uint32_t a11) {
     // TODO
 }

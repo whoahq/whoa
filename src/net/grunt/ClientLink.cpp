@@ -369,8 +369,50 @@ int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
 }
 
 int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
-    // TODO
-    return 0;
+    if (!msg.IsValid()) {
+        return 0;
+    }
+
+    if (msg.IsRead()) {
+        return 0;
+    }
+
+    uint8_t result;
+    msg.Get(result);
+
+    if (!msg.IsValid()) {
+        return 1;
+    }
+
+    // Reconnect proof failure (result != 0)
+
+    if (result != 0) {
+        this->SetState(STATE_CONNECTED);
+
+        if (result >= 33) {
+            result = -1;
+        }
+
+        this->m_clientResponse->ReconnectResult(static_cast<Grunt::Result>(result), nullptr, 0,  0x0);
+
+        return 2;
+    }
+
+    // Reconnect proof success (result == 0)
+
+    uint16_t reconnectFlags = 0x0;
+
+    if (!CanRead(msg, sizeof(reconnectFlags))) {
+        return 0;
+    }
+
+    msg.Get(reconnectFlags);
+
+    this->SetState(STATE_AUTHENTICATED);
+
+    this->m_clientResponse->ReconnectResult(Grunt::GRUNT_RESULT_0, this->m_reconnectSessionKey, 40, reconnectFlags);
+
+    return 2;
 }
 
 int32_t Grunt::ClientLink::CmdRealmList(CDataStore& msg) {
