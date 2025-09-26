@@ -1,6 +1,7 @@
 #include "glue/CGlueMgr.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "client/Util.hpp"
 #include "console/CVar.hpp"
 #include "glue/CRealmList.hpp"
 #include "gx/Coordinate.hpp"
@@ -485,10 +486,10 @@ void CGlueMgr::PollLoginServerLogin() {
     }
 
     case LOGIN_STATE_CHECKINGVERSIONS: {
-        uint8_t versionChecksum[20];
-        // TODO
-        // uint8_t* versionChallenge = ClientServices::LoginConnection()->GetVersionChallenge();
-        // ChecksumExecutables(versionChallenge, 16, versionChecksum);
+        uint8_t versionChecksum[VERSION_CHECKSUM_LEN];
+        auto versionChallenge = ClientServices::LoginConnection()->GetVersionChallenge();
+        ChecksumExecutables(versionChallenge, VERSION_CHALLENGE_LEN, versionChecksum);
+
         ClientServices::LoginConnection()->ProveVersion(versionChecksum);
 
         break;

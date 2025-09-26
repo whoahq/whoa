@@ -2,7 +2,6 @@
 #include "net/connection/WowConnection.hpp"
 #include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Command.hpp"
-#include "net/grunt/Types.hpp"
 #include "net/srp/SRP6_Random.hpp"
 #include <common/MD5.hpp>
 #include <storm/Error.hpp>
@@ -115,13 +114,13 @@ int32_t Grunt::ClientLink::CmdAuthLogonChallenge(CDataStore& msg) {
     uint8_t* salt;
     uint8_t* versionChallenge;
 
-    if (!CanRead(msg, largeSafePrimeLen + SALT_LEN + GRUNT_VERSION_CHALLENGE_LEN)) {
+    if (!CanRead(msg, largeSafePrimeLen + SALT_LEN + VERSION_CHALLENGE_LEN)) {
         return 0;
     }
 
     msg.GetDataInSitu(reinterpret_cast<void*&>(largeSafePrime), largeSafePrimeLen);
     msg.GetDataInSitu(reinterpret_cast<void*&>(salt), SALT_LEN);
-    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), GRUNT_VERSION_CHALLENGE_LEN);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), VERSION_CHALLENGE_LEN);
 
     uint8_t logonFlags;
 
@@ -354,7 +353,7 @@ int32_t Grunt::ClientLink::CmdAuthReconnectChallenge(CDataStore& msg) {
     // Reconnect challenge success (result == 0)
 
     msg.GetDataInSitu(reinterpret_cast<void*&>(reconnectKey), RECONNECT_KEY_LEN);
-    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), GRUNT_VERSION_CHALLENGE_LEN);
+    msg.GetDataInSitu(reinterpret_cast<void*&>(versionChallenge), VERSION_CHALLENGE_LEN);
 
     if (!msg.IsValid()) {
         return 1;
@@ -636,7 +635,7 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
         SHA1_CONTEXT ctx;
         SHA1_Init(&ctx);
         SHA1_Update(&ctx, this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
-        SHA1_Update(&ctx, versionChecksum, GRUNT_VERSION_CHECKSUM_LEN);
+        SHA1_Update(&ctx, versionChecksum, VERSION_CHECKSUM_LEN);
         SHA1_Final(versionProof, &ctx);
         command.PutData(versionProof, sizeof(versionProof));
 
@@ -685,7 +684,7 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
 
         SHA1_Init(&sha1);
         SHA1_Update(&sha1, clientSalt, sizeof(clientSalt));
-        SHA1_Update(&sha1, versionChecksum, GRUNT_VERSION_CHECKSUM_LEN);
+        SHA1_Update(&sha1, versionChecksum, VERSION_CHECKSUM_LEN);
         SHA1_Final(clientChecksum, &sha1);
 
         command.PutData(clientChecksum, sizeof(clientChecksum));

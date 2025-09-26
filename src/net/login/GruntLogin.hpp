@@ -3,13 +3,13 @@
 
 #include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Grunt.hpp"
-#include "net/grunt/Types.hpp"
 #include "net/login/Login.hpp"
+#include "net/Types.hpp"
 
 class GruntLogin : public Login {
     public:
         // Member variables
-        uint8_t m_versionChallenge[GRUNT_VERSION_CHALLENGE_LEN];
+        uint8_t m_versionChallenge[VERSION_CHALLENGE_LEN];
         Grunt::ClientLink* m_clientLink = nullptr;
 
         // Virtual member functions
@@ -24,6 +24,7 @@ class GruntLogin : public Login {
         virtual void ReconnectResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags);
         virtual LOGIN_STATE NextSecurityState(LOGIN_STATE state);
         virtual int32_t GetServerId();
+        virtual const uint8_t* GetVersionChallenge();
         virtual void GetRealmList();
         virtual void Logon(const char* a2, const char* a3);
         virtual void ProveVersion(const uint8_t* versionChecksum);

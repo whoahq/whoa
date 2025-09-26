@@ -3,6 +3,9 @@
 
 #include <cstdint>
 
+#define VERSION_CHALLENGE_LEN   16
+#define VERSION_CHECKSUM_LEN    20
+
 enum LOGIN_RESULT {
     LOGIN_OK                        = 0,
     LOGIN_INVALID_CHALLENGE_MESSAGE = 1,

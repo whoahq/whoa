@@ -89,6 +89,10 @@ int32_t GruntLogin::GetServerId() {
     return 0;
 }
 
+const uint8_t* GruntLogin::GetVersionChallenge() {
+    return this->m_versionChallenge;
+}
+
 void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
     if (this->IsReconnect()) {
         // TODO

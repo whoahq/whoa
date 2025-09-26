@@ -1,7 +1,4 @@
 #ifndef NET_GRUNT_TYPES_HPP
 #define NET_GRUNT_TYPES_HPP
 
-#define GRUNT_VERSION_CHALLENGE_LEN     16
-#define GRUNT_VERSION_CHECKSUM_LEN      20
-
 #endif
