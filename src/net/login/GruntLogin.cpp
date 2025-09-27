@@ -290,6 +290,10 @@ void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
     );
 }
 
+void GruntLogin::Reconnect() {
+    // TODO
+}
+
 void GruntLogin::ReconnectResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
     // TODO
 }
