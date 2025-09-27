@@ -628,16 +628,27 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
 
     if (this->m_state == STATE_CONNECT_VERSION) {
         command.Put(static_cast<uint8_t>(CMD_AUTH_LOGON_PROOF));
+
+        SHA1_CONTEXT sha1;
+
+        // Client public key (A)
+
         command.PutData(this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
+
+        // Client auth proof (M1)
+
         command.PutData(this->m_srpClient.clientProof, sizeof(this->m_srpClient.clientProof));
 
-        uint8_t versionProof[SHA1_DIGEST_SIZE];
-        SHA1_CONTEXT ctx;
-        SHA1_Init(&ctx);
-        SHA1_Update(&ctx, this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
-        SHA1_Update(&ctx, versionChecksum, VERSION_CHECKSUM_LEN);
-        SHA1_Final(versionProof, &ctx);
-        command.PutData(versionProof, sizeof(versionProof));
+        // Client version proof
+
+        uint8_t clientVersionProof[SHA1_DIGEST_SIZE];
+
+        SHA1_Init(&sha1);
+        SHA1_Update(&sha1, this->m_srpClient.clientPublicKey, sizeof(this->m_srpClient.clientPublicKey));
+        SHA1_Update(&sha1, versionChecksum, VERSION_CHECKSUM_LEN);
+        SHA1_Final(clientVersionProof, &sha1);
+
+        command.PutData(clientVersionProof, sizeof(clientVersionProof));
 
         // TODO cd keys
         command.Put(static_cast<uint8_t>(0));
@@ -665,29 +676,29 @@ void Grunt::ClientLink::ProveVersion(const uint8_t* versionChecksum) {
 
         command.PutData(clientSalt, sizeof(clientSalt));
 
-        // Client proof
+        // Client auth proof
 
-        uint8_t clientProof[SHA1_DIGEST_SIZE];
+        uint8_t clientAuthProof[SHA1_DIGEST_SIZE];
 
         SHA1_Init(&sha1);
         SHA1_Update(&sha1, reinterpret_cast<uint8_t*>(this->m_accountName), SStrLen(this->m_accountName));
         SHA1_Update(&sha1, clientSalt, sizeof(clientSalt));
         SHA1_Update(&sha1, reinterpret_cast<uint8_t*>(this->m_serverPublicKey), RECONNECT_KEY_LEN);
         SHA1_Update(&sha1, this->m_reconnectSessionKey, sizeof(this->m_reconnectSessionKey));
-        SHA1_Final(clientProof, &sha1);
+        SHA1_Final(clientAuthProof, &sha1);
 
-        command.PutData(clientProof, sizeof(clientProof));
+        command.PutData(clientAuthProof, sizeof(clientAuthProof));
 
-        // Client checksum
+        // Client version proof
 
-        uint8_t clientChecksum[SHA1_DIGEST_SIZE];
+        uint8_t clientVersionProof[SHA1_DIGEST_SIZE];
 
         SHA1_Init(&sha1);
         SHA1_Update(&sha1, clientSalt, sizeof(clientSalt));
         SHA1_Update(&sha1, versionChecksum, VERSION_CHECKSUM_LEN);
-        SHA1_Final(clientChecksum, &sha1);
+        SHA1_Final(clientVersionProof, &sha1);
 
-        command.PutData(clientChecksum, sizeof(clientChecksum));
+        command.PutData(clientVersionProof, sizeof(clientVersionProof));
 
         // TODO cd keys
         command.Put(static_cast<uint8_t>(0));
