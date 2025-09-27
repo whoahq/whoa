@@ -3,5 +3,6 @@
 
 #include "net/login/BattlenetLogin.hpp"
 #include "net/login/GruntLogin.hpp"
+#include "net/login/Types.hpp"
 
 #endif

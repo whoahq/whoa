@@ -2,8 +2,8 @@
 #define GLUE_C_GLUE_MGR_HPP
 
 #include "event/Event.hpp"
+#include "net/Login.hpp"
 #include "net/Types.hpp"
-#include <cstdint>
 
 class CDataStore;
 class CSimpleTop;

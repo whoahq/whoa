@@ -1,6 +1,7 @@
 #ifndef NET_LOGIN_LOGIN_RESPONSE_HPP
 #define NET_LOGIN_LOGIN_RESPONSE_HPP
 
+#include "net/login/Types.hpp"
 #include "net/Types.hpp"
 #include <storm/Array.hpp>
 

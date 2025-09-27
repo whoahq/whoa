@@ -2,10 +2,12 @@
 #define NET_GRUNT_CLIENT_RESPONSE_HPP
 
 #include "net/grunt/Grunt.hpp"
-#include "net/Types.hpp"
+#include "net/login/Types.hpp"
+#include <cstdint>
 
 class CDataStore;
 class LoginResponse;
+struct NETADDR;
 
 class Grunt::ClientResponse {
     public:

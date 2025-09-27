@@ -486,9 +486,9 @@ void CGlueMgr::PollLoginServerLogin() {
     }
 
     case LOGIN_STATE_CHECKINGVERSIONS: {
-        uint8_t versionChecksum[VERSION_CHECKSUM_LEN];
+        uint8_t versionChecksum[LOGIN_VERSION_CHECKSUM_LEN];
         auto versionChallenge = ClientServices::LoginConnection()->GetVersionChallenge();
-        ChecksumExecutables(versionChallenge, VERSION_CHALLENGE_LEN, versionChecksum);
+        ChecksumExecutables(versionChallenge, LOGIN_VERSION_CHALLENGE_LEN, versionChecksum);
 
         ClientServices::LoginConnection()->ProveVersion(versionChecksum);
 

@@ -4,12 +4,12 @@
 #include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Grunt.hpp"
 #include "net/login/Login.hpp"
-#include "net/Types.hpp"
+#include "net/login/Types.hpp"
 
 class GruntLogin : public Login {
     public:
         // Member variables
-        uint8_t m_versionChallenge[VERSION_CHALLENGE_LEN];
+        uint8_t m_versionChallenge[LOGIN_VERSION_CHALLENGE_LEN];
         Grunt::ClientLink* m_clientLink = nullptr;
 
         // Virtual member functions

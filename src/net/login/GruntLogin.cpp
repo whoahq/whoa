@@ -96,7 +96,7 @@ const uint8_t* GruntLogin::GetVersionChallenge() {
 void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
     if (this->IsReconnect()) {
         // During reconnect, version challenge is ignored and version checksum is zeroed out
-        uint8_t versionChecksum[VERSION_CHECKSUM_LEN] = {};
+        uint8_t versionChecksum[LOGIN_VERSION_CHECKSUM_LEN] = {};
 
         this->m_clientLink->ProveVersion(versionChecksum);
     } else {
