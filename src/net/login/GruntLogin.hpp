@@ -1,7 +1,6 @@
 #ifndef NET_LOGIN_GRUNT_LOGIN_HPP
 #define NET_LOGIN_GRUNT_LOGIN_HPP
 
-#include "net/grunt/ClientResponse.hpp"
 #include "net/grunt/Grunt.hpp"
 #include "net/login/Login.hpp"
 #include "net/login/Types.hpp"
