@@ -15,12 +15,17 @@ class ClientServices : public LoginResponse {
         static char s_accountName[1280];
         static RealmResponse* s_clientRealmResponse;
         static ClientConnection* s_currentConnection;
+        static CVar* s_darkPortalVar;
+        static CVar* s_decorateAccountName;
         static ClientServices* s_instance;
         static Login* s_loginObj;
         static bool s_newLogin;
+        static CVar* s_realmListVar;
+        static CVar* s_realmListBNVar;
         static CVar* s_realmNameVar;
         static REALM_INFO s_selectRealmInfo;
         static bool s_selectRealmInfoValid;
+        static CVar* s_serverAlertVar;
 
         // Static functions
         static void ConnectToSelectedServer();
@@ -30,6 +35,7 @@ class ClientServices : public LoginResponse {
         static const char* GetSelectedRealmName();
         static const REALM_INFO* GetSelectedRealm();
         static void Initialize();
+        static void InitLoginServerCVars(int32_t force, const char* locale);
         static Login* LoginConnection();
         static void Logon(const char* accountName, const char* password);
         static void SelectRealm(const char* realmName);
