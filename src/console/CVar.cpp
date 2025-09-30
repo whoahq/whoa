@@ -22,8 +22,9 @@ void CVar::Initialize() {
     ConsoleCommandRegister("cvarlist", CVarListCommandHandler, DEFAULT, "List cvars");
 }
 
-void CVar::Load(const char* filename) {
+int32_t CVar::Load(const char* filename) {
     // TODO
+    return 0;
 }
 
 CVar* CVar::Lookup(const char* name) {

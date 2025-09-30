@@ -1,9 +1,9 @@
 #ifndef CONSOLE_C_VAR_HPP
 #define CONSOLE_C_VAR_HPP
 
-#include <cstdint>
 #include <common/String.hpp>
 #include <storm/Hash.hpp>
+#include <cstdint>
 
 class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
     public:
@@ -14,7 +14,7 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
 
         // Static functions
         static void Initialize();
-        static void Load(const char* filename);
+        static int32_t Load(const char* filename);
         static CVar* Lookup(const char* name);
         static CVar* Register(const char*, const char*, uint32_t, const char*, bool (*)(CVar*, const char*, const char*, void*), uint32_t, bool, void*, bool);
 
