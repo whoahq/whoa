@@ -163,6 +163,18 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     return 1;
 }
 
+// TODO name this (maybe something like InitializeLocale?)
+void Sub405DD0() {
+    // TODO
+
+    // TODO get this from the soupy mess of locale checks above
+    auto locale = "enUS";
+
+    ClientServices::InitLoginServerCVars(1, locale);
+
+    // TODO
+}
+
 int32_t InitializeGlobal() {
     // TODO
 
@@ -227,7 +239,7 @@ int32_t InitializeGlobal() {
 
     // sub_423D70();
 
-    // sub_405DD0();
+    Sub405DD0();
 
     // CVar* v3 = CVar::Register(
     //     "processAffinityMask",
