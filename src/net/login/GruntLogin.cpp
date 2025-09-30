@@ -13,7 +13,7 @@ GruntLogin::~GruntLogin() {
 bool GruntLogin::Connected(const NETADDR& addr) {
     this->m_loggedOn = true;
 
-    this->m_loginResponse->m_loginState = LOGIN_STATE_15;
+    this->m_loginResponse->m_loginState = LOGIN_STATE_CONNECTED;
     this->m_loginResponse->m_loginResult = LOGIN_OK;
 
     char addrStr[32];
@@ -21,7 +21,7 @@ bool GruntLogin::Connected(const NETADDR& addr) {
     // OsNetAddrToStr(addr, addrStr, sizeof(addrStr));
 
     this->m_loginResponse->UpdateLoginStatus(
-        LOGIN_STATE_15,
+        LOGIN_STATE_CONNECTED,
         LOGIN_OK,
         addrStr,
         0x0

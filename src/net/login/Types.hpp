@@ -66,7 +66,7 @@ enum LOGIN_STATE {
     LOGIN_STATE_TOKEN               = 12,
     LOGIN_STATE_TOKEN_WAIT          = 13,
     LOGIN_STATE_CHECKINGVERSIONS    = 14,
-    LOGIN_STATE_15                  = 15, // RESPONSE_CONNECTED
+    LOGIN_STATE_CONNECTED           = 15,
     LOGIN_STATE_DISCONNECTED        = 16,
     LOGIN_STATE_SURVEY              = 17,
     LOGIN_STATE_MAX                 = 18,
