@@ -27,7 +27,7 @@ enum LOGIN_RESULT {
     LOGIN_SUSPENDED                 = 18,
     LOGIN_PARENTALCONTROL           = 19,
     LOGIN_LOCKED_ENFORCED           = 20,
-    LOGIN_RESULT_21                 = 21, // DISCONNECTED
+    LOGIN_DISCONNECTED              = 21,
     LOGIN_ACCOUNT_CONVERTED         = 22,
     LOGIN_ANTI_INDULGENCE           = 23,
     LOGIN_EXPIRED                   = 24,
