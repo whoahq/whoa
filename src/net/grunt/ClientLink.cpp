@@ -510,7 +510,7 @@ int32_t Grunt::ClientLink::CmdXferInitiate(CDataStore& msg) {
     return 0;
 }
 
-void Grunt::ClientLink::Connect(const char* a2) {
+void Grunt::ClientLink::Connect(const char* loginServer) {
     if (this->m_state) {
         return;
     }
@@ -523,11 +523,11 @@ void Grunt::ClientLink::Connect(const char* a2) {
     this->m_connection = connection;
     this->m_connection->SetType(WOWC_TYPE_STREAM);
 
-    auto port = SStrChr(a2, ':');
+    auto port = SStrChr(loginServer, ':');
     if (port) {
-        this->m_connection->Connect(a2, 5000);
+        this->m_connection->Connect(loginServer, 5000);
     } else {
-        this->m_connection->Connect(a2, 3724, 5000);
+        this->m_connection->Connect(loginServer, 3724, 5000);
     }
 }
 

@@ -291,7 +291,9 @@ void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
 }
 
 void GruntLogin::Reconnect() {
-    // TODO
+    this->m_reconnect = true;
+
+    this->m_clientLink->Connect(this->m_loginResponse->GetLoginServer());
 }
 
 void GruntLogin::ReconnectResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
