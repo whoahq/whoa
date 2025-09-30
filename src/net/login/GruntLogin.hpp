@@ -26,7 +26,7 @@ class GruntLogin : public Login {
         virtual const uint8_t* GetVersionChallenge();
         virtual void GetRealmList();
         virtual void Reconnect();
-        virtual void Logon(const char* a2, const char* a3);
+        virtual void Logon(const char* loginServer, const char* loginPortal);
         virtual void ProveVersion(const uint8_t* versionChecksum);
         virtual void Logoff();
         virtual void Init(LoginResponse* loginResponse);

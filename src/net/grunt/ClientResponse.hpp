@@ -26,7 +26,7 @@ class Grunt::ClientResponse {
         virtual const uint8_t* GetVersionChallenge() = 0;
         virtual void GetRealmList() = 0;
         virtual void Reconnect() = 0;
-        virtual void Logon(const char* a2, const char* a3) = 0;
+        virtual void Logon(const char* loginServer, const char* loginPortal) = 0;
         virtual void ProveVersion(const uint8_t* versionChecksum) = 0;
         virtual void Logoff() = 0;
         virtual void Init(LoginResponse* loginResponse) = 0;

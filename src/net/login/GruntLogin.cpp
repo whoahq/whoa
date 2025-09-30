@@ -125,7 +125,7 @@ void GruntLogin::Logoff() {
     // TODO
 }
 
-void GruntLogin::Logon(const char* a2, const char* a3) {
+void GruntLogin::Logon(const char* loginServer, const char* loginPortal) {
     if (this->m_loggedOn) {
         return;
     }
@@ -141,11 +141,11 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
         0x0
     );
 
-    if (!a2) {
-        a2 = "us.logon.worldofwarcraft.com:3724";
+    if (!loginServer) {
+        loginServer = "us.logon.worldofwarcraft.com:3724";
     }
 
-    this->m_clientLink->Connect(a2);
+    this->m_clientLink->Connect(loginServer);
 }
 
 void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {

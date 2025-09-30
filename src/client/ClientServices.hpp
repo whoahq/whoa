@@ -30,6 +30,8 @@ class ClientServices : public LoginResponse {
         // Static functions
         static void ConnectToSelectedServer();
         static ClientConnection* Connection();
+        static const char* GetCurrentLoginPortal();
+        static const char* GetCurrentLoginServer();
         static ClientServices* GetInstance();
         static REALM_INFO* GetRealmInfoByIndex(int32_t index);
         static const char* GetSelectedRealmName();
@@ -44,6 +46,7 @@ class ClientServices : public LoginResponse {
         static int32_t SetSelectedRealmInfo(int32_t a1);
 
         // Virtual member functions
+        virtual const char* GetLoginServer();
         virtual int32_t GetLoginServerType();
         virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags);
         virtual void RealmEnumCallback(uint32_t a2);

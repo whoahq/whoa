@@ -52,6 +52,18 @@ ClientConnection* ClientServices::Connection() {
     return ClientServices::s_currentConnection;
 }
 
+const char* ClientServices::GetCurrentLoginPortal() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_darkPortalVar->GetString()
+        : "";
+}
+
+const char* ClientServices::GetCurrentLoginServer() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_realmListBNVar->GetString()
+        : ClientServices::s_realmListVar->GetString();
+}
+
 ClientServices* ClientServices::GetInstance() {
     if (ClientServices::s_instance) {
         return ClientServices::s_instance;
@@ -237,9 +249,10 @@ void ClientServices::Logon(const char* accountName, const char* password) {
 
     ClientServices::s_loginObj->SetLogonCreds(accountName, password);
 
-    // TODO
-
-    ClientServices::s_loginObj->Logon(nullptr, nullptr);
+    ClientServices::s_loginObj->Logon(
+        ClientServices::GetCurrentLoginServer(),
+        ClientServices::GetCurrentLoginPortal()
+    );
 }
 
 void ClientServices::SelectRealm(const char* realmName) {
@@ -279,6 +292,12 @@ int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
     ClientServices::s_selectRealmInfoValid = false;
 
     return 0;
+}
+
+const char* ClientServices::GetLoginServer() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_realmListBNVar->GetString()
+        : ClientServices::s_realmListVar->GetString();
 }
 
 int32_t ClientServices::GetLoginServerType() {

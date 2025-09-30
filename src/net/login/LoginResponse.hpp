@@ -16,6 +16,7 @@ class LoginResponse {
         LOGIN_RESULT m_loginResult;
 
         // Virtual member functions
+        virtual const char* GetLoginServer() = 0;
         virtual int32_t GetLoginServerType() = 0;
         virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) = 0;
         virtual void RealmEnumCallback(uint32_t a2) = 0;
