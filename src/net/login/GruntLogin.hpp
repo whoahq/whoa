@@ -9,6 +9,10 @@ class GruntLogin : public Login {
     public:
         // Member variables
         uint8_t m_versionChallenge[LOGIN_VERSION_CHALLENGE_LEN];
+        uint8_t m_pinEnabled;
+        uint8_t m_matrixEnabled;
+        uint8_t m_tokenEnabled;
+        uint8_t m_tokenRequired;
         Grunt::ClientLink* m_clientLink = nullptr;
 
         // Virtual member functions

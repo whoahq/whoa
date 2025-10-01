@@ -137,6 +137,12 @@ void GruntLogin::Logon(const char* loginServer, const char* loginPortal) {
 
     // TODO
 
+    this->m_pinEnabled = false;
+    this->m_matrixEnabled = false;
+    this->m_tokenEnabled = false;
+
+    // TODO
+
     this->m_loginResponse->UpdateLoginStatus(
         LOGIN_STATE_CONNECTING,
         LOGIN_OK,
@@ -274,8 +280,25 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
 }
 
 LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
-    // TODO
-    return LOGIN_STATE_CHECKINGVERSIONS;
+    switch (state) {
+    case LOGIN_STATE_FIRST_SECURITY:
+        if (this->m_pinEnabled) {
+            return LOGIN_STATE_PIN;
+        }
+
+    case LOGIN_STATE_PIN:
+        if (this->m_matrixEnabled) {
+            return LOGIN_STATE_MATRIX;
+        }
+
+    case LOGIN_STATE_MATRIX:
+        if (this->m_tokenEnabled) {
+            return LOGIN_STATE_TOKEN;
+        }
+
+    default:
+        return LOGIN_STATE_CHECKINGVERSIONS;
+    }
 }
 
 void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
