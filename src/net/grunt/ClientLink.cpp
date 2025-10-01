@@ -314,7 +314,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
     if (verifyResult != SRP6_OK) {
         this->SetState(STATE_CONNECTED);
 
-        this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_11, nullptr, 0, 0x0);
+        this->m_clientResponse->LogonResult(Result::GRUNT_RESULT_11, nullptr, 0, 0x0);
 
         return 2;
     }
@@ -328,7 +328,7 @@ int32_t Grunt::ClientLink::CmdAuthLogonProof(CDataStore& msg) {
 
     this->SetState(STATE_AUTHENTICATED);
 
-    this->m_clientResponse->LogonResult(Grunt::GRUNT_RESULT_0, this->m_srpClient.sessionKey, 40, logonFlags);
+    this->m_clientResponse->LogonResult(Result::SUCCESS, this->m_srpClient.sessionKey, 40, logonFlags);
 
     return 2;
 }
@@ -412,7 +412,7 @@ int32_t Grunt::ClientLink::CmdAuthReconnectProof(CDataStore& msg) {
 
     this->SetState(STATE_AUTHENTICATED);
 
-    this->m_clientResponse->ReconnectResult(Grunt::GRUNT_RESULT_0, this->m_reconnectSessionKey, 40, reconnectFlags);
+    this->m_clientResponse->ReconnectResult(Result::SUCCESS, this->m_reconnectSessionKey, 40, reconnectFlags);
 
     return 2;
 }

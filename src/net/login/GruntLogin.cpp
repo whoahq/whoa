@@ -162,7 +162,10 @@ void GruntLogin::Logon(const char* loginServer, const char* loginPortal) {
 }
 
 void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
+    using ::Grunt::Result;
+
     // Reconnect
+
     if (this->IsReconnect()) {
         // TODO
         // this->m_loginResponse->HandleRealmData(1, 0);
@@ -172,7 +175,8 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
     }
 
     // Authentication success
-    if (result == Grunt::GRUNT_RESULT_0 || result == Grunt::GRUNT_RESULT_14) {
+
+    if (result == Result::SUCCESS || result == Result::SUCCESS_SURVEY) {
         // TODO
         // this->uint8 = 0;
         // LOBYTE(this->uint105C) = 0;
@@ -206,12 +210,12 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
     // TODO this->uint8 = 1;
 
     switch (result) {
-    case 3:
+    case Result::BANNED:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BANNED, nullptr, 0x0);
         break;
 
-    case 4:
-    case 5: {
+    case Result::GRUNT_RESULT_4:
+    case Result::GRUNT_RESULT_5: {
         LOGIN_RESULT loginResult = LOGIN_UNKNOWN_ACCOUNT;
 
         // TODO
@@ -224,58 +228,69 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
         break;
     }
 
-    case 6:
+    case Result::ALREADYONLINE:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_ALREADYONLINE, nullptr, 0x0);
         break;
 
-    case 7:
+    case Result::NOTIME:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_NOTIME, nullptr, 0x0);
         break;
 
-    case 8:
+    case Result::DBBUSY:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_DBBUSY, nullptr, 0x0);
         break;
 
-    case 9:
+    case Result::BADVERSION:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BADVERSION, nullptr, 0x0);
         break;
 
-    case 10:
+    case Result::DOWNLOADFILE:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_DOWNLOADFILE, LOGIN_OK, nullptr, 0x0);
         break;
 
-    case 12:
+    case Result::SUSPENDED:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_SUSPENDED, nullptr, 0x0);
         break;
 
-    case 15:
-        // TODO
+    case Result::PARENTALCONTROL:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_PARENTALCONTROL, nullptr, 0x0);
+        break;
 
-    case 16:
-        // TODO
+    case Result::LOCKED_ENFORCED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_LOCKED_ENFORCED, nullptr, 0x0);
+        break;
 
-    case 17:
-        // TODO
+    case Result::TRIAL_EXPIRED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_TRIAL_EXPIRED, nullptr, 0x0);
+        break;
 
-    case 18:
-        // TODO
+    case Result::ACCOUNT_CONVERTED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_ACCOUNT_CONVERTED, nullptr, 0x0);
+        break;
 
-    case 22:
-        // TODO
+    case Result::CHARGEBACK:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_CHARGEBACK, nullptr, 0x0);
+        break;
 
-    case 23:
-        // TODO
+    case Result::IGR_WITHOUT_BNET:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_IGR_WITHOUT_BNET, nullptr, 0x0);
+        break;
 
-    case 24:
-        // TODO
+    case Result::GAME_ACCOUNT_LOCKED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_GAME_ACCOUNT_LOCKED, nullptr, 0x0);
+        break;
 
-    case 25:
-        // TODO
+    case Result::UNLOCKABLE_LOCK:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_UNLOCKABLE_LOCK, nullptr, 0x0);
+        break;
 
-    case 32:
-        // TODO
+    case Result::CONVERSION_REQUIRED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_CONVERSION_REQUIRED, nullptr, 0x0);
+        break;
 
-    // TODO case 255
+    case Result::DISCONNECTED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_DISCONNECTED, nullptr, 0x0);
+        break;
 
     default:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_FAILED, nullptr, 0x0);
