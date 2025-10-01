@@ -592,6 +592,30 @@ void Grunt::ClientLink::LogonNewSession(const Grunt::ClientLink::Logon& logon) {
     this->Send(clientChallenge);
 }
 
+void Grunt::ClientLink::LogonStoredSession(const Grunt::ClientLink::Logon& logon) {
+    this->SetState(STATE_AUTH_CHALLENGE);
+
+    SStrCopy(this->m_accountName, logon.accountName, sizeof(this->m_accountName));
+    SStrUpper(this->m_accountName);
+
+    // logon.password is copy of session key from original session
+    memcpy(this->m_reconnectSessionKey, logon.password, sizeof(this->m_reconnectSessionKey));
+
+    CDataStoreCache<1024> clientChallenge;
+
+    uint8_t opcode = CMD_AUTH_RECONNECT_CHALLENGE;
+    clientChallenge.Put(opcode);
+
+    uint8_t protocol = 8;
+    clientChallenge.Put(protocol);
+
+    this->PackLogon(clientChallenge, logon);
+
+    clientChallenge.Finalize();
+
+    this->Send(clientChallenge);
+}
+
 void Grunt::ClientLink::PackLogon(CDataStore& msg, const Logon& logon) {
     uint32_t startPos = msg.Size();
     uint16_t tmpSize = 0;

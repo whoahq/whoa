@@ -83,6 +83,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         void Disconnect();
         void GetRealmList();
         void LogonNewSession(const Logon& logon);
+        void LogonStoredSession(const Logon& logon);
         void PackLogon(CDataStore& msg, const Logon& logon);
         void ProveVersion(const uint8_t* versionChecksum);
         void Send(CDataStore& msg);

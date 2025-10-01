@@ -60,7 +60,10 @@ void GruntLogin::GetLogonMethod() {
     // TODO
 
     if (this->IsReconnect()) {
-        // TODO
+        logon.accountName = this->m_accountName;
+        logon.password = reinterpret_cast<const char*>(this->m_sessionKey);
+
+        this->m_clientLink->LogonStoredSession(logon);
     } else if (this->m_password) {
         this->m_loginResponse->UpdateLoginStatus(
             LOGIN_STATE_AUTHENTICATING,
