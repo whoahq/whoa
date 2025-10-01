@@ -125,7 +125,11 @@ void GruntLogin::Init(LoginResponse* loginResponse) {
 }
 
 void GruntLogin::Logoff() {
-    // TODO
+    if (!this->m_loggedOn) {
+        return;
+    }
+
+    this->m_clientLink->Disconnect();
 }
 
 void GruntLogin::Logon(const char* loginServer, const char* loginPortal) {
