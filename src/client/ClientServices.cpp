@@ -92,7 +92,7 @@ const char* ClientServices::GetSelectedRealmName() {
             0,
             "",
             nullptr,
-            6,
+            NET,
             false,
             nullptr,
             false

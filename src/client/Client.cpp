@@ -67,7 +67,7 @@ void ClientMiscInitialize() {
         0,
         "",
         nullptr,
-        4,
+        GAME,
         false,
         nullptr,
         false

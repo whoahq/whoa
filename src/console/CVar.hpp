@@ -1,6 +1,7 @@
 #ifndef CONSOLE_C_VAR_HPP
 #define CONSOLE_C_VAR_HPP
 
+#include "console/Types.hpp"
 #include <common/String.hpp>
 #include <storm/Hash.hpp>
 #include <cstdint>
@@ -17,7 +18,7 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
         static int32_t Load(const char* filename);
         static CVar* Lookup(const char* name);
         static CVar* LookupRegistered(const char* name);
-        static CVar* Register(const char*, const char*, uint32_t, const char*, bool (*)(CVar*, const char*, const char*, void*), uint32_t, bool, void*, bool);
+        static CVar* Register(const char* name, const char* help, uint32_t flags, const char* value, bool (*fcn)(CVar*, const char*, const char*, void*), uint32_t category, bool a7, void* arg, bool a9);
 
         // Member variables
         uint32_t m_category = 0;
