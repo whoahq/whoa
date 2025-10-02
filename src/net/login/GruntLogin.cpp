@@ -167,8 +167,7 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
     // Reconnect
 
     if (this->IsReconnect()) {
-        // TODO
-        // this->m_loginResponse->HandleRealmData(1, 0);
+        this->m_loginResponse->HandleRealmData(1, nullptr);
         this->m_clientLink->Disconnect();
 
         return;
