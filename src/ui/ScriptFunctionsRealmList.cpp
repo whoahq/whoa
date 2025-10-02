@@ -238,7 +238,36 @@ int32_t Script_ChangeRealm(lua_State* L) {
 }
 
 int32_t Script_GetRealmCategories(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_checkstack(L, CRealmList::s_categories.Count());
+
+    int32_t pushed = 0;
+
+    for (uint32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
+        auto realmCategory = CRealmList::s_categories[i];
+
+        if (realmCategory && realmCategory->uint14) {
+            auto categoryName = realmCategory->m_category
+                ? realmCategory->m_category->m_name
+                : "UNKNOWN";
+
+            lua_pushstring(L, categoryName);
+
+            pushed++;
+        }
+    }
+
+    if (pushed) {
+        return pushed;
+    }
+
+    auto realmCategory = CRealmList::s_categories[0];
+    auto categoryName = realmCategory->m_category
+        ? realmCategory->m_category->m_name
+        : "UNKNOWN";
+
+    lua_pushstring(L, categoryName);
+
+    return 1;
 }
 
 int32_t Script_SetPreferredInfo(lua_State* L) {
