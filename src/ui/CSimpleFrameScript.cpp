@@ -1,5 +1,6 @@
 #include "ui/CSimpleFrameScript.hpp"
 #include "gx/Coordinate.hpp"
+#include "ui/CBackdropGenerator.hpp"
 #include "ui/CSimpleFrame.hpp"
 #include "ui/FrameScript.hpp"
 #include "util/Lua.hpp"
@@ -460,7 +461,17 @@ int32_t CSimpleFrame_GetBackdropColor(lua_State* L) {
 }
 
 int32_t CSimpleFrame_SetBackdropColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector color = { 0x00 };
+    FrameScript_GetColor(L, 2, color);
+
+    if (frame->m_backdrop) {
+        frame->m_backdrop->SetVertexColor(color);
+    }
+
+    return 0;
 }
 
 int32_t CSimpleFrame_GetBackdropBorderColor(lua_State* L) {
