@@ -490,7 +490,20 @@ int32_t Script_CancelLogin(lua_State* L) {
 }
 
 int32_t Script_GetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: GetCVar(\"cvar\")");
+    }
+
+    auto name = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(name);
+
+    if (!var) {
+        return luaL_error(L, "Couldn't find CVar named '%s'", name);
+    }
+
+    lua_pushstring(L, var->GetString());
+
+    return 1;
 }
 
 int32_t Script_GetCVarBool(lua_State* L) {
