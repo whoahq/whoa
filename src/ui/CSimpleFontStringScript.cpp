@@ -140,7 +140,16 @@ int32_t CSimpleFontString_GetTextColor(lua_State* L) {
 }
 
 int32_t CSimpleFontString_SetTextColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector color = { 0x00, 0x00, 0x00, 0x00 };
+    FrameScript_GetColor(L, 2, color);
+
+    string->SetVertexColor(color);
+    string->m_fontableFlags &= ~FLAG_COLOR_UPDATE;
+
+    return 0;
 }
 
 int32_t CSimpleFontString_GetShadowColor(lua_State* L) {
