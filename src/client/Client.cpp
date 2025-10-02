@@ -175,6 +175,12 @@ void Sub405DD0() {
     // TODO
 }
 
+bool LocaleChangedCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+
+    return true;
+}
+
 int32_t InitializeGlobal() {
     // TODO
 
@@ -215,11 +221,20 @@ int32_t InitializeGlobal() {
 
     // CVar::Register("dbCompress", "Database compression", 0, "-1", 0, 5, 0, 0, 0);
 
-    // v2 = CVar::Register("locale", "Set the game locale", 0, "****", &LocaleChangedCallback, 5, 0, 0, 0);
+    auto localeVar = CVar::Register(
+        "locale",
+        "Set the game locale",
+        0x0, "****",
+        &LocaleChangedCallback,
+        DEFAULT,
+        false,
+        nullptr,
+        false
+    );
 
-    // if (!SStrCmp(v2->m_stringValue.m_str, "****", 0x7FFFFFFFu)) {
-    //     CVar::Set(v2, "enUS", 1, 0, 0, 1);
-    // }
+    if (SStrCmp(localeVar->GetString(), "****") == 0) {
+        localeVar->Set("enUS", true, false, false, true);
+    }
 
     // CVar::Register("useEnglishAudio", "override the locale and use English audio", 0, "0", 0, 5, 0, 0, 0);
 
