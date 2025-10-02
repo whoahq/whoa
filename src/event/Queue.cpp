@@ -64,23 +64,24 @@ void UpdateSyncState(EvtContext* context, EVENTID& id, const void* data) {
     STORM_VALIDATE(context);
     STORM_VALIDATE_END_VOID;
 
-    KEY key;
-    MOUSEBUTTON button;
-
     switch (id) {
     case EVENT_ID_FOCUS:
         ResetSyncState(context);
         break;
+
     case EVENT_ID_KEYDOWN:
-    case EVENT_ID_KEYUP:
-        key = reinterpret_cast<const EVENT_DATA_KEY*>(data)->key;
+    case EVENT_ID_KEYUP: {
+        auto key = reinterpret_cast<const EVENT_DATA_KEY*>(data)->key;
         UpdateSyncKeyState(context, key, id);
         break;
+    }
+
     case EVENT_ID_MOUSEDOWN:
-    case EVENT_ID_MOUSEUP:
-        button = reinterpret_cast<const EVENT_DATA_MOUSE*>(data)->button;
+    case EVENT_ID_MOUSEUP: {
+        auto button = reinterpret_cast<const EVENT_DATA_MOUSE*>(data)->button;
         UpdateSyncMouseState(context, button, id == EVENT_ID_MOUSEDOWN);
         break;
+    }
     }
 }
 
