@@ -47,14 +47,7 @@ void ResetSyncState(EvtContext* context) {
 
     context->m_critsect.Enter();
 
-    EvtKeyDown* node;
-
-    auto list = &context->m_queueSyncKeyDownList;
-
-    while (node = list->Head()) {
-        list->UnlinkNode(node);
-        list->DeleteNode(node);
-    }
+    context->m_queueSyncKeyDownList.Clear();
 
     context->m_critsect.Leave();
 }
