@@ -224,7 +224,8 @@ int32_t InitializeGlobal() {
     auto localeVar = CVar::Register(
         "locale",
         "Set the game locale",
-        0x0, "****",
+        0x0,
+        "****",
         &LocaleChangedCallback,
         DEFAULT,
         false,
@@ -236,7 +237,17 @@ int32_t InitializeGlobal() {
         localeVar->Set("enUS", true, false, false, true);
     }
 
-    // CVar::Register("useEnglishAudio", "override the locale and use English audio", 0, "0", 0, 5, 0, 0, 0);
+    CVar::Register(
+        "useEnglishAudio",
+        "override the locale and use English audio",
+        0x0,
+        "0",
+        nullptr,
+        DEFAULT,
+        false,
+        nullptr,
+        false
+    );
 
     // if (sub_422140()) {
     //     sub_4036B0(v24, 0, a2, (int)v2, (char)v24);
