@@ -21,10 +21,7 @@ void UpdateSyncKeyState(EvtContext* context, KEY key, EVENTID& id) {
     for (auto node = list->Head(); node;) {
         if (node->key == key) {
             keyDown = 1;
-            auto dead = node;
-            node = list->Next(node);
-            list->UnlinkNode(dead);
-            list->DeleteNode(dead);
+            node = list->DeleteNode(node);
         } else {
             node = list->Next(node);
         }
