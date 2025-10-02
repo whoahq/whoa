@@ -308,6 +308,10 @@ int32_t ClientServices::GetLoginServerType() {
     return ClientServices::LoginConnection()->GetLoginServerType();
 }
 
+void ClientServices::JoinRealmResult(uint32_t addr, int32_t port, int32_t a3, int32_t a4) {
+    // TODO
+}
+
 void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
     CGlueMgr::SetLoginStateAndResult(state, result, addrStr, stateStr, resultStr, flags);
 

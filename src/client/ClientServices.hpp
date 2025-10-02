@@ -48,6 +48,7 @@ class ClientServices : public LoginResponse {
         // Virtual member functions
         virtual const char* GetLoginServer();
         virtual int32_t GetLoginServerType();
+        virtual void JoinRealmResult(uint32_t addr, int32_t port, int32_t a3, int32_t a4);
         virtual void LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags);
         virtual void RealmEnumCallback(uint32_t a2);
 };
