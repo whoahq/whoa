@@ -1,6 +1,6 @@
 #include "console/Screen.hpp"
 #include "console/Console.hpp"
-#include "console/Handlers.hpp"
+#include "console/EventHandlers.hpp"
 #include "console/Types.hpp"
 #include "gx/Buffer.hpp"
 #include "gx/Coordinate.hpp"

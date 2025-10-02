@@ -1,13 +1,49 @@
 #include "console/CVar.hpp"
+#include "console/Command.hpp"
+#include "console/CVarHandlers.hpp"
 #include <storm/String.hpp>
 
+bool CVar::m_initialized;
 bool CVar::m_needsSave;
 TSHashTable<CVar, HASHKEY_STRI> CVar::s_registeredCVars;
+
+void CVar::Initialize() {
+    CVar::m_initialized = true;
+
+    char basePath[STORM_MAX_PATH];
+    // TODO
+    // SFile::GetBasePath(basePath, 260);
+    // SStrPrintf(basePath, sizeof(basePath), "%s%s\\", basePath, "WTF");
+    // s_CreatePathDirectories(basePath);
+
+    ConsoleCommandRegister("set", CVarSetCommandHandler, DEFAULT, "Set the value of a CVar");
+    ConsoleCommandRegister("cvar_reset", CVarResetCommandHandler, DEFAULT, "Set the value of a CVar to it's startup value");
+    ConsoleCommandRegister("cvar_default", CVarDefaultCommandHandler, DEFAULT, "Set the value of a CVar to it's coded default value");
+    ConsoleCommandRegister("cvarlist", CVarListCommandHandler, DEFAULT, "List cvars");
+}
+
+int32_t CVar::Load(const char* filename) {
+    // TODO
+    return 0;
+}
 
 CVar* CVar::Lookup(const char* name) {
     return name
         ? CVar::s_registeredCVars.Ptr(name)
         : nullptr;
+}
+
+CVar* CVar::LookupRegistered(const char* name) {
+    auto var = CVar::Lookup(name);
+    if (!var) {
+        return nullptr;
+    }
+
+    if (var->m_flags >= 0 && !(var->m_flags & 0x80)) {
+        return nullptr;
+    }
+
+    return var;
 }
 
 CVar* CVar::Register(const char* name, const char* help, uint32_t flags, const char* value, bool (*fcn)(CVar*, const char*, const char*, void*), uint32_t category, bool a7, void* arg, bool a9) {

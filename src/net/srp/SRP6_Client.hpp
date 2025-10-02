@@ -3,6 +3,11 @@
 
 #include <common/SHA1.hpp>
 
+// Invented names
+#define SRP6_OK      (0)
+#define SRP6_INVALID (-1)
+#define SRP6_FAILURE (-2)
+
 class SRP6_Random;
 
 class SRP6_Client {

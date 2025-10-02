@@ -1,4 +1,5 @@
 #include "console/Command.hpp"
+#include "console/CommandHandlers.hpp"
 #include <storm/Error.hpp>
 
 int32_t ValidateFileName(const char* filename) {
@@ -67,20 +68,4 @@ void ConsoleCommandUnregister(const char* command) {
             g_consoleCommandHash.Delete(commandPtr);
         }
     }
-}
-
-int32_t ConsoleCommand_Help(const char* command, const char* arguments) {
-    // TODO
-    return 0;
-}
-
-int32_t ConsoleCommand_Quit(const char* command, const char* arguments) {
-    // TODO
-    // ConsolePostClose()
-    return 0;
-}
-
-int32_t ConsoleCommand_Ver(const char* command, const char* arguments) {
-    // TODO
-    return 0;
 }

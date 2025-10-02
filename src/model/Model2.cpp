@@ -149,7 +149,7 @@ uint32_t M2RegisterCVars() {
         0,
         "1",
         nullptr,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -161,7 +161,7 @@ uint32_t M2RegisterCVars() {
         0,
         "1",
         nullptr,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -173,7 +173,7 @@ uint32_t M2RegisterCVars() {
         0,
         "1",
         nullptr,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -185,7 +185,7 @@ uint32_t M2RegisterCVars() {
         0,
         "1",
         BatchDoodadsCallback,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -197,7 +197,7 @@ uint32_t M2RegisterCVars() {
         0,
         "1",
         BatchParticlesCallback,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -209,7 +209,7 @@ uint32_t M2RegisterCVars() {
         0,
         "0",
         ForceAdditiveParticleSortCallback,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -233,7 +233,7 @@ uint32_t M2RegisterCVars() {
         0,
         "0",
         M2DebugFasterChanged,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false

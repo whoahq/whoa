@@ -792,7 +792,7 @@ void CGxDeviceGLL::IShaderCreatePixel(CGxShader* ps) {
             GLShader::ShaderType::ePixelShader,
             codeStr,
             codeLen,
-            ps->m_key.m_str
+            ps->m_key.GetString()
         );
 
         glShader->Compile(nullptr);
@@ -818,7 +818,7 @@ void CGxDeviceGLL::IShaderCreateVertex(CGxShader* vs) {
             GLShader::ShaderType::eVertexShader,
             code,
             codeLen,
-            vs->m_key.m_str
+            vs->m_key.GetString()
         );
 
         glShader->Compile(nullptr);

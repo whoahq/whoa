@@ -2,9 +2,10 @@
 #define GLUE_C_GLUE_MGR_HPP
 
 #include "event/Event.hpp"
+#include "net/Login.hpp"
 #include "net/Types.hpp"
-#include <cstdint>
 
+class CDataStore;
 class CSimpleTop;
 
 class CGlueMgr {
@@ -21,7 +22,7 @@ class CGlueMgr {
             IDLE_7 = 7,
             IDLE_8 = 8,
             IDLE_9 = 9,
-            IDLE_10 = 10,
+            IDLE_ENTER_WORLD = 10,
             IDLE_11 = 11,
             IDLE_12 = 12,
             IDLE_13 = 13
@@ -62,9 +63,11 @@ class CGlueMgr {
         static int32_t Idle(const void* a1, void* a2);
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
-        static void QuitGame();
+        static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
+        static void PollEnterWorld();
         static void PollLoginServerLogin();
+        static void QuitGame();
         static void Resume();
         static void SetCurrentAccount(const char* accountName);
         static void SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, char const* addrStr, char const* stateStr, char const* resultStr, uint8_t flags);

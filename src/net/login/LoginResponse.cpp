@@ -57,7 +57,7 @@ void LoginResponse::HandleRealmData(uint32_t a2, CDataStore* msg) {
             realm.revision = 0;
         }
 
-        if (msg->m_read > msg->m_size) {
+        if (msg->Tell() > msg->Size()) {
             break;
         }
 
@@ -78,7 +78,7 @@ void LoginResponse::HandleRealmData(uint32_t a2, CDataStore* msg) {
     msg->Get(reinterpret_cast<uint16_t&>(this->uint10));
 
     // Overrun or underrun
-    if (msg->m_read > msg->m_size || !msg->IsRead()) {
+    if (msg->Tell() > msg->Size() || !msg->IsRead()) {
         this->m_realmList.Clear();
         this->RealmEnumCallback(4);
     }

@@ -42,7 +42,7 @@ void RegisterGxCVars() {
         0x0,
         "1",
         nullptr,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false
@@ -54,10 +54,10 @@ void RegisterGxCVars() {
         0x1 | 0x2,
         v1 ? "1" : "0",
         &CVGxWindowCallback,
-        1,
-        0,
-        0,
-        0
+        GRAPHICS,
+        false,
+        nullptr,
+        false
     );
 
     s_cvGxMaximize = CVar::Register(
@@ -66,10 +66,10 @@ void RegisterGxCVars() {
         0x1 | 0x2,
         v1 ? "1" : "0",
         &CVGxMaximizeCallback,
-        1,
-        0,
-        0,
-        0
+        GRAPHICS,
+        false,
+        nullptr,
+        false
     );
 
     // TODO s_cvGxColorBits
@@ -83,7 +83,7 @@ void RegisterGxCVars() {
         0x1 | 0x2,
         resolution,
         &CVGxResolutionCallback,
-        1,
+        GRAPHICS,
         false,
         nullptr,
         false

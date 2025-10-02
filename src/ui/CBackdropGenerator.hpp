@@ -44,6 +44,7 @@ class CBackdropGenerator {
         void LoadXML(XMLNode* node, CStatus* status);
         void SetBorderVertexColor(const CImVector& borderColor);
         void SetOutput(CSimpleFrame* frame);
+        void SetVertexColor(const CImVector& color);
 };
 
 #endif

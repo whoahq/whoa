@@ -153,7 +153,11 @@ void ClientConnection::Connect() {
     this->m_errorCode = 7;
     this->m_statusComplete = 0;
 
-    // TODO
+    // TODO LogConnectionStatus(this->m_statusCop, this->m_errorCode, 1)
+
+    if (this->m_connected) {
+        this->Complete(1, 5);
+    }
 
     ClientServices::LoginConnection()->GetRealmList();
 }

@@ -27,6 +27,7 @@ IncludeCategories:
   - Regex: ".*"
     Priority: 1
     SortPriority: 0
+IndentAccessModifiers: true
 IndentGotoLabels: false
 IndentWidth: 4
 MaxEmptyLinesToKeep: 1

@@ -67,8 +67,8 @@ int32_t CM2SceneRender::s_shadedList[M2BLEND_COUNT] = {
     0   // M2BLEND_MOD_2X
 };
 
-void CM2SceneRender::Draw(M2PASS pass, M2Element* elements, uint32_t* a4, uint32_t a5) {
-    if (!a5) {
+void CM2SceneRender::Draw(M2PASS pass, M2Element* elements, uint32_t* indices, uint32_t count) {
+    if (!count) {
         return;
     }
 
@@ -103,9 +103,8 @@ void CM2SceneRender::Draw(M2PASS pass, M2Element* elements, uint32_t* a4, uint32
 
     this->m_curPass = pass;
 
-    for (int32_t i = 0; i < a5; i++) {
-        uint32_t index = a4[i];
-        auto element = &elements[index];
+    for (int32_t i = 0; i < count; i++) {
+        auto element = &elements[indices[i]];
 
         if (element->type == 2 || element->type == 4 || !element->model->m_flag2000) {
             this->m_curElement = element;
@@ -136,7 +135,7 @@ void CM2SceneRender::Draw(M2PASS pass, M2Element* elements, uint32_t* a4, uint32
                 }
 
                 case 2: {
-                    this->DrawBatchDoodad(elements, &a4[i]);
+                    this->DrawBatchDoodad(elements, &indices[i]);
                     // TODO
                     // i += this->m_curElement->dword1C - 1;
                     break;
@@ -148,7 +147,7 @@ void CM2SceneRender::Draw(M2PASS pass, M2Element* elements, uint32_t* a4, uint32
                 }
 
                 case 4: {
-                    i += this->DrawParticle(i, elements, a4, a5);
+                    i += this->DrawParticle(i, elements, indices, count);
                     break;
                 }
 

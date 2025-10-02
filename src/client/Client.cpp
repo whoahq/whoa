@@ -1,9 +1,10 @@
 #include "client/Client.hpp"
 #include "async/AsyncFile.hpp"
+#include "client/ClientHandlers.hpp"
 #include "client/ClientServices.hpp"
 #include "console/CVar.hpp"
-#include "console/Client.hpp"
 #include "console/Device.hpp"
+#include "console/Initialize.hpp"
 #include "console/Screen.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
@@ -30,6 +31,33 @@ void BaseInitializeGlobal() {
     PropInitialize();
 }
 
+int32_t ClientIdle(const void* data, void* param) {
+    // TODO
+    // ClientGameTimeTickHandler(data, param);
+    // Player_C_ZoneUpdateHandler(data, param);
+
+    return 1;
+}
+
+void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+
+    EventRegister(EVENT_ID_IDLE, ClientIdle);
+
+    // TODO
+
+    ClientServices::SetMessageHandler(SMSG_NOTIFICATION, NotifyHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_PLAYED_TIME, PlayedTimeHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_NEW_WORLD, NewWorldHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_PENDING, TransferPendingHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_TRANSFER_ABORTED, TransferAbortedHandler, nullptr);
+    ClientServices::SetMessageHandler(SMSG_LOGIN_VERIFY_WORLD, LoginVerifyWorldHandler, nullptr);
+
+    ClientServices::SetMessageHandler(SMSG_KICK_REASON, CGlueMgr::OnKickReasonMsg, nullptr);
+
+    // TODO
+}
+
 void ClientMiscInitialize() {
     // TODO
 
@@ -39,7 +67,7 @@ void ClientMiscInitialize() {
         0,
         "",
         nullptr,
-        4,
+        GAME,
         false,
         nullptr,
         false
@@ -135,6 +163,24 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     return 1;
 }
 
+// TODO name this (maybe something like InitializeLocale?)
+void Sub405DD0() {
+    // TODO
+
+    // TODO get this from the soupy mess of locale checks above
+    auto locale = "enUS";
+
+    ClientServices::InitLoginServerCVars(1, locale);
+
+    // TODO
+}
+
+bool LocaleChangedCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+
+    return true;
+}
+
 int32_t InitializeGlobal() {
     // TODO
 
@@ -175,13 +221,33 @@ int32_t InitializeGlobal() {
 
     // CVar::Register("dbCompress", "Database compression", 0, "-1", 0, 5, 0, 0, 0);
 
-    // v2 = CVar::Register("locale", "Set the game locale", 0, "****", &LocaleChangedCallback, 5, 0, 0, 0);
+    auto localeVar = CVar::Register(
+        "locale",
+        "Set the game locale",
+        0x0,
+        "****",
+        &LocaleChangedCallback,
+        DEFAULT,
+        false,
+        nullptr,
+        false
+    );
 
-    // if (!SStrCmp(v2->m_stringValue.m_str, "****", 0x7FFFFFFFu)) {
-    //     CVar::Set(v2, "enUS", 1, 0, 0, 1);
-    // }
+    if (SStrCmp(localeVar->GetString(), "****") == 0) {
+        localeVar->Set("enUS", true, false, false, true);
+    }
 
-    // CVar::Register("useEnglishAudio", "override the locale and use English audio", 0, "0", 0, 5, 0, 0, 0);
+    CVar::Register(
+        "useEnglishAudio",
+        "override the locale and use English audio",
+        0x0,
+        "0",
+        nullptr,
+        DEFAULT,
+        false,
+        nullptr,
+        false
+    );
 
     // if (sub_422140()) {
     //     sub_4036B0(v24, 0, a2, (int)v2, (char)v24);
@@ -199,7 +265,7 @@ int32_t InitializeGlobal() {
 
     // sub_423D70();
 
-    // sub_405DD0();
+    Sub405DD0();
 
     // CVar* v3 = CVar::Register(
     //     "processAffinityMask",

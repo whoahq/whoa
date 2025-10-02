@@ -1,6 +1,8 @@
 #ifndef DB_I_DATABASE_HPP
 #define DB_I_DATABASE_HPP
 
+#include <cstdint>
+
 template <class T>
 class IDatabase {
     public:

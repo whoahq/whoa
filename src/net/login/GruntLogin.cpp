@@ -13,7 +13,7 @@ GruntLogin::~GruntLogin() {
 bool GruntLogin::Connected(const NETADDR& addr) {
     this->m_loggedOn = true;
 
-    this->m_loginResponse->m_loginState = LOGIN_STATE_15;
+    this->m_loginResponse->m_loginState = LOGIN_STATE_CONNECTED;
     this->m_loginResponse->m_loginResult = LOGIN_OK;
 
     char addrStr[32];
@@ -21,7 +21,7 @@ bool GruntLogin::Connected(const NETADDR& addr) {
     // OsNetAddrToStr(addr, addrStr, sizeof(addrStr));
 
     this->m_loginResponse->UpdateLoginStatus(
-        LOGIN_STATE_15,
+        LOGIN_STATE_CONNECTED,
         LOGIN_OK,
         addrStr,
         0x0
@@ -60,7 +60,10 @@ void GruntLogin::GetLogonMethod() {
     // TODO
 
     if (this->IsReconnect()) {
-        // TODO
+        logon.accountName = this->m_accountName;
+        logon.password = reinterpret_cast<const char*>(this->m_sessionKey);
+
+        this->m_clientLink->LogonStoredSession(logon);
     } else if (this->m_password) {
         this->m_loginResponse->UpdateLoginStatus(
             LOGIN_STATE_AUTHENTICATING,
@@ -89,11 +92,19 @@ int32_t GruntLogin::GetServerId() {
     return 0;
 }
 
+const uint8_t* GruntLogin::GetVersionChallenge() {
+    return this->m_versionChallenge;
+}
+
 void GruntLogin::GetVersionProof(const uint8_t* versionChallenge) {
     if (this->IsReconnect()) {
-        // TODO
+        // During reconnect, version challenge is ignored and version checksum is zeroed out
+        uint8_t versionChecksum[LOGIN_VERSION_CHECKSUM_LEN] = {};
+
+        this->m_clientLink->ProveVersion(versionChecksum);
     } else {
         memcpy(this->m_versionChallenge, versionChallenge, sizeof(this->m_versionChallenge));
+
         LOGIN_STATE nextState = this->NextSecurityState(LOGIN_STATE_FIRST_SECURITY);
 
         this->m_loginResponse->UpdateLoginStatus(
@@ -114,15 +125,25 @@ void GruntLogin::Init(LoginResponse* loginResponse) {
 }
 
 void GruntLogin::Logoff() {
-    // TODO
+    if (!this->m_loggedOn) {
+        return;
+    }
+
+    this->m_clientLink->Disconnect();
 }
 
-void GruntLogin::Logon(const char* a2, const char* a3) {
+void GruntLogin::Logon(const char* loginServer, const char* loginPortal) {
     if (this->m_loggedOn) {
         return;
     }
 
     this->m_reconnect = false;
+
+    // TODO
+
+    this->m_pinEnabled = false;
+    this->m_matrixEnabled = false;
+    this->m_tokenEnabled = false;
 
     // TODO
 
@@ -133,25 +154,28 @@ void GruntLogin::Logon(const char* a2, const char* a3) {
         0x0
     );
 
-    if (!a2) {
-        a2 = "us.logon.worldofwarcraft.com:3724";
+    if (!loginServer) {
+        loginServer = "us.logon.worldofwarcraft.com:3724";
     }
 
-    this->m_clientLink->Connect(a2);
+    this->m_clientLink->Connect(loginServer);
 }
 
 void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
+    using ::Grunt::Result;
+
     // Reconnect
+
     if (this->IsReconnect()) {
-        // TODO
-        // this->m_loginResponse->HandleRealmData(1, 0);
+        this->m_loginResponse->HandleRealmData(1, nullptr);
         this->m_clientLink->Disconnect();
 
         return;
     }
 
     // Authentication success
-    if (result == Grunt::GRUNT_RESULT_0 || result == Grunt::GRUNT_RESULT_14) {
+
+    if (result == Result::SUCCESS || result == Result::SUCCESS_SURVEY) {
         // TODO
         // this->uint8 = 0;
         // LOBYTE(this->uint105C) = 0;
@@ -185,12 +209,12 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
     // TODO this->uint8 = 1;
 
     switch (result) {
-    case 3:
+    case Result::BANNED:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BANNED, nullptr, 0x0);
         break;
 
-    case 4:
-    case 5: {
+    case Result::GRUNT_RESULT_4:
+    case Result::GRUNT_RESULT_5: {
         LOGIN_RESULT loginResult = LOGIN_UNKNOWN_ACCOUNT;
 
         // TODO
@@ -203,58 +227,69 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
         break;
     }
 
-    case 6:
+    case Result::ALREADYONLINE:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_ALREADYONLINE, nullptr, 0x0);
         break;
 
-    case 7:
+    case Result::NOTIME:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_NOTIME, nullptr, 0x0);
         break;
 
-    case 8:
+    case Result::DBBUSY:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_DBBUSY, nullptr, 0x0);
         break;
 
-    case 9:
+    case Result::BADVERSION:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_BADVERSION, nullptr, 0x0);
         break;
 
-    case 10:
+    case Result::DOWNLOADFILE:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_DOWNLOADFILE, LOGIN_OK, nullptr, 0x0);
         break;
 
-    case 12:
+    case Result::SUSPENDED:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_SUSPENDED, nullptr, 0x0);
         break;
 
-    case 15:
-        // TODO
+    case Result::PARENTALCONTROL:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_PARENTALCONTROL, nullptr, 0x0);
+        break;
 
-    case 16:
-        // TODO
+    case Result::LOCKED_ENFORCED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_LOCKED_ENFORCED, nullptr, 0x0);
+        break;
 
-    case 17:
-        // TODO
+    case Result::TRIAL_EXPIRED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_TRIAL_EXPIRED, nullptr, 0x0);
+        break;
 
-    case 18:
-        // TODO
+    case Result::ACCOUNT_CONVERTED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_ACCOUNT_CONVERTED, nullptr, 0x0);
+        break;
 
-    case 22:
-        // TODO
+    case Result::CHARGEBACK:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_CHARGEBACK, nullptr, 0x0);
+        break;
 
-    case 23:
-        // TODO
+    case Result::IGR_WITHOUT_BNET:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_IGR_WITHOUT_BNET, nullptr, 0x0);
+        break;
 
-    case 24:
-        // TODO
+    case Result::GAME_ACCOUNT_LOCKED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_GAME_ACCOUNT_LOCKED, nullptr, 0x0);
+        break;
 
-    case 25:
-        // TODO
+    case Result::UNLOCKABLE_LOCK:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_UNLOCKABLE_LOCK, nullptr, 0x0);
+        break;
 
-    case 32:
-        // TODO
+    case Result::CONVERSION_REQUIRED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_CONVERSION_REQUIRED, nullptr, 0x0);
+        break;
 
-    // TODO case 255
+    case Result::DISCONNECTED:
+        this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_DISCONNECTED, nullptr, 0x0);
+        break;
 
     default:
         this->m_loginResponse->UpdateLoginStatus(LOGIN_STATE_FAILED, LOGIN_FAILED, nullptr, 0x0);
@@ -263,8 +298,25 @@ void GruntLogin::LogonResult(Grunt::Result result, const uint8_t* sessionKey, ui
 }
 
 LOGIN_STATE GruntLogin::NextSecurityState(LOGIN_STATE state) {
-    // TODO
-    return LOGIN_STATE_CHECKINGVERSIONS;
+    switch (state) {
+    case LOGIN_STATE_FIRST_SECURITY:
+        if (this->m_pinEnabled) {
+            return LOGIN_STATE_PIN;
+        }
+
+    case LOGIN_STATE_PIN:
+        if (this->m_matrixEnabled) {
+            return LOGIN_STATE_MATRIX;
+        }
+
+    case LOGIN_STATE_MATRIX:
+        if (this->m_tokenEnabled) {
+            return LOGIN_STATE_TOKEN;
+        }
+
+    default:
+        return LOGIN_STATE_CHECKINGVERSIONS;
+    }
 }
 
 void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
@@ -282,14 +334,24 @@ void GruntLogin::ProveVersion(const uint8_t* versionChecksum) {
     );
 }
 
-void GruntLogin::SetMatrixInfo(bool enabled, uint8_t a3, uint8_t a4, uint8_t a5, uint8_t a6, bool a7, uint8_t a8, uint64_t a9, const uint8_t* a10, uint32_t a11) {
+void GruntLogin::Reconnect() {
+    this->m_reconnect = true;
+
+    this->m_clientLink->Connect(this->m_loginResponse->GetLoginServer());
+}
+
+void GruntLogin::ReconnectResult(Grunt::Result result, const uint8_t* sessionKey, uint32_t sessionKeyLen, uint16_t flags) {
     // TODO
 }
 
-void GruntLogin::SetPinInfo(bool enabled, uint32_t a3, const uint8_t* a4) {
+void GruntLogin::SetMatrixInfo(bool enabled, uint8_t width, uint8_t height, uint8_t a5, uint8_t a6, bool a7, uint8_t challengeCount, uint64_t seed, const uint8_t* sessionKey, uint32_t a11) {
     // TODO
 }
 
-void GruntLogin::SetTokenInfo(bool enabled, uint8_t tokenRequired) {
+void GruntLogin::SetPinInfo(bool enabled, uint32_t gridSeed, const uint8_t* salt) {
+    // TODO
+}
+
+void GruntLogin::SetTokenInfo(bool enabled, uint8_t required) {
     // TODO
 }

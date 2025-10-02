@@ -1,6 +1,20 @@
 #ifndef CONSOLE_TYPES_HPP
 #define CONSOLE_TYPES_HPP
 
+enum CATEGORY {
+    DEBUG,
+    GRAPHICS,
+    CONSOLE,
+    COMBAT,
+    GAME,
+    DEFAULT,
+    NET,
+    SOUND,
+    GM,
+    NONE,
+    LAST
+};
+
 enum COLOR_T {
     DEFAULT_COLOR,
     INPUT_COLOR,

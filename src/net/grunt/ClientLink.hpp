@@ -25,6 +25,16 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
             CMD_XFER_DATA                   = 49,
         };
 
+        enum STATE {
+            STATE_NONE                      = 0,
+            STATE_CONNECTING                = 1,
+            STATE_CONNECTED                 = 2,
+            STATE_AUTH_CHALLENGE            = 3,
+            STATE_CONNECT_VERSION           = 4,
+            STATE_RECONNECT_VERSION         = 5,
+            STATE_AUTHENTICATED             = 6
+        };
+
         struct Logon {
             const char* accountName;
             const char* password;
@@ -43,7 +53,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         uint32_t m_accountFlags = 0x0;
         uint32_t m_surveyID = 0;
         uint32_t m_clientIP = 0;
-        int32_t m_state;
+        STATE m_state;
         SRP6_Client m_srpClient;
         SCritSect m_critSect;
         CDataStore m_datastore1B0;
@@ -51,6 +61,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         ClientResponse* m_clientResponse;
         char m_accountName[1280];
         char m_serverPublicKey[32];
+        uint8_t m_reconnectSessionKey[40];
 
         // Virtual member functions
         virtual void WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {};
@@ -68,14 +79,15 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         int32_t CmdRealmList(CDataStore& msg);
         int32_t CmdXferData(CDataStore& msg);
         int32_t CmdXferInitiate(CDataStore& msg);
-        void Connect(const char* a2);
+        void Connect(const char* loginServer);
         void Disconnect();
         void GetRealmList();
         void LogonNewSession(const Logon& logon);
+        void LogonStoredSession(const Logon& logon);
         void PackLogon(CDataStore& msg, const Logon& logon);
         void ProveVersion(const uint8_t* versionChecksum);
         void Send(CDataStore& msg);
-        void SetState(int32_t state);
+        void SetState(STATE state);
 };
 
 #endif

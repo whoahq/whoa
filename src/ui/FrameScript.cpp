@@ -94,7 +94,7 @@ str.join = strjoin
 str.replace = strreplace)";
 
 const char* FrameScript_EventObject::GetName() {
-    return this->m_key.m_str;
+    return this->m_key.GetString();
 }
 
 int64_t OsGetAsyncClocksPerSecond() {

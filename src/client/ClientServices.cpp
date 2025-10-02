@@ -1,9 +1,10 @@
 #include "client/ClientServices.hpp"
 #include "client/ClientRealmResponseAdapter.hpp"
+#include "console/CVar.hpp"
+#include "console/Command.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "net/Connection.hpp"
 #include "net/Login.hpp"
-#include "console/CVar.hpp"
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 #include <new>
@@ -13,12 +14,17 @@ ClientConnection* g_clientConnection;
 char ClientServices::s_accountName[1280];
 RealmResponse* ClientServices::s_clientRealmResponse;
 ClientConnection* ClientServices::s_currentConnection;
+CVar* ClientServices::s_darkPortalVar;
+CVar* ClientServices::s_decorateAccountName;
 ClientServices* ClientServices::s_instance;
 Login* ClientServices::s_loginObj;
 bool ClientServices::s_newLogin;
+CVar* ClientServices::s_realmListVar;
+CVar* ClientServices::s_realmListBNVar;
 CVar* ClientServices::s_realmNameVar;
 REALM_INFO ClientServices::s_selectRealmInfo;
 bool ClientServices::s_selectRealmInfoValid;
+CVar* ClientServices::s_serverAlertVar;
 
 void ClientServices::ConnectToSelectedServer() {
     if (!ClientServices::s_selectRealmInfoValid && !ClientServices::SetSelectedRealmInfo(0)) {
@@ -44,6 +50,18 @@ ClientConnection* ClientServices::Connection() {
     // TODO assertion?
 
     return ClientServices::s_currentConnection;
+}
+
+const char* ClientServices::GetCurrentLoginPortal() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_darkPortalVar->GetString()
+        : "";
+}
+
+const char* ClientServices::GetCurrentLoginServer() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_realmListBNVar->GetString()
+        : ClientServices::s_realmListVar->GetString();
 }
 
 ClientServices* ClientServices::GetInstance() {
@@ -74,7 +92,7 @@ const char* ClientServices::GetSelectedRealmName() {
             0,
             "",
             nullptr,
-            6,
+            NET,
             false,
             nullptr,
             false
@@ -102,6 +120,99 @@ void ClientServices::Initialize() {
     ClientServices::s_currentConnection = g_clientConnection;
 
     // TODO ConsoleCommandRegister("logout", &Sub6B2030, 5, nullptr);
+}
+
+void ClientServices::InitLoginServerCVars(int32_t force, const char* locale) {
+    if (!ClientServices::s_realmListBNVar || !ClientServices::s_realmListVar || force) {
+        ClientServices::s_decorateAccountName = CVar::Register(
+            "decorateAccountName",
+            "",
+            0x0,
+            "0",
+            nullptr,
+            NET,
+            false,
+            nullptr,
+            false
+        );
+    }
+
+    char dataPath[STORM_MAX_PATH];
+    if (locale && *locale) {
+        SStrPrintf(dataPath, sizeof(dataPath), "data\\%s\\", locale);
+    } else {
+        dataPath[0] = '\0';
+    }
+
+    if (!ClientServices::s_realmListBNVar || force) {
+        ClientServices::s_realmListBNVar = CVar::Register(
+            "realmListbn",
+            "Address of Battle.net server",
+            0x0,
+            "",
+            nullptr,
+            NET,
+            false,
+            nullptr,
+            false
+        );
+
+        char realmListPath[STORM_MAX_PATH];
+        SStrPrintf(realmListPath, sizeof(realmListPath), "%srealmlistbn.wtf", dataPath);
+
+        if (!CVar::Load(realmListPath)) {
+            CVar::Load("realmlistbn.wtf");
+        }
+    }
+
+    if (!ClientServices::s_darkPortalVar || force) {
+        ClientServices::s_darkPortalVar = CVar::Register(
+            "portal",
+            "Name of Battle.net portal to use",
+            0x0,
+            "",
+            nullptr,
+            NET,
+            false,
+            nullptr,
+            false
+        );
+    }
+
+    if (!ClientServices::s_serverAlertVar || force) {
+        ClientServices::s_serverAlertVar = CVar::Register(
+            "serverAlert",
+            "Get the glue-string tag for the URL",
+            0x0,
+            "SERVER_ALERT_URL",
+            nullptr,
+            NET,
+            false,
+            nullptr,
+            false
+        );
+    }
+
+    if (!ClientServices::s_realmListVar || force) {
+        ClientServices::s_realmListVar = CVar::Register(
+            "realmList",
+            "Address of realm list server",
+            0x0,
+            "us.logon.worldofwarcraft.com:3724",
+            nullptr,
+            NET,
+            false,
+            nullptr,
+            false
+        );
+
+        char realmListPath[STORM_MAX_PATH];
+        SStrPrintf(realmListPath, sizeof(realmListPath), "%srealmlist.wtf", dataPath);
+
+        if (!CVar::Load(realmListPath)) {
+            CVar::Load("realmlist.wtf");
+        }
+    }
 }
 
 Login* ClientServices::LoginConnection() {
@@ -138,9 +249,10 @@ void ClientServices::Logon(const char* accountName, const char* password) {
 
     ClientServices::s_loginObj->SetLogonCreds(accountName, password);
 
-    // TODO
-
-    ClientServices::s_loginObj->Logon(nullptr, nullptr);
+    ClientServices::s_loginObj->Logon(
+        ClientServices::GetCurrentLoginServer(),
+        ClientServices::GetCurrentLoginPortal()
+    );
 }
 
 void ClientServices::SelectRealm(const char* realmName) {
@@ -152,6 +264,13 @@ void ClientServices::SelectRealm(const char* realmName) {
 
 void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
+}
+
+void ClientServices::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
+    STORM_ASSERT(handler);
+    STORM_ASSERT(ClientServices::s_currentConnection);
+
+    ClientServices::s_currentConnection->SetMessageHandler(msgId, handler, param);
 }
 
 int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
@@ -175,12 +294,22 @@ int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
     return 0;
 }
 
+const char* ClientServices::GetLoginServer() {
+    return ClientServices::s_loginObj->GetLoginServerType() == 1
+        ? ClientServices::s_realmListBNVar->GetString()
+        : ClientServices::s_realmListVar->GetString();
+}
+
 int32_t ClientServices::GetLoginServerType() {
     if (!ClientServices::LoginConnection()) {
         return 0;
     }
 
     return ClientServices::LoginConnection()->GetLoginServerType();
+}
+
+void ClientServices::JoinRealmResult(uint32_t addr, int32_t port, int32_t a3, int32_t a4) {
+    // TODO
 }
 
 void ClientServices::LoginServerStatus(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
