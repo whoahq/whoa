@@ -11,4 +11,6 @@ void IEvtQueueDispatchAll(EvtContext* context);
 
 void IEvtQueueRegister(EvtContext* context, EVENTID id, int32_t (*handler)(const void*, void*), void* param, float priority);
 
+int32_t IEvtQueueCheckSyncKeyState(EvtContext* context, KEY key);
+
 #endif

@@ -53,8 +53,30 @@ int32_t EventIsControlKeyDown() {
 }
 
 int32_t EventIsKeyDown(KEY key) {
-    // TODO
-    return 0;
+    auto hContext = PropGet(PROP_EVENTCONTEXT);
+    auto contextId = *reinterpret_cast<uint32_t*>(hContext);
+
+    int32_t findMask;
+    auto context = TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Ptr(
+        contextId,
+        0,
+        &findMask
+    );
+
+    if (!context) {
+        return 0;
+    }
+
+    auto keystate = IEvtQueueCheckSyncKeyState(context, key);
+
+    if (findMask != -1) {
+        TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Unlock(
+            findMask & (INSTANCE_TABLE_SLOT_COUNT - 1),
+            findMask >= INSTANCE_TABLE_SLOT_COUNT
+        );
+    }
+
+    return keystate;
 }
 
 int32_t EventIsShiftKeyDown() {
