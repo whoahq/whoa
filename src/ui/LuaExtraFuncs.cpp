@@ -72,7 +72,11 @@ int32_t strlenutf8(lua_State* L) {
 }
 
 int32_t issecure(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // TODO taint check
+
+    lua_pushnumber(L, 1.0);
+
+    return 1;
 }
 
 int32_t issecurevariable(lua_State* L) {
