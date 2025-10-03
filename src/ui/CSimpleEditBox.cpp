@@ -681,7 +681,12 @@ void CSimpleEditBox::LoadXML(XMLNode* node, CStatus* status) {
             }
 
         } else if (!SStrCmpI(child->GetName(), "HighlightColor", STORM_MAX_STR)) {
-            // TODO
+            CImVector highlightColor = {};
+            if (LoadXML_Color(child, highlightColor)) {
+                for (auto& texture : this->m_highlight) {
+                    texture->SetTexture(highlightColor);
+                }
+            }
 
         } else if (!SStrCmpI(child->GetName(), "TextInsets", STORM_MAX_STR)) {
             float left, right, top, bottom;
