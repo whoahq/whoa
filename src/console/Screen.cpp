@@ -21,7 +21,7 @@ static float s_consoleLines = 10.0f;
 static float s_fontHeight = 0.02f;
 static float s_consoleHeight = s_consoleLines * s_fontHeight;
 static char s_fontName[STORM_MAX_PATH];
-static int32_t s_highlightState;
+static HIGHLIGHTSTATE s_highlightState;
 static HLAYER s_layerBackground;
 static HLAYER s_layerText;
 static RECTF s_rect = { 0.0f, 1.0f, 1.0f, 1.0f };
@@ -77,7 +77,7 @@ void PaintBackground(void* param, const RECTF* rect, const RECTF* visible, float
     if (s_rect.bottom < 1.0f) {
         DrawBackground();
 
-        if (s_highlightState) {
+        if (s_highlightState != HS_NONE) {
             DrawHighLight();
         }
     }
