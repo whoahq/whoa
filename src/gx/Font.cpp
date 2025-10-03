@@ -478,8 +478,8 @@ float GxuFontGetOneToOneHeight(CGxFont* font) {
     return PixelToScreenHeight(font->GetPixelSize());
 }
 
-void GxuFontGetTextExtent(CGxFont* font, const char* text, uint32_t numBytes, float a4, float* extent, float a6, float a7, float a8, uint32_t flags) {
-    InternalGetTextExtent(font, text, numBytes, a4, extent, flags, a6, a7);
+void GxuFontGetTextExtent(CGxFont* font, const char* text, uint32_t numBytes, float height, float* extent, float a6, float scale, float a8, uint32_t flags) {
+    InternalGetTextExtent(font, text, numBytes, height, extent, flags, a6, scale);
 }
 
 float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, float a4, const C2Vector& a5, float a6, float a7, uint32_t flags) {

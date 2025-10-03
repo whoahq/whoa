@@ -81,7 +81,7 @@ uint32_t GxuFontGetMaxCharsWithinWidthAndHeight(CGxFont*, const char*, float, fl
 
 float GxuFontGetOneToOneHeight(CGxFont*);
 
-void GxuFontGetTextExtent(CGxFont*, const char*, uint32_t, float, float*, float, float, float, uint32_t);
+void GxuFontGetTextExtent(CGxFont* font, const char* text, uint32_t numBytes, float height, float* extent, float a6, float scale, float a8, uint32_t flags);
 
 float GxuFontGetWrappedTextHeight(CGxFont*, const char*, float, float, const C2Vector&, float, float, uint32_t);
 
