@@ -4,13 +4,26 @@
 #include "event/Event.hpp"
 #include <cstdint>
 
+void DrawHighlight();
 void ResetHighlight();
+void PasteInInputLine(const char* inputLine);
 
 namespace {
 
 int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
-    // TODO
-    return 1;
+    if (!EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleAccessGetEnabled()) {
+        if (!ConsoleGetActive()) {
+            return 1;
+        }
+
+        char character[2];
+        character[0] = data->ch;
+        character[1] = '\0';
+
+        PasteInInputLine(character);
+        ResetHighlight();
+    }
+    return 0;
 }
 
 int32_t OnIdle(const EVENT_DATA_IDLE* data, void* param) {
