@@ -11,18 +11,22 @@ void PasteInInputLine(const char* inputLine);
 namespace {
 
 int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
-    if (!EventIsKeyDown(ConsoleGetHotKey()) || !ConsoleAccessGetEnabled()) {
-        if (!ConsoleGetActive()) {
-            return 1;
-        }
-
-        char character[2];
-        character[0] = data->ch;
-        character[1] = '\0';
-
-        PasteInInputLine(character);
-        ResetHighlight();
+    if (EventIsKeyDown(ConsoleGetHotKey()) && ConsoleAccessGetEnabled()) {
+        return 0;
     }
+
+    if (!ConsoleGetActive()) {
+        return 1;
+    }
+
+    char inputLine[2];
+    inputLine[0] = data->ch;
+    inputLine[1] = '\0';
+
+    PasteInInputLine(inputLine);
+
+    ResetHighlight();
+
     return 0;
 }
 
