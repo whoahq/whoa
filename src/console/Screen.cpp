@@ -87,6 +87,10 @@ void PaintText(void* param, const RECTF* rect, const RECTF* visible, float elaps
     // TODO
 }
 
+void ResetHighlight() {
+    // TODO
+}
+
 void ConsoleScreenAnimate(float elapsedSec) {
     auto finalPos = ConsoleGetActive() ? std::min(1.0f - s_consoleHeight, 1.0f) : 1.0f;
     finalPos = std::max(finalPos, 0.0f);

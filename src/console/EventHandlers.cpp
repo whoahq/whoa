@@ -4,6 +4,8 @@
 #include "event/Event.hpp"
 #include <cstdint>
 
+void ResetHighlight();
+
 namespace {
 
 int32_t OnChar(const EVENT_DATA_CHAR* data, void* param) {
@@ -27,7 +29,7 @@ int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
 
         // Reset the highlight when toggled off
         if (!ConsoleGetActive()) {
-            // TODO ResetHighlight();
+            ResetHighlight();
         }
 
         return 0;
@@ -37,7 +39,8 @@ int32_t OnKeyDown(const EVENT_DATA_KEY* data, void* param) {
         return 1;
     }
 
-    // TODO
+    // TODO handle other keys
+
     return 0;
 }
 
