@@ -673,8 +673,11 @@ void CSimpleEditBox::LoadXML(XMLNode* node, CStatus* status) {
             if (bytesAttr && *bytesAttr) {
                 int32_t bytes = SStrToInt(bytesAttr);
 
-                // TODO
-                // - set some member of CSimpleEditBox
+                if (bytes <= 0) {
+                    this->m_textLength = -1;
+                } else {
+                    this->m_textLength = bytes - 1;
+                }
             }
 
         } else if (!SStrCmpI(child->GetName(), "HighlightColor", STORM_MAX_STR)) {
