@@ -36,7 +36,7 @@ class CSimpleTop : public CLayoutFrame {
         static int32_t OnFocusChanged(const void* a1, void* a2);
         static int32_t OnIme(const void* a1, void* a2);
         static int32_t OnKeyDown(const EVENT_DATA_KEY* pKeyData, void* param);
-        static int32_t OnKeyDownRepeat(const void* a1, void* a2);
+        static int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* pKeyData, void* param);
         static int32_t OnKeyUp(const EVENT_DATA_KEY* pKeyData, void* param);
         static int32_t OnMouseDown(const EVENT_DATA_MOUSE* pMouseData, void* param);
         static int32_t OnMouseMove(const EVENT_DATA_MOUSE* pMouseData, void* param);

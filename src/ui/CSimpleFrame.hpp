@@ -1,6 +1,7 @@
 #ifndef UI_C_SIMPLE_FRAME_HPP
 #define UI_C_SIMPLE_FRAME_HPP
 
+#include "event/CEvent.hpp"
 #include "ui/CRenderBatch.hpp"
 #include "ui/CScriptRegion.hpp"
 #include "ui/CSimpleRegion.hpp"
@@ -97,6 +98,7 @@ class CSimpleFrame : public CScriptRegion {
         virtual void OnFrameSizeChanged(float width, float height);
         virtual void OnLayerCursorEnter(int32_t a2);
         virtual void OnLayerCursorExit(int32_t a2, int32_t a3);
+        virtual int32_t OnLayerKeyDownRepeat(const CKeyEvent& evt);
         virtual int32_t OnLayerChar(const CCharEvent& evt);
         virtual int32_t OnLayerKeyDown(const CKeyEvent& evt);
         virtual int32_t OnLayerKeyUp(const CKeyEvent& evt);

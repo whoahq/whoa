@@ -123,9 +123,24 @@ int32_t CSimpleTop::OnKeyDown(const EVENT_DATA_KEY* pKeyData, void* param) {
     return eaten == 0;
 }
 
-int32_t CSimpleTop::OnKeyDownRepeat(const void* a1, void* a2) {
-    // TODO
-    return 0;
+int32_t CSimpleTop::OnKeyDownRepeat(const EVENT_DATA_KEY* pKeyData, void* param) {
+    auto top = static_cast<CSimpleTop*>(param);
+
+    int32_t eaten = 0;
+
+    CSimpleFrame* frame = top->m_keydownCapture[pKeyData->key];
+
+    if (frame) {
+        CKeyEvent keyEvent;
+        keyEvent = *pKeyData;
+        keyEvent.id = 0x40060065;
+
+        frame->OnLayerKeyDownRepeat(keyEvent);
+
+        eaten = 1;
+    }
+
+    return eaten == 0;
 }
 
 int32_t CSimpleTop::OnKeyUp(const EVENT_DATA_KEY* pKeyData, void* param) {

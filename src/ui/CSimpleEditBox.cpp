@@ -879,6 +879,23 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
     }
 }
 
+int32_t CSimpleEditBox::OnLayerKeyDownRepeat(const CKeyEvent& evt) {
+    if (!this->m_visible) {
+        return 0;
+    }
+
+    if (!CSimpleEditBox::s_currentFocus && this->m_autoFocus) {
+        CSimpleEditBox::SetKeyboardFocus(this);
+        return this->OnLayerKeyDown(evt);
+    }
+
+    if (this->IsCurrentFocus()) {
+        return this->OnLayerKeyDown(evt);
+    }
+
+    return 0;
+}
+
 int32_t CSimpleEditBox::OnLayerMouseDown(const CMouseEvent& evt, const char* btn) {
     int32_t eaten = CSimpleFrame::OnLayerMouseDown(evt, btn);
 
