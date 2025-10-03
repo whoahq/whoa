@@ -4,9 +4,8 @@
 #include "event/Event.hpp"
 #include <cstdint>
 
-void DrawHighlight();
-void ResetHighlight();
 void PasteInInputLine(const char* inputLine);
+void ResetHighlight();
 
 namespace {
 
