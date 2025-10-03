@@ -93,6 +93,10 @@ void ResetHighlight() {
     s_hRect = { 0.0f, 0.0f, 0.0f, 0.0f };
 }
 
+void PasteInInputLine(const char* inputLine) {
+    // TODO
+}
+
 void ConsoleScreenAnimate(float elapsedSec) {
     auto finalPos = ConsoleGetActive() ? std::min(1.0f - s_consoleHeight, 1.0f) : 1.0f;
     finalPos = std::max(finalPos, 0.0f);
