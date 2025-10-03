@@ -25,6 +25,7 @@ static HIGHLIGHTSTATE s_highlightState;
 static HLAYER s_layerBackground;
 static HLAYER s_layerText;
 static RECTF s_rect = { 0.0f, 1.0f, 1.0f, 1.0f };
+static RECTF s_hRect = { 0.0f, 0.0f, 1.0f, 1.0f };
 static HTEXTFONT s_textFont;
 
 static CImVector s_colorArray[] = {
@@ -88,7 +89,8 @@ void PaintText(void* param, const RECTF* rect, const RECTF* visible, float elaps
 }
 
 void ResetHighlight() {
-    // TODO
+    s_highlightState = HS_NONE;
+    s_hRect = { 0.0f, 0.0f, 0.0f, 0.0f };
 }
 
 void ConsoleScreenAnimate(float elapsedSec) {
