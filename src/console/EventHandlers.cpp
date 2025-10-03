@@ -50,8 +50,7 @@ int32_t OnKeyDownRepeat(const EVENT_DATA_KEY* data, void* param) {
 }
 
 int32_t OnKeyUp(const EVENT_DATA_KEY* data, void* param) {
-    // TODO
-    return 1;
+    return (data->key != ConsoleGetHotKey() || !ConsoleAccessGetEnabled()) && !ConsoleGetActive();
 }
 
 int32_t OnMouseDown(const EVENT_DATA_MOUSE* data, void* param) {
