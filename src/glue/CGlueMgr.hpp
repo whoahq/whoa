@@ -12,20 +12,20 @@ class CGlueMgr {
     public:
         // Types
         enum GLUE_IDLE_STATE {
-            IDLE_NONE = 0,
+            IDLE_NONE               = 0,
             IDLE_LOGIN_SERVER_LOGIN = 1,
-            IDLE_ACCOUNT_LOGIN = 2,
-            IDLE_3 = 3,
-            IDLE_4 = 4,
-            IDLE_5 = 5,
-            IDLE_6 = 6,
-            IDLE_7 = 7,
-            IDLE_8 = 8,
-            IDLE_9 = 9,
-            IDLE_ENTER_WORLD = 10,
-            IDLE_11 = 11,
-            IDLE_12 = 12,
-            IDLE_13 = 13
+            IDLE_ACCOUNT_LOGIN      = 2,
+            IDLE_CHARACTER_LIST     = 3,
+            IDLE_4                  = 4,
+            IDLE_5                  = 5,
+            IDLE_6                  = 6,
+            IDLE_7                  = 7,
+            IDLE_8                  = 8,
+            IDLE_9                  = 9,
+            IDLE_ENTER_WORLD        = 10,
+            IDLE_WORLD_LOGIN        = 11,
+            IDLE_12                 = 12,
+            IDLE_13                 = 13
         };
 
         // Static variables

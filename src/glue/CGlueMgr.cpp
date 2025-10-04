@@ -682,7 +682,7 @@ void CGlueMgr::StatusDialogClick() {
         }
 
         case IDLE_ACCOUNT_LOGIN:
-        case IDLE_3: {
+        case IDLE_CHARACTER_LIST: {
             ClientServices::Connection()->Cancel(2);
 
             break;
@@ -709,7 +709,7 @@ void CGlueMgr::StatusDialogClick() {
             break;
         }
 
-        case IDLE_11: {
+        case IDLE_WORLD_LOGIN: {
             CGlueMgr::m_showedDisconnect = 0;
             CGlueMgr::m_idleState = IDLE_NONE;
 
