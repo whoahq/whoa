@@ -93,6 +93,10 @@ void ResetHighlight() {
     s_hRect = { 0.0f, 0.0f, 0.0f, 0.0f };
 }
 
+void SetHighlightState(HIGHLIGHTSTATE state) {
+    s_highlightState = state;
+}
+
 void PasteInInputLine(const char* inputLine) {
     // TODO
 }
