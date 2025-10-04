@@ -4,6 +4,10 @@ void AccountDataInitialize(bool a1) {
     // TODO
 }
 
+void ClientRealmResponseAdapter::CharacterListReceived(RealmConnection* realmConnection, const TSFixedArray<CHARACTER_INFO>& characterList, int32_t listSuccess) {
+    // TODO
+}
+
 void ClientRealmResponseAdapter::HandleAuthResponse(RealmConnection* realmConnection, uint8_t authResult) {
     auto clientConnection = static_cast<ClientConnection*>(realmConnection);
 

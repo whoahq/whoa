@@ -24,7 +24,7 @@ int32_t RealmConnection::MessageHandler(void* param, NETMESSAGE msgId, uint32_t 
     }
 
     case SMSG_ENUM_CHARACTERS_RESULT: {
-        // TODO
+        result = connection->HandleCharEnum(msgId, time, msg);
         break;
     }
 
@@ -189,6 +189,91 @@ int32_t RealmConnection::HandleAuthResponse(uint32_t msgId, uint32_t time, CData
     }
 
     this->m_realmResponse->HandleAuthResponse(this, authResult);
+
+    return 1;
+}
+
+int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStore* msg) {
+    if (this->m_realmResponse) {
+        this->m_realmResponse->GameServerResult(this, "SMSG_CHAR_ENUM", nullptr, nullptr);
+    }
+
+    int32_t characterLimitExceeded = 0;
+
+    uint8_t count;
+    msg->Get(count);
+
+    if (count > 10) {
+        count = 0;
+        characterLimitExceeded = 1;
+    }
+
+    this->m_characterList.Clear();
+    this->m_characterList.SetCount(count);
+
+    for (uint32_t i = 0; i < count; i++) {
+        auto& character = this->m_characterList[i];
+
+        msg->Get(character.guid);
+
+        msg->GetString(character.name, 48);
+
+        msg->Get(character.raceID);
+        msg->Get(character.classID);
+        msg->Get(character.sexID);
+
+        msg->Get(character.skinID);
+        msg->Get(character.faceID);
+        msg->Get(character.hairStyleID);
+        msg->Get(character.hairColorID);
+        msg->Get(character.facialHairStyleID);
+
+        msg->Get(character.experienceLevel);
+
+        msg->Get(character.zoneID);
+        msg->Get(character.mapID);
+        msg->Get(character.position.x);
+        msg->Get(character.position.y);
+        msg->Get(character.position.z);
+
+        msg->Get(character.guildID);
+
+        msg->Get(character.flags);
+        msg->Get(character.customizeFlags);
+        msg->Get(character.firstLogin);
+
+        msg->Get(character.petDisplayInfoID);
+        msg->Get(character.petExperienceLevel);
+        msg->Get(character.petCreatureFamilyID);
+
+        for (auto& item : character.items) {
+            msg->Get(item.displayID);
+            msg->Get(item.type);
+            msg->Get(item.auraID);
+        }
+    }
+
+    int32_t listSuccess = 0;
+
+    if (!characterLimitExceeded) {
+        if (!msg->IsRead()) {
+            // TODO what are these fields?
+            uint32_t unknown;
+            for (uint32_t i = 0; i < 10; i++) {
+                msg->Get(unknown);
+            }
+        }
+
+        if (msg->IsRead()) {
+            listSuccess = 1;
+        }
+    }
+
+    if (!listSuccess) {
+        this->m_characterList.Clear();
+    }
+
+    this->m_realmResponse->CharacterListReceived(this, this->m_characterList, listSuccess);
 
     return 1;
 }

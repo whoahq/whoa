@@ -2,6 +2,7 @@
 #define NET_CONNECTION_REALM_CONNECTION_HPP
 
 #include "net/connection/NetClient.hpp"
+#include <storm/Array.hpp>
 #include <cstdint>
 
 class CDataStore;
@@ -24,6 +25,7 @@ class RealmConnection : public NetClient {
 
         // Member variables
         RealmResponse* m_realmResponse;
+        TSFixedArray<CHARACTER_INFO> m_characterList;
         uint8_t m_authenticated = 0;
         uint32_t m_queuePosition = 0;
         uint32_t m_freeCharacterMigration = 0;
@@ -38,6 +40,7 @@ class RealmConnection : public NetClient {
         // Member functions
         RealmConnection(RealmResponse* realmResponse);
         int32_t HandleAuthResponse(uint32_t msgId, uint32_t time, CDataStore* msg);
+        int32_t HandleCharEnum(uint32_t msgId, uint32_t time, CDataStore* msg);
         void SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4);
 };
 

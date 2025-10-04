@@ -1,6 +1,7 @@
 #ifndef NET_TYPES_HPP
 #define NET_TYPES_HPP
 
+#include <tempest/Vector.hpp>
 #include <cstdint>
 
 enum NETMESSAGE {
@@ -1183,6 +1184,37 @@ struct REALM_INFO {
     uint8_t minorVersion;
     uint8_t patchVersion;
     uint16_t revision;
+};
+
+struct INVENTORY_ITEM {
+    uint8_t type;
+    uint32_t displayID;
+    uint32_t auraID;
+};
+
+struct CHARACTER_INFO {
+    uint64_t guid;
+    char name[48];
+    uint32_t mapID;
+    uint32_t zoneID;
+    uint32_t guildID;
+    C3Vector position;
+    INVENTORY_ITEM items[23];
+    uint32_t petDisplayInfoID;
+    uint32_t petExperienceLevel;
+    uint32_t petCreatureFamilyID;
+    uint32_t flags;
+    uint32_t customizeFlags;
+    uint8_t raceID;
+    uint8_t classID;
+    uint8_t sexID;
+    uint8_t skinID;
+    uint8_t faceID;
+    uint8_t hairStyleID;
+    uint8_t hairColorID;
+    uint8_t facialHairStyleID;
+    uint8_t experienceLevel;
+    uint8_t firstLogin;
 };
 
 #endif
