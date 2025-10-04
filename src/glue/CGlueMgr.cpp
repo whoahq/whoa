@@ -3,7 +3,9 @@
 #include "client/ClientServices.hpp"
 #include "client/Util.hpp"
 #include "console/CVar.hpp"
+#include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
+#include "glue/Character.hpp"
 #include "glue/CRealmList.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
@@ -375,46 +377,69 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
         FrameScript_SignalEvent(4, "%s", msg);
     }
 
-    if (complete) {
-        if (result == 0) {
-            if (errorCode != 2) {
+    if (!complete) {
+        return;
+    }
+
+    // Error
+
+    if (result == 0) {
+        if (errorCode != 2) {
+            // TODO
+        }
+
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+
+        if (errorCode == 2) {
+            CGlueMgr::m_disconnectPending = 1;
+            ClientServices::Connection()->Disconnect();
+        }
+
+        if (errorCode != 13) {
+            CCharacterSelection::ClearCharacterList();
+
+            if (ClientServices::GetInstance()->m_realmList.Count()) {
+                FrameScript_SignalEvent(5, nullptr);
+                CRealmList::UpdateList();
+            } else {
                 // TODO
             }
 
-            CGlueMgr::m_idleState = IDLE_NONE;
-            CGlueMgr::m_showedDisconnect = 0;
-
-            if (errorCode == 2) {
-                // TODO CGlueMgr::m_disconnectPending = 1;
-                // TODO ClientServices::Connection()->Disconnect();
-            }
-
-            if (errorCode != 13) {
-                // TODO CCharacterSelection::ClearCharacterList();
-
-                if (ClientServices::GetInstance()->m_realmList.Count()) {
-                    FrameScript_SignalEvent(5, nullptr);
-                    CRealmList::UpdateList();
-                } else {
-                    // TODO
-                }
-
-                return;
-            }
-
-            if (!SStrCmpI(CGlueMgr::m_currentScreen, "charselect", STORM_MAX_STR)) {
-                CGlueMgr::SetScreen("login");
-                return;
-            }
-
             return;
         }
 
-        if (op == COP_CONNECT) {
-            ClientServices::Connection()->AccountLogin(CGlueMgr::m_accountName, "", CURRENT_REGION, CURRENT_LANGUAGE);
+        if (!SStrCmpI(CGlueMgr::m_currentScreen, "charselect", STORM_MAX_STR)) {
+            CGlueMgr::SetScreen("login");
             return;
         }
+
+        return;
     }
+
+    // Success
+
+    if (op == COP_CONNECT) {
+        ClientServices::Connection()->AccountLogin(CGlueMgr::m_accountName, "", CURRENT_REGION, CURRENT_LANGUAGE);
+        return;
+    }
+
+    CGlueMgr::m_idleState = IDLE_NONE;
+    CGlueMgr::m_showedDisconnect = 0;
+    CCharacterSelection::ClearCharacterList();
+
+    // TODO streaming, trial, and expansion checks
+
+    auto realm = ClientServices::GetSelectedRealm();
+    auto categoryRec = g_cfg_CategoriesDB.GetRecord(realm->category);
+
+    if (categoryRec) {
+        ValidateNameInitialize(categoryRec->m_localeMask, categoryRec->m_createCharsetMask);
+    } else {
+        ValidateNameInitialize(1 << CURRENT_LANGUAGE, 0);
+    }
+
+    CGlueMgr::SetScreen("charselect");
 }
 
 void CGlueMgr::PollEnterWorld() {
