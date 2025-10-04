@@ -1,3 +1,5 @@
 #include "util/Locale.hpp"
 
 WOW_LOCALE CURRENT_LANGUAGE = DEFAULT_LANGUAGE;
+
+int32_t CURRENT_REGION = 0;

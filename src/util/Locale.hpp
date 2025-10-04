@@ -1,6 +1,8 @@
 #ifndef UTIL_LOCALE_HPP
 #define UTIL_LOCALE_HPP
 
+#include <cstdint>
+
 enum WOW_LOCALE {
     LOCALE_en_US     = 0,
     LOCALE_ko_KR     = 1,
@@ -16,5 +18,7 @@ enum WOW_LOCALE {
 };
 
 extern WOW_LOCALE CURRENT_LANGUAGE;
+
+extern int32_t CURRENT_REGION;
 
 #endif
