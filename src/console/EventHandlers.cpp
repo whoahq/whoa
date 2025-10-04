@@ -6,6 +6,7 @@
 
 void PasteInInputLine(const char* inputLine);
 void ResetHighlight();
+void SetHighlightState(HIGHLIGHTSTATE state);
 
 namespace {
 
@@ -80,7 +81,10 @@ int32_t OnMouseMove(const EVENT_DATA_MOUSE* data, void* param) {
 }
 
 int32_t OnMouseUp(const EVENT_DATA_MOUSE* data, void* param) {
-    // TODO
+    if (!EventIsKeyDown(ConsoleGetHotKey()) && ConsoleGetActive()) {
+        SetHighlightState(HS_ENDHIGHLIGHT);
+        ConsoleSetResizeState(CS_NONE);
+    }
     return 1;
 }
 
