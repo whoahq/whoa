@@ -765,7 +765,8 @@ void CSimpleEditBox::OnEnterPressed() {
 }
 
 void CSimpleEditBox::OnEscapePressed() {
-    // TODO
+    this->RunOnEscapePressedScript();
+    // TODO this->DispatchAction(EVENT_ESCAPE);
 }
 
 void CSimpleEditBox::OnFrameSizeChanged(float width, float height) {
@@ -1016,6 +1017,12 @@ void CSimpleEditBox::RunOnEditFocusLostScript() {
 void CSimpleEditBox::RunOnEnterPressedScript() {
     if (this->m_onEnterPressed.luaRef) {
         this->RunScript(this->m_onEnterPressed, 0, 0);
+    }
+}
+
+void CSimpleEditBox::RunOnEscapePressedScript() {
+    if (this->m_onEscapePressed.luaRef) {
+        this->RunScript(this->m_onEscapePressed, 0, nullptr);
     }
 }
 
