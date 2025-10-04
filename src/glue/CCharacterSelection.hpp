@@ -16,6 +16,7 @@ class CCharacterSelection {
         static CSimpleModelFFX* s_modelFrame;
 
         // Static functions
+        static void ClearCharacterList();
         static void RenderPrep();
         static void SetBackgroundModel(const char* modelPath);
 };

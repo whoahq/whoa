@@ -5,6 +5,10 @@
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
 CSimpleModelFFX* CCharacterSelection::s_modelFrame;
 
+void CCharacterSelection::ClearCharacterList() {
+    // TODO
+}
+
 void CCharacterSelection::RenderPrep() {
     // TODO
 }

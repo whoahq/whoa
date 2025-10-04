@@ -3,6 +3,7 @@
 #include "client/ClientServices.hpp"
 #include "client/Util.hpp"
 #include "console/CVar.hpp"
+#include "glue/CCharacterSelection.hpp"
 #include "glue/CRealmList.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
@@ -684,6 +685,7 @@ void CGlueMgr::StatusDialogClick() {
         case IDLE_ACCOUNT_LOGIN:
         case IDLE_CHARACTER_LIST: {
             ClientServices::Connection()->Cancel(2);
+            CCharacterSelection::ClearCharacterList();
 
             break;
         }
