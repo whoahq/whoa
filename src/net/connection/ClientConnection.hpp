@@ -3,6 +3,7 @@
 
 #include "net/connection/RealmConnection.hpp"
 #include "net/Types.hpp"
+#include "util/Locale.hpp"
 
 class RealmResponse;
 
@@ -23,6 +24,7 @@ class ClientConnection : public RealmConnection {
         ClientConnection(RealmResponse* realmResponse)
             : RealmConnection(realmResponse)
             {};
+        void AccountLogin(const char* name, const char* password, int32_t region, WOW_LOCALE locale);
         void AccountLogin_Finish(int32_t authResult);
         void AccountLogin_Queued();
         void Cancel(int32_t errorCode);

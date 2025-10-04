@@ -19,6 +19,7 @@
 #include "ui/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
 #include "util/Filesystem.hpp"
+#include "util/Locale.hpp"
 #include "util/Log.hpp"
 #include <common/MD5.hpp>
 #include <cstdio>
@@ -410,8 +411,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
         }
 
         if (op == COP_CONNECT) {
-            // TODO
-
+            ClientServices::Connection()->AccountLogin(CGlueMgr::m_accountName, "", CURRENT_REGION, CURRENT_LANGUAGE);
             return;
         }
     }

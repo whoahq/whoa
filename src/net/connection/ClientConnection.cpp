@@ -110,6 +110,12 @@ const char* s_errorCodeTokens[] = {
     "CHAR_NAME_DECLENSION_DOESNT_MATCH_BASE_NAME",
 };
 
+void ClientConnection::AccountLogin(const char* name, const char* password, int32_t region, WOW_LOCALE locale) {
+    // Assertion-like thing
+
+    this->Initiate(COP_AUTHENTICATE, 11, nullptr);
+}
+
 void ClientConnection::AccountLogin_Finish(int32_t errorCode) {
     this->Complete(errorCode == 12, errorCode);
 }
