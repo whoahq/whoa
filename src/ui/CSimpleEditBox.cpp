@@ -769,6 +769,11 @@ void CSimpleEditBox::OnEscapePressed() {
     // TODO this->DispatchAction(EVENT_ESCAPE);
 }
 
+void CSimpleEditBox::OnTabPressed() {
+    this->RunOnTabPressedScript();
+    // TODO this->DispatchAction(EVENT_TAB);
+}
+
 void CSimpleEditBox::OnFrameSizeChanged(float width, float height) {
     CSimpleFrame::OnFrameSizeChanged(width, height);
     this->UpdateSizes();
@@ -880,6 +885,10 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
             return 1;
         }
 
+
+        case KEY_TAB: {
+            this->OnTabPressed();
+        }
         // TODO
         // - remaining keys
 
@@ -1023,6 +1032,12 @@ void CSimpleEditBox::RunOnEnterPressedScript() {
 void CSimpleEditBox::RunOnEscapePressedScript() {
     if (this->m_onEscapePressed.luaRef) {
         this->RunScript(this->m_onEscapePressed, 0, nullptr);
+    }
+}
+
+void CSimpleEditBox::RunOnTabPressedScript() {
+    if (this->m_onTabPressed.luaRef) {
+        this->RunScript(this->m_onTabPressed, 0, nullptr);
     }
 }
 
