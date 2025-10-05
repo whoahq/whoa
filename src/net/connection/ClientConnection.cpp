@@ -170,6 +170,14 @@ int32_t ClientConnection::Disconnect() {
     return 1;
 }
 
+void ClientConnection::EnumerateCharacters(ENUMERATE_CHARACTERS_CALLBACK callback, void* param) {
+    // TODO Assertion-like thing
+
+    for (uint32_t i = 0; i < this->m_characterList.Count(); i++) {
+        callback(this->m_characterList[i], param);
+    }
+}
+
 void ClientConnection::GetCharacterList() {
     this->Initiate(COP_GET_CHARACTERS, 43, nullptr);
 

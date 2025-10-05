@@ -7,6 +7,8 @@
 
 class RealmResponse;
 
+typedef void (*ENUMERATE_CHARACTERS_CALLBACK)(const CHARACTER_INFO&, void*);
+
 class ClientConnection : public RealmConnection {
     public:
         // Member variables
@@ -32,6 +34,7 @@ class ClientConnection : public RealmConnection {
         void Complete(int32_t result, int32_t errorCode);
         void Connect();
         int32_t Disconnect();
+        void EnumerateCharacters(ENUMERATE_CHARACTERS_CALLBACK callback, void* param);
         void GetCharacterList();
         void Initiate(WOWCS_OPS op, int32_t errorCode, void (*cleanup)());
         int32_t IsConnected();
