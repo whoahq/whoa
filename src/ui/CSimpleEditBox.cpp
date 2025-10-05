@@ -135,8 +135,9 @@ CSimpleEditBox::CSimpleEditBox(CSimpleFrame* parent) : CSimpleFrame(parent) {
     CImVector cursorColor = { 0xFF, 0xFF, 0xFF, 0xFF };
     this->m_cursor->SetTexture(cursorColor);
 
-    // TODO
-    // - initialize actions
+    for (auto& action : this->m_actions) {
+        action.obj = nullptr;
+    }
 
     this->EnableEvent(SIMPLE_EVENT_CHAR, -1);
     this->EnableEvent(SIMPLE_EVENT_KEY, -1);
@@ -299,6 +300,10 @@ LABEL_12:
             // TODO this->simpleeditbox_dwordC = 0;
         }
     }
+}
+
+void CSimpleEditBox::DispatchAction(int32_t action) {
+    // TODO
 }
 
 void CSimpleEditBox::FontUpdated(CSimpleFontedFrameFont* font, int32_t a3) {
@@ -766,12 +771,12 @@ void CSimpleEditBox::OnEnterPressed() {
 
 void CSimpleEditBox::OnEscapePressed() {
     this->RunOnEscapePressedScript();
-    // TODO this->DispatchAction(EVENT_ESCAPE);
+    this->DispatchAction(EVENT_ESCAPE);
 }
 
 void CSimpleEditBox::OnTabPressed() {
     this->RunOnTabPressedScript();
-    // TODO this->DispatchAction(EVENT_TAB);
+    this->DispatchAction(EVENT_TAB);
 }
 
 void CSimpleEditBox::OnFrameSizeChanged(float width, float height) {

@@ -4,11 +4,23 @@
 #include "ui/CSimpleFrame.hpp"
 #include "ui/CSimpleFontedFrame.hpp"
 
+class CObserver;
 class CSimpleFontString;
 class CSimpleTexture;
 
 class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
     public:
+        // Enums
+        enum {
+            EVENT_ENTER             = 0,
+            EVENT_ESCAPE            = 1,
+            EVENT_SPACE             = 2,
+            EVENT_TAB               = 3,
+            EVENT_CHANGED           = 4,
+            EVENT_SET               = 5,
+            NUM_EDITBOX_ACTIONS,
+        };
+
         // Static variables
         static CSimpleEditBox* s_currentFocus;
         static int32_t s_metatable;
@@ -48,6 +60,10 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         float m_cursorBlinkSpeed = 0.5f;
         float m_blinkElapsedTime = 0.0f;
         TSGrowableArray<uint32_t> m_visibleLines;
+        struct {
+            uint32_t id;
+            CObserver* obj;
+        } m_actions[NUM_EDITBOX_ACTIONS];
         int32_t m_imeInputMode = 0;
         CRect m_editTextInset = {};
         ScriptIx m_onEnterPressed;
@@ -83,6 +99,7 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         void DeleteForward(int32_t a2);
         void DeleteHighlight(int32_t a2);
         void DeleteSubstring(int32_t left, int32_t right, int32_t a4);
+        void DispatchAction(int32_t action);
         int32_t GetNumToLen(int32_t offset, int32_t amount, bool a4);
         void GrowText(int32_t size);
         void Insert(uint32_t chr);
