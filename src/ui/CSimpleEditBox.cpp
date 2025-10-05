@@ -829,7 +829,8 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
     switch (evt.key) {
         case KEY_ESCAPE: {
             this->OnEscapePressed();
-            return 1;
+
+            break;
         }
 
         case KEY_ENTER: {
@@ -845,7 +846,7 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
                 this->Insert("\n", 0, 1, 0, 0);
             }
 
-            return 1;
+            break;
         }
 
         case KEY_BACKSPACE: {
@@ -855,7 +856,7 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
                 this->DeleteBackward(0);
             }
 
-            return 1;
+            break;
         }
 
         case KEY_LEFT: {
@@ -865,7 +866,7 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
                 this->MoveBackward(EventIsShiftKeyDown());
             }
 
-            return 1;
+            break;
         }
 
         case KEY_RIGHT: {
@@ -875,7 +876,7 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
                 this->MoveForward(EventIsShiftKeyDown());
             }
 
-            return 1;
+            break;
         }
 
         case KEY_DELETE: {
@@ -887,19 +888,23 @@ int32_t CSimpleEditBox::OnLayerKeyDown(const CKeyEvent& evt) {
                 this->DeleteForward(0);
             }
 
-            return 1;
+            break;
         }
-
 
         case KEY_TAB: {
             this->OnTabPressed();
+
+            break;
         }
+
         // TODO
         // - remaining keys
 
         default:
-            return 1;
+            break;
     }
+
+    return 1;
 }
 
 int32_t CSimpleEditBox::OnLayerKeyDownRepeat(const CKeyEvent& evt) {
