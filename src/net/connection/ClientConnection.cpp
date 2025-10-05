@@ -121,11 +121,7 @@ void ClientConnection::AccountLogin_Finish(int32_t errorCode) {
 }
 
 void ClientConnection::AccountLogin_Queued() {
-    this->m_statusCop = COP_WAIT_QUEUE;
-    this->m_errorCode = 27;
-    this->m_statusComplete = 0;
-
-    // TODO LogConnectionStatus(this->m_statusCop, 27, 1);
+    this->Initiate(COP_WAIT_QUEUE, 27, nullptr);
 
     // TODO CGlueMgr::UpdateWaitQueue(this->m_queuePosition);
 }
@@ -154,12 +150,7 @@ void ClientConnection::Complete(int32_t result, int32_t errorCode) {
 void ClientConnection::Connect() {
     // TODO
 
-    this->m_cleanup = nullptr;
-    this->m_statusCop = COP_CONNECT;
-    this->m_errorCode = 7;
-    this->m_statusComplete = 0;
-
-    // TODO LogConnectionStatus(this->m_statusCop, this->m_errorCode, 1)
+    this->Initiate(COP_CONNECT, 7, nullptr);
 
     if (this->m_connected) {
         this->Complete(1, 5);
