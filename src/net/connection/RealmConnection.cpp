@@ -257,11 +257,17 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
 
     if (!characterLimitExceeded) {
         if (!msg->IsRead()) {
-            // TODO what are these fields?
-            uint32_t unknown;
-            for (uint32_t i = 0; i < 10; i++) {
-                msg->Get(unknown);
-            }
+            // Race restrictions
+            msg->Get(this->m_restrictHuman);
+            msg->Get(this->m_restrictDwarf);
+            msg->Get(this->m_restrictGnome);
+            msg->Get(this->m_restrictNightElf);
+            msg->Get(this->m_restrictDraenei);
+            msg->Get(this->m_restrictOrc);
+            msg->Get(this->m_restrictTroll);
+            msg->Get(this->m_restrictTauren);
+            msg->Get(this->m_restrictUndead);
+            msg->Get(this->m_restrictBloodElf);
         }
 
         if (msg->IsRead()) {

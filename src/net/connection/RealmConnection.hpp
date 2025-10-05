@@ -25,6 +25,16 @@ class RealmConnection : public NetClient {
 
         // Member variables
         RealmResponse* m_realmResponse;
+        uint32_t m_restrictHuman;
+        uint32_t m_restrictDwarf;
+        uint32_t m_restrictGnome;
+        uint32_t m_restrictNightElf;
+        uint32_t m_restrictDraenei;
+        uint32_t m_restrictOrc;
+        uint32_t m_restrictTroll;
+        uint32_t m_restrictTauren;
+        uint32_t m_restrictUndead;
+        uint32_t m_restrictBloodElf;
         TSFixedArray<CHARACTER_INFO> m_characterList;
         uint8_t m_authenticated = 0;
         uint32_t m_queuePosition = 0;
