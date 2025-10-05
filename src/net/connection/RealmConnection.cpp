@@ -278,6 +278,16 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
     return 1;
 }
 
+void RealmConnection::RequestCharacterEnum() {
+    CDataStore msg;
+
+    msg.Put(static_cast<uint32_t>(CMSG_ENUM_CHARACTERS));
+
+    msg.Finalize();
+
+    this->Send(&msg);
+}
+
 void RealmConnection::SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4) {
     // TODO
 }

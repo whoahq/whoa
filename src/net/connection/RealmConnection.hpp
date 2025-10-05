@@ -41,6 +41,7 @@ class RealmConnection : public NetClient {
         RealmConnection(RealmResponse* realmResponse);
         int32_t HandleAuthResponse(uint32_t msgId, uint32_t time, CDataStore* msg);
         int32_t HandleCharEnum(uint32_t msgId, uint32_t time, CDataStore* msg);
+        void RequestCharacterEnum();
         void SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4);
 };
 

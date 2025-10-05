@@ -1,4 +1,5 @@
 #include "glue/CCharacterSelection.hpp"
+#include "glue/CGlueMgr.hpp"
 #include "model/CM2Shared.hpp"
 #include "ui/CSimpleModelFFX.hpp"
 
@@ -7,6 +8,18 @@ CSimpleModelFFX* CCharacterSelection::s_modelFrame;
 
 void CCharacterSelection::ClearCharacterList() {
     // TODO
+}
+
+void CCharacterSelection::ClearCharacterModel() {
+    // TODO
+}
+
+void CCharacterSelection::OnGetCharacterList() {
+    CCharacterSelection::s_characterList.SetCount(0);
+
+    CCharacterSelection::ClearCharacterModel();
+
+    CGlueMgr::GetCharacterList();
 }
 
 void CCharacterSelection::RenderPrep() {

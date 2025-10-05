@@ -35,7 +35,9 @@ int32_t Script_SetCharSelectBackground(lua_State* L) {
 }
 
 int32_t Script_GetCharacterListUpdate(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CCharacterSelection::OnGetCharacterList();
+
+    return 0;
 }
 
 int32_t Script_GetNumCharacters(lua_State* L) {

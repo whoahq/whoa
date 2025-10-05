@@ -58,9 +58,9 @@ class CGlueMgr {
         // Static functions
         static void ChangeRealm(const REALM_INFO* realmInfo);
         static void DisplayLoginStatus();
-        // TODO a1: const EVENT_DATA_IDLE*
+        static void GetCharacterList();
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
-        static int32_t Idle(const void* a1, void* a2);
+        static int32_t Idle(const void* a1, void* a2); // TODO a1: const EVENT_DATA_IDLE*
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);

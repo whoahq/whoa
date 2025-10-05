@@ -17,6 +17,8 @@ class CCharacterSelection {
 
         // Static functions
         static void ClearCharacterList();
+        static void ClearCharacterModel();
+        static void OnGetCharacterList();
         static void RenderPrep();
         static void SetBackgroundModel(const char* modelPath);
 };

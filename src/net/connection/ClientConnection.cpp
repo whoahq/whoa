@@ -173,6 +173,16 @@ int32_t ClientConnection::Disconnect() {
     return 0;
 }
 
+void ClientConnection::GetCharacterList() {
+    this->Initiate(COP_GET_CHARACTERS, 43, nullptr);
+
+    if (this->m_connected) {
+        this->RequestCharacterEnum();
+    } else {
+        this->Cancel(4);
+    }
+}
+
 int32_t ClientConnection::HandleConnect() {
     this->Complete(1, 5);
 

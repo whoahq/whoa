@@ -171,6 +171,20 @@ void CGlueMgr::DisplayLoginStatus() {
     }
 }
 
+void CGlueMgr::GetCharacterList() {
+    if (CGlueMgr::m_idleState == IDLE_WORLD_LOGIN) {
+        return;
+    }
+
+    CGlueMgr::m_idleState = IDLE_CHARACTER_LIST;
+    CGlueMgr::m_showedDisconnect = 0;
+
+    auto retrieveingText = FrameScript_GetText("CHAR_LIST_RETRIEVING", -1, GENDER_NOT_APPLICABLE);
+    FrameScript_SignalEvent(3, "%s%s", "CANCEL", retrieveingText);
+
+    ClientServices::Connection()->GetCharacterList();
+}
+
 int32_t CGlueMgr::HandleDisplaySizeChanged(const CSizeEvent& event) {
     if (
         CGlueMgr::m_screenWidth > 0
