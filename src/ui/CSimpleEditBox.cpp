@@ -1021,19 +1021,19 @@ void CSimpleEditBox::RunOnCursorChangedScript(float x, float y, float w, float h
 
 void CSimpleEditBox::RunOnEditFocusGainedScript() {
     if (this->m_onEditFocusGained.luaRef) {
-        this->RunScript(this->m_onEditFocusGained, 0, 0);
+        this->RunScript(this->m_onEditFocusGained, 0, nullptr);
     }
 }
 
 void CSimpleEditBox::RunOnEditFocusLostScript() {
     if (this->m_onEditFocusLost.luaRef) {
-        this->RunScript(this->m_onEditFocusLost, 0, 0);
+        this->RunScript(this->m_onEditFocusLost, 0, nullptr);
     }
 }
 
 void CSimpleEditBox::RunOnEnterPressedScript() {
     if (this->m_onEnterPressed.luaRef) {
-        this->RunScript(this->m_onEnterPressed, 0, 0);
+        this->RunScript(this->m_onEnterPressed, 0, nullptr);
     }
 }
 
@@ -1054,7 +1054,7 @@ void CSimpleEditBox::RunOnTextChangedScript(int32_t changed) {
         auto L = FrameScript_GetContext();
         lua_pushboolean(L, changed);
 
-        this->RunScript(this->m_onTextChanged, 1, 0);
+        this->RunScript(this->m_onTextChanged, 1, nullptr);
     }
 }
 
