@@ -1103,7 +1103,7 @@ enum NETSTATE {
     NS_UNINITIALIZED    = 0,
     NS_INITIALIZING     = 1,
     NS_INITIALIZED      = 2,
-    NS_STATE_3          = 3,
+    NS_DISCONNECTING    = 3,
     NS_CONNECTING       = 4,
     NS_CONNECTED        = 5,
 };

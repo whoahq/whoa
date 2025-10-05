@@ -160,8 +160,14 @@ void ClientConnection::Connect() {
 }
 
 int32_t ClientConnection::Disconnect() {
+    this->NetClient::Disconnect();
+
+    this->m_connected = 0;
+
     // TODO
-    return 0;
+    // WardenClient_Destroy();
+
+    return 1;
 }
 
 void ClientConnection::GetCharacterList() {

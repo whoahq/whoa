@@ -165,6 +165,41 @@ void NetClient::DelRef() {
     }
 }
 
+void NetClient::Disconnect() {
+    auto redirectConnection = this->m_redirectConnection;
+
+    if (redirectConnection) {
+        // TODO
+        // redirectConnection->SetResponse(0, 0);
+
+        redirectConnection->Disconnect();
+        redirectConnection->Release();
+
+        this->m_redirectConnection = nullptr;
+    }
+
+    auto serverConnection = this->m_serverConnection;
+
+    if (this->m_netState == NS_CONNECTED) {
+        this->m_netState = NS_DISCONNECTING;
+
+        serverConnection->Disconnect();
+    } else {
+        // TODO
+        // serverConnection->SetResponse(0, 0);
+
+        serverConnection->Disconnect();
+
+        // TODO
+        // this->m_netEventQueue->Clear();
+
+        serverConnection->Release();
+
+        this->m_serverConnection = STORM_NEW(WowConnection)(this, nullptr);
+        this->m_netState = NS_INITIALIZED;
+    }
+}
+
 void NetClient::EnableEncryption(WowConnection* conn, uint8_t* seed, uint8_t seedLen) {
     conn->SetEncryptionKey(
         this->m_loginData.m_sessionKey,
