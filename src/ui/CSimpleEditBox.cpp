@@ -674,9 +674,9 @@ void CSimpleEditBox::LoadXML(XMLNode* node, CStatus* status) {
                 int32_t bytes = SStrToInt(bytesAttr);
 
                 if (bytes <= 0) {
-                    this->m_textLength = -1;
+                    this->m_textLengthMax = -1;
                 } else {
-                    this->m_textLength = bytes - 1;
+                    this->m_textLengthMax = bytes - 1;
                 }
             }
 
