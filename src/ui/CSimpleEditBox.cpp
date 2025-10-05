@@ -997,9 +997,7 @@ void CSimpleEditBox::OnLayerUpdate(float elapsedSec) {
 
 void CSimpleEditBox::OnTextChanged() {
     this->RunOnTextChangedScript((this->m_dirtyFlags & 0x8) != 0);
-
-    // TODO
-    // - invoke action
+    this->DispatchAction(EVENT_CHANGED);
 }
 
 int32_t CSimpleEditBox::PrevCharOffset(int32_t offset) {
