@@ -59,12 +59,15 @@ class CGlueMgr {
         static void ChangeRealm(const REALM_INFO* realmInfo);
         static void DisplayLoginStatus();
         static void GetCharacterList();
+        static void GetRealmList(int32_t a1);
+        static int32_t HandleBattlenetDisconnect();
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
         static int32_t Idle(const void* a1, void* a2); // TODO a1: const EVENT_DATA_IDLE*
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
+        static void PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode);
         static void PollEnterWorld();
         static void PollLoginServerLogin();
         static void QuitGame();

@@ -185,6 +185,17 @@ void CGlueMgr::GetCharacterList() {
     ClientServices::Connection()->GetCharacterList();
 }
 
+void CGlueMgr::GetRealmList(int32_t a1) {
+    // TODO
+}
+
+
+int32_t CGlueMgr::HandleBattlenetDisconnect() {
+    // TODO
+
+    return 0;
+}
+
 int32_t CGlueMgr::HandleDisplaySizeChanged(const CSizeEvent& event) {
     if (
         CGlueMgr::m_screenWidth > 0
@@ -258,6 +269,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
 
     case IDLE_ACCOUNT_LOGIN: {
         CGlueMgr::PollAccountLogin(errorCode, msg, complete, result, op);
+        break;
+    }
+
+    case IDLE_CHARACTER_LIST: {
+        CGlueMgr::PollCharacterList(msg, complete, result, errorCode);
         break;
     }
 
@@ -454,6 +470,51 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
     }
 
     CGlueMgr::SetScreen("charselect");
+}
+
+void CGlueMgr::PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode) {
+    FrameScript_SignalEvent(4, "%s", msg);
+
+    if (CGlueMgr::HandleBattlenetDisconnect()) {
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+    }
+
+    if (!complete) {
+        return;
+    }
+
+    // Error
+
+    if (result == 0) {
+        if (errorCode == 2) {
+            CCharacterSelection::ClearCharacterList();
+            CGlueMgr::GetRealmList(1);
+
+            return;
+        }
+
+        FrameScript_SignalEvent(3, "%s%s", "OKAY", msg);
+
+        CGlueMgr::m_idleState = IDLE_NONE;
+        CGlueMgr::m_showedDisconnect = 0;
+
+        return;
+    }
+
+    // Success
+
+    CGlueMgr::m_idleState = IDLE_NONE;
+    CGlueMgr::m_showedDisconnect = 0;
+
+    FrameScript_SignalEvent(5, nullptr);
+
+    CCharacterSelection::UpdateCharacterList();
+
+    if (CGlueMgr::m_accountMsgAvailable) {
+        FrameScript_SignalEvent(34, nullptr);
+        CGlueMgr::m_accountMsgAvailable = 0;
+    }
 }
 
 void CGlueMgr::PollEnterWorld() {

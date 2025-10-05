@@ -50,3 +50,7 @@ void CCharacterSelection::SetBackgroundModel(const char* modelPath) {
         model->IsDrawable(1, 1);
     }
 }
+
+void CCharacterSelection::UpdateCharacterList() {
+    // TODO
+}

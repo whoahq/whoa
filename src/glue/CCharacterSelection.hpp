@@ -21,6 +21,7 @@ class CCharacterSelection {
         static void OnGetCharacterList();
         static void RenderPrep();
         static void SetBackgroundModel(const char* modelPath);
+        static void UpdateCharacterList();
 };
 
 #endif
