@@ -411,50 +411,50 @@ FrameScript_Object::ScriptIx* CSimpleEditBox::GetScriptByName(const char* name, 
         return parentScript;
     }
 
-    if (!SStrCmpI(name, "OnEnterPressed", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnEnterPressed")) {
         return &this->m_onEnterPressed;
     }
 
-    if (!SStrCmpI(name, "OnEscapePressed", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnEscapePressed")) {
         return &this->m_onEscapePressed;
     }
 
-    if (!SStrCmpI(name, "OnSpacePressed", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnSpacePressed")) {
         return &this->m_onSpacePressed;
     }
 
-    if (!SStrCmpI(name, "OnTabPressed", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnTabPressed")) {
         return &this->m_onTabPressed;
     }
 
-    if (!SStrCmpI(name, "OnTextChanged", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnTextChanged")) {
         data.wrapper = "return function(self, userInput) %s end";
         return &this->m_onTextChanged;
     }
 
-    if (!SStrCmpI(name, "OnTextSet", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnTextSet")) {
         return &this->m_onTextSet;
     }
 
-    if (!SStrCmpI(name, "OnCursorChanged", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnCursorChanged")) {
         data.wrapper = "return function(self,x,y,w,h) %s end";
         return &this->m_onCursorChanged;
     }
 
-    if (!SStrCmpI(name, "OnInputLanguageChanged", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnInputLanguageChanged")) {
         data.wrapper = "return function(self,language) %s end";
         return &this->m_onInputLanguageChanged;
     }
 
-    if (!SStrCmpI(name, "OnEditFocusGained", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnEditFocusGained")) {
         return &this->m_onEditFocusGained;
     }
 
-    if (!SStrCmpI(name, "OnEditFocusLost", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnEditFocusLost")) {
         return &this->m_onEditFocusLost;
     }
 
-    if (!SStrCmpI(name, "OnCharComposition", STORM_MAX_STR)) {
+    if (!SStrCmpI(name, "OnCharComposition")) {
         data.wrapper = "return function(self,text) %s end";
         return &this->m_onCharComposition;
     }
