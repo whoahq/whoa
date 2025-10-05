@@ -5,7 +5,13 @@ void AccountDataInitialize(bool a1) {
 }
 
 void ClientRealmResponseAdapter::CharacterListReceived(RealmConnection* realmConnection, const TSFixedArray<CHARACTER_INFO>& characterList, int32_t listSuccess) {
-    // TODO
+    auto clientConnection = static_cast<ClientConnection*>(realmConnection);
+
+    if (listSuccess) {
+        clientConnection->Complete(1, 44);
+    } else {
+        clientConnection->Complete(0, 45);
+    }
 }
 
 void ClientRealmResponseAdapter::HandleAuthResponse(RealmConnection* realmConnection, uint8_t authResult) {
