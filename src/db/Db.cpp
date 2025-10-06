@@ -2,6 +2,7 @@
 #include "db/WowClientDB_Base.hpp"
 
 WowClientDB<AchievementRec> g_achievementDB;
+WowClientDB<AreaTableRec> g_areaTableDB;
 WowClientDB<Cfg_CategoriesRec> g_cfg_CategoriesDB;
 WowClientDB<Cfg_ConfigsRec> g_cfg_ConfigsDB;
 WowClientDB<ChrClassesRec> g_chrClassesDB;
@@ -14,6 +15,7 @@ void LoadDB(WowClientDB_Base* db, const char* filename, int32_t linenumber) {
 
 void StaticDBLoadAll(void (*loadFn)(WowClientDB_Base*, const char*, int32_t)) {
     loadFn(&g_achievementDB, __FILE__, __LINE__);
+    loadFn(&g_areaTableDB, __FILE__, __LINE__);
     loadFn(&g_cfg_CategoriesDB, __FILE__, __LINE__);
     loadFn(&g_cfg_ConfigsDB, __FILE__, __LINE__);
     loadFn(&g_chrClassesDB, __FILE__, __LINE__);
