@@ -925,7 +925,7 @@ uint32_t TextBlockGetMaxCharsWithinWidthAndHeight(HTEXTFONT fontHandle, const ch
         lineBytes,
         DDCToNDCWidth(a7),
         scale,
-        DDCToNDCWidth(a9),
+        DDCToNDCHeight(a9),
         ConvertStringFlags(flags)
     );
 }
