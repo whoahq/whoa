@@ -11,12 +11,12 @@
 STORM_EXPLICIT_LIST(CLayoutFrame, resizeLink) LayoutFrame::s_resizePendingList;
 
 float SynthesizeSide(float center, float opposite, float size) {
-    if (center != CFramePoint::UNDEFINED && opposite != CFramePoint::UNDEFINED) {
-        return center + center - opposite;
-    } else if (opposite != CFramePoint::UNDEFINED && size != 0.0f) {
+    if (opposite != CFramePoint::UNDEFINED && size != 0.0f) {
         return opposite + size;
     } else if (center != CFramePoint::UNDEFINED && size != 0.0f) {
         return center + (size * 0.5f);
+    } else if (center != CFramePoint::UNDEFINED && opposite != CFramePoint::UNDEFINED) {
+        return center + center - opposite;
     } else {
         return CFramePoint::UNDEFINED;
     }
