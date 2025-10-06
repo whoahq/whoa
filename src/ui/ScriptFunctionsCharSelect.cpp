@@ -1,6 +1,7 @@
 #include "ui/ScriptFunctions.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
+#include "object/client/Unit_C.hpp"
 #include "ui/CSimpleModelFFX.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
@@ -47,7 +48,93 @@ int32_t Script_GetNumCharacters(lua_State* L) {
 }
 
 int32_t Script_GetCharacterInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: GetCharacterInfo(index)");
+    }
+
+    auto index = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
+
+    // Out of bounds
+
+    if (index < 0 || index >= CCharacterSelection::s_characterList.Count()) {
+        // Name
+        lua_pushnil(L);
+
+        // Race
+        lua_pushnil(L);
+
+        // Class
+        lua_pushnil(L);
+
+        // Level
+        lua_pushnumber(L, 0.0);
+
+        // Zone (why isn't this nil?)
+        lua_pushnumber(L, 0.0);
+
+        // Sex
+        lua_pushnil(L);
+
+        // Ghost
+        lua_pushnil(L);
+
+        // Paid class change
+        lua_pushnil(L);
+
+        // Paid race change
+        lua_pushnil(L);
+
+        // Paid faction change
+        lua_pushnil(L);
+
+        return 10;
+    }
+
+    // Character exists at index
+
+    auto& display = CCharacterSelection::s_characterList[index];
+    auto sex = static_cast<UNIT_SEX>(display.info.sexID);
+
+    // Name
+    lua_pushstring(L, display.info.name);
+
+    // Race
+    auto raceRec = g_chrRacesDB.GetRecord(display.info.raceID);
+    auto raceName = CGUnit_C::GetDisplayRaceNameFromRecord(raceRec, sex, nullptr);
+    lua_pushstring(L, raceName ? raceName : "");
+
+    // Class
+    auto classRec = g_chrClassesDB.GetRecord(display.info.classID);
+    auto className = CGUnit_C::GetDisplayClassNameFromRecord(classRec, sex, nullptr);
+    lua_pushstring(L, className ? className : "");
+
+    // Level
+    lua_pushnumber(L, display.info.experienceLevel);
+
+    // Zone
+    auto areaRec = g_areaTableDB.GetRecord(display.info.zoneID);
+    if (areaRec) {
+        lua_pushstring(L, areaRec->m_areaName);
+    } else {
+        lua_pushnil(L);
+    }
+
+    // Sex
+    lua_pushnumber(L, g_glueFrameScriptGenders[display.info.sexID]);
+
+    // Ghost
+    lua_pushboolean(L, display.info.flags & 0x2000);
+
+    // Paid class change
+    lua_pushboolean(L, display.info.customizeFlags & 0x1);
+
+    // Paid race change
+    lua_pushboolean(L, display.info.customizeFlags & 0x100000);
+
+    // Paid faction change
+    lua_pushboolean(L, display.info.customizeFlags & 0x10000);
+
+    return 10;
 }
 
 int32_t Script_SelectCharacter(lua_State* L) {

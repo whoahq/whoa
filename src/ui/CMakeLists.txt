@@ -20,6 +20,7 @@ target_link_libraries(ui
         math
         model
         net
+        object
         util
     PUBLIC
         common

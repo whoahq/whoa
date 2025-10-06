@@ -14,6 +14,12 @@
 const char* g_glueScriptEvents[41];
 const char* g_scriptEvents[722];
 
+int32_t g_glueFrameScriptGenders[] = {
+    2, // UNIT_SEX_MALE
+    3, // UNIT_SEX_FEMALE
+    1, // UNIT_SEX_NONE
+};
+
 void* FrameScript::s_mempool;
 lua_State* FrameScript::s_context;
 int64_t FrameScript::s_scriptTimeUsed;
