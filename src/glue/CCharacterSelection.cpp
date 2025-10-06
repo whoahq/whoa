@@ -72,6 +72,10 @@ void CCharacterSelection::SetBackgroundModel(const char* modelPath) {
     }
 }
 
+void CCharacterSelection::ShowCharacter() {
+    // TODO
+}
+
 void CCharacterSelection::UpdateCharacterList() {
     // TODO
 
