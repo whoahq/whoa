@@ -133,4 +133,5 @@ void CCharacterSelection::UpdateCharacterList() {
     CCharacterSelection::ShowCharacter();
 
     FrameScript_SignalEvent(8, "%d", CCharacterSelection::s_selectionIndex + 1);
+    FrameScript_SignalEvent(7, nullptr);
 }
