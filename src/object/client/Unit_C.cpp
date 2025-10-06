@@ -2,8 +2,47 @@
 #include "db/Db.hpp"
 
 const char* CGUnit_C::GetDisplayClassNameFromRecord(const ChrClassesRec* classRec, UNIT_SEX sex, UNIT_SEX* displaySex) {
-    // TODO
-    return nullptr;
+    if (displaySex) {
+        *displaySex = sex;
+    }
+
+    if (!classRec) {
+        return nullptr;
+    }
+
+    if (sex == UNITSEX_MALE) {
+        if (*classRec->m_nameMale) {
+            return classRec->m_nameMale;
+        }
+
+        if (*classRec->m_nameFemale) {
+            if (displaySex) {
+                *displaySex = UNITSEX_FEMALE;
+            }
+
+            return classRec->m_nameFemale;
+        }
+
+        return classRec->m_name;
+    }
+
+    if (sex == UNITSEX_FEMALE) {
+        if (*classRec->m_nameFemale) {
+            return classRec->m_nameFemale;
+        }
+
+        if (*classRec->m_nameMale) {
+            if (displaySex) {
+                *displaySex = UNITSEX_MALE;
+            }
+
+            return classRec->m_nameMale;
+        }
+
+        return classRec->m_name;
+    }
+
+    return classRec->m_name;
 }
 
 const char* CGUnit_C::GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, UNIT_SEX sex, UNIT_SEX* displaySex) {
