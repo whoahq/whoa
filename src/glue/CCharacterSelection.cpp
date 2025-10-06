@@ -100,8 +100,7 @@ void CCharacterSelection::UpdateCharacterList() {
 
     if (CCharacterSelection::s_characterList.Count() == 0) {
         CCharacterSelection::s_selectionIndex = 0;
-
-        // TODO Sub4E3CD0();
+        CCharacterSelection::ShowCharacter();
 
         FrameScript_SignalEvent(8, "%d", CCharacterSelection::s_selectionIndex + 1);
 
@@ -131,8 +130,7 @@ void CCharacterSelection::UpdateCharacterList() {
     int32_t selectionIndex = 0;
 
     CCharacterSelection::s_selectionIndex = selectionIndex;
-
-    // TODO Sub4E3CD0();
+    CCharacterSelection::ShowCharacter();
 
     FrameScript_SignalEvent(8, "%d", CCharacterSelection::s_selectionIndex + 1);
 }
