@@ -142,14 +142,18 @@ const char* CSimpleFontString::GetDisplayText(float width, float height) {
         return nullptr;
     }
 
-    if (!this->m_font || width <= 0.0f || /* TODO */ height <= 0.0f) {
+    if (!this->m_font || width <= 0.0f || (this->m_maxLines == 0 && height <= 0.0)) {
         return this->m_text;
     }
 
     auto fontHeight = this->GetFontHeight(true);
-    auto v5 = (CSimpleTop::RoundToPixelHeight(this->m_spacing) + fontHeight) * this->m_layoutScale;
+    auto lineHeight = (CSimpleTop::RoundToPixelHeight(this->m_spacing) + fontHeight) * this->m_layoutScale;
 
-    // TODO
+    if (this->m_maxLines != 0) {
+        height = lineHeight * this->m_maxLines;
+    } else if (lineHeight >= height) {
+        height = lineHeight;
+    }
 
     auto text = this->m_text;
     auto textLen = SStrLen(text);
