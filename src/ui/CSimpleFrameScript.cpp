@@ -479,7 +479,17 @@ int32_t CSimpleFrame_GetBackdropBorderColor(lua_State* L) {
 }
 
 int32_t CSimpleFrame_SetBackdropBorderColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector color = { 0x00 };
+    FrameScript_GetColor(L, 2, color);
+
+    if (frame->m_backdrop) {
+        frame->m_backdrop->SetBorderVertexColor(color);
+    }
+
+    return 0;
 }
 
 int32_t CSimpleFrame_SetDepth(lua_State* L) {
