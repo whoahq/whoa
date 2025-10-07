@@ -159,3 +159,29 @@ int32_t IEvtQueueCheckSyncKeyState(EvtContext* context, KEY key) {
 
     return keystate;
 }
+
+void IEvtQueueUnregister(EvtContext* context, EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32_t flags) {
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(context);
+    STORM_VALIDATE_END_VOID;
+
+    auto idMatch = flags & 0x1;
+    auto handlerMatch = flags & 0x2;
+    auto paramMatch = flags & 0x4;
+
+    for (uint32_t q = 0; q < EVENTIDS; q++) {
+        auto listMatched = (!idMatch || q == id);
+
+        if (listMatched) {
+            auto handlerList = &context->m_queueHandlerList[q];
+
+            for (auto node = handlerList->Head(); node; node = handlerList->Next(node)) {
+                auto nodeMatched = (!handlerMatch || node->func == handler) && (!paramMatch || node->param == param);
+
+                if (nodeMatched && !node->marker) {
+                    node = handlerList->DeleteNode(node);
+                }
+            }
+        }
+    }
+}

@@ -13,4 +13,6 @@ void IEvtQueueRegister(EvtContext* context, EVENTID id, int32_t (*handler)(const
 
 int32_t IEvtQueueCheckSyncKeyState(EvtContext* context, KEY key);
 
+void IEvtQueueUnregister(EvtContext* context, EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32_t flags);
+
 #endif

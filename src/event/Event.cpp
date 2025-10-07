@@ -167,5 +167,25 @@ void EventRegisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, float pr
 }
 
 void EventUnregisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32_t flags) {
-    // TODO
+    HEVENTCONTEXT hContext = PropGet(PROP_EVENTCONTEXT);
+
+    uint32_t contextId = *reinterpret_cast<uint32_t*>(hContext);
+    int32_t findMask;
+
+    EvtContext* context = TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Ptr(
+        contextId,
+        0,
+        &findMask
+    );
+
+    if (context) {
+        IEvtQueueUnregister(context, id, handler, param, flags);
+
+        if (findMask != -1) {
+            TSingletonInstanceId<EvtContext, offsetof(EvtContext, m_id)>::s_idTable.Unlock(
+                findMask & (INSTANCE_TABLE_SLOT_COUNT - 1),
+                findMask >= INSTANCE_TABLE_SLOT_COUNT
+            );
+        }
+    }
 }
