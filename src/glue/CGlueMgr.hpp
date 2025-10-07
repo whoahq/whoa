@@ -2,6 +2,7 @@
 #define GLUE_C_GLUE_MGR_HPP
 
 #include "event/Event.hpp"
+#include "glue/Types.hpp"
 #include "net/Login.hpp"
 #include "net/Types.hpp"
 

@@ -738,7 +738,7 @@ void CGlueMgr::Resume() {
     // TODO
     // FrameScript::s_scriptFunctionsLoaded = 1;
 
-    FrameScript_CreateEvents(g_glueScriptEvents, NUM_GLUE_SCRIPT_EVENTS);
+    FrameScript_CreateEvents(g_glueScriptEvents, NUM_GLUESCRIPTEVENTS);
 
     OsCreateDirectory("Logs", 0);
 
