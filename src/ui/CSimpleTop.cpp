@@ -397,8 +397,35 @@ CSimpleTop::CSimpleTop() : CLayoutFrame() {
     CSimpleTexture::Init();
 }
 
+CSimpleTop::~CSimpleTop() {
+    // TODO
+
+    this->DisableEvents();
+
+    HandleClose(this->m_screenLayer);
+
+    CSimpleTop::s_instance = nullptr;
+
+    // TODO
+}
+
 void CSimpleTop::CompressStrata(int32_t strata) {
     // TODO
+}
+
+void CSimpleTop::DisableEvents() {
+    EventUnregisterEx(EVENT_ID_CHAR, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnChar), this, -1);
+    EventUnregisterEx(EVENT_ID_IME, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnIme), this, -1);
+    EventUnregisterEx(EVENT_ID_KEYDOWN, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnKeyDown), this, -1);
+    EventUnregisterEx(EVENT_ID_KEYUP, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnKeyUp), this, -1);
+    EventUnregisterEx(EVENT_ID_KEYDOWN_REPEATING, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnKeyDownRepeat), this, -1);
+    EventUnregisterEx(EVENT_ID_MOUSEMOVE, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnMouseMove), this, -1);
+    EventUnregisterEx(EVENT_ID_MOUSEMOVE_RELATIVE, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnMouseMoveRelative), this, -1);
+    EventUnregisterEx(EVENT_ID_MOUSEDOWN, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnMouseDown), this, -1);
+    EventUnregisterEx(EVENT_ID_MOUSEUP, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnMouseUp), this, -1);
+    EventUnregisterEx(EVENT_ID_MOUSEWHEEL, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnMouseWheel), this, -1);
+    EventUnregisterEx(EVENT_ID_SIZE, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnDisplaySizeChanged), this, -1);
+    EventUnregisterEx(EVENT_ID_FOCUS, reinterpret_cast<EVENTHANDLERFUNC>(CSimpleTop::OnFocusChanged), this, -1);
 }
 
 void CSimpleTop::EnableEvents() {

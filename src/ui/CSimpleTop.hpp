@@ -61,9 +61,13 @@ class CSimpleTop : public CLayoutFrame {
         int32_t (*m_mousePositionCallback)(CMouseEvent*) = nullptr;
         int32_t (*m_displaySizeCallback)(const CSizeEvent&) = nullptr;
 
+        // Virtual member functions
+        virtual ~CSimpleTop();
+
         // Member functions
         CSimpleTop();
         void CompressStrata(int32_t strata);
+        void DisableEvents();
         void EnableEvents();
         void HideFrame(CSimpleFrame* frame, int32_t a4);
         void MoveOrResizeFrame(const CMouseEvent& evt);

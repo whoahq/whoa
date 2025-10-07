@@ -165,3 +165,7 @@ void EventRegisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, float pr
         }
     }
 }
+
+void EventUnregisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32_t flags) {
+    // TODO
+}
