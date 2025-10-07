@@ -135,19 +135,17 @@ void CGlueMgr::EnterWorld() {
     auto flags = CGlueMgr::m_characterInfo->info.flags;
 
     if (flags & 0x4) {
-        // TODO
-        // auto errorToken = ClientServices::GetErrorToken(84);
-        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
-        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+        auto errorToken = ClientServices::GetErrorToken(84);
+        auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
 
         return;
     }
 
     if (flags & 0x1000000) {
-        // TODO
-        // auto errorToken = ClientServices::GetErrorToken(85);
-        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
-        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+        auto errorToken = ClientServices::GetErrorToken(85);
+        auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
 
         return;
     }
@@ -177,10 +175,9 @@ void CGlueMgr::EnterWorld() {
         || ClientServices::Connection()->m_accountExpansion < raceRec->m_requiredExpansion
         || ClientServices::Connection()->m_accountExpansion < classRec->m_requiredExpansion
     ) {
-        // TODO
-        // auto errorToken = ClientServices::GetErrorToken(82);
-        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
-        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+        auto errorToken = ClientServices::GetErrorToken(82);
+        auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
 
         return;
     }
