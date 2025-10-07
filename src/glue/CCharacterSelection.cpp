@@ -7,6 +7,7 @@
 #include "ui/CSimpleModelFFX.hpp"
 
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
+int32_t CCharacterSelection::s_enterWorldIndex;
 CSimpleModelFFX* CCharacterSelection::s_modelFrame;
 uint32_t CCharacterSelection::s_restrictHuman;
 uint32_t CCharacterSelection::s_restrictDwarf;
@@ -33,6 +34,14 @@ void CCharacterSelection::EnumerateCharactersCallback(const CHARACTER_INFO& info
     display->info = info;
 
     // TODO
+}
+
+const CharacterSelectionDisplay* CCharacterSelection::GetSelectedCharacter() {
+    if (CCharacterSelection::s_selectionIndex < 0 || CCharacterSelection::s_selectionIndex >= CCharacterSelection::s_characterList.Count()) {
+        return nullptr;
+    }
+
+    return &CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex];
 }
 
 void CCharacterSelection::OnGetCharacterList() {

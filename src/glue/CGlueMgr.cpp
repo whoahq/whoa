@@ -52,6 +52,7 @@ int32_t CGlueMgr::m_accountMsgAvailable;
 char CGlueMgr::m_accountName[1280];
 float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
+const CharacterSelectionDisplay* CGlueMgr::m_characterInfo;
 char CGlueMgr::m_currentScreen[64];
 int32_t CGlueMgr::m_disconnectPending;
 int32_t CGlueMgr::m_displayingQueueDialog;
@@ -112,7 +113,95 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
 }
 
 void CGlueMgr::EnterWorld() {
-    // TODO
+    if (!ClientServices::GetSelectedRealm()) {
+        return;
+    }
+
+    auto character = CCharacterSelection::GetSelectedCharacter();
+    CGlueMgr::m_characterInfo = character;
+
+    if (!character) {
+        return;
+    }
+
+    CCharacterSelection::s_enterWorldIndex = CCharacterSelection::s_selectionIndex;
+
+    if (!ClientServices::Connection()->IsConnected()) {
+        return;
+    }
+
+    // Validate character flags
+
+    auto flags = CGlueMgr::m_characterInfo->info.flags;
+
+    if (flags & 0x4) {
+        // TODO
+        // auto errorToken = ClientServices::GetErrorToken(84);
+        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+
+        return;
+    }
+
+    if (flags & 0x1000000) {
+        // TODO
+        // auto errorToken = ClientServices::GetErrorToken(85);
+        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+
+        return;
+    }
+
+    if (flags & 0x4000) {
+        FrameScript_SignalEvent(23, "%s", "CHAR_RENAME_DESCRIPTION");
+
+        return;
+    }
+
+    if (!(flags & 0x2000000)) {
+        if (NameNeedsDeclension(CURRENT_LANGUAGE, CGlueMgr::m_characterInfo->info.name)) {
+            FrameScript_SignalEvent(24, nullptr);
+
+            return;
+        }
+    }
+
+    // Validate expansion
+
+    auto raceRec = g_chrRacesDB.GetRecord(character->info.raceID);
+    auto classRec = g_chrClassesDB.GetRecord(character->info.classID);
+
+    if (
+           !raceRec
+        || !classRec
+        || ClientServices::Connection()->m_accountExpansion < raceRec->m_requiredExpansion
+        || ClientServices::Connection()->m_accountExpansion < classRec->m_requiredExpansion
+    ) {
+        // TODO
+        // auto errorToken = ClientServices::GetErrorToken(82);
+        // auto errorText = FrameScript_GetText(errorToken, -1, GENDER_NOT_APPLICABLE);
+        // FrameScript_SignalEvent(3, "%s%s", "OKAY", errorText);
+
+        return;
+    }
+
+    char indexStr[32];
+    SStrPrintf(indexStr, sizeof(indexStr), "%d", CCharacterSelection::s_selectionIndex);
+    // TODO g_lastCharacterIndex->Set(indexStr, 1, 0, 0, 1);
+
+    ClientServices::SetAccountName(CGlueMgr::m_accountName);
+    ClientServices::SetCharacterInfo(&CGlueMgr::m_characterInfo->info);
+
+    // TODO game tip
+    // TODO loading screen
+    // TODO save all cvars
+
+    if (ClientServices::LoginConnection()->GetLoginServerType() == 0) {
+        ClientServices::LoginConnection()->Logoff();
+    }
+
+    CGlueMgr::m_idleState = IDLE_ENTER_WORLD;
+    CGlueMgr::m_showedDisconnect = 0;
 }
 
 void CGlueMgr::DisplayLoginStatus() {

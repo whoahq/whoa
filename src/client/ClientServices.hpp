@@ -13,6 +13,7 @@ class ClientServices : public LoginResponse {
     public:
         // Static variables
         static char s_accountName[1280];
+        static CHARACTER_INFO s_characterInfo;
         static RealmResponse* s_clientRealmResponse;
         static ClientConnection* s_currentConnection;
         static CVar* s_darkPortalVar;
@@ -42,6 +43,7 @@ class ClientServices : public LoginResponse {
         static void Logon(const char* accountName, const char* password);
         static void SelectRealm(const char* realmName);
         static void SetAccountName(const char* accountName);
+        static void SetCharacterInfo(const CHARACTER_INFO* info);
         static void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
         static int32_t SetSelectedRealmInfo(int32_t a1);
 

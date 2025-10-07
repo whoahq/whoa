@@ -7,6 +7,7 @@
 
 class CDataStore;
 class CSimpleTop;
+struct CharacterSelectionDisplay;
 
 class CGlueMgr {
     public:
@@ -36,6 +37,7 @@ class CGlueMgr {
         static char m_accountName[];
         static float m_aspect;
         static bool m_authenticated;
+        static const CharacterSelectionDisplay* m_characterInfo;
         static char m_currentScreen[];
         static int32_t m_disconnectPending;
         static int32_t m_displayingQueueDialog;

@@ -15,6 +15,7 @@ class CCharacterSelection {
     public:
         // Static variables
         static TSGrowableArray<CharacterSelectionDisplay> s_characterList;
+        static int32_t s_enterWorldIndex;
         static CSimpleModelFFX* s_modelFrame;
         static uint32_t s_restrictHuman;
         static uint32_t s_restrictDwarf;
@@ -32,6 +33,7 @@ class CCharacterSelection {
         static void ClearCharacterList();
         static void ClearCharacterModel();
         static void EnumerateCharactersCallback(const CHARACTER_INFO& info, void* param);
+        static const CharacterSelectionDisplay* GetSelectedCharacter();
         static void OnGetCharacterList();
         static void RenderPrep();
         static void SetBackgroundModel(const char* modelPath);

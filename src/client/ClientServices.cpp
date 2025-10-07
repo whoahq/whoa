@@ -12,6 +12,7 @@
 ClientConnection* g_clientConnection;
 
 char ClientServices::s_accountName[1280];
+CHARACTER_INFO ClientServices::s_characterInfo;
 RealmResponse* ClientServices::s_clientRealmResponse;
 ClientConnection* ClientServices::s_currentConnection;
 CVar* ClientServices::s_darkPortalVar;
@@ -264,6 +265,12 @@ void ClientServices::SelectRealm(const char* realmName) {
 
 void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
+}
+
+void ClientServices::SetCharacterInfo(const CHARACTER_INFO* info) {
+    STORM_ASSERT(info);
+
+    ClientServices::s_characterInfo = *info;
 }
 
 void ClientServices::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
