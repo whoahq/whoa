@@ -103,8 +103,7 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
         return;
     }
 
-    CGlueMgr::m_idleState = IDLE_ACCOUNT_LOGIN;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_ACCOUNT_LOGIN);
 
     auto text = FrameScript_GetText("GAME_SERVER_LOGIN", -1, GENDER_NOT_APPLICABLE);
     FrameScript_SignalEvent(3, "%s%s", "CANCEL", text);
@@ -197,8 +196,7 @@ void CGlueMgr::EnterWorld() {
         ClientServices::LoginConnection()->Logoff();
     }
 
-    CGlueMgr::m_idleState = IDLE_ENTER_WORLD;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_ENTER_WORLD);
 }
 
 void CGlueMgr::DisplayLoginStatus() {
@@ -266,8 +264,7 @@ void CGlueMgr::GetCharacterList() {
         return;
     }
 
-    CGlueMgr::m_idleState = IDLE_CHARACTER_LIST;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_CHARACTER_LIST);
 
     auto retrieveingText = FrameScript_GetText("CHAR_LIST_RETRIEVING", -1, GENDER_NOT_APPLICABLE);
     FrameScript_SignalEvent(3, "%s%s", "CANCEL", retrieveingText);
@@ -441,8 +438,8 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
     CGlueMgr::m_lastLoginState = -1;
     CGlueMgr::m_authenticated = false;
     CGlueMgr::m_matrixRemaining = 0;
-    CGlueMgr::m_idleState = IDLE_LOGIN_SERVER_LOGIN;
-    CGlueMgr::m_showedDisconnect = 0;
+
+    CGlueMgr::SetIdleState(IDLE_LOGIN_SERVER_LOGIN);
 
     char* dest = CGlueMgr::m_accountName;
     for (const char* src = accountName; *src && dest < CGlueMgr::m_accountName + sizeof(CGlueMgr::m_accountName); src++, dest++) {
@@ -480,8 +477,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
         ClientServices::Connection()->Cancel(2);
         login->Logoff();
 
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
 
         return;
     }
@@ -508,8 +504,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
             // TODO
         }
 
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
 
         if (errorCode == 2) {
             CGlueMgr::m_disconnectPending = 1;
@@ -544,8 +539,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
         return;
     }
 
-    CGlueMgr::m_idleState = IDLE_NONE;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_NONE);
     CCharacterSelection::ClearCharacterList();
 
     // TODO streaming, trial, and expansion checks
@@ -566,8 +560,7 @@ void CGlueMgr::PollCharacterList(const char* msg, int32_t complete, int32_t resu
     FrameScript_SignalEvent(4, "%s", msg);
 
     if (CGlueMgr::HandleBattlenetDisconnect()) {
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
     }
 
     if (!complete) {
@@ -586,16 +579,14 @@ void CGlueMgr::PollCharacterList(const char* msg, int32_t complete, int32_t resu
 
         FrameScript_SignalEvent(3, "%s%s", "OKAY", msg);
 
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
 
         return;
     }
 
     // Success
 
-    CGlueMgr::m_idleState = IDLE_NONE;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_NONE);
 
     FrameScript_SignalEvent(5, nullptr);
 
@@ -613,8 +604,7 @@ void CGlueMgr::PollEnterWorld() {
     }
 
     if (CGlueMgr::m_suspended) {
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
 
         // TODO SI Logic
 
@@ -642,8 +632,7 @@ void CGlueMgr::PollLoginServerLogin() {
 
     // Open new client connection after successful authentication
     if (CGlueMgr::m_authenticated) {
-        CGlueMgr::m_idleState = IDLE_NONE;
-        CGlueMgr::m_showedDisconnect = 0;
+        CGlueMgr::SetIdleState(IDLE_NONE);
         CGlueMgr::Sub4D8BA0();
         CGlueMgr::m_authenticated = false;
 
@@ -705,10 +694,9 @@ void CGlueMgr::Resume() {
     // CGlueMgr::m_disconnectPending = 0;
     // CGlueMgr::m_reconnect = 0;
 
-    CGlueMgr::m_idleState = IDLE_NONE;
+    CGlueMgr::SetIdleState(IDLE_NONE);
 
     // TODO
-    // CGlueMgr::m_showedDisconnect = 0;
     // CGlueMgr::m_characterInfo = 0;
 
     CGlueMgr::m_suspended = 0;
@@ -836,6 +824,11 @@ void CGlueMgr::SetCurrentAccount(const char* accountName) {
     SStrUpper(CGlueMgr::m_accountName);
 }
 
+void CGlueMgr::SetIdleState(GLUE_IDLE_STATE state) {
+    CGlueMgr::m_idleState = state;
+    CGlueMgr::m_showedDisconnect = 0;
+}
+
 void CGlueMgr::SetLoginStateAndResult(LOGIN_STATE state, LOGIN_RESULT result, const char* addrStr, const char* stateStr, const char* resultStr, uint8_t flags) {
     // TODO
     // CGlueMgr::LogConnectionStatus("GRUNT: state: %s result: %s %s", a4);
@@ -870,9 +863,7 @@ void CGlueMgr::StatusDialogClick() {
 
         case IDLE_LOGIN_SERVER_LOGIN: {
             ClientServices::LoginConnection()->Logoff();
-
-            CGlueMgr::m_showedDisconnect = 0;
-            CGlueMgr::m_idleState = IDLE_NONE;
+            CGlueMgr::SetIdleState(IDLE_NONE);
 
             break;
         }
@@ -890,9 +881,7 @@ void CGlueMgr::StatusDialogClick() {
         case IDLE_6:
         case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
-
-            CGlueMgr::m_showedDisconnect = 0;
-            CGlueMgr::m_idleState = IDLE_NONE;
+            CGlueMgr::SetIdleState(IDLE_NONE);
 
             break;
         }
@@ -900,15 +889,13 @@ void CGlueMgr::StatusDialogClick() {
         case IDLE_7:
         case IDLE_8:
         case IDLE_9: {
-            CGlueMgr::m_showedDisconnect = 0;
-            CGlueMgr::m_idleState = IDLE_NONE;
+            CGlueMgr::SetIdleState(IDLE_NONE);
 
             break;
         }
 
         case IDLE_WORLD_LOGIN: {
-            CGlueMgr::m_showedDisconnect = 0;
-            CGlueMgr::m_idleState = IDLE_NONE;
+            CGlueMgr::SetIdleState(IDLE_NONE);
 
             // TODO
             // CGlueMgr::GetCharacterList();
@@ -930,8 +917,7 @@ void CGlueMgr::Sub4D8BA0() {
         return;
     }
 
-    CGlueMgr::m_idleState = IDLE_ACCOUNT_LOGIN;
-    CGlueMgr::m_showedDisconnect = 0;
+    CGlueMgr::SetIdleState(IDLE_ACCOUNT_LOGIN);
     ClientServices::Connection()->Connect();
 }
 
