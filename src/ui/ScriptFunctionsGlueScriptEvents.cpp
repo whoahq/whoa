@@ -270,7 +270,9 @@ int32_t Script_IsConnectedToServer(lua_State* L) {
 }
 
 int32_t Script_EnterWorld(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CGlueMgr::EnterWorld();
+
+    return 0;
 }
 
 int32_t Script_Screenshot(lua_State* L) {

@@ -111,6 +111,10 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
     ClientServices::Connection()->Connect();
 }
 
+void CGlueMgr::EnterWorld() {
+    // TODO
+}
+
 void CGlueMgr::DisplayLoginStatus() {
     // No change
     if (CGlueMgr::m_lastLoginState == CGlueMgr::m_loginState && CGlueMgr::m_lastLoginResult == CGlueMgr::m_loginResult) {
