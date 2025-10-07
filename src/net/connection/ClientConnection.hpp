@@ -30,6 +30,7 @@ class ClientConnection : public RealmConnection {
         void AccountLogin_Finish(int32_t authResult);
         void AccountLogin_Queued();
         void Cancel(int32_t errorCode);
+        void CharacterLogin(uint64_t guid, int32_t a2);
         void Cleanup();
         void Complete(int32_t result, int32_t errorCode);
         void Connect();

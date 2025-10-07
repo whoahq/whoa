@@ -294,6 +294,17 @@ void RealmConnection::RequestCharacterEnum() {
     this->Send(&msg);
 }
 
+void RealmConnection::RequestCharacterLogin(uint64_t guid, int32_t a2) {
+    CDataStore msg;
+
+    msg.Put(static_cast<uint32_t>(CMSG_PLAYER_LOGIN));
+    msg.Put(guid);
+
+    msg.Finalize();
+
+    this->Send(&msg);
+}
+
 void RealmConnection::SetSelectedRealm(uint32_t a2, uint32_t a3, uint32_t a4) {
     // TODO
 }

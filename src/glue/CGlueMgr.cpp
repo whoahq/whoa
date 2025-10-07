@@ -617,16 +617,21 @@ void CGlueMgr::PollEnterWorld() {
         CGlueMgr::m_showedDisconnect = 0;
 
         // TODO SI Logic
-        // TODO ClientConnection::CharacterLogin()
+
+        // TODO TLS shenanigans with guid
+        ClientServices::Connection()->CharacterLogin(CGlueMgr::m_characterInfo->info.guid, 0);
 
         return;
     }
 
-    // TODO Get map ID and position from character info
-    uint32_t mapId = 0;
-    C3Vector position = { 0.0f, 0.0f, 0.0f };
+    uint32_t mapId = CGlueMgr::m_characterInfo->info.mapID;
+    C3Vector position = CGlueMgr::m_characterInfo->info.position;
+
+    // TODO TLS shenanigans with guid
+    // TODO first login logic (play intro M2?)
 
     CGlueMgr::Suspend();
+
     ClientInitializeGame(mapId, position);
 }
 

@@ -23,6 +23,16 @@ void ClientConnection::Cancel(int32_t errorCode) {
     this->Complete(0, errorCode);
 }
 
+void ClientConnection::CharacterLogin(uint64_t guid, int32_t a2) {
+    this->Initiate(COP_LOGIN_CHARACTER, 76, nullptr);
+
+    if (this->m_connected) {
+        this->RequestCharacterLogin(guid, a2);
+    } else {
+        this->Cancel(4);
+    }
+}
+
 void ClientConnection::Cleanup() {
     if (this->m_cleanup) {
         this->m_cleanup();
