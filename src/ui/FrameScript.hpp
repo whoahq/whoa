@@ -42,7 +42,6 @@ class FrameScript_EventObject : public TSHashObject<FrameScript_EventObject, HAS
 };
 
 extern int32_t g_glueFrameScriptGenders[UNITSEX_LAST];
-extern const char* g_glueScriptEvents[41];
 extern const char* g_scriptEvents[722];
 
 namespace FrameScript {
@@ -101,8 +100,6 @@ void FrameScript_SetPluralRule(PLURAL_RULE rule);
 void FrameScript_SignalEvent(uint32_t index, const char* format, ...);
 
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
-
-void GlueScriptEventsInitialize();
 
 void ScriptEventsInitialize();
 
