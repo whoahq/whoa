@@ -33,6 +33,7 @@ class ClientServices : public LoginResponse {
         static ClientConnection* Connection();
         static const char* GetCurrentLoginPortal();
         static const char* GetCurrentLoginServer();
+        static const char* GetErrorToken(int32_t errorCode);
         static ClientServices* GetInstance();
         static REALM_INFO* GetRealmInfoByIndex(int32_t index);
         static const char* GetSelectedRealmName();
