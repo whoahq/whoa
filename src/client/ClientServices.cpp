@@ -155,7 +155,7 @@ void ClientServices::ConnectToSelectedServer() {
 }
 
 ClientConnection* ClientServices::Connection() {
-    // TODO assertion?
+    STORM_ASSERT(ClientServices::s_currentConnection);
 
     return ClientServices::s_currentConnection;
 }
@@ -390,9 +390,7 @@ void ClientServices::SetCharacterInfo(const CHARACTER_INFO* info) {
 
 void ClientServices::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param) {
     STORM_ASSERT(handler);
-    STORM_ASSERT(ClientServices::s_currentConnection);
-
-    ClientServices::s_currentConnection->SetMessageHandler(msgId, handler, param);
+    ClientServices::Connection()->SetMessageHandler(msgId, handler, param);
 }
 
 int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
