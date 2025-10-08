@@ -1,4 +1,7 @@
-file(GLOB PRIVATE_SOURCES "*.cpp")
+file(GLOB PRIVATE_SOURCES
+    "*.cpp"
+    "map/*.cpp"
+)
 
 add_library(world STATIC
     ${PRIVATE_SOURCES}
