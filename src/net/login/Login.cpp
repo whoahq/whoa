@@ -13,6 +13,10 @@ bool Login::IsReconnect() {
     return this->m_reconnect;
 }
 
+bool Login::IsLoggedOn() {
+    return this->m_loggedOn;
+}
+
 bool Login::OnlineIdle() {
     // TODO
 
