@@ -156,6 +156,7 @@ void ClientServices::ConnectToSelectedServer() {
 
 ClientConnection* ClientServices::Connection() {
     STORM_ASSERT(ClientServices::s_currentConnection);
+
     return ClientServices::s_currentConnection;
 }
 
