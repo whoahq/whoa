@@ -877,7 +877,7 @@ void CGlueMgr::StatusDialogClick() {
             break;
         }
 
-        case IDLE_4:
+        case IDLE_REALM_LIST:
         case IDLE_5:
         case IDLE_6:
         case IDLE_ENTER_WORLD: {

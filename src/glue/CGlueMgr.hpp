@@ -17,7 +17,7 @@ class CGlueMgr {
             IDLE_LOGIN_SERVER_LOGIN = 1,
             IDLE_ACCOUNT_LOGIN      = 2,
             IDLE_CHARACTER_LIST     = 3,
-            IDLE_4                  = 4,
+            IDLE_REALM_LIST         = 4,
             IDLE_5                  = 5,
             IDLE_6                  = 6,
             IDLE_7                  = 7,
