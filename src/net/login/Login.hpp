@@ -22,6 +22,7 @@ class Login : public Grunt::ClientResponse {
         virtual bool OnlineIdle();
         virtual void RealmListResult(CDataStore* msg);
         virtual bool IsReconnect();
+        virtual bool IsLoggedOn();
 
         // Member functions
         void SetLogonCreds(const char* accountName, const char* password);
