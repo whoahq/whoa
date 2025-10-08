@@ -1,7 +1,7 @@
 #ifndef GLUE_GLUE_SCRIPT_HPP
 #define GLUE_GLUE_SCRIPT_HPP
 
-extern const char* g_glueScriptEvents[41];
+extern const char* g_glueScriptEvents[];
 
 void GlueScriptEventsInitialize();
 
