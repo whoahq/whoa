@@ -2,6 +2,7 @@
 #include "client/ObjMgr.hpp"
 #include "console/Console.hpp"
 #include "db/Db.hpp"
+#include "world/World.hpp"
 #include <common/DataStore.hpp>
 #include <tempest/Vector.hpp>
 #include <cstdint>
@@ -12,6 +13,10 @@ static uint32_t s_newZoneID;
 static const char* s_newMapname;
 
 void LoadNewWorld(const void* eventData, void* param) {
+    // TODO
+
+    CWorld::LoadMap(s_newMapname, s_newPosition, s_newZoneID);
+
     // TODO
 };
 
