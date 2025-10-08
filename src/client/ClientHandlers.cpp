@@ -17,15 +17,14 @@ void LoadNewWorld(const void* eventData, void* param) {
 
 int32_t LoginVerifyWorldHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
     uint32_t zoneID;
-    C3Vector position = { 0.0f, 0.0f, 0.0f };
-    float facing;
-
     msg->Get(zoneID);
 
+    C3Vector position = { 0.0f, 0.0f, 0.0f };
     msg->Get(position.x);
     msg->Get(position.y);
     msg->Get(position.z);
 
+    float facing;
     msg->Get(facing);
 
     if (zoneID == ClntObjMgrGetMapID()) {
