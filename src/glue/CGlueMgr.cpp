@@ -8,6 +8,7 @@
 #include "glue/Character.hpp"
 #include "glue/CRealmList.hpp"
 #include "glue/GlueScript.hpp"
+#include "glue/Types.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Device.hpp"
 #include "gx/LoadingScreen.hpp"
