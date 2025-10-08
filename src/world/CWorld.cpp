@@ -2,6 +2,7 @@
 #include "gx/Gx.hpp"
 #include "gx/Shader.hpp"
 #include "model/Model2.hpp"
+#include "world/Map.hpp"
 
 uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
@@ -39,6 +40,14 @@ void CWorld::Initialize() {
         (m2Flags & 0x8) != 0,
         (CWorld::s_enables2 & Enables2::Enable_HwPcf) != 0
     );
+
+    // TODO
+}
+
+void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID) {
+    // TODO
+
+    CMap::Load(mapName, zoneID);
 
     // TODO
 }

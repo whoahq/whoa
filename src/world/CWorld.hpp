@@ -1,6 +1,8 @@
 #ifndef WORLD_C_WORLD_HPP
 #define WORLD_C_WORLD_HPP
 
+#include <tempest/Vector.hpp>
+
 #include <cstdint>
 
 class CWorld {
@@ -47,6 +49,7 @@ class CWorld {
 
         // Static functions
         static void Initialize(void);
+        static void LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID);
 };
 
 #endif
