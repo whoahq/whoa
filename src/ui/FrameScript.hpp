@@ -10,8 +10,6 @@
 #include <cmath>
 #include <cstdint>
 
-#define NUM_GLUE_SCRIPT_EVENTS 41
-
 class CImVector;
 class CSimpleFrame;
 class CStatus;
