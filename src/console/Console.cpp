@@ -36,3 +36,7 @@ void ConsoleSetHotKey(KEY hotkey) {
 void ConsoleSetResizeState(CONSOLERESIZESTATE state) {
     s_consoleResizeState = state;
 }
+
+void ConsoleWrite(const char* text, COLOR_T color) {
+    // TODO
+}

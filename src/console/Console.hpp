@@ -21,4 +21,6 @@ void ConsoleSetHotKey(KEY hotkey);
 
 void ConsoleSetResizeState(CONSOLERESIZESTATE state);
 
+void ConsoleWrite(const char* text, COLOR_T color);
+
 #endif  // ifndef CONSOLE_CONSOLE_HPP
