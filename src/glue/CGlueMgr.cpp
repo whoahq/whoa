@@ -284,10 +284,10 @@ void CGlueMgr::GetCharacterList() {
     ClientServices::Connection()->GetCharacterList();
 }
 
-void CGlueMgr::GetRealmList(int32_t a1) {
+void CGlueMgr::GetRealmList(int32_t showProgressDialog) {
     CGlueMgr::SetIdleState(IDLE_REALM_LIST);
 
-    if (a1) {
+    if (showProgressDialog) {
         auto inProgressText = FrameScript_GetText("REALM_LIST_IN_PROGRESS", -1, GENDER_NOT_APPLICABLE);
         FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "CANCEL", inProgressText);
     }

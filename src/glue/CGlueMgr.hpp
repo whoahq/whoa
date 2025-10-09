@@ -63,7 +63,7 @@ class CGlueMgr {
         static void DisplayLoginStatus();
         static void EnterWorld();
         static void GetCharacterList();
-        static void GetRealmList(int32_t a1);
+        static void GetRealmList(int32_t showProgressDialog);
         static int32_t HandleBattlenetDisconnect();
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
         static int32_t Idle(const void* a1, void* a2); // TODO a1: const EVENT_DATA_IDLE*
