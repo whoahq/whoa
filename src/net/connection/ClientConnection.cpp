@@ -91,6 +91,17 @@ void ClientConnection::GetCharacterList() {
     }
 }
 
+void ClientConnection::GetRealmList() {
+    this->Initiate(COP_GET_REALMS, 35, nullptr);
+
+    if (ClientServices::LoginConnection()->IsLoggedOn()) {
+        ClientServices::LoginConnection()->GetRealmList();
+    }
+    else {
+        ClientServices::LoginConnection()->Reconnect();
+    }
+}
+
 int32_t ClientConnection::HandleConnect() {
     this->Complete(1, 5);
 
