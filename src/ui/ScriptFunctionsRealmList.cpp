@@ -15,7 +15,13 @@ int32_t Script_RequestRealmList(lua_State* L) {
 }
 
 int32_t Script_RealmListUpdateRate(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (ClientServices::LoginConnection() && ClientServices::LoginConnection()->GetLoginServerType() == 1) {
+        lua_pushnumber(L, 4.0);
+    } else {
+        lua_pushnumber(L, 5.0);
+    }
+
+    return 1;
 }
 
 int32_t Script_CancelRealmListQuery(lua_State* L) {
