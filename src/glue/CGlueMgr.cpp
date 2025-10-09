@@ -773,6 +773,12 @@ void CGlueMgr::QuitGame() {
     ClientPostClose(0);
 }
 
+void CGlueMgr::RealmListDialogCancelled() {
+    if (!SStrCmpI(CGlueMgr::m_currentScreen, "login")) {
+        ClientServices::LoginConnection()->Logoff();
+    }
+}
+
 void CGlueMgr::Resume() {
     // TODO
     // CGlueMgr::m_disconnectPending = 0;

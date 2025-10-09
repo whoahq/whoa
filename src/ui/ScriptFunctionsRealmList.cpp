@@ -324,7 +324,9 @@ int32_t Script_GetSelectedCategory(lua_State* L) {
 }
 
 int32_t Script_RealmListDialogCancelled(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CGlueMgr::RealmListDialogCancelled();
+
+    return 0;
 }
 
 int32_t Script_IsInvalidTournamentRealmCategory(lua_State* L) {
