@@ -200,6 +200,10 @@ REALM_INFO* ClientServices::GetRealmInfoByIndex(int32_t index) {
     return &ClientServices::GetInstance()->m_realmList[index];
 }
 
+void ClientServices::GetRealmList() {
+    ClientServices::Connection()->GetRealmList();
+}
+
 const char* ClientServices::GetSelectedRealmName() {
     if (!ClientServices::s_realmNameVar) {
         ClientServices::s_realmNameVar = CVar::Register(

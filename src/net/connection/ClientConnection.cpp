@@ -91,6 +91,22 @@ void ClientConnection::GetCharacterList() {
     }
 }
 
+void ClientConnection::GetRealmList() {
+    this->m_cleanup = nullptr;
+    this->m_statusCop = COP_GET_REALMS;
+    this->m_errorCode = 35;
+    this->m_statusComplete = 0;
+
+    // TODO LogConnectionStatus(this->m_statusCop, this->m_errorCode, 1);
+
+    if (ClientServices::LoginConnection()->IsLoggedOn()) {
+        ClientServices::LoginConnection()->GetRealmList();
+    }
+    else {
+        ClientServices::LoginConnection()->Reconnect();
+    }
+}
+
 int32_t ClientConnection::HandleConnect() {
     this->Complete(1, 5);
 
