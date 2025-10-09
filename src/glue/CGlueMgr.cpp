@@ -285,9 +285,15 @@ void CGlueMgr::GetCharacterList() {
 }
 
 void CGlueMgr::GetRealmList(int32_t a1) {
-    // TODO
-}
+    CGlueMgr::SetIdleState(IDLE_REALM_LIST);
 
+    if (a1) {
+        auto inProgressText = FrameScript_GetText("REALM_LIST_IN_PROGRESS", -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "CANCEL", inProgressText);
+    }
+
+    ClientServices::GetRealmList();
+}
 
 int32_t CGlueMgr::HandleBattlenetDisconnect() {
     // TODO
