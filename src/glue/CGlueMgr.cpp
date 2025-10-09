@@ -664,7 +664,9 @@ void CGlueMgr::PollLoginServerLogin() {
 
     switch (CGlueMgr::m_loginState) {
     case LOGIN_STATE_FAILED: {
-        // TODO
+        ClientServices::LoginConnection()->Logoff();
+
+        CGlueMgr::SetIdleState(IDLE_NONE);
 
         break;
     }
