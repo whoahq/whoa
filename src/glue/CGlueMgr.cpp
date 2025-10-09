@@ -536,7 +536,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
                 FrameScript_SignalEvent(5, nullptr);
                 CRealmList::UpdateList();
             } else {
-                // TODO
+                CGlueMgr::GetRealmList(1);
             }
 
             return;
