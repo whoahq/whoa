@@ -58,6 +58,7 @@ class CGlueMgr {
         static int32_t m_suspended;
 
         // Static functions
+        static void CancelRealmListQuery();
         static void ChangeRealm(const REALM_INFO* realmInfo);
         static void DisplayLoginStatus();
         static void EnterWorld();
