@@ -20,6 +20,7 @@ int32_t Script_RealmListUpdateRate(lua_State* L) {
 
 int32_t Script_CancelRealmListQuery(lua_State* L) {
     CGlueMgr::CancelRealmListQuery();
+
     return 0;
 }
 
