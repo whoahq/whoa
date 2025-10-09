@@ -115,8 +115,15 @@ uint32_t CRealmList::Sub4DE910(uint32_t a1) {
 }
 
 void CRealmList::UpdateList() {
+    // Reset category counts
+    for (uint32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
+        auto realmCategory = CRealmList::s_categories[i];
+        realmCategory->uint14 = 0;
+    }
+
     CRealmList::s_avgLoad = 0.0f;
     int32_t category = -1;
+
     auto realmCount = ClientServices::GetInstance()->m_realmList.Count();
 
     for (int32_t realmIndex = 0; realmIndex < realmCount; realmIndex++) {
