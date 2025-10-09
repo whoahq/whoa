@@ -90,11 +90,13 @@ float CalculateAspectRatio() {
 }
 
 void CGlueMgr::CancelRealmListQuery() {
-    if (CGlueMgr::m_idleState == IDLE_REALM_LIST) {
-        ClientServices::Connection()->Cancel(2);
-
-        CGlueMgr::SetIdleState(IDLE_NONE);
+    if (CGlueMgr::m_idleState != IDLE_REALM_LIST) {
+        return;
     }
+
+    ClientServices::Connection()->Cancel(2);
+
+    CGlueMgr::SetIdleState(IDLE_NONE);
 }
 
 void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
