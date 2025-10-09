@@ -1,6 +1,7 @@
 #include "glue/CRealmList.hpp"
 #include "client/ClientServices.hpp"
 #include "db/Db.hpp"
+#include "glue/Types.hpp"
 #include "ui/FrameScript.hpp"
 #include <new>
 #include <storm/Memory.hpp>
@@ -83,11 +84,11 @@ void CRealmList::SetPreferredInfo(uint32_t categoryIndex, int32_t pvp, int32_t r
 
     // No match found for selected category and pvp / rp type
     if (realmId == -1) {
-        FrameScript_SignalEvent(9, nullptr);
+        FrameScript_SignalEvent(OPEN_REALM_LIST, nullptr);
         return;
     }
 
-    FrameScript_SignalEvent(18, "%d%d", categoryIndex, realmId);
+    FrameScript_SignalEvent(SUGGEST_REALM, "%d%d", categoryIndex, realmId);
 }
 
 uint32_t CRealmList::Sub4DE910(uint32_t a1) {
@@ -169,7 +170,7 @@ void CRealmList::UpdateList() {
     }
 
     if (CRealmList::s_preferredCategory != -1 /* TODO || ClientServices::Connection()->uint2F10 */) {
-        FrameScript_SignalEvent(9, nullptr);
+        FrameScript_SignalEvent(OPEN_REALM_LIST, nullptr);
     } else {
         uint32_t nonEmptyCategories = 0;
 
@@ -181,6 +182,6 @@ void CRealmList::UpdateList() {
             }
         }
 
-        FrameScript_SignalEvent(10, "%d", nonEmptyCategories);
+        FrameScript_SignalEvent(GET_PREFERRED_REALM_INFO, "%d", nonEmptyCategories);
     }
 }
