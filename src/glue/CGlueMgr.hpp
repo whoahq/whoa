@@ -74,6 +74,7 @@ class CGlueMgr {
         static void PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode);
         static void PollEnterWorld();
         static void PollLoginServerLogin();
+        static void PollRealmList(const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
         static void QuitGame();
         static void Resume();
         static void SetCurrentAccount(const char* accountName);

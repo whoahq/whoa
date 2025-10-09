@@ -382,6 +382,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
         break;
     }
 
+    case IDLE_REALM_LIST: {
+        CGlueMgr::PollRealmList(msg, complete, result, op);
+        break;
+    }
+
     case IDLE_ENTER_WORLD: {
         CGlueMgr::PollEnterWorld();
         break;
@@ -700,6 +705,39 @@ void CGlueMgr::PollLoginServerLogin() {
 
     default:
         break;
+    }
+}
+
+void CGlueMgr::PollRealmList(const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
+    FrameScript_SignalEvent(UPDATE_STATUS_DIALOG, "%s", msg);
+
+    if (CGlueMgr::HandleBattlenetDisconnect()) {
+        CGlueMgr::SetIdleState(IDLE_NONE);
+    }
+
+    if (!complete) {
+        return;
+    }
+
+    // Error
+
+    if (result == 0) {
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
+
+        CGlueMgr::SetIdleState(IDLE_NONE);
+    }
+
+    // Success
+
+    CGlueMgr::SetIdleState(IDLE_NONE);
+
+    FrameScript_SignalEvent(CLOSE_STATUS_DIALOG, nullptr);
+
+    CRealmList::UpdateList();
+
+    if (CGlueMgr::m_accountMsgAvailable) {
+        FrameScript_SignalEvent(ACCOUNT_MESSAGES_AVAILABLE, nullptr);
+        CGlueMgr::m_accountMsgAvailable = 0;
     }
 }
 
