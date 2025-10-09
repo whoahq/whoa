@@ -89,6 +89,16 @@ float CalculateAspectRatio() {
     return static_cast<float>(width) / static_cast<float>(height);
 }
 
+void CGlueMgr::CancelRealmListQuery() {
+    if (CGlueMgr::m_idleState != IDLE_REALM_LIST) {
+        return;
+    }
+
+    ClientServices::Connection()->Cancel(2);
+
+    CGlueMgr::SetIdleState(IDLE_NONE);
+}
+
 void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
     if (!realmInfo) {
         return;

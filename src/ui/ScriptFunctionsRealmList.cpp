@@ -19,7 +19,9 @@ int32_t Script_RealmListUpdateRate(lua_State* L) {
 }
 
 int32_t Script_CancelRealmListQuery(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CGlueMgr::CancelRealmListQuery();
+
+    return 0;
 }
 
 int32_t Script_GetNumRealms(lua_State* L) {
