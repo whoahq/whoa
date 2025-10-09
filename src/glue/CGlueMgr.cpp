@@ -74,6 +74,11 @@ int32_t CGlueMgr::m_showedDisconnect;
 CSimpleTop* CGlueMgr::m_simpleTop;
 int32_t CGlueMgr::m_suspended;
 
+struct URLERROR {
+    int32_t error;
+    char url[32];
+};
+
 float CalculateAspectRatio() {
     auto widescreenVar = CVar::Lookup("widescreen");
     auto resolutionVar = CVar::Lookup("gxResolution");
@@ -492,6 +497,14 @@ int32_t CGlueMgr::OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, 
 }
 
 void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
+    static URLERROR s_urlErrors[] = {
+        { 28, "AUTH_BANNED_URL"             },
+        { 31, "AUTH_DB_BUSY_URL"            },
+        { 30, "AUTH_NO_TIME_URL"            },
+        { 32, "AUTH_SUSPENDED_URL"          },
+        { 33, "AUTH_PARENTAL_CONTROL_URL"   }
+    };
+
     auto login = ClientServices::LoginConnection();
 
     if (login->GetLoginServerType() == 1 && CGlueMgr::m_loginState == LOGIN_STATE_FAILED) {
@@ -524,7 +537,20 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
 
     if (result == 0) {
         if (errorCode != 2) {
-            // TODO
+            URLERROR* urlError = nullptr;
+
+            for (auto& ue : s_urlErrors) {
+                if (errorCode == ue.error) {
+                    urlError = &ue;
+                    break;
+                }
+            }
+
+            if (urlError) {
+                FrameScript_SignalEvent(OPEN_STATUS_DIALOG,"%s%s%s", "OKAY_WITH_URL", urlError->url);
+            } else {
+                FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
+            }
         }
 
         CGlueMgr::SetIdleState(IDLE_NONE);
