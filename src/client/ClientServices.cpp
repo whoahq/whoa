@@ -378,6 +378,10 @@ void ClientServices::SelectRealm(const char* realmName) {
     ClientServices::SetSelectedRealmInfo(1);
 }
 
+void ClientServices::Send(CDataStore* msg) {
+    ClientServices::Connection()->Send(msg);
+}
+
 void ClientServices::SetAccountName(const char* accountName) {
     SStrCopy(ClientServices::s_accountName, accountName, sizeof(ClientServices::s_accountName));
 }

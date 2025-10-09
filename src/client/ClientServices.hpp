@@ -43,6 +43,7 @@ class ClientServices : public LoginResponse {
         static Login* LoginConnection();
         static void Logon(const char* accountName, const char* password);
         static void SelectRealm(const char* realmName);
+        static void Send(CDataStore* msg);
         static void SetAccountName(const char* accountName);
         static void SetCharacterInfo(const CHARACTER_INFO* info);
         static void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
