@@ -484,17 +484,17 @@ void ClientServices::RealmEnumCallback(uint32_t a2) {
         return;
     }
 
-    if (connection->m_statusCop == COP_CONNECT /* TODO && !connection->byte2F5A */) {
+    if (connection->m_statusCop == COP_CONNECT && !connection->byte2F5A) {
         if (ClientServices::LoginConnection()->GetLoginServerType() == 1) {
-            if ( ClientServices::s_selectRealmInfoValid || ClientServices::SetSelectedRealmInfo(0)) {
-                // TODO connection->byte2F5A = 1;
+            if (ClientServices::s_selectRealmInfoValid || ClientServices::SetSelectedRealmInfo(0)) {
+                connection->byte2F5A = 1;
 
                 // TODO ClientServices::LoginConnection()->JoinRealm();
             } else {
                 connection->Complete(0, 39);
             }
         } else {
-            // TODO connection->byte2F5A = 1;
+            connection->byte2F5A = 1;
 
             ClientServices::ConnectToSelectedServer();
         }

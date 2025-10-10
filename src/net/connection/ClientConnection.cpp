@@ -53,6 +53,8 @@ void ClientConnection::Complete(int32_t result, int32_t errorCode) {
 void ClientConnection::Connect() {
     // TODO
 
+    this->byte2F5A = 0;
+
     this->Initiate(COP_CONNECT, 7, nullptr);
 
     if (this->m_connected) {

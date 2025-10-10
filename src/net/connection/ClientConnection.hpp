@@ -17,6 +17,7 @@ class ClientConnection : public RealmConnection {
         int32_t m_statusResult = 1;
         WOWCS_OPS m_statusCop = COP_NONE;
         int32_t m_errorCode = 0;
+        uint8_t byte2F5A = 0;
         void (*m_cleanup)() = nullptr;
 
         // Virtual member functions
