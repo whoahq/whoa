@@ -986,9 +986,7 @@ void CGlueMgr::StatusDialogClick() {
 
         case IDLE_WORLD_LOGIN: {
             CGlueMgr::SetIdleState(IDLE_NONE);
-
-            // TODO
-            // CGlueMgr::GetCharacterList();
+            CGlueMgr::GetCharacterList();
 
             break;
         }
