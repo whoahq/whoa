@@ -394,7 +394,11 @@ void NetClient::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_
 }
 
 void NetClient::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
-    // TODO
+    // TODO this->DisplayNetworkStats();
+
+    if (this->m_netEventQueue) {
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_DISCONNECT, conn, this, nullptr, 0);
+    }
 }
 
 void NetClient::WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg) {
