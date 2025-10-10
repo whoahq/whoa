@@ -39,6 +39,14 @@ Grunt::ClientLink::ClientLink(Grunt::ClientResponse& clientResponse) {
     }
 }
 
+Grunt::ClientLink::~ClientLink() {
+    // TODO
+
+    this->Shutdown();
+
+    // TODO
+}
+
 void Grunt::ClientLink::Call() {
     // TODO
     // this->CheckExpired(false);
@@ -754,6 +762,20 @@ void Grunt::ClientLink::SetState(STATE state) {
     this->m_critSect.Enter();
 
     this->m_state = state;
+
+    this->m_critSect.Leave();
+}
+
+void Grunt::ClientLink::Shutdown() {
+    this->m_critSect.Enter();
+
+    if (this->m_connection) {
+        this->m_connection->Disconnect();
+        // TODO this->m_connection->SetResponse(nullptr, false);
+        this->m_connection->Release();
+
+        this->m_connection = nullptr;
+    }
 
     this->m_critSect.Leave();
 }

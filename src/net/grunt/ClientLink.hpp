@@ -64,6 +64,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         uint8_t m_reconnectSessionKey[40];
 
         // Virtual member functions
+        virtual ~ClientLink();
         virtual void WCMessageReady(WowConnection *conn, uint32_t timeStamp, CDataStore* msg) {};
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
         virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
@@ -88,6 +89,7 @@ class Grunt::ClientLink : public WowConnectionResponse, Grunt::Pending, Grunt::T
         void ProveVersion(const uint8_t* versionChecksum);
         void Send(CDataStore& msg);
         void SetState(STATE state);
+        void Shutdown();
 };
 
 #endif
