@@ -820,3 +820,18 @@ void Grunt::ClientLink::WCDataReady(WowConnection* conn, uint32_t timeStamp, uin
         this->Disconnect();
     }
 }
+
+void Grunt::ClientLink::WCDisconnected(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
+    this->m_critSect.Enter();
+
+    this->Shutdown();
+
+    this->SetState(STATE_NONE);
+
+    this->m_critSect.Leave();
+
+    // TODO
+    // if (this->m_clientResponse->Disconnected()) {
+    //     delete this;
+    // }
+}
