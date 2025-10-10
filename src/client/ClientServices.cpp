@@ -422,6 +422,12 @@ int32_t ClientServices::SetSelectedRealmInfo(int32_t a1) {
     return 0;
 }
 
+int32_t ClientServices::ValidDisconnect(const void* client) {
+    STORM_ASSERT(client);
+
+    return client == ClientServices::Connection();
+}
+
 const char* ClientServices::GetLoginServer() {
     return ClientServices::s_loginObj->GetLoginServerType() == 1
         ? ClientServices::s_realmListBNVar->GetString()

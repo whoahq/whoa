@@ -49,6 +49,7 @@ class ClientServices : public LoginResponse {
         static void SetCharacterInfo(const CHARACTER_INFO* info);
         static void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
         static int32_t SetSelectedRealmInfo(int32_t a1);
+        static int32_t ValidDisconnect(const void* client);
 
         // Virtual member functions
         virtual const char* GetLoginServer();
