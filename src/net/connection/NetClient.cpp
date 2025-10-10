@@ -255,7 +255,16 @@ int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
 }
 
 int32_t NetClient::HandleDisconnect() {
-    // TODO
+    // TODO push obj mgr
+
+    this->m_netState = NS_INITIALIZED;
+
+    // ConsolePrintf("NetClient::HandleDisconnect()");
+
+    // CGlueMgr::NetDisconnectHandler();
+
+    // TODO pop obj mgr
+
     return 1;
 }
 
