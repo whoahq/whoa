@@ -1,5 +1,6 @@
 #include "net/connection/NetClient.hpp"
 #include "net/connection/WowConnection.hpp"
+#include "glue/CGlueMgr.hpp"
 #include <cstdlib>
 #include <cstring>
 #include <new>
@@ -261,7 +262,7 @@ int32_t NetClient::HandleDisconnect() {
 
     // ConsolePrintf("NetClient::HandleDisconnect()");
 
-    // CGlueMgr::NetDisconnectHandler();
+    CGlueMgr::NetDisconnectHandler(this, nullptr);
 
     // TODO pop obj mgr
 
