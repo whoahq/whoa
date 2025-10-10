@@ -69,6 +69,7 @@ class CGlueMgr {
         static int32_t Idle(const void* a1, void* a2); // TODO a1: const EVENT_DATA_IDLE*
         static void Initialize();
         static void LoginServerLogin(const char* accountName, const char* password);
+        static int32_t NetDisconnectHandler(const void* a1, void* a2);
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
         static void PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode);

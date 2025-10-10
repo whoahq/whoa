@@ -490,6 +490,72 @@ void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
     memset(const_cast<char*>(password), 0, SStrLen(password));
 }
 
+int32_t CGlueMgr::NetDisconnectHandler(const void* a1, void* a2) {
+    auto notAccountLogin = CGlueMgr::m_idleState != IDLE_ACCOUNT_LOGIN;
+
+    CGlueMgr::SetIdleState(IDLE_NONE);
+
+    if (CGlueMgr::m_disconnectPending) {
+        // TODO ConsolePrintf("CGlueMgr::NetDisconnectHandler: Disconnect pending");
+
+        CGlueMgr::m_disconnectPending = 0;
+
+        if (CGlueMgr::m_reconnect) {
+            CGlueMgr::m_reconnect = 0;
+
+            CGlueMgr::SetIdleState(IDLE_ACCOUNT_LOGIN);
+
+            auto loginText = FrameScript_GetText("GAME_SERVER_LOGIN", -1, GENDER_NOT_APPLICABLE);
+            FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "CANCEL", loginText);
+
+            ClientServices::Connection()->Connect();
+
+            return 1;
+        }
+
+        return 1;
+    }
+
+    if (!ClientServices::ValidDisconnect(a1)) {
+        // TODO ConsolePrintf("CGlueMgr::NetDisconnectHandler: Invalid disconnect");
+
+        return 1;
+    }
+
+    // TODO ClientDestroyGame(0, 1, 0);
+    // TODO EventSetMouseMode(0, 0);
+
+    if (notAccountLogin) {
+        // TODO ConsolePrintf("CGlueMgr::NetDisconnectHandler: Displaying script");
+
+        // TODO FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
+
+        ClientServices::LoginConnection()->Logoff();
+
+        return 1;
+    }
+
+    // TODO ConsolePrintf("CGlueMgr::NetDisconnectHandler: NOT displaying script");
+
+    WOWCS_OPS op;
+    const char* msg;
+    int32_t result;
+    int32_t errorCode;
+    int32_t complete = ClientServices::Connection()->PollStatus(op, &msg, result, errorCode);
+
+    if (complete && result == 0) {
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
+    } else {
+        ClientServices::SelectRealm("");
+
+        // TODO FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
+    }
+
+    ClientServices::LoginConnection()->Logoff();
+
+    return 1;
+}
+
 int32_t CGlueMgr::OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
     // TODO
 
