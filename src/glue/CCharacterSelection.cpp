@@ -2,6 +2,7 @@
 #include "client/ClientServices.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
+#include "glue/Types.hpp"
 #include "model/CM2Shared.hpp"
 #include "net/Connection.hpp"
 #include "ui/CSimpleModelFFX.hpp"
@@ -22,7 +23,20 @@ uint32_t CCharacterSelection::s_restrictBloodElf;
 int32_t CCharacterSelection::s_selectionIndex;
 
 void CCharacterSelection::ClearCharacterList() {
-    // TODO
+    CCharacterSelection::s_characterList.SetCount(0);
+
+    CCharacterSelection::ClearCharacterModel();
+
+    CCharacterSelection::s_selectionIndex = 0;
+    CCharacterSelection::ShowCharacter();
+
+    FrameScript_SignalEvent(UPDATE_SELECTED_CHARACTER, "%d", CCharacterSelection::s_selectionIndex + 1);
+
+    if (CCharacterSelection::s_modelFrame) {
+        CCharacterSelection::s_modelFrame->SetCameraByIndex(0);
+    }
+
+    FrameScript_SignalEvent(CHARACTER_LIST_UPDATE, nullptr);
 }
 
 void CCharacterSelection::ClearCharacterModel() {
