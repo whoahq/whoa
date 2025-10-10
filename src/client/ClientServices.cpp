@@ -474,21 +474,35 @@ void ClientServices::RealmEnumCallback(uint32_t a2) {
 
     if (a2 == 1) {
         connection->Complete(0, 23);
+
         return;
     }
 
     if (a2 == 2 || a2 == 3 || a2 == 4) {
         connection->Complete(0, 37);
-        return;
-    }
-
-    // TODO statusCop checks
-
-    if (ClientServices::LoginConnection()->GetLoginServerType() == 1) {
-        // TODO Battlenet logic
 
         return;
     }
 
-    ClientServices::ConnectToSelectedServer();
+    if (connection->m_statusCop == COP_CONNECT /* TODO && !connection->byte2F5A */) {
+        if (ClientServices::LoginConnection()->GetLoginServerType() == 1) {
+            if ( ClientServices::s_selectRealmInfoValid || ClientServices::SetSelectedRealmInfo(0)) {
+                // TODO connection->byte2F5A = 1;
+
+                // TODO ClientServices::LoginConnection()->JoinRealm();
+            } else {
+                connection->Complete(0, 39);
+            }
+        } else {
+            // TODO connection->byte2F5A = 1;
+
+            ClientServices::ConnectToSelectedServer();
+        }
+
+        return;
+    }
+
+    if (connection->m_statusCop == COP_GET_REALMS) {
+        connection->Complete(1, 36);
+    }
 }
