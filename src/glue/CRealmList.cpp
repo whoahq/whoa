@@ -170,9 +170,12 @@ void CRealmList::UpdateList() {
 
     // TODO sort realm list
 
+    CRealmList::s_selectedCategory = 0;
+
     for (int32_t i = 0; i < CRealmList::s_categories.Count(); i++) {
         if (CRealmList::s_categories[i]->m_category->GetID() == category) {
             CRealmList::s_selectedCategory = i;
+            break;
         }
     }
 
