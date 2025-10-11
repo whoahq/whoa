@@ -111,7 +111,7 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
 
     ClientServices::SelectRealm(realmInfo->name);
 
-    if (ClientServices::Connection()->IsConnected()) {
+    if (ClientServices::IsConnected()) {
         CGlueMgr::m_disconnectPending = 1;
         CGlueMgr::m_reconnect = 1;
 
@@ -142,7 +142,7 @@ void CGlueMgr::EnterWorld() {
 
     CCharacterSelection::s_enterWorldIndex = CCharacterSelection::s_selectionIndex;
 
-    if (!ClientServices::Connection()->IsConnected()) {
+    if (!ClientServices::IsConnected()) {
         return;
     }
 

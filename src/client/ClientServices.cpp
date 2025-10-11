@@ -335,6 +335,10 @@ void ClientServices::InitLoginServerCVars(int32_t force, const char* locale) {
     }
 }
 
+int32_t ClientServices::IsConnected() {
+    return ClientServices::Connection()->IsConnected();
+}
+
 Login* ClientServices::LoginConnection() {
     return ClientServices::s_loginObj;
 }

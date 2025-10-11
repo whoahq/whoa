@@ -256,7 +256,7 @@ int32_t Script_GetServerName(lua_State* L) {
 }
 
 int32_t Script_DisconnectFromServer(lua_State* L) {
-    if (ClientServices::Connection()->IsConnected()) {
+    if (ClientServices::IsConnected()) {
         CGlueMgr::m_disconnectPending = 1;
         ClientServices::Connection()->Disconnect();
     }
@@ -267,7 +267,7 @@ int32_t Script_DisconnectFromServer(lua_State* L) {
 }
 
 int32_t Script_IsConnectedToServer(lua_State* L) {
-    if (ClientServices::Connection()->IsConnected()) {
+    if (ClientServices::IsConnected()) {
         lua_pushnumber(L, 1.0);
     } else {
         lua_pushnil(L);
