@@ -15,7 +15,7 @@ class SFile {
         // Static functions
         static int32_t Close(SFile*);
         static size_t GetFileSize(SFile*, size_t*);
-        static int32_t IsStreamingMode(void);
+        static int32_t IsStreamingMode();
         static int32_t Load(SArchive*, const char*, void**, size_t*, size_t, uint32_t, SOVERLAPPED*);
         static int32_t Open(const char*, SFile**);
         static int32_t OpenEx(SArchive*, const char*, uint32_t, SFile**);
