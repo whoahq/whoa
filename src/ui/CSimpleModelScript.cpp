@@ -135,7 +135,16 @@ int32_t CSimpleModel_ReplaceIconTexture(lua_State* L) {
 }
 
 int32_t CSimpleModel_SetFogColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleModel::GetObjectType();
+    auto model = static_cast<CSimpleModel*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector fogColor = { 0 };
+    FrameScript_GetColor(L, 2, fogColor);
+
+    model->m_flags |= 0x1;
+    model->m_fogColor = fogColor;
+
+    return 0;
 }
 
 int32_t CSimpleModel_GetFogColor(lua_State* L) {
