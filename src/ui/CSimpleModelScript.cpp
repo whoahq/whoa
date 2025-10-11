@@ -160,7 +160,16 @@ int32_t CSimpleModel_GetFogNear(lua_State* L) {
 }
 
 int32_t CSimpleModel_SetFogFar(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleModel::GetObjectType();
+    auto model = static_cast<CSimpleModel*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isnumber(L, 2)) {
+        return luaL_error(L, "Usage: %s:SetFogFar(value)", model->GetDisplayName());
+    }
+
+    model->m_fogFar = static_cast<float>(lua_tonumber(L, 2));
+
+    return 0;
 }
 
 int32_t CSimpleModel_GetFogFar(lua_State* L) {
