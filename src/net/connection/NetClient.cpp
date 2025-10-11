@@ -203,8 +203,7 @@ void NetClient::Disconnect() {
 
         serverConnection->Disconnect();
 
-        // TODO
-        // this->m_netEventQueue->Clear();
+        this->m_netEventQueue->Clear();
 
         serverConnection->Release();
 
