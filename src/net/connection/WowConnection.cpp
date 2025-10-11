@@ -343,8 +343,7 @@ void WowConnection::DoDisconnect() {
     this->m_lock.Leave();
 
     if (this->m_response && this->m_sock >= 0) {
-        // TODO
-        // this->m_response->Vfunc4(this, OsGetAsyncTimeMsPrecise());
+        this->m_response->WCDisconnected(this, OsGetAsyncTimeMsPrecise(), &this->m_peer);
     }
 
     this->m_lock.Enter();
