@@ -41,6 +41,7 @@ class ClientServices : public LoginResponse {
         static const REALM_INFO* GetSelectedRealm();
         static void Initialize();
         static void InitLoginServerCVars(int32_t force, const char* locale);
+        static int32_t IsConnected();
         static Login* LoginConnection();
         static void Logon(const char* accountName, const char* password);
         static void SelectRealm(const char* realmName);
