@@ -26,6 +26,11 @@ int32_t SFile::IsStreamingMode() {
     return 0;
 }
 
+int32_t SFile::IsStreamingTrial() {
+    // TODO
+    return 0;
+}
+
 // TODO Proper implementation
 int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size_t* bytes, size_t extraBytes, uint32_t flags, SOVERLAPPED* overlapped) {
     auto pathLen = SStrLen(filename);
