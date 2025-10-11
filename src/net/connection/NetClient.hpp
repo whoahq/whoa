@@ -41,7 +41,9 @@ class NETEVENTQUEUE {
         NETEVENTQUEUE(NetClient* client)
             : m_client(client)
             {};
+        ~NETEVENTQUEUE();
         void AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes);
+        void Clear();
         void Poll();
 };
 

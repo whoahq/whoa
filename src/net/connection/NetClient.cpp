@@ -20,6 +20,10 @@ void InitializePropContext() {
     }
 }
 
+NETEVENTQUEUE::~NETEVENTQUEUE() {
+    this->Clear();
+}
+
 void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, const void* data, uint32_t bytes) {
     this->m_critSect.Enter();
 
@@ -39,6 +43,14 @@ void NETEVENTQUEUE::AddEvent(EVENTID eventId, void* conn, NetClient* client, con
     node->m_timeReceived = OsGetAsyncTimeMsPrecise();
 
     client->AddRef();
+
+    this->m_critSect.Leave();
+}
+
+void NETEVENTQUEUE::Clear() {
+    this->m_critSect.Enter();
+
+    this->m_eventQueue.Clear();
 
     this->m_critSect.Leave();
 }
