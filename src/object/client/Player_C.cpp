@@ -22,3 +22,29 @@ uint32_t Player_C_GetDisplayId(uint32_t race, uint32_t sex) {
 
     return 0;
 }
+
+const CreatureModelDataRec* Player_C_GetModelName(uint32_t race, uint32_t sex) {
+    STORM_ASSERT(sex < UNITSEX_LAST);
+
+    auto displayID = Player_C_GetDisplayId(race, sex);
+
+    if (!displayID) {
+        return nullptr;
+    }
+
+    auto displayInfo = g_creatureDisplayInfoDB.GetRecord(displayID);
+
+    if (!displayInfo) {
+        // TODO this becomes nullsub in retail build -- might be variation of macro
+        STORM_APP_FATAL("Error, unknown displayInfo %d specified for player race %d sex %d!", displayID, race, sex);
+    }
+
+    auto modelData = g_creatureModelDataDB.GetRecord(displayInfo->m_modelID);
+
+    if (!modelData) {
+        // TODO this becomes nullsub in retail build -- might be variation of macro
+        STORM_APP_FATAL("Error, unknown model record %d specified for player race %d sex %d!", displayInfo->m_modelID, race, sex);
+    }
+
+    return modelData;
+}
