@@ -76,6 +76,10 @@ uint16_t CM2Model::Sub8260C0(M2Data* data, uint32_t sequenceId, int32_t a3) {
     return -1;
 }
 
+void CM2Model::AddRef() {
+    this->m_refCount++;
+}
+
 void CM2Model::Animate() {
     // TODO
 }
@@ -754,7 +758,7 @@ int32_t CM2Model::Initialize(CM2Scene* scene, CM2Shared* shared, CM2Model* a4, u
     this->m_shared->AddRef();
 
     if (a4) {
-        a4->m_refCount++;
+        a4->AddRef();
     }
 
     this->m_flags = flags;
@@ -1103,7 +1107,7 @@ void CM2Model::ProcessCallbacksRecursive() {
         return;
     }
 
-    this->m_refCount++;
+    this->AddRef();
 
     if (this->ProcessCallbacks()) {
         // TODO process attachments
