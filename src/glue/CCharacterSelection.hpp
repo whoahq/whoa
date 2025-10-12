@@ -15,6 +15,7 @@ class CCharacterSelection {
     public:
         // Static variables
         static TSGrowableArray<CharacterSelectionDisplay> s_characterList;
+        static float s_charFacing;
         static int32_t s_enterWorldIndex;
         static CSimpleModelFFX* s_modelFrame;
         static uint32_t s_restrictHuman;

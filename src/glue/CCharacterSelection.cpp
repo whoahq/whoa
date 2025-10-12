@@ -8,6 +8,7 @@
 #include "ui/CSimpleModelFFX.hpp"
 
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
+float CCharacterSelection::s_charFacing;
 int32_t CCharacterSelection::s_enterWorldIndex;
 CSimpleModelFFX* CCharacterSelection::s_modelFrame;
 uint32_t CCharacterSelection::s_restrictHuman;

@@ -175,7 +175,9 @@ int32_t Script_UpdateSelectionCustomizationScene(lua_State* L) {
 }
 
 int32_t Script_GetCharacterSelectFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CCharacterSelection::s_charFacing * 57.29578);
+
+    return 1;
 }
 
 int32_t Script_SetCharacterSelectFacing(lua_State* L) {
