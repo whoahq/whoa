@@ -82,6 +82,12 @@ class CM2Model {
         CM2Model** m_animatePrev = nullptr;
         CM2Model* m_animateNext = nullptr;
         CM2Model* m_attachParent = nullptr;
+        // TODO m_attachments; (presumably M2ModelAttachment)
+        uint32_t m_attachId = -1;
+        uint32_t m_attachIndex = 0xFFFF;
+        CM2Model* m_attachList = nullptr;
+        CM2Model** m_attachPrev = nullptr;
+        CM2Model* m_attachNext = nullptr;
         uint32_t m_time = 0;
         CM2Model** m_drawPrev = nullptr;
         CM2Model* m_drawNext = nullptr;
