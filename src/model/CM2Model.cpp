@@ -561,6 +561,10 @@ void CM2Model::AnimateST() {
     // TODO
 }
 
+void CM2Model::AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t a5) {
+    // TODO
+}
+
 void CM2Model::AttachToScene(CM2Scene* scene) {
     this->DetachFromScene();
 
