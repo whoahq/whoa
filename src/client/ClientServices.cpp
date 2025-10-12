@@ -160,6 +160,10 @@ ClientConnection* ClientServices::Connection() {
     return ClientServices::s_currentConnection;
 }
 
+void ClientServices::Disconnect() {
+    ClientServices::Connection()->Disconnect();
+}
+
 const char* ClientServices::GetCurrentLoginPortal() {
     return ClientServices::s_loginObj->GetLoginServerType() == 1
         ? ClientServices::s_darkPortalVar->GetString()
