@@ -731,6 +731,46 @@ LABEL_36:
     }
 }
 
+C44Matrix CM2Model::GetAttachmentWorldTransform(uint32_t id) {
+    if (!this->m_loaded) {
+        this->WaitForLoad("GetAttachmentWorldTransform");
+    }
+
+    auto& attachmentIndicesById = this->m_shared->m_data->attachmentIndicesById;
+    auto& attachments = this->m_shared->m_data->attachments;
+
+    // Look up attachment index
+
+    uint16_t attachIndex = 0xFFFF;
+    if (id < attachmentIndicesById.count) {
+        attachIndex = attachmentIndicesById[id];
+    }
+
+    // Look up bone index
+
+    uint16_t boneIndex = 0xFFFF;
+    if (attachIndex < this->m_shared->m_data->attachments.count) {
+        boneIndex = attachments[attachIndex].boneIndex;
+    }
+
+    // Animate
+
+    this->Animate();
+
+    // Calculate attachment world transform
+
+    C44Matrix transform;
+
+    if (attachIndex == 0xFFFF) {
+        transform = this->m_boneMatrices[0];
+    } else {
+        transform = this->m_boneMatrices[boneIndex];
+        transform.Translate(attachments[attachIndex].position);
+    }
+
+    return transform * this->m_scene->m_viewInv;
+}
+
 CAaBox& CM2Model::GetBoundingBox(CAaBox& bounds) {
     // TODO
     // WaitForLoad
