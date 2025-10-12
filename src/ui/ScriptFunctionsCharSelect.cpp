@@ -189,18 +189,60 @@ int32_t Script_GetSelectBackgroundModel(lua_State* L) {
 
     auto characterIndex = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
 
-    // TODO
+    if (SFile::IsStreamingTrial()) {
+        lua_pushstring(L, "CharacterSelect");
 
-    ChrRacesRec* racesRec = nullptr;
-
-    if (characterIndex < 0 || characterIndex >= CCharacterSelection::s_characterList.Count()) {
-        racesRec = g_chrRacesDB.GetRecord(2);
-    } else {
-        // TODO
+        return 1;
     }
 
-    if (racesRec) {
-        lua_pushstring(L, racesRec->m_clientFileString);
+    // Out of bounds
+
+    if (characterIndex < 0 || characterIndex >= CCharacterSelection::s_characterList.Count()) {
+        auto defaultRaceRec = g_chrRacesDB.GetRecord(2);
+
+        if (defaultRaceRec) {
+            lua_pushstring(L, defaultRaceRec->m_clientFileString);
+        } else {
+            lua_pushstring(L, "");
+        }
+
+        return 1;
+    }
+
+    // Character exists at index
+
+    auto character = CCharacterSelection::GetCharacterDisplay(characterIndex);
+
+    // Class background
+
+    auto classID = character->info.classID;
+
+    if (classID == 6) {
+        auto classRec = g_chrClassesDB.GetRecord(character->info.classID);
+
+        if (classRec) {
+            lua_pushstring(L, classRec->m_filename);
+        } else {
+            lua_pushstring(L, "");
+        }
+
+        return 1;
+    }
+
+    // Race background
+
+    auto raceID = character->info.raceID;
+
+    if (raceID == 7) {
+        raceID = 3;
+    } else if (raceID == 8) {
+        raceID = 2;
+    }
+
+    auto raceRec = g_chrRacesDB.GetRecord(raceID);
+
+    if (raceRec) {
+        lua_pushstring(L, raceRec->m_clientFileString);
     } else {
         lua_pushstring(L, "");
     }
