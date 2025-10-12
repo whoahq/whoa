@@ -144,6 +144,7 @@ class CM2Model {
         void AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t a5);
         void AttachToScene(CM2Scene* scene);
         void CancelDeferredSequences(uint32_t boneIndex, bool a3);
+        void DetachFromParent();
         void DetachFromScene();
         void FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint32_t& currentKey, uint32_t& nextKey, float& ratio);
         CAaBox& GetBoundingBox(CAaBox& bounds);

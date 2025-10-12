@@ -599,6 +599,10 @@ void CM2Model::CancelDeferredSequences(uint32_t boneIndex, bool a3) {
     // TODO
 }
 
+void CM2Model::DetachFromParent() {
+    // TODO
+}
+
 void CM2Model::DetachFromScene() {
     // TODO
 }
