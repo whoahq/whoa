@@ -181,7 +181,14 @@ int32_t Script_GetCharacterSelectFacing(lua_State* L) {
 }
 
 int32_t Script_SetCharacterSelectFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: SetCharacterSelectFacing(degrees)");
+    }
+
+    float facing = lua_tonumber(L, 1) * 0.017453292;
+    CCharacterSelection::SetFacing(facing);
+
+    return 1;
 }
 
 int32_t Script_GetSelectBackgroundModel(lua_State* L) {
