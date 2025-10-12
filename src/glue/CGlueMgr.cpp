@@ -115,7 +115,7 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
         CGlueMgr::m_disconnectPending = 1;
         CGlueMgr::m_reconnect = 1;
 
-        ClientServices::Connection()->Disconnect();
+        ClientServices::Disconnect();
 
         return;
     }
@@ -623,7 +623,7 @@ void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t comp
 
         if (errorCode == 2) {
             CGlueMgr::m_disconnectPending = 1;
-            ClientServices::Connection()->Disconnect();
+            ClientServices::Disconnect();
         }
 
         if (errorCode != 13) {
