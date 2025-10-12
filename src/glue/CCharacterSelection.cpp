@@ -50,6 +50,14 @@ void CCharacterSelection::EnumerateCharactersCallback(const CHARACTER_INFO& info
     // TODO
 }
 
+const CharacterSelectionDisplay* CCharacterSelection::GetCharacterDisplay(int32_t index) {
+    if (index < 0 || index >= CCharacterSelection::s_characterList.Count()) {
+        return nullptr;
+    }
+
+    return &CCharacterSelection::s_characterList[index];
+}
+
 const CharacterSelectionDisplay* CCharacterSelection::GetSelectedCharacter() {
     if (CCharacterSelection::s_selectionIndex < 0 || CCharacterSelection::s_selectionIndex >= CCharacterSelection::s_characterList.Count()) {
         return nullptr;

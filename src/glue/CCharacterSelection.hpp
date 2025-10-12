@@ -33,6 +33,7 @@ class CCharacterSelection {
         static void ClearCharacterList();
         static void ClearCharacterModel();
         static void EnumerateCharactersCallback(const CHARACTER_INFO& info, void* param);
+        static const CharacterSelectionDisplay* GetCharacterDisplay(int32_t index);
         static const CharacterSelectionDisplay* GetSelectedCharacter();
         static void OnGetCharacterList();
         static void RenderPrep();
