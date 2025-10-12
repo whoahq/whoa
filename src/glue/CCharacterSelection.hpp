@@ -39,6 +39,7 @@ class CCharacterSelection {
         static void OnGetCharacterList();
         static void RenderPrep();
         static void SetBackgroundModel(const char* modelPath);
+        static void SetFacing(float facing);
         static void ShowCharacter();
         static void UpdateCharacterList();
 };

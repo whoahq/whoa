@@ -104,6 +104,10 @@ void CCharacterSelection::SetBackgroundModel(const char* modelPath) {
     }
 }
 
+void CCharacterSelection::SetFacing(float facing) {
+    // TODO
+}
+
 void CCharacterSelection::ShowCharacter() {
     // TODO
 }
