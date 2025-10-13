@@ -1,10 +1,13 @@
 #include "glue/CCharacterSelection.hpp"
 #include "client/ClientServices.hpp"
+#include "db/Db.hpp"
+#include "glue/CCharacterComponent.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
 #include "glue/Types.hpp"
 #include "model/CM2Shared.hpp"
 #include "net/Connection.hpp"
+#include "object/client/Player_C.hpp"
 #include "ui/CSimpleModelFFX.hpp"
 
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
@@ -109,6 +112,65 @@ void CCharacterSelection::SetFacing(float facing) {
 }
 
 void CCharacterSelection::ShowCharacter() {
+    if (CCharacterSelection::s_selectionIndex < 0 || CCharacterSelection::s_selectionIndex >= CCharacterSelection::s_characterList.Count()) {
+        return;
+    }
+
+    CCharacterSelection::ClearCharacterModel();
+
+    CCharacterSelection::s_charFacing = 0.0f;
+
+    auto character = &CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex];
+
+    if (character->component) {
+        auto parent = CCharacterSelection::s_modelFrame->m_model;
+
+        if (!parent) {
+            return;
+        }
+
+        auto characterModel = character->component->m_data.model;
+        auto petModel = character->petModel;
+
+        characterModel->AttachToParent(parent, 0, nullptr, 0);
+
+        CCharacterSelection::SetFacing(0.0f);
+
+        if (petModel) {
+            petModel->AttachToParent(parent, 1, nullptr, 0);
+        }
+
+        // TODO CGlueLoading::StartLoad(&character->component, 0);
+
+        return;
+    }
+
+    auto modelData = Player_C_GetModelName(character->info.raceID, character->info.sexID);
+    if (!modelData || !modelData->m_modelName) {
+        return;
+    }
+
+    character->component = CCharacterComponent::AllocComponent();
+
+    ComponentData componentData = {};
+    componentData.raceID = character->info.raceID;
+    componentData.sexID = character->info.sexID;
+    componentData.skinID = character->info.skinID;
+    componentData.faceID = character->info.faceID;
+    componentData.hairStyleID = character->info.hairStyleID;
+    componentData.hairColorID = character->info.hairColorID;
+    componentData.facialHairStyleID = character->info.facialHairStyleID;
+
+    auto scene = CCharacterSelection::s_modelFrame->GetScene();
+    auto model = scene->CreateModel(modelData->m_modelName, 0);
+
+    componentData.flags |= 0x2;
+    componentData.model = model;
+
+    character->component->Init(&componentData, nullptr);
+
+    // TODO lighting callback/arg
+
     // TODO
 }
 

@@ -4,10 +4,14 @@
 #include "net/Types.hpp"
 #include <storm/Array.hpp>
 
+class CCharacterComponent;
+class CM2Model;
 class CSimpleModelFFX;
 
 struct CharacterSelectionDisplay {
     CHARACTER_INFO info;
+    CCharacterComponent* component = nullptr;
+    CM2Model* petModel = nullptr;
     // TODO
 };
 
