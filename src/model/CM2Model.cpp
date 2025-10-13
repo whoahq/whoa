@@ -566,7 +566,73 @@ void CM2Model::AnimateST() {
 }
 
 void CM2Model::AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t a5) {
-    // TODO
+    if (this->m_attachParent) {
+        this->DetachFromParent();
+    }
+
+    this->SetAnimating(0);
+
+    auto& attachmentIndicesById = this->m_shared->m_data->attachmentIndicesById;
+
+    uint16_t attachIndex = 0xFFFF;
+    if (parent->m_loaded && id < attachmentIndicesById.count) {
+        attachIndex = attachmentIndicesById[id];
+    }
+
+    if (attachIndex == 0xFFFF && !a5) {
+        return;
+    }
+
+    this->m_attachIndex = attachIndex;
+    this->m_attachId = id;
+    this->m_attachParent = parent;
+
+    this->m_flag80 = 1;
+    this->m_flag20000 = 1;
+    this->m_flag40000 = a5 ? 1 : 0;
+
+    this->m_attachPrev = &parent->m_attachList;
+    this->m_attachNext = parent->m_attachList;
+    if (parent->m_attachList) {
+        parent->m_attachList->m_attachPrev = &this->m_attachNext;
+    }
+    parent->m_attachList = this;
+
+    if (!this->m_loaded || !this->m_flag100) {
+        auto model = this->m_attachParent;
+        while (model) {
+            model->m_flag100 = 0;
+            model = model->m_attachParent;
+        }
+    }
+
+    if (!this->m_flag2) {
+        auto model = this->m_attachParent;
+        while (model) {
+            model->m_flag200 = 0;
+            model = model->m_attachParent;
+        }
+    }
+
+    if (position && this->m_attachParent->m_loaded && this->m_attachIndex != 0xFFFF) {
+        auto transform = parent->GetAttachmentWorldTransform(id);
+        auto scale = sqrt(transform.a0 * transform.a0 + transform.a1 * transform.a1 + transform.a2 * transform.a2);
+        transform = transform.AffineInverse(scale);
+
+        if (!this->m_flag8000) {
+            this->matrixB4.Identity();
+        }
+
+        auto transformedPosition = *position * transform;
+
+        this->matrixB4.d0 = transformedPosition.x;
+        this->matrixB4.d1 = transformedPosition.y;
+        this->matrixB4.d2 = transformedPosition.z;
+
+        this->m_flag8000 = 1;
+    }
+
+    this->AddRef();
 }
 
 void CM2Model::AttachToScene(CM2Scene* scene) {
