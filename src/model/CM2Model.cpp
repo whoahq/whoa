@@ -1550,10 +1550,9 @@ void CM2Model::SetupLighting() {
         this->m_lighting.CameraSpace();
     }
 
-    // TODO
-    // for (auto model = this->model58; model; model = model->model60) {
-    //     model->SetupLighting();
-    // }
+    for (auto model = this->m_attachList; model; model = model->m_attachNext) {
+        model->SetupLighting();
+    }
 }
 
 void CM2Model::SetVisible(int32_t visible) {
