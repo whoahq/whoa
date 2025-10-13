@@ -84,6 +84,55 @@ void CM2Model::Animate() {
     // TODO
 }
 
+void CM2Model::AnimateAttachmentsMT() {
+    // Animate attachment visibility
+
+    for (int32_t i = 0; i < this->m_shared->m_data->attachments.Count(); i++) {
+        auto& attachment = this->m_shared->m_data->attachments[i];
+        auto& modelAttachment = this->m_attachments[i];
+        auto& modelBone = this->m_bones[attachment.boneIndex];
+
+        if (
+            attachment.visibilityTrack.sequenceTimes.Count() > 1
+            || (attachment.visibilityTrack.sequenceTimes.Count() == 1 && attachment.visibilityTrack.sequenceTimes[0].times.Count() > this->uint90)
+        ) {
+            uint8_t defaultValue = 1;
+            M2AnimateTrack<uint8_t, uint8_t>(this, &modelBone, attachment.visibilityTrack, modelAttachment.visibilityTrack, defaultValue);
+        }
+    }
+
+    // Animate attached models
+
+    for (auto model = this->m_attachList; model; model = model->m_attachNext) {
+        C44Matrix view;
+
+        if (model->m_attachIndex == 0xFFFF) {
+            if (!model->m_flag40000) {
+                continue;
+            }
+
+            view = this->m_boneMatrices[0];
+        } else {
+            auto& attachment = this->m_shared->m_data->attachments[model->m_attachIndex];
+            auto& modelAttachment = this->m_attachments[model->m_attachIndex];
+
+            // Attachment not currently visible
+            if (!modelAttachment.visibilityTrack.currentValue) {
+                continue;
+            }
+
+            view = this->m_boneMatrices[attachment.boneIndex];
+            view.Translate(attachment.position);
+        }
+
+        if (model->m_flag1000) {
+            model->AnimateMTSimple(&view, this->m_currentDiffuse, this->m_currentEmissive, this->float198, this->alpha19C);
+        } else {
+            model->AnimateMT(&view, this->m_currentDiffuse, this->m_currentEmissive, this->float198, this->alpha19C);
+        }
+    }
+}
+
 void CM2Model::AnimateCamerasST() {
     for (int32_t i = 0; i < this->m_shared->m_data->cameras.Count(); i++) {
         auto& camera = this->m_shared->m_data->cameras[i];
@@ -478,6 +527,12 @@ void CM2Model::AnimateMT(const C44Matrix* view, const C3Vector& a3, const C3Vect
                 defaultValue
             );
         }
+    }
+
+    // TODO
+
+    if (this->m_attachments || this->m_attachList) {
+        this->AnimateAttachmentsMT();
     }
 
     // TODO

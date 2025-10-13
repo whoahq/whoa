@@ -144,6 +144,7 @@ class CM2Model {
             {};
         void AddRef();
         void Animate();
+        void AnimateAttachmentsMT();
         void AnimateCamerasST();
         void AnimateMT(const C44Matrix* view, const C3Vector& a3, const C3Vector& a4, float a5, float a6);
         void AnimateMTSimple(const C44Matrix* view, const C3Vector& a3, const C3Vector& a4, float a5, float a6);
