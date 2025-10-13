@@ -10,6 +10,8 @@
 template<class T>
 class M2Track;
 
+class CM2Model;
+
 template<class T>
 struct M2ModelTrack {
     uint32_t currentKey = 0;
@@ -18,6 +20,9 @@ struct M2ModelTrack {
 };
 
 struct M2ModelAttachment {
+    CM2Model* model = nullptr;
+    int32_t linkPoint = 0;
+    bool visible = false;
 };
 
 struct M2ModelBoneSeq {

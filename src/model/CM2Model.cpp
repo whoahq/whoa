@@ -970,7 +970,19 @@ int32_t CM2Model::InitializeLoaded() {
         }
     }
 
-    // TODO
+    // TODO texture transforms
+
+    if (this->m_shared->m_data->attachments.Count()) {
+        this->m_attachments = reinterpret_cast<M2ModelAttachment*>(&data[0]);
+        data += (sizeof(M2ModelAttachment) * this->m_shared->m_data->attachments.Count());
+
+        for (int32_t i = 0; i < this->m_shared->m_data->attachments.Count(); i++) {
+            new (&this->m_attachments[i]) M2ModelAttachment();
+
+            auto& modelAttachment = this->m_attachments[i];
+            modelAttachment.visible = true;
+        }
+    }
 
     if (this->m_shared->m_data->lights.Count()) {
         this->m_lights = reinterpret_cast<M2ModelLight*>(&data[0]);
