@@ -20,9 +20,7 @@ struct M2ModelTrack {
 };
 
 struct M2ModelAttachment {
-    CM2Model* model = nullptr;
-    int32_t linkPoint = 0;
-    bool visible = false;
+    M2ModelTrack<uint8_t> visibilityTrack;
 };
 
 struct M2ModelBoneSeq {

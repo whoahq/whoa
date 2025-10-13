@@ -980,7 +980,7 @@ int32_t CM2Model::InitializeLoaded() {
             new (&this->m_attachments[i]) M2ModelAttachment();
 
             auto& modelAttachment = this->m_attachments[i];
-            modelAttachment.visible = true;
+            modelAttachment.visibilityTrack.currentValue = 1;
         }
     }
 
