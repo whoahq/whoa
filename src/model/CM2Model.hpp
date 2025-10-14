@@ -99,6 +99,7 @@ class CM2Model {
         M2ModelBone* m_bones = nullptr;
         C44Matrix* m_boneMatrices = nullptr;
         M2ModelColor* m_colors = nullptr;
+        uint32_t* m_skinSections = nullptr;
         HTEXTURE* m_textures = nullptr;
         M2ModelTextureWeight* m_textureWeights = nullptr;
         C44Matrix* m_textureMatrices = nullptr;

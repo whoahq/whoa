@@ -990,7 +990,24 @@ int32_t CM2Model::InitializeLoaded() {
         }
     }
 
-    // TODO
+
+    if (this->m_shared->skinProfile->skinSections.Count()) {
+        this->m_skinSections = reinterpret_cast<uint32_t*>(&data[0]);
+        data += (sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count());
+
+        if (this->model30) {
+            memcpy(this->m_skinSections, model30->m_skinSections, sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count());
+        } else {
+            // Mark all skin sections as visible by default
+            for (int32_t i = 0; i < this->m_shared->skinProfile->skinSections.Count(); i++) {
+                auto modelSkinSection = &this->m_skinSections[i];
+
+                if (modelSkinSection) {
+                    *modelSkinSection = 1;
+                }
+            }
+        }
+    }
 
     if (this->m_shared->m_data->colors.Count()) {
         this->m_colors = reinterpret_cast<M2ModelColor*>(&data[0]);
