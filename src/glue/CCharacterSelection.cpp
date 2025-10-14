@@ -79,7 +79,17 @@ void CCharacterSelection::OnGetCharacterList() {
 }
 
 void CCharacterSelection::RenderPrep() {
-    // TODO
+    auto character = CCharacterSelection::GetSelectedCharacter();
+    if (!character) {
+        return;
+    }
+
+    auto component = character->component;
+    if (!component) {
+        return;
+    }
+
+    component->RenderPrep(0);
 }
 
 void CCharacterSelection::SetBackgroundModel(const char* modelPath) {

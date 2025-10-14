@@ -16,3 +16,7 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
 
     // TODO
 }
+
+void CCharacterComponent::RenderPrep(int32_t a2) {
+    // TODO
+}

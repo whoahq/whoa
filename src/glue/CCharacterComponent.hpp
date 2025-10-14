@@ -29,6 +29,7 @@ class CCharacterComponent {
 
         // Member functions
         void Init(ComponentData* data, const char* a3);
+        void RenderPrep(int32_t a2);
 };
 
 #endif
