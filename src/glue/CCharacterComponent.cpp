@@ -7,6 +7,20 @@ CCharacterComponent* CCharacterComponent::AllocComponent() {
     return STORM_NEW(CCharacterComponent);
 }
 
+void CCharacterComponent::GeosRenderPrep() {
+    // TODO
+
+    // Default all sections (0 - 2000) to hidden
+    this->m_data.model->SetGeometryVisible(0, 2000, 0);
+
+    // Show base "skin" section (0)
+    this->m_data.model->SetGeometryVisible(0, 0, 1);
+
+    // TODO
+
+    this->m_flags &= ~0x4;
+}
+
 void CCharacterComponent::Init(ComponentData* data, const char* a3) {
     if (data->model) {
         data->model->Release();
@@ -18,5 +32,13 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
 }
 
 void CCharacterComponent::RenderPrep(int32_t a2) {
+    if (this->m_data.flags & 0x1) {
+        if (this->m_flags & 0x4) {
+            this->GeosRenderPrep();
+        }
+
+        return;
+    }
+
     // TODO
 }

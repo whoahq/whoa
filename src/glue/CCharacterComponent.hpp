@@ -25,9 +25,11 @@ class CCharacterComponent {
         static CCharacterComponent* AllocComponent();
 
         // Member variables
+        uint32_t m_flags = 0x1 | 0x2 | 0x4;
         ComponentData m_data;
 
         // Member functions
+        void GeosRenderPrep();
         void Init(ComponentData* data, const char* a3);
         void RenderPrep(int32_t a2);
 };
