@@ -1,7 +1,7 @@
 #include "glue/CCharacterSelection.hpp"
 #include "client/ClientServices.hpp"
+#include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
-#include "glue/CCharacterComponent.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
 #include "glue/Types.hpp"

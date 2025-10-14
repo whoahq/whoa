@@ -1,4 +1,4 @@
-#include "glue/CCharacterComponent.hpp"
+#include "component/CCharacterComponent.hpp"
 #include "model/CM2Model.hpp"
 #include <storm/Memory.hpp>
 
