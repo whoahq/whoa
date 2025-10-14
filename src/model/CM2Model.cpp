@@ -618,6 +618,10 @@ void CM2Model::AnimateST() {
     }
 
     // TODO
+
+    if (this->float198 == 1.0f) {
+        this->uint90 = 1;
+    }
 }
 
 void CM2Model::AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t a5) {
