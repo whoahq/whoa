@@ -155,6 +155,15 @@ void CM2Model::AnimateMT(const C44Matrix* view, const C3Vector& a3, const C3Vect
         return;
     }
 
+    // Handle attachment visibility
+
+    if (this->m_attachParent) {
+        this->m_flag8 = this->m_attachParent->m_flag8 && this->m_flag80;
+        this->m_flag10000 = this->m_attachParent->m_flag10000 && this->m_flag20000;
+
+        // TODO dword174
+    }
+
     // TODO
 
     for (int32_t i = 0; i < this->m_shared->m_data->loops.Count(); i++) {
