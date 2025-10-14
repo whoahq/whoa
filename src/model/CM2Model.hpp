@@ -172,6 +172,7 @@ class CM2Model {
         void SetAnimating(int32_t animating);
         void SetBoneSequence(uint32_t boneId, uint32_t sequenceId, uint32_t a4, uint32_t time, float a6, int32_t a7, int32_t a8);
         void SetBoneSequenceDeferred(uint16_t a2, M2Data* data, uint16_t boneIndex, uint32_t time, float a6, M2SequenceFallback fallback, int32_t a8, int32_t a9, int32_t a10);
+        void SetGeometryVisible(uint32_t start, uint32_t end, int32_t visible);
         void SetIndices();
         void SetLightingCallback(void (*lightingCallback)(CM2Model*, CM2Lighting*, void*), void* lightingArg);
         void SetLoadedCallback(void (*loadedCallback)(CM2Model*, void*), void* loadedArg);
@@ -185,6 +186,7 @@ class CM2Model {
         int32_t Sub8269C0(uint32_t boneId, uint16_t boneIndex);
         void Sub826E60(uint32_t* a2, uint32_t* a3);
         void UnlinkFromCallbackList();
+        void UnoptimizeVisibleGeometry();
         void UnsetBoneSequence(uint32_t boneId, int32_t a3, int32_t a4);
         void UpdateLoaded();
         void WaitForLoad(const char* a2);

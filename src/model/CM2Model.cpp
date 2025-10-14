@@ -1524,6 +1524,58 @@ void CM2Model::SetBoneSequenceDeferred(uint16_t a2, M2Data* data, uint16_t boneI
     // TODO
 }
 
+void CM2Model::SetGeometryVisible(uint32_t start, uint32_t end, int32_t visible) {
+    // Waiting for load
+
+    if (!this->m_loaded) {
+        auto modelCall = STORM_NEW(CM2ModelCall);
+
+        modelCall->type = 1;
+        modelCall->modelCallNext = nullptr;
+        modelCall->time = this->m_scene->m_time;
+        modelCall->args[0] = start;
+        modelCall->args[1] = end;
+        modelCall->args[2] = visible;
+
+        *this->m_modelCallTail = modelCall;
+        this->m_modelCallTail = &modelCall->modelCallNext;
+
+        return;
+    }
+
+    // No skin sections
+
+    if (!this->m_shared->skinProfile->skinSections.Count()) {
+        return;
+    }
+
+    // Update visibility
+
+    bool visibilityChanged = false;
+
+    for (uint32_t i = 0; i < this->m_shared->skinProfile->skinSections.Count(); i++) {
+        auto& skinSection = this->m_shared->skinProfile->skinSections[i];
+        auto modelSkinSection = &this->m_skinSections[i];
+
+        // Out of range
+        if (skinSection.skinSectionId < start || skinSection.skinSectionId > end) {
+            continue;
+        }
+
+        // No change
+        if (*modelSkinSection == 0 && visible == 0 || *modelSkinSection == 1 && visible == 1) {
+            continue;
+        }
+
+        *modelSkinSection = visible;
+        visibilityChanged = true;
+    }
+
+    if (visibilityChanged) {
+        this->UnoptimizeVisibleGeometry();
+    }
+}
+
 void CM2Model::SetIndices() {
     // TODO
 }
@@ -1734,6 +1786,10 @@ void CM2Model::UnlinkFromCallbackList() {
         this->m_callbackPrev = nullptr;
         this->m_callbackNext = nullptr;
     }
+}
+
+void CM2Model::UnoptimizeVisibleGeometry() {
+    // TODO
 }
 
 void CM2Model::UnsetBoneSequence(uint32_t boneId, int32_t a3, int32_t a4) {
