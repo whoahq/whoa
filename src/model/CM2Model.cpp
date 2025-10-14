@@ -619,6 +619,22 @@ void CM2Model::AnimateST() {
 
     // TODO
 
+    // Animate attached models
+
+    for (auto model = this->m_attachList; model; model = model->m_attachNext) {
+        bool animate;
+
+        if (model->m_attachIndex == 0xFFFF) {
+            animate = model->m_flag40000;
+        } else {
+            animate = this->m_attachments[model->m_attachIndex].visibilityTrack.currentValue;
+        }
+
+        if (animate) {
+            model->AnimateST();
+        }
+    }
+
     if (this->float198 == 1.0f) {
         this->uint90 = 1;
     }
