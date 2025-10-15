@@ -16,11 +16,11 @@ void CCharacterComponent::GeosRenderPrep() {
     // Show base "skin" section (0)
     this->m_data.model->SetGeometryVisible(0, 0, 1);
 
-    // Show default geosets
+    // Show selected geosets
     for (int32_t i = 0; i < NUM_GEOSET; i++) {
         // TODO handle 1703
 
-        this->m_data.model->SetGeometryVisible(this->m_data.defaultGeosets[i], this->m_data.defaultGeosets[i], 1);
+        this->m_data.model->SetGeometryVisible(this->m_data.geosets[i], this->m_data.geosets[i], 1);
     }
 
     // TODO

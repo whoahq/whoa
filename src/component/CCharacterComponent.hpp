@@ -19,7 +19,7 @@ struct ComponentData {
     uint32_t flags = 0x0;
     uint8_t byte28 = 0;
 
-    uint32_t defaultGeosets[NUM_GEOSET] = {
+    uint32_t geosets[NUM_GEOSET] = {
         001,
         101,
         201,
