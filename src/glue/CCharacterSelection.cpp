@@ -10,6 +10,7 @@
 #include "object/client/Player_C.hpp"
 #include "ui/CSimpleModelFFX.hpp"
 
+int32_t CCharacterSelection::s_characterCount;
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;
 float CCharacterSelection::s_charFacing;
 int32_t CCharacterSelection::s_enterWorldIndex;
@@ -118,7 +119,25 @@ void CCharacterSelection::SetBackgroundModel(const char* modelPath) {
 }
 
 void CCharacterSelection::SetFacing(float facing) {
-    // TODO
+    if (!CCharacterSelection::s_characterCount) {
+        return;
+    }
+
+    CCharacterSelection::s_charFacing = facing;
+
+    if (!CCharacterSelection::s_characterList.Count()) {
+        return;
+    }
+
+    auto component = CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex].component;
+    auto model = component->m_data.model;
+
+    if (!model) {
+        return;
+    }
+
+    C3Vector position = { 0.0f, 0.0f, 0.0f };
+    model->SetWorldTransform(position, facing, 1.0f);
 }
 
 void CCharacterSelection::ShowCharacter() {

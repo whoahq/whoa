@@ -18,6 +18,7 @@ struct CharacterSelectionDisplay {
 class CCharacterSelection {
     public:
         // Static variables
+        static int32_t s_characterCount;
         static TSGrowableArray<CharacterSelectionDisplay> s_characterList;
         static float s_charFacing;
         static int32_t s_enterWorldIndex;
