@@ -2,6 +2,7 @@
 #include "client/ClientServices.hpp"
 #include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
+#include "glue/CGlueLoading.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
 #include "glue/Types.hpp"
@@ -169,7 +170,8 @@ void CCharacterSelection::ShowCharacter() {
             petModel->AttachToParent(parent, 1, nullptr, 0);
         }
 
-        // TODO CGlueLoading::StartLoad(&character->component, 0);
+        // TODO a2 may be 1 in some circumstances
+        CGlueLoading::StartLoad(character->component, 0);
 
         return;
     }
