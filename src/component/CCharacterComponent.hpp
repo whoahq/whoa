@@ -1,6 +1,7 @@
 #ifndef COMPONENT_C_CHARACTER_COMPONENT_HPP
 #define COMPONENT_C_CHARACTER_COMPONENT_HPP
 
+#include "component/Types.hpp"
 #include <cstdint>
 
 class CM2Model;
@@ -17,6 +18,28 @@ struct ComponentData {
     CM2Model* model = nullptr;
     uint32_t flags = 0x0;
     uint8_t byte28 = 0;
+
+    uint32_t defaultGeosets[NUM_GEOSET] = {
+        001,
+        101,
+        201,
+        301,
+        401,
+        501,
+        601,
+        702,
+        801,
+        901,
+        1001,
+        1101,
+        1201,
+        1301,
+        1401,
+        1501,
+        1601,
+        1701,
+        1801,
+    };
 };
 
 class CCharacterComponent {
