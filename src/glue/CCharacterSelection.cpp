@@ -200,6 +200,10 @@ void CCharacterSelection::ShowCharacter() {
 
     // TODO lighting callback/arg
 
+    // TODO load pet model
+
+    CCharacterSelection::s_characterCount++;
+
     // TODO
 }
 
