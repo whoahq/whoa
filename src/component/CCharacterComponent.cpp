@@ -38,14 +38,46 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
     // TODO
 }
 
-void CCharacterComponent::RenderPrep(int32_t a2) {
+int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
+    // TODO
+
+    return 1;
+}
+
+int32_t CCharacterComponent::RenderPrep(int32_t a2) {
     if (this->m_data.flags & 0x1) {
         if (this->m_flags & 0x4) {
             this->GeosRenderPrep();
         }
 
-        return;
+        return 1;
     }
 
     // TODO
+
+    if (a2) {
+        // TODO
+
+        this->VariationsLoaded(1);
+        this->ItemsLoaded(1);
+
+        this->m_flags |= 8u;
+
+        this->RenderPrepSections();
+        // TODO this->Sub79F820();
+
+        return 1;
+    }
+
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepSections() {
+    // TODO
+}
+
+int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {
+    // TODO
+
+    return 1;
 }

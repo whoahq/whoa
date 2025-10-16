@@ -54,7 +54,10 @@ class CCharacterComponent {
         // Member functions
         void GeosRenderPrep();
         void Init(ComponentData* data, const char* a3);
-        void RenderPrep(int32_t a2);
+        int32_t ItemsLoaded(int32_t a2);
+        int32_t RenderPrep(int32_t a2);
+        void RenderPrepSections();
+        int32_t VariationsLoaded(int32_t a2);
 };
 
 #endif
