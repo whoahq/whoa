@@ -186,7 +186,7 @@ void CCharacterSelection::ShowCharacter() {
     ComponentData componentData = {};
     componentData.raceID = character->info.raceID;
     componentData.sexID = character->info.sexID;
-    componentData.skinID = character->info.skinID;
+    componentData.skinColorID = character->info.skinColorID;
     componentData.faceID = character->info.faceID;
     componentData.hairStyleID = character->info.hairStyleID;
     componentData.hairColorID = character->info.hairColorID;

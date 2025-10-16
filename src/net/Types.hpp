@@ -1208,7 +1208,7 @@ struct CHARACTER_INFO {
     uint8_t raceID;
     uint8_t classID;
     uint8_t sexID;
-    uint8_t skinID;
+    uint8_t skinColorID;
     uint8_t faceID;
     uint8_t hairStyleID;
     uint8_t hairColorID;

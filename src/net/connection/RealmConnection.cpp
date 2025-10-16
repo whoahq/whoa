@@ -222,7 +222,7 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
         msg->Get(character.classID);
         msg->Get(character.sexID);
 
-        msg->Get(character.skinID);
+        msg->Get(character.skinColorID);
         msg->Get(character.faceID);
         msg->Get(character.hairStyleID);
         msg->Get(character.hairColorID);

@@ -12,7 +12,7 @@ struct ComponentData {
     int32_t sexID = 0;
     int32_t classID = 0;
     int32_t hairColorID = 0;
-    int32_t skinID = 0;
+    int32_t skinColorID = 0;
     int32_t faceID = 0;
     int32_t facialHairStyleID = 0;
     int32_t hairStyleID = 0;
