@@ -49,11 +49,13 @@ class CCharacterComponent {
     public:
         // Static variables
         static st_race* s_chrVarArray;
+        static uint32_t s_chrVarArrayLength;
 
         // Static functions
         static CCharacterComponent* AllocComponent();
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
+        static void InitDbData();
 
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;

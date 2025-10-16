@@ -26,4 +26,6 @@ struct st_variation {
     st_color* colorArray = nullptr;
 };
 
+int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr);
+
 #endif

@@ -1,8 +1,12 @@
 #include "component/CCharacterComponent.hpp"
+#include "component/Util.hpp"
+#include "db/Db.hpp"
 #include "model/CM2Model.hpp"
+#include "object/Types.hpp"
 #include <storm/Memory.hpp>
 
 st_race* CCharacterComponent::s_chrVarArray;
+uint32_t CCharacterComponent::s_chrVarArrayLength;
 
 int32_t s_bInRenderPrep = 0;
 
@@ -20,6 +24,18 @@ void CCharacterComponent::Initialize() {
 
 void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress) {
     // TODO
+
+    CCharacterComponent::InitDbData();
+
+    // TODO
+}
+
+void CCharacterComponent::InitDbData() {
+    uint32_t varArrayLength = (g_chrRacesDB.m_maxID + 1) * UNITSEX_NUM_SEXES;
+    CCharacterComponent::s_chrVarArrayLength = varArrayLength;
+
+    BuildComponentArray(varArrayLength, &CCharacterComponent::s_chrVarArray);
+    // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
 void CCharacterComponent::CreateBaseTexture() {
