@@ -2,6 +2,7 @@
 #define COMPONENT_C_CHARACTER_COMPONENT_HPP
 
 #include "component/Types.hpp"
+#include "gx/Texture.hpp"
 #include <cstdint>
 
 class CM2Model;
@@ -50,11 +51,14 @@ class CCharacterComponent {
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;
         ComponentData m_data;
+        HTEXTURE m_baseTexture = nullptr;
 
         // Member functions
+        void CreateBaseTexture();
         void GeosRenderPrep();
         void Init(ComponentData* data, const char* a3);
         int32_t ItemsLoaded(int32_t a2);
+        void PrepSections();
         int32_t RenderPrep(int32_t a2);
         void RenderPrepSections();
         int32_t VariationsLoaded(int32_t a2);

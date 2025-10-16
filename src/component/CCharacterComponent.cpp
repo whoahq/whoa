@@ -2,9 +2,15 @@
 #include "model/CM2Model.hpp"
 #include <storm/Memory.hpp>
 
+int32_t s_bInRenderPrep = 0;
+
 CCharacterComponent* CCharacterComponent::AllocComponent() {
     // TODO ObjectAlloc
     return STORM_NEW(CCharacterComponent);
+}
+
+void CCharacterComponent::CreateBaseTexture() {
+    // TODO
 }
 
 void CCharacterComponent::GeosRenderPrep() {
@@ -44,6 +50,10 @@ int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
     return 1;
 }
 
+void CCharacterComponent::PrepSections() {
+    // TODO
+}
+
 int32_t CCharacterComponent::RenderPrep(int32_t a2) {
     if (this->m_data.flags & 0x1) {
         if (this->m_flags & 0x4) {
@@ -73,7 +83,23 @@ int32_t CCharacterComponent::RenderPrep(int32_t a2) {
 }
 
 void CCharacterComponent::RenderPrepSections() {
+    s_bInRenderPrep = 1;
+
+    if (this->m_flags & 0x4) {
+        this->GeosRenderPrep();
+    }
+
+    if (!this->m_baseTexture) {
+        this->CreateBaseTexture();
+    }
+
+    this->PrepSections();
+
+    this->m_flags &= ~0x1;
+
     // TODO
+
+    s_bInRenderPrep = 0;
 }
 
 int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {
