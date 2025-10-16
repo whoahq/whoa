@@ -7,6 +7,8 @@
 
 class CM2Model;
 
+struct st_race;
+
 struct ComponentData {
     int32_t raceID = 0;
     int32_t sexID = 0;
@@ -45,6 +47,9 @@ struct ComponentData {
 
 class CCharacterComponent {
     public:
+        // Static variables
+        static st_race* s_chrVarArray;
+
         // Static functions
         static CCharacterComponent* AllocComponent();
         static void Initialize();

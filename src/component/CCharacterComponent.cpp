@@ -2,6 +2,8 @@
 #include "model/CM2Model.hpp"
 #include <storm/Memory.hpp>
 
+st_race* CCharacterComponent::s_chrVarArray;
+
 int32_t s_bInRenderPrep = 0;
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {
