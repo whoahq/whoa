@@ -24,4 +24,13 @@ enum COMPONENT_GEOSET {
     NUM_GEOSET
 };
 
+enum COMPONENT_VARIATIONS {
+    VARIATION_SKIN          = 0,
+    VARIATION_FACE          = 1,
+    VARIATION_FACIAL_HAIR   = 2,
+    VARIATION_HAIR          = 3,
+    VARIATION_UNDERWEAR     = 4,
+    NUM_COMPONENT_VARIATIONS
+};
+
 #endif
