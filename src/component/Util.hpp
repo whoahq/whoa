@@ -16,14 +16,14 @@ struct st_race {
     // The use of "section" here refers to the groups of variations represented in
     // COMPONENT_VARIATIONS. It does NOT refer to COMPONENT_SECTIONS.
     struct {
-        uint32_t variationCount;
-        st_variation* variationArray;
+        int32_t variationCount = 0;
+        st_variation* variationArray = nullptr;
     } sections[NUM_COMPONENT_VARIATIONS];
 };
 
 struct st_variation {
-    uint32_t colorCount;
-    st_color* colorArray;
+    int32_t colorCount = 0;
+    st_color* colorArray = nullptr;
 };
 
 #endif
