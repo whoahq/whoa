@@ -9,6 +9,17 @@ CCharacterComponent* CCharacterComponent::AllocComponent() {
     return STORM_NEW(CCharacterComponent);
 }
 
+void CCharacterComponent::Initialize() {
+    // TODO
+
+    // TODO proper implementation
+    CCharacterComponent::Initialize(GxTex_Rgb565, 9, 0, 0);
+}
+
+void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress) {
+    // TODO
+}
+
 void CCharacterComponent::CreateBaseTexture() {
     // TODO
 }

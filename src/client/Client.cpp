@@ -2,6 +2,7 @@
 #include "async/AsyncFile.hpp"
 #include "client/ClientHandlers.hpp"
 #include "client/ClientServices.hpp"
+#include "component/CCharacterComponent.hpp"
 #include "console/CVar.hpp"
 #include "console/Device.hpp"
 #include "console/Initialize.hpp"
@@ -439,7 +440,8 @@ void WowClientInit() {
 
     // TODO
     // sub_6F75E0();
-    // sub_401FF0();
+
+    CCharacterComponent::Initialize();
 
     ClientServices::Initialize();
     // TODO ClientServices::SetMessageHandler(SMSG_TUTORIAL_FLAGS, (int)sub_530920, 0);

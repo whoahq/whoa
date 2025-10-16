@@ -47,6 +47,8 @@ class CCharacterComponent {
     public:
         // Static functions
         static CCharacterComponent* AllocComponent();
+        static void Initialize();
+        static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
 
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;
