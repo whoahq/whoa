@@ -6,6 +6,7 @@
 #include "db/rec/AreaTableRec.hpp"
 #include "db/rec/Cfg_CategoriesRec.hpp"
 #include "db/rec/Cfg_ConfigsRec.hpp"
+#include "db/rec/CharSectionsRec.hpp"
 #include "db/rec/ChrClassesRec.hpp"
 #include "db/rec/ChrRacesRec.hpp"
 #include "db/rec/CreatureDisplayInfoRec.hpp"
@@ -16,6 +17,7 @@ extern WowClientDB<AchievementRec> g_achievementDB;
 extern WowClientDB<AreaTableRec> g_areaTableDB;
 extern WowClientDB<Cfg_CategoriesRec> g_cfg_CategoriesDB;
 extern WowClientDB<Cfg_ConfigsRec> g_cfg_ConfigsDB;
+extern WowClientDB<CharSectionsRec> g_charSectionsDB;
 extern WowClientDB<ChrClassesRec> g_chrClassesDB;
 extern WowClientDB<ChrRacesRec> g_chrRacesDB;
 extern WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
