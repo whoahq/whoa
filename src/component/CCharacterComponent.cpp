@@ -83,12 +83,20 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
     this->m_data = *data;
 
     // TODO
+
+    this->SetSkinColor(this->m_data.skinColorID, false, true, a3);
+
+    // TODO
 }
 
 int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
     // TODO
 
     return 1;
+}
+
+void CCharacterComponent::LoadBaseVariation(COMPONENT_VARIATIONS sectionIndex, int32_t textureIndex, int32_t variationIndex, int32_t colorIndex, COMPONENT_SECTIONS section, const char* a7) {
+    // TODO
 }
 
 void CCharacterComponent::PrepSections() {
@@ -141,6 +149,65 @@ void CCharacterComponent::RenderPrepSections() {
     // TODO
 
     s_bInRenderPrep = 0;
+}
+
+void CCharacterComponent::ReplaceExtraSkinTexture(const char* a2) {
+    // TODO
+}
+
+void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
+    // TODO
+}
+
+void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5) {
+    bool isNPC = this->m_data.flags & 0x1;
+
+    this->m_data.skinColorID = skinColorID;
+
+    if (isNPC) {
+        return;
+    }
+
+    if (!ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.raceID, this->m_data.sexID, VARIATION_SKIN, 0, skinColorID)) {
+        return;
+    }
+
+    auto numColors = ComponentGetNumColors(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        VARIATION_SKIN,
+        0
+    );
+
+    auto sectionsRec = ComponentGetSectionsRecord(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        VARIATION_SKIN,
+        0,
+        skinColorID,
+        nullptr
+    );
+
+    if (skinColorID < numColors && sectionsRec && !(sectionsRec->m_flags & 0x8)) {
+        // TODO underwear
+    }
+
+    this->ReplaceExtraSkinTexture(a5);
+
+    this->LoadBaseVariation(
+        VARIATION_SKIN,
+        0,
+        0,
+        this->m_data.skinColorID,
+        SECTION_TORSO_UPPER,
+        a5
+    );
+
+    this->SetFace(this->m_data.faceID, a3, a5);
+
+    // TODO
 }
 
 int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {

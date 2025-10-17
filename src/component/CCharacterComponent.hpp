@@ -69,9 +69,13 @@ class CCharacterComponent {
         CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);
         void Init(ComponentData* data, const char* a3);
         int32_t ItemsLoaded(int32_t a2);
+        void LoadBaseVariation(COMPONENT_VARIATIONS sectionIndex, int32_t textureIndex, int32_t variationIndex, int32_t colorIndex, COMPONENT_SECTIONS section, const char* a7);
         void PrepSections();
         int32_t RenderPrep(int32_t a2);
         void RenderPrepSections();
+        void ReplaceExtraSkinTexture(const char* a2);
+        void SetFace(int32_t faceID, bool a3, const char* a4);
+        void SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5);
         int32_t VariationsLoaded(int32_t a2);
 };
 
