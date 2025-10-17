@@ -24,6 +24,20 @@ enum COMPONENT_GEOSET {
     NUM_GEOSET
 };
 
+enum COMPONENT_SECTIONS {
+    SECTION_ARM_UPPER       = 0,
+    SECTION_ARM_LOWER       = 1,
+    SECTION_HAND            = 2,
+    SECTION_TORSO_UPPER     = 3,
+    SECTION_TORSO_LOWER     = 4,
+    SECTION_LEG_UPPER       = 5,
+    SECTION_LEG_LOWER       = 6,
+    SECTION_FOOT            = 7,
+    SECTION_HEAD_UPPER      = 8,
+    SECTION_HEAD_LOWER      = 9,
+    NUM_COMPONENT_SECTIONS
+};
+
 enum COMPONENT_VARIATIONS {
     VARIATION_SKIN          = 0,
     VARIATION_FACE          = 1,
