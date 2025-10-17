@@ -63,6 +63,18 @@ void CCharacterComponent::GeosRenderPrep() {
     this->m_flags &= ~0x4;
 }
 
+CharSectionsRec* CCharacterComponent::GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found) {
+    return ComponentGetSectionsRecord(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        sectionIndex,
+        variationIndex,
+        colorIndex,
+        found
+    );
+}
+
 void CCharacterComponent::Init(ComponentData* data, const char* a3) {
     if (data->model) {
         data->model->Release();

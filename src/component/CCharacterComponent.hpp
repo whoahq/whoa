@@ -5,6 +5,7 @@
 #include "gx/Texture.hpp"
 #include <cstdint>
 
+class CharSectionsRec;
 class CM2Model;
 
 struct st_race;
@@ -65,6 +66,7 @@ class CCharacterComponent {
         // Member functions
         void CreateBaseTexture();
         void GeosRenderPrep();
+        CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);
         void Init(ComponentData* data, const char* a3);
         int32_t ItemsLoaded(int32_t a2);
         void PrepSections();
