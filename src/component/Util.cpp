@@ -128,6 +128,24 @@ int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr) {
     return 1;
 }
 
+CharSectionsRec* ComponentGetSectionsRecord(st_race* varArray, int32_t raceId, int32_t sexId, COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found) {
+    if (!ComponentValidateBase(varArray, raceId, sexId, sectionIndex, variationIndex, colorIndex)) {
+        if (found) {
+            *found = false;
+        }
+
+        return nullptr;
+    }
+
+    auto& section = varArray[(raceId * UNITSEX_NUM_SEXES + sexId)].sections[sectionIndex];
+
+    if (found) {
+        *found = true;
+    }
+
+    return section.variationArray[variationIndex].colorArray[colorIndex].rec;
+}
+
 int32_t ComponentValidateBase(st_race* varArray, int32_t raceId, int32_t sexId, COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex) {
     if (sectionIndex >= NUM_COMPONENT_VARIATIONS || variationIndex < 0) {
         return 0;
