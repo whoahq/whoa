@@ -31,6 +31,10 @@ void CCharacterComponent::Initialize() {
 void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress) {
     // TODO
 
+    s_pathEnd = s_path;
+
+    // TODO
+
     CCharacterComponent::InitDbData();
 
     // TODO
