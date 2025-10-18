@@ -11,8 +11,10 @@ class CACHEENTRY : public TSHashObject<CACHEENTRY, HASHKEY_NONE> {
         CAsyncObject* m_asyncObject = nullptr;
         char m_fileName[128];
         uint32_t m_refCount = 0;
-        void* m_memHandle = nullptr;
+        uint32_t m_memHandle = 0;
 
+        // Member functions
+        void AddRef();
 };
 
 CACHEENTRY* TextureCacheCreateTexture(const char* fileName);
