@@ -5,6 +5,15 @@
 
 class CAsyncObject;
 
+struct TCTEXTUREINFO {
+    uint16_t width;
+    uint16_t height;
+    uint32_t mipCount : 8;
+    uint32_t alphaSize: 8;
+    uint32_t opaque : 1;
+    uint32_t pad : 15;
+};
+
 class CACHEENTRY : public TSHashObject<CACHEENTRY, HASHKEY_NONE> {
     public:
         // Member variables
