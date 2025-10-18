@@ -17,7 +17,7 @@ class CACHEENTRY : public TSHashObject<CACHEENTRY, HASHKEY_NONE> {
         void AddRef();
 };
 
-CACHEENTRY* TextureCacheCreateTexture(const char* fileName);
+void* TextureCacheCreateTexture(const char* fileName);
 
 void TextureCacheDestroyTexture(void* texture);
 

@@ -30,7 +30,7 @@ CACHEENTRY* TextureCacheAllocEntry() {
     return entry;
 }
 
-CACHEENTRY* TextureCacheCreateTexture(const char* fileName) {
+void* TextureCacheCreateTexture(const char* fileName) {
     auto hashval = SStrHash(fileName);
     auto texture = s_cacheTable.Ptr(hashval, s_cacheKey);
 
