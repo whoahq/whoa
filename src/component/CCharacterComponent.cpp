@@ -1,14 +1,20 @@
 #include "component/CCharacterComponent.hpp"
+#include "component/Texture.hpp"
 #include "component/Util.hpp"
 #include "db/Db.hpp"
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
 #include <storm/Memory.hpp>
+#include <storm/String.hpp>
 
 st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
 
 int32_t s_bInRenderPrep = 0;
+char* s_pathEnd;
+char s_path[STORM_MAX_PATH];
+
+#define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {
     // TODO ObjectAlloc
@@ -96,7 +102,38 @@ int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
 }
 
 void CCharacterComponent::LoadBaseVariation(COMPONENT_VARIATIONS sectionIndex, int32_t textureIndex, int32_t variationIndex, int32_t colorIndex, COMPONENT_SECTIONS section, const char* a7) {
+    int32_t index = TEXTURE_INDEX(sectionIndex, textureIndex);
+
+    if (this->m_texture[index]) {
+        TextureCacheDestroyTexture(this->m_texture[index]);
+    }
+
+    auto valid = ComponentValidateBase(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        sectionIndex,
+        variationIndex,
+        colorIndex
+    );
+    if (!valid) {
+        return;
+    }
+
+    auto sectionsRec = this->GetSectionsRecord(sectionIndex, variationIndex, colorIndex, nullptr);
+
+    auto textureName = sectionsRec->m_textureName[textureIndex];
+
+    if (*textureName) {
+        SStrCopy(s_pathEnd, textureName);
+        this->m_texture[index] = TextureCacheCreateTexture(s_path);
+    }
+
+    this->m_sections |= 1 << section;
+
     // TODO
+
+    this->m_flags &= ~0x8;
 }
 
 void CCharacterComponent::PrepSections() {

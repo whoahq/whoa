@@ -5,6 +5,7 @@
 #include "gx/Texture.hpp"
 #include <cstdint>
 
+class CACHEENTRY;
 class CharSectionsRec;
 class CM2Model;
 
@@ -60,8 +61,10 @@ class CCharacterComponent {
 
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;
+        uint32_t m_sections = 0xFFFFFFFF;
         ComponentData m_data;
         HTEXTURE m_baseTexture = nullptr;
+        CACHEENTRY* m_texture[NUM_COMPONENT_VARIATIONS * 3] = {};
 
         // Member functions
         void CreateBaseTexture();
