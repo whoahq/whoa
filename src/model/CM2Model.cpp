@@ -1234,7 +1234,7 @@ int32_t CM2Model::InitializeLoaded() {
             }
         }
 
-        SMemFree(modelCall);
+        STORM_FREE(modelCall);
     }
 
     this->m_scene->m_time = savedTime;
