@@ -26,7 +26,9 @@ int32_t Script_GetLocale(lua_State* L) {
 }
 
 int32_t Script_GetSavedAccountName(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushstring(L, Client::g_accountNameVar->GetString());
+
+    return 1;
 }
 
 int32_t Script_SetSavedAccountName(lua_State* L) {
