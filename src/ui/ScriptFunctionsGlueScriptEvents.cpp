@@ -30,7 +30,15 @@ int32_t Script_GetSavedAccountName(lua_State* L) {
 }
 
 int32_t Script_SetSavedAccountName(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: SetSavedAccountName(\"accountName\")");
+    }
+
+    const char* accountName = lua_tostring(L, 1);
+
+    Client::g_accountNameVar->Set(accountName, true, false, false, true);
+
+    return 0;
 }
 
 int32_t Script_GetUsesToken(lua_State* L) {
