@@ -67,3 +67,9 @@ void* TextureCacheCreateTexture(const char* fileName) {
 void TextureCacheDestroyTexture(void* texture) {
     // TODO
 }
+
+int32_t TextureCacheGetInfo(void* texture, TCTEXTUREINFO& info, int32_t a3) {
+    // TODO
+
+    return 0;
+}

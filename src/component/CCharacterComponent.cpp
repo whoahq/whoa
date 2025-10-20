@@ -252,7 +252,19 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
 }
 
 int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {
-    // TODO
+    TCTEXTUREINFO info;
+
+    for (int32_t v = 0; v < NUM_COMPONENT_VARIATIONS; v++) {
+        for (int32_t t = 0; t < 3; t++) {
+            auto texture = this->m_texture[TEXTURE_INDEX(v, t)];
+
+            if (texture && !TextureCacheGetInfo(texture, info, a2)) {
+                return 0;
+            }
+        }
+    }
+
+    this->m_flags &= ~0x2;
 
     return 1;
 }
