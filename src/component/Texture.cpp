@@ -1,9 +1,31 @@
 #include "component/Texture.hpp"
+#include "async/AsyncFile.hpp"
+#include "async/AsyncFileRead.hpp"
+#include "gx/Blp.hpp"
+#include "gx/Texture.hpp"
+#include "util/SFile.hpp"
 #include <common/ObjectAlloc.hpp>
 
 TSHashTable<CACHEENTRY, HASHKEY_NONE> s_cacheTable;
 HASHKEY_NONE s_cacheKey;
 uint32_t* s_entryHeap;
+
+void LoadSuccessCallback(void* handle) {
+    auto entry = static_cast<CACHEENTRY*>(handle);
+
+    AsyncFileReadDestroyObject(entry->m_asyncObject);
+    entry->m_asyncObject = nullptr;
+
+    auto& header = *static_cast<BLPHeader*>(entry->m_data);
+    // TODO CBLPFile::ValidateHeader(header);
+
+    auto& info = entry->m_info;
+    info.width = header.width;
+    info.height = header.height;
+    info.alphaSize = header.alphaSize;
+    info.opaque = header.alphaSize == 0;
+    info.mipCount = TextureCalcMipCount(info.width, info.height);
+}
 
 TCTEXTUREINFO::TCTEXTUREINFO() {
     this->width = 0;
@@ -19,11 +41,56 @@ CACHEENTRY::CACHEENTRY() {
     this->m_refCount = 0;
     this->m_memHandle = 0;
     this->m_size = 0;
-    this->m_loaded = 0;
+    this->m_missing = 0;
 }
 
 void CACHEENTRY::AddRef() {
     this->m_refCount++;
+}
+
+TCTEXTUREINFO& CACHEENTRY::Info() {
+    return this->m_info;
+}
+
+bool CACHEENTRY::IsLoading() {
+    return !this->m_missing && this->m_info.width == 0 && this->m_asyncObject;
+}
+
+bool CACHEENTRY::IsMissing() {
+    return this->m_missing;
+}
+
+int32_t CACHEENTRY::LoadTexture() {
+    SFile* file;
+    if (!SFile::OpenEx(nullptr, this->m_fileName, 0x0, &file)) {
+        // TODO discover file type + pick alternate filename
+    }
+
+    if (!file) {
+        this->m_missing = 1;
+
+        return 0;
+    }
+
+    this->m_asyncObject = AsyncFileReadAllocObject();
+    this->m_asyncObject->userArg = this;
+    this->m_asyncObject->userPostloadCallback = &LoadSuccessCallback;
+    this->m_asyncObject->file = file;
+    this->m_asyncObject->size = SFile::GetFileSize(file, nullptr);
+    this->m_asyncObject->priority = -126;
+
+    this->m_size = this->m_asyncObject->size;
+    this->m_data = STORM_ALLOC(this->m_size);
+
+    this->m_asyncObject->buffer = this->m_data;
+
+    AsyncFileReadObject(this->m_asyncObject, 0);
+
+    return 1;
+}
+
+bool CACHEENTRY::NeedsLoad() {
+    return !this->m_data;
 }
 
 CACHEENTRY* TextureCacheAllocEntry() {
@@ -68,8 +135,30 @@ void TextureCacheDestroyTexture(void* texture) {
     // TODO
 }
 
-int32_t TextureCacheGetInfo(void* texture, TCTEXTUREINFO& info, int32_t a3) {
-    // TODO
+int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t force) {
+    auto entry = static_cast<CACHEENTRY*>(handle);
 
-    return 0;
+    if (!entry) {
+        return 0;
+    }
+
+    if (!entry->IsMissing()) {
+        if (entry->NeedsLoad()) {
+            entry->LoadTexture();
+        }
+
+        if (entry->IsLoading()) {
+            if (force) {
+                AsyncFileReadWait(entry->m_asyncObject);
+            } else {
+                // TODO increase streaming priority
+
+                return 0;
+            }
+        }
+    }
+
+    info = entry->Info();
+
+    return 1;
 }

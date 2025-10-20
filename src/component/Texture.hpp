@@ -24,18 +24,24 @@ class CACHEENTRY : public TSHashObject<CACHEENTRY, HASHKEY_NONE> {
         char m_fileName[128];
         uint32_t m_refCount;
         uint32_t m_memHandle;
+        void* m_data;
         uint32_t m_size     : 20;
-        uint32_t m_loaded   : 1;
+        uint32_t m_missing  : 1;
 
         // Member functions
         CACHEENTRY();
         void AddRef();
+        TCTEXTUREINFO& Info();
+        bool IsLoading();
+        bool IsMissing();
+        int32_t LoadTexture();
+        bool NeedsLoad();
 };
 
 void* TextureCacheCreateTexture(const char* fileName);
 
 void TextureCacheDestroyTexture(void* texture);
 
-int32_t TextureCacheGetInfo(void* texture, TCTEXTUREINFO& info, int32_t a3);
+int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t a3);
 
 #endif
