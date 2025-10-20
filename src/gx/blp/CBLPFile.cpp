@@ -1,9 +1,9 @@
+#include "gx/blp/CBLPFile.hpp"
 #include "gx/Texture.hpp"
-#include "gx/texture/CBLPFile.hpp"
 #include "util/SFile.hpp"
-#include <cstring>
 #include <storm/Error.hpp>
 #include <storm/Memory.hpp>
+#include <cstring>
 
 TSGrowableArray<unsigned char> CBLPFile::s_blpFileLoadBuffer;
 

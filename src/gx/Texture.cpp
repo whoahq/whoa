@@ -1,7 +1,7 @@
 #include "gx/Texture.hpp"
+#include "gx/Blp.hpp"
 #include "gx/Device.hpp"
 #include "gx/Gx.hpp"
-#include "gx/texture/CBLPFile.hpp"
 #include "util/Filesystem.hpp"
 #include "util/SFile.hpp"
 #include <algorithm>

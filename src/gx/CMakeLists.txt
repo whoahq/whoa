@@ -1,5 +1,6 @@
 file(GLOB GX_SOURCES
     "*.cpp"
+    "blp/*.cpp"
     "buffer/*.cpp"
     "font/*.cpp"
     "shader/*.cpp"
