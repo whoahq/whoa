@@ -856,6 +856,26 @@ void TextureCacheNewTexture(CTexture* texture, const CImVector& color) {
     // TODO
 }
 
+uint32_t TextureCalcMipCount(uint32_t width, uint32_t height) {
+    uint32_t count = 1;
+
+    while (width > 1 || height > 1) {
+        width /= 2;
+        if (width == 0) {
+            width = 1;
+        }
+
+        height /= 2;
+        if (height == 0) {
+            height = 1;
+        }
+
+        count++;
+    }
+
+    return count;
+}
+
 HTEXTURE TextureCreate(const char* fileName, CGxTexFlags texFlags, CStatus* status, int32_t createFlags) {
     STORM_ASSERT(fileName);
     STORM_ASSERT(*fileName);
