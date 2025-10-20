@@ -5,6 +5,23 @@ TSHashTable<CACHEENTRY, HASHKEY_NONE> s_cacheTable;
 HASHKEY_NONE s_cacheKey;
 uint32_t* s_entryHeap;
 
+TCTEXTUREINFO::TCTEXTUREINFO() {
+    this->width = 0;
+    this->height = 0;
+    this->mipCount = 0;
+    this->alphaSize = 0;
+    this->opaque = 1;
+}
+
+CACHEENTRY::CACHEENTRY() {
+    this->m_asyncObject = nullptr;
+    this->m_fileName[0] = '\0';
+    this->m_refCount = 0;
+    this->m_memHandle = 0;
+    this->bitsB0 = 0;
+    this->m_loaded = 0;
+}
+
 void CACHEENTRY::AddRef() {
     this->m_refCount++;
 }
