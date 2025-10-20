@@ -18,7 +18,7 @@ CACHEENTRY::CACHEENTRY() {
     this->m_fileName[0] = '\0';
     this->m_refCount = 0;
     this->m_memHandle = 0;
-    this->bitsB0 = 0;
+    this->m_size = 0;
     this->m_loaded = 0;
 }
 

@@ -24,7 +24,7 @@ class CACHEENTRY : public TSHashObject<CACHEENTRY, HASHKEY_NONE> {
         char m_fileName[128];
         uint32_t m_refCount;
         uint32_t m_memHandle;
-        uint32_t bitsB0     : 20;
+        uint32_t m_size     : 20;
         uint32_t m_loaded   : 1;
 
         // Member functions
