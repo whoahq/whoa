@@ -2,6 +2,7 @@
 #include "component/Texture.hpp"
 #include "component/Util.hpp"
 #include "db/Db.hpp"
+#include "gx/Texture.hpp"
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
 #include <storm/Memory.hpp>
@@ -11,6 +12,7 @@ st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
 uint32_t CCharacterComponent::s_mipLevels;
+MipBits* CCharacterComponent::s_textureBuffer;
 uint32_t CCharacterComponent::s_textureSize;
 
 int32_t s_bInRenderPrep = 0;
@@ -56,6 +58,14 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     // TODO
 
     CCharacterComponent::InitDbData();
+
+    // TODO
+
+    CCharacterComponent::s_textureBuffer = TextureAllocMippedImg(
+        PIXEL_ARGB8888,
+        CCharacterComponent::s_textureSize,
+        CCharacterComponent::s_textureSize
+    );
 
     // TODO
 }

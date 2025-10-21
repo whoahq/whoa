@@ -9,6 +9,7 @@ class CACHEENTRY;
 class CharSectionsRec;
 class CM2Model;
 
+struct MipBits;
 struct st_race;
 
 struct ComponentData {
@@ -54,6 +55,7 @@ class CCharacterComponent {
         static uint32_t s_chrVarArrayLength;
         static EGxTexFormat s_gxFormat;
         static uint32_t s_mipLevels;
+        static MipBits* s_textureBuffer;
         static uint32_t s_textureSize;
 
         // Static functions
