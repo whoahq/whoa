@@ -31,6 +31,19 @@ namespace Texture {
     };
 }
 
+int32_t s_pixelFormatToMipBitsCache[NUM_PIXEL_FORMATS] = {
+    -1,     // PIXEL_DXT1
+    -1,     // PIXEL_DXT3
+    -1,     // PIXEL_ARGB8888
+    0,      // PIXEL_ARGB1555
+    0,      // PIXEL_ARGB4444
+    0,      // PIXEL_RGB565
+    -1,     // PIXEL_A8
+    -1,     // PIXEL_DXT5
+    -1,     // PIXEL_UNSPECIFIED
+    1,      // PIXEL_ARGB2565
+};
+
 static CImVector CRAPPY_GREEN = { 0x00, 0xFF, 0x00, 0xFF };
 
 void AsyncTextureWait(CTexture* texture) {
@@ -348,6 +361,17 @@ CGxTex* TextureAllocGxTex(EGxTexTarget target, uint32_t width, uint32_t height, 
 
     // TODO
 
+    return nullptr;
+}
+
+MipBits* TextureAllocMippedImg(PIXEL_FORMAT pixelFormat, uint32_t width, uint32_t height) {
+    auto cache = s_pixelFormatToMipBitsCache[pixelFormat];
+
+    if (width < 8 || height < 8 || width > 256 || height > 256 || cache == -1) {
+        return MippedImgAllocA(pixelFormat, width, height, __FILE__, __LINE__);
+    }
+
+    // TODO
     return nullptr;
 }
 
