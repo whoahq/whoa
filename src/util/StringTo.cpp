@@ -99,7 +99,7 @@ bool StringToBOOL(lua_State* L, int32_t idx, int32_t def) {
             break;
 
         case LUA_TSTRING:
-            str = lua_tolstring(L, idx, 0);
+            str = lua_tostring(L, idx);
             result = StringToBOOL(str, def);
             break;
 

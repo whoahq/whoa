@@ -122,7 +122,7 @@ int32_t FrameScript_CompileFunction(const char* name, const char* wrapper, const
 
     if (luaL_loadbuffer(L, function, SStrLen(function), name)) {
         if (status) {
-            const char* v10 = lua_tolstring(L, -1, 0);
+            const char* v10 = lua_tostring(L, -1);
             status->Add(STATUS_ERROR, "%s", v10);
         }
 
@@ -133,7 +133,7 @@ int32_t FrameScript_CompileFunction(const char* name, const char* wrapper, const
         return -1;
     } else if (lua_pcall(L, 0, 1, -2)) {
         if (status) {
-            const char* v13 = lua_tolstring(L, -1, 0);
+            const char* v13 = lua_tostring(L, -1);
             status->Add(STATUS_ERROR, "%s", v13);
         }
 
@@ -329,7 +329,7 @@ int32_t FrameScript_ExecuteBuffer(const char* buffer, size_t bufferBytes, const 
 
     if (luaL_loadbuffer(L, buffer, bufferBytes, bufferName)) {
         if (status) {
-            const char* v7 = lua_tolstring(L, -1, 0);
+            const char* v7 = lua_tostring(L, -1);
             status->Add(STATUS_ERROR, "%s", v7);
         }
 
@@ -349,7 +349,7 @@ int32_t FrameScript_ExecuteBuffer(const char* buffer, size_t bufferBytes, const 
 
         if (lua_pcall(L, v9, 0, -2 - v9)) {
             if (status) {
-                const char* v11 = lua_tolstring(L, -1, 0);
+                const char* v11 = lua_tostring(L, -1);
                 status->Add(STATUS_ERROR, "%s", v11);
             }
 
@@ -577,7 +577,7 @@ int32_t FrameScript_GetVariable(const char* a1, const char** a2) {
 
     if (lua_isstring(L, -1)) {
         v3 = 1;
-        *a2 = lua_tolstring(L, -1, 0);
+        *a2 = lua_tostring(L, -1);
     }
 
     lua_settop(L, -2);
@@ -591,7 +591,7 @@ int32_t FrameScript_HandleError(lua_State* L) {
         lua_insert(L, -1);
     }
 
-    const char* v1 = lua_tolstring(L, -1, 0);
+    const char* v1 = lua_tostring(L, -1);
     const char* v2 = SStrStr(v1, "*:");
     const char* objName = FrameScript_GetCurrentObject(L, 1);
 

@@ -80,7 +80,7 @@ int32_t CSimpleHTML_SetText(lua_State* L) {
     auto type = CSimpleHTML::GetObjectType();
     auto html = static_cast<CSimpleHTML*>(FrameScript_GetObjectThis(L, type));
 
-    auto text = lua_tolstring(L, 2, nullptr);
+    auto text = lua_tostring(L, 2);
     html->SetText(text, nullptr);
 
     return 0;

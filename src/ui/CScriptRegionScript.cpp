@@ -200,7 +200,7 @@ int32_t CScriptRegion_SetPoint(lua_State* L) {
 
     auto relative = region->GetLayoutParent();
 
-    const char* pointStr = lua_tolstring(L, 2, 0);
+    const char* pointStr = lua_tostring(L, 2);
     FRAMEPOINT point;
 
     if (!StringToFramePoint(pointStr, point)) {
@@ -210,7 +210,7 @@ int32_t CScriptRegion_SetPoint(lua_State* L) {
     int32_t argsIndex = 3;
 
     if (lua_type(L, 3) == LUA_TSTRING) {
-        const char* name = lua_tolstring(L, 3, 0);
+        const char* name = lua_tostring(L, 3);
         relative = region->GetLayoutFrameByName(name);
 
         argsIndex++;
@@ -230,7 +230,7 @@ int32_t CScriptRegion_SetPoint(lua_State* L) {
     }
 
     if (!relative) {
-        const char* name = lua_tolstring(L, 3, 0);
+        const char* name = lua_tostring(L, 3);
         return luaL_error(L, "%s:SetPoint(): Couldn't find region named '%s'", region->GetDisplayName(), name);
     }
 
@@ -245,7 +245,7 @@ int32_t CScriptRegion_SetPoint(lua_State* L) {
     FRAMEPOINT relativePoint = point;
 
     if (lua_type(L, argsIndex) == LUA_TSTRING) {
-        const char* relativePointStr = lua_tolstring(L, argsIndex, 0);
+        const char* relativePointStr = lua_tostring(L, argsIndex);
 
         if (!StringToFramePoint(relativePointStr, relativePoint)) {
             return luaL_error(L, "%s:SetPoint(): Unknown region point", region->GetDisplayName());
@@ -289,7 +289,7 @@ int32_t CScriptRegion_SetAllPoints(lua_State* L) {
     auto relative = region->GetLayoutParent();
 
     if (lua_isstring(L, 2)) {
-        const char* name = lua_tolstring(L, 2, 0);
+        const char* name = lua_tostring(L, 2);
         relative = region->GetLayoutFrameByName(name);
     } else if (lua_type(L, 2) == LUA_TTABLE) {
         lua_rawgeti(L, 2, 0);
@@ -303,7 +303,7 @@ int32_t CScriptRegion_SetAllPoints(lua_State* L) {
     }
 
     if (!relative) {
-        const char* name = lua_tolstring(L, 2, 0);
+        const char* name = lua_tostring(L, 2);
         return luaL_error(L, "%s:SetAllPoints(): Couldn't find region named '%s'", region->GetDisplayName(), name);
     }
 

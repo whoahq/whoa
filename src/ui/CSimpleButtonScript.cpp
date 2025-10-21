@@ -28,7 +28,7 @@ int32_t CSimpleButton_SetStateTexture(lua_State* L, CSimpleButtonState state, co
         button->SetStateTexture(state, texture);
 
     } else if (lua_isstring(L, 2)) {
-        auto texFile = lua_tolstring(L, 2, nullptr);
+        auto texFile = lua_tostring(L, 2);
         button->SetStateTexture(state, texFile);
 
     } else if (lua_type(L, 2) == LUA_TNIL) {
@@ -135,7 +135,7 @@ int32_t CSimpleButton_SetText(lua_State* L) {
     auto type = CSimpleButton::GetObjectType();
     auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
 
-    const char* text = lua_tolstring(L, 2, 0);
+    const char* text = lua_tostring(L, 2);
     button->SetText(text);
 
     return 0;
@@ -190,7 +190,7 @@ int32_t CSimpleButton_SetHighlightTexture(lua_State* L) {
 
     EGxBlend blendMode = GxBlend_Add;
     if (lua_isstring(L, 3)) {
-        auto blendString = lua_tolstring(L, 3, nullptr);
+        auto blendString = lua_tostring(L, 3);
         StringToBlendMode(blendString, blendMode);
     }
 
@@ -210,7 +210,7 @@ int32_t CSimpleButton_SetHighlightTexture(lua_State* L) {
         button->SetHighlight(texture, blendMode);
 
     } else if (lua_isstring(L, 2)) {
-        auto texFile = lua_tolstring(L, 2, nullptr);
+        auto texFile = lua_tostring(L, 2);
         button->SetHighlight(texFile, blendMode);
 
     } else if (lua_type(L, 2) == LUA_TNIL) {
@@ -277,7 +277,7 @@ int32_t CSimpleButton_RegisterForClicks(lua_State* L) {
     uint64_t action = 0;
 
     for (int32_t i = 2; lua_isstring(L, i); i++) {
-        auto actionStr = lua_tolstring(L, i, nullptr);
+        auto actionStr = lua_tostring(L, i);
         action |= StringToClickAction(actionStr);
     }
 
@@ -292,7 +292,7 @@ int32_t CSimpleButton_Click(lua_State* L) {
 
     auto inputButton = "LeftButton";
     if (lua_isstring(L, 2)) {
-        inputButton = lua_tolstring(L, 2, nullptr);
+        inputButton = lua_tostring(L, 2);
     }
 
     auto v6 = StringToBOOL(L, 3, 0);

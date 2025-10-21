@@ -144,7 +144,7 @@ int32_t CSimpleFrame_RegisterEvent(lua_State* L) {
         return luaL_error(L, "Usage: %s:RegisterEvent(\"event\")", frame->GetDisplayName());
     }
 
-    const char* event = lua_tolstring(L, 2, 0);
+    const char* event = lua_tostring(L, 2);
 
     frame->RegisterScriptEvent(event);
 

@@ -14,7 +14,7 @@ int32_t Script_SetCharSelectModelFrame(lua_State* L) {
     }
 
     auto type = CSimpleModel::GetObjectType();
-    auto name = lua_tolstring(L, 1, nullptr);
+    auto name = lua_tostring(L, 1);
     auto frame = CScriptObject::GetScriptObjectByName(name, type);
 
     if (frame) {
@@ -29,7 +29,7 @@ int32_t Script_SetCharSelectBackground(lua_State* L) {
         return luaL_error(L, "Usage: SetCharSelectBackground(\"filename\")");
     }
 
-    auto modelPath = lua_tolstring(L, 1, nullptr);
+    auto modelPath = lua_tostring(L, 1);
     CCharacterSelection::SetBackgroundModel(modelPath);
 
     return 0;

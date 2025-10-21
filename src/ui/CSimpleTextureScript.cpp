@@ -132,7 +132,7 @@ int32_t CSimpleTexture_SetTexture(lua_State* L) {
 
     bool v5 = lua_toboolean(L, 3);
     bool v6 = lua_toboolean(L, 3);
-    const char* v7 = lua_tolstring(L, 2, 0);
+    const char* v7 = lua_tostring(L, 2);
 
     if (texture->SetTexture(v7, v6, v5, CSimpleTexture::s_textureFilterMode, ImageMode_UI)) {
         lua_pushnumber(L, 1.0);

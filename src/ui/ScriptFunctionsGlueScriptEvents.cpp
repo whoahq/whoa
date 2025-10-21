@@ -68,7 +68,7 @@ int32_t Script_SetCurrentScreen(lua_State* L) {
         return luaL_error(L, "Usage: SetCurrentScreen(\"screen\")");
     }
 
-    auto screen = lua_tolstring(L, 1, nullptr);
+    auto screen = lua_tostring(L, 1);
     CGlueMgr::UpdateCurrentScreen(screen);
 
     // TODO
@@ -200,8 +200,8 @@ int32_t Script_DefaultServerLogin(lua_State* L) {
         luaL_error(L, "Usage: DefaultServerLogin(\"accountName\", \"password\")");
     }
 
-    auto accountName = lua_tolstring(L, 1, nullptr);
-    auto password = lua_tolstring(L, 2, nullptr);
+    auto accountName = lua_tostring(L, 1);
+    auto password = lua_tostring(L, 2);
 
     CGlueMgr::LoginServerLogin(accountName, password);
 

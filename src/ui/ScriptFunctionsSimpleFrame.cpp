@@ -30,9 +30,9 @@ int32_t Script_CreateFrame(lua_State* L) {
         return luaL_error(L, "Usage: CreateFrame(\"frameType\" [, \"name\"] [, parent] [, \"template\"] [, id])");
     }
 
-    const char* v21 = lua_tolstring(L, 1, 0);
-    const char* v3 = lua_tolstring(L, 2, 0);
-    const char* inherits = lua_tolstring(L, 4, 0);
+    const char* v21 = lua_tostring(L, 1);
+    const char* v3 = lua_tostring(L, 2);
+    const char* inherits = lua_tostring(L, 4);
 
     CSimpleFrame* parent = nullptr;
 
@@ -55,7 +55,7 @@ int32_t Script_CreateFrame(lua_State* L) {
 
     // If inherits argument is provided, ensure all inherited nodes exist
     if (lua_type(L, 4) == LUA_TSTRING) {
-        inherits = lua_tolstring(L, 4, 0);
+        inherits = lua_tostring(L, 4);
 
         char inheritName[1024];
         const char* unk1;
@@ -79,7 +79,7 @@ int32_t Script_CreateFrame(lua_State* L) {
             FrameXML_ReleaseHashNode(inheritName);
         } while (*inheritName);
 
-        inherits = lua_tolstring(L, 4, 0);
+        inherits = lua_tostring(L, 4);
     }
 
     // Build an XMLNode simulating the arguments to CreateFrame()
@@ -100,7 +100,7 @@ int32_t Script_CreateFrame(lua_State* L) {
     }
 
     if (lua_isstring(L, 5)) {
-        const char* idStr = lua_tolstring(L, 5, nullptr);
+        const char* idStr = lua_tostring(L, 5);
         frameNode.SetAttribute("id", idStr);
     } else if (lua_isnumber(L, 5)) {
         int32_t idNum = lua_tointeger(L, 5);

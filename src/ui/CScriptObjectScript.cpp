@@ -20,7 +20,7 @@ int32_t CScriptObject_IsObjectType(lua_State* L) {
         return luaL_error(L, "Usage: %s:IsObjectType(\"type\")", name);
     }
 
-    auto type = lua_tolstring(L, 2, nullptr);
+    auto type = lua_tostring(L, 2);
 
     if (object->IsA(type)) {
         lua_pushnumber(L, 1.0);

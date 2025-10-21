@@ -12,7 +12,7 @@ int32_t CSimpleModel_SetModel(lua_State* L) {
         return luaL_error(L, "Usage: %s:SetModel(\"file\")", model->GetDisplayName());
     }
 
-    const char* file = lua_tolstring(L, 2, 0);
+    const char* file = lua_tostring(L, 2);
 
     model->SetModel(file);
 

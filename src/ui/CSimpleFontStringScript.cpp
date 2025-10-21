@@ -86,7 +86,7 @@ int32_t CSimpleFontString_SetFontObject(lua_State* L) {
             luaL_error(L, "%s:SetFontObject(): Wrong object type, expected font", string->GetDisplayName());
         }
     } else if (lua_type(L, 2) == LUA_TSTRING) {
-        auto fontName = lua_tolstring(L, 2, nullptr);
+        auto fontName = lua_tostring(L, 2);
         font = CSimpleFont::GetFont(fontName, 0);
 
         if (!font) {
@@ -125,7 +125,7 @@ int32_t CSimpleFontString_SetText(lua_State* L) {
         luaL_error(L, "%s:SetText(): Font not set", string->GetDisplayName());
     }
 
-    const char* text = lua_tolstring(L, 2, 0);
+    const char* text = lua_tostring(L, 2);
     string->SetText(text, 1);
 
     return 0;
