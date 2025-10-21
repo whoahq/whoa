@@ -2,6 +2,7 @@
 #include "component/Texture.hpp"
 #include "component/Util.hpp"
 #include "db/Db.hpp"
+#include "gx/Device.hpp"
 #include "gx/Texture.hpp"
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
@@ -78,8 +79,35 @@ void CCharacterComponent::InitDbData() {
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
-void CCharacterComponent::CreateBaseTexture() {
+void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
     // TODO
+}
+
+void CCharacterComponent::CreateBaseTexture() {
+    auto dataFormat = this->m_textureFormat == GxTex_Dxt1
+        ? GxTex_Dxt1
+        : GxTex_Argb8888;
+
+    CGxTexFlags flags = CGxTexFlags(GxTex_LinearMipLinear, 0, 0, 0, 0, 0, 1);
+    if (GxDevApi() == GxApi_GLL) {
+        flags.m_bit15 = 1;
+    }
+
+    auto baseTexture = TextureCreate(
+       CCharacterComponent::s_textureSize,
+       CCharacterComponent::s_textureSize,
+       this->m_textureFormat,
+       dataFormat,
+       flags,
+       this,
+       &CCharacterComponent::UpdateBaseTexture,
+       "CharacterBaseSkin",
+       1
+    );
+
+    this->m_baseTexture = baseTexture;
+
+    // TODO this->m_data->m_model->ReplaceTexture(1, this->m_baseTexture);
 }
 
 void CCharacterComponent::GeosRenderPrep() {

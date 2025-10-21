@@ -63,10 +63,12 @@ class CCharacterComponent {
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
         static void InitDbData();
+        static void UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels);
 
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;
         uint32_t m_sections = 0xFFFFFFFF;
+        EGxTexFormat m_textureFormat = CCharacterComponent::s_gxFormat;
         ComponentData m_data;
         HTEXTURE m_baseTexture = nullptr;
         void* m_texture[NUM_COMPONENT_VARIATIONS * 3] = {};
