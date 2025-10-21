@@ -21,6 +21,7 @@
 #include <common/Prop.hpp>
 #include <storm/Error.hpp>
 
+CVar* Client::g_accountNameVar;
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
 
@@ -62,6 +63,18 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
 
 void ClientMiscInitialize() {
     // TODO
+
+    Client::g_accountNameVar = CVar::Register(
+        "accountName",
+        "Saved account name",
+        0x40,
+        "",
+        nullptr,
+        GAME,
+        false,
+        nullptr,
+        false
+    );
 
     Client::g_accountListVar = CVar::Register(
         "accountList",

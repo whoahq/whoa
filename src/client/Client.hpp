@@ -7,6 +7,7 @@
 class CVar;
 
 namespace Client {
+    extern CVar* g_accountNameVar;
     extern CVar* g_accountListVar;
     extern HEVENTCONTEXT g_clientEventContext;
 }
