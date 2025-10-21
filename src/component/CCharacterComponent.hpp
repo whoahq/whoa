@@ -52,6 +52,9 @@ class CCharacterComponent {
         // Static variables
         static st_race* s_chrVarArray;
         static uint32_t s_chrVarArrayLength;
+        static EGxTexFormat s_gxFormat;
+        static uint32_t s_mipLevels;
+        static uint32_t s_textureSize;
 
         // Static functions
         static CCharacterComponent* AllocComponent();

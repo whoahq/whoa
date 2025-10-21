@@ -9,6 +9,9 @@
 
 st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
+EGxTexFormat CCharacterComponent::s_gxFormat;
+uint32_t CCharacterComponent::s_mipLevels;
+uint32_t CCharacterComponent::s_textureSize;
 
 int32_t s_bInRenderPrep = 0;
 char* s_pathEnd;
@@ -32,6 +35,23 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     // TODO
 
     s_pathEnd = s_path;
+
+    // TODO
+
+    // Clamp mip levels between 6 and 9
+    uint32_t mipLevels = std::min(std::max(textureLevel, 6u), 9u);
+
+    // Cap mip levels to 8 if compression isn't enabled
+    if (!compress && mipLevels > 8) {
+        mipLevels = 8;
+    }
+
+    CCharacterComponent::s_mipLevels = mipLevels;
+    CCharacterComponent::s_textureSize = 1 << mipLevels;
+
+    // TODO
+
+    CCharacterComponent::s_gxFormat = textureFormat;
 
     // TODO
 
