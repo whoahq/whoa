@@ -89,6 +89,24 @@ void ClientMiscInitialize() {
     );
 
     // TODO
+
+    auto showToolsVar = CVar::Register(
+        "showToolsUI",
+        "Display the launcher when starting the game",
+        0x0,
+        "-1",
+        nullptr,
+        GAME,
+        false,
+        nullptr,
+        false
+    );
+
+    if (showToolsVar->GetInt() >= 2) {
+        showToolsVar->Set("1", true, false, false, true);
+    }
+
+    // TODO
 }
 
 void ClientPostClose(int32_t a1) {
