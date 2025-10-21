@@ -39,7 +39,7 @@ CVar* CVar::LookupRegistered(const char* name) {
         return nullptr;
     }
 
-    if (var->m_flags >= 0 && !(var->m_flags & 0x80)) {
+    if (!(var->m_flags & 0x80000000) && !(var->m_flags & 0x80)) {
         return nullptr;
     }
 
@@ -52,6 +52,8 @@ CVar* CVar::Register(const char* name, const char* help, uint32_t flags, const c
     if (var) {
         bool setReset = var->m_resetValue.GetString() == nullptr;
         bool setDefault = var->m_defaultValue.GetString() == nullptr;
+
+        var->m_flags = flags;
 
         var->m_flags |= (var->m_flags & 0xFFFFFFCF);
 
@@ -69,7 +71,7 @@ CVar* CVar::Register(const char* name, const char* help, uint32_t flags, const c
             var->m_flags |= 0x80000000;
         }
 
-        if (a9 && var->m_flags) {
+        if (a9 && !(var->m_flags & 0x80000000)) {
             var->m_flags |= 0x80;
         }
     } else {
@@ -94,13 +96,15 @@ CVar* CVar::Register(const char* name, const char* help, uint32_t flags, const c
             var->Set(value, true, false, true, false);
         }
 
-        var->m_flags = flags | 0x1;
+        var->m_flags = flags;
+
+        var->m_flags |= 0x1;
 
         if (!a7) {
-            var->m_flags |= 0x8000000;
+            var->m_flags |= 0x80000000;
         }
 
-        if (a9 && var->m_flags) {
+        if (a9 && !(var->m_flags & 0x80000000)) {
             var->m_flags |= 0x80;
         }
 
