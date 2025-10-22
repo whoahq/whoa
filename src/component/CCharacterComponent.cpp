@@ -117,8 +117,85 @@ void CCharacterComponent::InitDbData() {
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
-void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel) {
-    // TODO
+void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& dstPos, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel) {
+    uint32_t dstStride = CCharacterComponent::s_textureSize * 4;
+    auto srcPal = TextureCacheGetPal(srcTexture);
+
+    if (!srcPal) {
+        // TODO fill in with crappy green (0x00FF00FF)
+
+        return;
+    }
+
+    switch (srcInfo.alphaSize) {
+    case 0:
+        CCharacterComponent::PasteOpaque(
+            srcTexture,
+            srcPal,
+            dstMips,
+            dstPos,
+            dstStride,
+            srcPos,
+            srcSize,
+            srcInfo,
+            srcMipLevel,
+            -srcMipLevel
+        );
+
+        break;
+
+    case 1:
+        CCharacterComponent::PasteTransparent1Bit(
+            srcTexture,
+            srcPal,
+            dstMips,
+            dstPos,
+            dstStride,
+            srcPos,
+            srcSize,
+            srcInfo,
+            srcMipLevel,
+            -srcMipLevel
+        );
+
+        break;
+
+    case 4:
+        CCharacterComponent::PasteTransparent4Bit(
+            srcTexture,
+            srcPal,
+            dstMips,
+            dstPos,
+            dstStride,
+            srcPos,
+            srcSize,
+            srcInfo,
+            srcMipLevel,
+            -srcMipLevel
+        );
+
+        break;
+
+    case 8:
+        CCharacterComponent::PasteTransparent8Bit(
+            srcTexture,
+            srcPal,
+            dstMips,
+            dstPos,
+            dstStride,
+            srcPos,
+            srcSize,
+            srcInfo,
+            srcMipLevel,
+            -srcMipLevel
+        );
+
+        break;
+
+    default:
+        // Do nothing
+        break;
+    }
 }
 
 void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips) {
@@ -149,7 +226,23 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTex
     }
 }
 
+void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+    // TODO
+}
+
 void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo) {
+    // TODO
+}
+
+void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+    // TODO
+}
+
+void CCharacterComponent::PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+    // TODO
+}
+
+void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
 
