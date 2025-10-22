@@ -14,6 +14,7 @@ uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
 uint32_t CCharacterComponent::s_mipLevels;
 MipBits* CCharacterComponent::s_textureBuffer;
+MipBits* CCharacterComponent::s_textureBufferCompressed;
 uint32_t CCharacterComponent::s_textureSize;
 
 int32_t s_bInRenderPrep = 0;
@@ -80,7 +81,42 @@ void CCharacterComponent::InitDbData() {
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
-    // TODO
+    auto component = static_cast<CCharacterComponent*>(userArg);
+
+    switch(cmd) {
+    case GxTex_Lock: {
+        if (!s_bInRenderPrep) {
+            component->RenderPrepAll();
+        }
+
+        break;
+    }
+
+    case GxTex_Latch: {
+        if (component->m_textureFormat == GxTex_Dxt1) {
+            // TODO
+            STORM_ASSERT(false);
+        } else {
+            texelStrideInBytes = 4 * width;
+        }
+
+        // TODO conditional check on some member of component
+
+        auto buffer = component->m_textureFormat == GxTex_Dxt1
+            ? CCharacterComponent::s_textureBufferCompressed
+            : CCharacterComponent::s_textureBuffer;
+
+        texels = buffer[mipLevel].mip[0];
+
+        break;
+    }
+
+    // TODO unknown command
+    case 3: {
+        // TODO
+        break;
+    }
+    }
 }
 
 void CCharacterComponent::CreateBaseTexture() {
@@ -107,7 +143,7 @@ void CCharacterComponent::CreateBaseTexture() {
 
     this->m_baseTexture = baseTexture;
 
-    // TODO this->m_data->m_model->ReplaceTexture(1, this->m_baseTexture);
+    this->m_data.model->ReplaceTexture(1, this->m_baseTexture);
 }
 
 void CCharacterComponent::GeosRenderPrep() {
@@ -227,6 +263,10 @@ int32_t CCharacterComponent::RenderPrep(int32_t a2) {
         return 1;
     }
 
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepAll() {
     // TODO
 }
 
