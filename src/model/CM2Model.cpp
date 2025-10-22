@@ -1343,6 +1343,56 @@ void CM2Model::Release() {
     // TODO
 }
 
+void CM2Model::ReplaceTexture(uint32_t textureId, HTEXTURE texture) {
+    // Waiting for load
+
+    if (!this->m_loaded) {
+        auto modelCall = STORM_NEW(CM2ModelCall);
+
+        modelCall->type = 0;
+        modelCall->modelCallNext = nullptr;
+        modelCall->time = this->m_scene->m_time;
+        modelCall->args[0] = textureId;
+        *reinterpret_cast<HTEXTURE*>(&modelCall->args[1]) = texture ? HandleDuplicate(texture) : nullptr;
+
+        *this->m_modelCallTail = modelCall;
+        this->m_modelCallTail = &modelCall->modelCallNext;
+
+        return;
+    }
+
+    // Replace textures
+
+    for (int32_t i = 0; i < this->m_shared->m_data->textures.Count(); i++) {
+        // Only replace if texture IDs match
+        if (this->m_shared->m_data->textures[i].textureId != textureId) {
+            continue;
+        };
+
+        auto currentTexture = this->m_textures[i];
+
+        if (currentTexture) {
+            HandleClose(currentTexture);
+        }
+
+        if (texture) {
+            this->m_textures[i] = HandleDuplicate(texture);
+
+            auto gxTexture = TextureGetGxTex(this->m_textures[i], 0, nullptr);
+
+            if (!gxTexture) {
+                this->m_flag2 = 0;
+            }
+        } else {
+            this->m_textures[i] = nullptr;
+        }
+    }
+
+    // TODO replace ribbon textures
+
+    // TODO replace particle textures
+}
+
 void CM2Model::SetAnimating(int32_t animating) {
     if (!animating) {
         if (this->m_animatePrev) {

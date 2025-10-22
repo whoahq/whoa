@@ -169,6 +169,7 @@ class CM2Model {
         int32_t ProcessCallbacks();
         void ProcessCallbacksRecursive();
         void Release();
+        void ReplaceTexture(uint32_t textureId, HTEXTURE texture);
         void SetAnimating(int32_t animating);
         void SetBoneSequence(uint32_t boneId, uint32_t sequenceId, uint32_t a4, uint32_t time, float a6, int32_t a7, int32_t a8);
         void SetBoneSequenceDeferred(uint16_t a2, M2Data* data, uint16_t boneIndex, uint32_t time, float a6, M2SequenceFallback fallback, int32_t a8, int32_t a9, int32_t a10);
