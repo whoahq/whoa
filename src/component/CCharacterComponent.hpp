@@ -87,7 +87,7 @@ class CCharacterComponent {
         static void RenderPrepLU(CCharacterComponent* component);
         static void RenderPrepTL(CCharacterComponent* component);
         static void RenderPrepTU(CCharacterComponent* component);
-        static void Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t a7);
+        static void Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t mipLevel);
         static void PasteFromSkin(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips);
         static void PasteScale(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo);
         static void UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels);

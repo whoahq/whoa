@@ -135,13 +135,15 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTex
     srcInfo.alphaSize = 0;
 
     if (srcInfo.width >= CCharacterComponent::s_textureSize || srcInfo.height >= CCharacterComponent::s_textureSize ) {
-        int32_t levelDelta;
+        // Calculate mip level matching CCharacterComponent::s_textureSize
+        int32_t mipLevel = 0;
         int32_t srcWidth = srcInfo.width;
-        for (levelDelta = 0; CCharacterComponent::s_textureSize < srcWidth; levelDelta++) {
-            srcWidth >>= 1;
+        while (srcWidth > CCharacterComponent::s_textureSize) {
+            srcWidth /= 2;
+            mipLevel++;
         }
 
-        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo, levelDelta);
+        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo, mipLevel);
     } else {
         CCharacterComponent::PasteScale(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo);
     }
