@@ -117,7 +117,7 @@ void CCharacterComponent::InitDbData() {
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
-void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t a7) {
+void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel) {
     // TODO
 }
 
@@ -135,15 +135,15 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTex
     srcInfo.alphaSize = 0;
 
     if (srcInfo.width >= CCharacterComponent::s_textureSize || srcInfo.height >= CCharacterComponent::s_textureSize ) {
-        // Calculate mip level matching CCharacterComponent::s_textureSize
-        int32_t mipLevel = 0;
+        // Calculate source mip level appropriate for CCharacterComponent::s_textureSize
+        int32_t srcMipLevel = 0;
         int32_t srcWidth = srcInfo.width;
         while (srcWidth > CCharacterComponent::s_textureSize) {
             srcWidth /= 2;
-            mipLevel++;
+            srcMipLevel++;
         }
 
-        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo, mipLevel);
+        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo, srcMipLevel);
     } else {
         CCharacterComponent::PasteScale(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo);
     }
