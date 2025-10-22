@@ -117,7 +117,37 @@ void CCharacterComponent::InitDbData() {
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
+void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo, int32_t a7) {
+    // TODO
+}
+
 void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips) {
+    if (!TextureCacheHasMips(srcTexture)) {
+        return;
+    }
+
+    auto& sectionInfo = CCharacterComponent::s_sectionInfo[section];
+
+    TCTEXTUREINFO srcInfo;
+    TextureCacheGetInfo(srcTexture, srcInfo, 1);
+
+    // Skin is always opaque
+    srcInfo.alphaSize = 0;
+
+    if (srcInfo.width >= CCharacterComponent::s_textureSize || srcInfo.height >= CCharacterComponent::s_textureSize ) {
+        int32_t levelDelta;
+        int32_t srcWidth = srcInfo.width;
+        for (levelDelta = 0; CCharacterComponent::s_textureSize < srcWidth; levelDelta++) {
+            srcWidth >>= 1;
+        }
+
+        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo, levelDelta);
+    } else {
+        CCharacterComponent::PasteScale(srcTexture, dstMips, sectionInfo.pos, sectionInfo.pos, sectionInfo.size, srcInfo);
+    }
+}
+
+void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo) {
     // TODO
 }
 
