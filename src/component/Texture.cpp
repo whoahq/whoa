@@ -164,6 +164,22 @@ int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t force) {
     return 1;
 }
 
+BlpPalPixel* TextureCacheGetPal(void* handle) {
+    auto entry = static_cast<CACHEENTRY*>(handle);
+
+    if (entry->IsMissing() || !entry->m_data) {
+        return nullptr;
+    }
+
+    auto blpHeader = static_cast<BLPHeader*>(entry->m_data);
+
+    if (blpHeader->colorEncoding != COLOR_PAL) {
+        return nullptr;
+    }
+
+    return blpHeader->extended.palette;
+}
+
 int32_t TextureCacheHasMips(void* handle) {
     auto entry = static_cast<CACHEENTRY*>(handle);
     return entry && entry->m_data && !entry->IsMissing();

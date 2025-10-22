@@ -5,6 +5,8 @@
 
 class CAsyncObject;
 
+struct BlpPalPixel;
+
 struct TCTEXTUREINFO {
     uint16_t width;
     uint16_t height;
@@ -43,6 +45,8 @@ void* TextureCacheCreateTexture(const char* fileName);
 void TextureCacheDestroyTexture(void* texture);
 
 int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t a3);
+
+BlpPalPixel* TextureCacheGetPal(void* handle);
 
 int32_t TextureCacheHasMips(void* handle);
 
