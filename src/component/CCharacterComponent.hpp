@@ -3,6 +3,7 @@
 
 #include "component/Types.hpp"
 #include "gx/Texture.hpp"
+#include <tempest/Vector.hpp>
 #include <cstdint>
 
 class CACHEENTRY;
@@ -51,6 +52,11 @@ struct ComponentData {
     };
 };
 
+struct CompSectionInfo {
+    C2iVector pos;
+    C2iVector size;
+};
+
 class CCharacterComponent {
     public:
         // Static variables
@@ -59,6 +65,8 @@ class CCharacterComponent {
         static EGxTexFormat s_gxFormat;
         static uint32_t s_mipLevels;
         static PREP_FUNC* s_prepFunc[NUM_COMPONENT_SECTIONS];
+        static CompSectionInfo s_sectionInfo[NUM_COMPONENT_SECTIONS];
+        static CompSectionInfo s_sectionInfoRaw[NUM_COMPONENT_SECTIONS];
         static MipBits* s_textureBuffer;
         static MipBits* s_textureBufferCompressed;
         static uint32_t s_textureSize;

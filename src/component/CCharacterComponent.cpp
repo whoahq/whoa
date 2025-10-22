@@ -14,9 +14,23 @@ uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
 uint32_t CCharacterComponent::s_mipLevels;
 PREP_FUNC* CCharacterComponent::s_prepFunc[];
+CompSectionInfo CCharacterComponent::s_sectionInfo[];
 MipBits* CCharacterComponent::s_textureBuffer;
 MipBits* CCharacterComponent::s_textureBufferCompressed;
 uint32_t CCharacterComponent::s_textureSize;
+
+CompSectionInfo CCharacterComponent::s_sectionInfoRaw[] = {
+    { 0,    0,      256,    128 },  // SECTION_ARM_UPPER
+    { 0,    128,    256,    128 },  // SECTION_ARM_LOWER
+    { 0,    256,    256,    64  },  // SECTION_HAND
+    { 256,  0,      256,    128 },  // SECTION_TORSO_UPPER
+    { 256,  128,    256,    64  },  // SECTION_TORSO_LOWER
+    { 256,  192,    256,    128 },  // SECTION_LEG_UPPER
+    { 256,  320,    256,    128 },  // SECTION_LEG_LOWER
+    { 256,  448,    256,    64  },  // SECTION_FOOT
+    { 0,    320,    256,    64  },  // SECTION_HEAD_UPPER
+    { 0,    384,    256,    128 },  // SECTION_HEAD_LOWER
+};
 
 int32_t s_bInRenderPrep = 0;
 char* s_pathEnd;
@@ -64,6 +78,17 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
 
     CCharacterComponent::s_mipLevels = mipLevels;
     CCharacterComponent::s_textureSize = 1 << mipLevels;
+
+    // Scale section info to match mip levels
+    for (int32_t i = 0; i < NUM_COMPONENT_VARIATIONS; i++) {
+        auto& info = CCharacterComponent::s_sectionInfo[i];
+        auto& infoRaw = CCharacterComponent::s_sectionInfoRaw[i];
+
+        info.pos.x = infoRaw.pos.x >> (9 - mipLevels);
+        info.pos.y = infoRaw.pos.y >> (9 - mipLevels);
+        info.size.x = infoRaw.size.x >> (9 - mipLevels);
+        info.size.y = infoRaw.size.y >> (9 - mipLevels);
+    }
 
     // TODO
 
