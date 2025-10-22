@@ -6,11 +6,14 @@
 #include <cstdint>
 
 class CACHEENTRY;
+class CCharacterComponent;
 class CharSectionsRec;
 class CM2Model;
 
 struct MipBits;
 struct st_race;
+
+typedef void (PREP_FUNC)(CCharacterComponent* component);
 
 struct ComponentData {
     int32_t raceID = 0;
@@ -55,6 +58,7 @@ class CCharacterComponent {
         static uint32_t s_chrVarArrayLength;
         static EGxTexFormat s_gxFormat;
         static uint32_t s_mipLevels;
+        static PREP_FUNC* s_prepFunc[NUM_COMPONENT_SECTIONS];
         static MipBits* s_textureBuffer;
         static MipBits* s_textureBufferCompressed;
         static uint32_t s_textureSize;
@@ -64,6 +68,16 @@ class CCharacterComponent {
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
         static void InitDbData();
+        static void RenderPrepAL(CCharacterComponent* component);
+        static void RenderPrepAU(CCharacterComponent* component);
+        static void RenderPrepFO(CCharacterComponent* component);
+        static void RenderPrepHA(CCharacterComponent* component);
+        static void RenderPrepHL(CCharacterComponent* component);
+        static void RenderPrepHU(CCharacterComponent* component);
+        static void RenderPrepLL(CCharacterComponent* component);
+        static void RenderPrepLU(CCharacterComponent* component);
+        static void RenderPrepTL(CCharacterComponent* component);
+        static void RenderPrepTU(CCharacterComponent* component);
         static void UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels);
 
         // Member variables

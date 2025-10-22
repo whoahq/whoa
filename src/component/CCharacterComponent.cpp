@@ -13,6 +13,7 @@ st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
 uint32_t CCharacterComponent::s_mipLevels;
+PREP_FUNC* CCharacterComponent::s_prepFunc[];
 MipBits* CCharacterComponent::s_textureBuffer;
 MipBits* CCharacterComponent::s_textureBufferCompressed;
 uint32_t CCharacterComponent::s_textureSize;
@@ -39,6 +40,17 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     // TODO
 
     s_pathEnd = s_path;
+
+    CCharacterComponent::s_prepFunc[SECTION_ARM_UPPER]      = &CCharacterComponent::RenderPrepAU;
+    CCharacterComponent::s_prepFunc[SECTION_ARM_LOWER]      = &CCharacterComponent::RenderPrepAL;
+    CCharacterComponent::s_prepFunc[SECTION_HAND]           = &CCharacterComponent::RenderPrepHA;
+    CCharacterComponent::s_prepFunc[SECTION_TORSO_UPPER]    = &CCharacterComponent::RenderPrepTU;
+    CCharacterComponent::s_prepFunc[SECTION_TORSO_LOWER]    = &CCharacterComponent::RenderPrepTL;
+    CCharacterComponent::s_prepFunc[SECTION_LEG_UPPER]      = &CCharacterComponent::RenderPrepLU;
+    CCharacterComponent::s_prepFunc[SECTION_LEG_LOWER]      = &CCharacterComponent::RenderPrepLL;
+    CCharacterComponent::s_prepFunc[SECTION_FOOT]           = &CCharacterComponent::RenderPrepFO;
+    CCharacterComponent::s_prepFunc[SECTION_HEAD_UPPER]     = &CCharacterComponent::RenderPrepHU;
+    CCharacterComponent::s_prepFunc[SECTION_HEAD_LOWER]     = &CCharacterComponent::RenderPrepHL;
 
     // TODO
 
@@ -78,6 +90,46 @@ void CCharacterComponent::InitDbData() {
 
     BuildComponentArray(varArrayLength, &CCharacterComponent::s_chrVarArray);
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
+}
+
+void CCharacterComponent::RenderPrepAL(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepAU(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepFO(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepHA(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepLL(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepLU(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepTL(CCharacterComponent* component) {
+    // TODO
+}
+
+void CCharacterComponent::RenderPrepTU(CCharacterComponent* component) {
+    // TODO
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
