@@ -320,6 +320,24 @@ int32_t CCharacterComponent::RenderPrep(int32_t a2) {
 
 void CCharacterComponent::RenderPrepAll() {
     // TODO
+
+    this->m_flags &= ~0x8;
+
+    this->VariationsLoaded(1);
+    this->ItemsLoaded(1);
+
+    for (uint32_t i = 0; i < NUM_COMPONENT_VARIATIONS; i++) {
+        CCharacterComponent::s_prepFunc[i](this);
+    }
+
+    // TODO
+
+    this->m_flags &= ~0x1;
+
+    // TODO dirty mask?
+    this->m_sections = 0;
+
+    // TODO
 }
 
 void CCharacterComponent::RenderPrepSections() {
