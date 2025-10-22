@@ -117,7 +117,14 @@ void CCharacterComponent::InitDbData() {
     // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
+void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips) {
+    // TODO
+}
+
 void CCharacterComponent::RenderPrepAL(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_ARM_LOWER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
