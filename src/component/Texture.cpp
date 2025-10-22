@@ -163,3 +163,8 @@ int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t force) {
 
     return 1;
 }
+
+int32_t TextureCacheHasMips(void* handle) {
+    auto entry = static_cast<CACHEENTRY*>(handle);
+    return entry && entry->m_data && !entry->IsMissing();
+}

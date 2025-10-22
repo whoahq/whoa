@@ -44,4 +44,6 @@ void TextureCacheDestroyTexture(void* texture);
 
 int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t a3);
 
+int32_t TextureCacheHasMips(void* handle);
+
 #endif
