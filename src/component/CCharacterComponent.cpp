@@ -582,6 +582,7 @@ int32_t CCharacterComponent::RenderPrep(int32_t a2) {
     }
 
     // TODO
+    return 1;
 }
 
 void CCharacterComponent::RenderPrepAll() {
