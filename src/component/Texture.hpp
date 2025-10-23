@@ -46,6 +46,8 @@ void TextureCacheDestroyTexture(void* texture);
 
 int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t a3);
 
+uint8_t* TextureCacheGetMip(void* handle, uint32_t mipLevel);
+
 BlpPalPixel* TextureCacheGetPal(void* handle);
 
 int32_t TextureCacheHasMips(void* handle);

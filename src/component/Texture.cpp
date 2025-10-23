@@ -164,6 +164,23 @@ int32_t TextureCacheGetInfo(void* handle, TCTEXTUREINFO& info, int32_t force) {
     return 1;
 }
 
+uint8_t* TextureCacheGetMip(void* handle, uint32_t mipLevel) {
+    auto entry = static_cast<CACHEENTRY*>(handle);
+
+    if (!entry || entry->IsMissing() || !entry->m_data) {
+        return nullptr;
+    }
+
+    if (mipLevel >= entry->Info().mipCount) {
+        return nullptr;
+    }
+
+    auto blpHeader = static_cast<BLPHeader*>(entry->m_data);
+    auto mipOffset = blpHeader->mipOffsets[mipLevel];
+
+    return static_cast<uint8_t*>(entry->m_data) + mipOffset;
+}
+
 BlpPalPixel* TextureCacheGetPal(void* handle) {
     auto entry = static_cast<CACHEENTRY*>(handle);
 
