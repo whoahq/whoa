@@ -666,7 +666,32 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
     );
 
     if (skinColorID < numColors && sectionsRec && !(sectionsRec->m_flags & 0x8)) {
-        // TODO underwear
+        auto underwearRec = this->GetSectionsRecord(VARIATION_UNDERWEAR, 0, skinColorID, nullptr);
+
+        auto t0 = TEXTURE_INDEX(VARIATION_UNDERWEAR, 0);
+        auto t1 = TEXTURE_INDEX(VARIATION_UNDERWEAR, 1);
+
+        if (this->m_texture[t0]) {
+            TextureCacheDestroyTexture(this->m_texture[t0]);
+            this->m_texture[t0] = nullptr;
+        }
+
+        if (this->m_texture[t1]) {
+            TextureCacheDestroyTexture(this->m_texture[t1]);
+            this->m_texture[t1] = nullptr;
+        }
+
+        if (*underwearRec->m_textureName[0]) {
+            SStrCopy(s_pathEnd, underwearRec->m_textureName[0]);
+            this->m_texture[t0] = TextureCacheCreateTexture(s_path);
+            STORM_ASSERT(this->m_texture[t0]);
+        }
+
+        if (*underwearRec->m_textureName[1]) {
+            SStrCopy(s_pathEnd, underwearRec->m_textureName[1]);
+            this->m_texture[t1] = TextureCacheCreateTexture(s_path);
+            STORM_ASSERT(this->m_texture[t1]);
+        }
     }
 
     this->ReplaceExtraSkinTexture(a5);
