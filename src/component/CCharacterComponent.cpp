@@ -118,7 +118,8 @@ void CCharacterComponent::InitDbData() {
 }
 
 void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& dstPos, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel) {
-    uint32_t dstStride = CCharacterComponent::s_textureSize * 4;
+    uint32_t dstWidth = CCharacterComponent::s_textureSize * 4;
+
     auto srcPal = TextureCacheGetPal(srcTexture);
 
     if (!srcPal) {
@@ -134,7 +135,7 @@ void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVec
             srcPal,
             dstMips,
             dstPos,
-            dstStride,
+            dstWidth,
             srcPos,
             srcSize,
             srcInfo,
@@ -150,7 +151,7 @@ void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVec
             srcPal,
             dstMips,
             dstPos,
-            dstStride,
+            dstWidth,
             srcPos,
             srcSize,
             srcInfo,
@@ -166,7 +167,7 @@ void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVec
             srcPal,
             dstMips,
             dstPos,
-            dstStride,
+            dstWidth,
             srcPos,
             srcSize,
             srcInfo,
@@ -182,7 +183,7 @@ void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVec
             srcPal,
             dstMips,
             dstPos,
-            dstStride,
+            dstWidth,
             srcPos,
             srcSize,
             srcInfo,
@@ -226,7 +227,7 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTex
     }
 }
 
-void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
 
@@ -234,15 +235,15 @@ void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C
     // TODO
 }
 
-void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
 
-void CCharacterComponent::PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+void CCharacterComponent::PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
 
-void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstStride, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
+void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
 
