@@ -81,7 +81,7 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     CCharacterComponent::s_textureSize = 1 << mipLevels;
 
     // Scale section info to match mip levels
-    for (int32_t i = 0; i < NUM_COMPONENT_VARIATIONS; i++) {
+    for (int32_t i = 0; i < NUM_COMPONENT_SECTIONS; i++) {
         auto& info = CCharacterComponent::s_sectionInfo[i];
         auto& infoRaw = CCharacterComponent::s_sectionInfoRaw[i];
 
@@ -312,38 +312,89 @@ void CCharacterComponent::RenderPrepAL(CCharacterComponent* component) {
 }
 
 void CCharacterComponent::RenderPrepAU(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_ARM_UPPER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepFO(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_FOOT, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepHA(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_HAND, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
+    auto sectionsRec = ComponentGetSectionsRecord(
+        CCharacterComponent::s_chrVarArray,
+        component->m_data.raceID,
+        component->m_data.sexID,
+        VARIATION_SKIN,
+        0,
+        component->m_data.skinColorID,
+        nullptr
+    );
+
+    if (sectionsRec && sectionsRec->m_flags & 0x8) {
+        auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+        CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, skin, CCharacterComponent::s_textureBuffer);
+    }
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
+    auto sectionsRec = ComponentGetSectionsRecord(
+        CCharacterComponent::s_chrVarArray,
+        component->m_data.raceID,
+        component->m_data.sexID,
+        VARIATION_SKIN,
+        0,
+        component->m_data.skinColorID,
+        nullptr
+    );
+
+    if (sectionsRec && sectionsRec->m_flags & 0x8) {
+        auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+        CCharacterComponent::PasteFromSkin(SECTION_HEAD_UPPER, skin, CCharacterComponent::s_textureBuffer);
+    }
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepLL(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_LEG_LOWER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepLU(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_LEG_UPPER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepTL(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_TORSO_LOWER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
 void CCharacterComponent::RenderPrepTU(CCharacterComponent* component) {
+    auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_TORSO_UPPER, skin, CCharacterComponent::s_textureBuffer);
+
     // TODO
 }
 
@@ -541,7 +592,7 @@ void CCharacterComponent::RenderPrepAll() {
     this->VariationsLoaded(1);
     this->ItemsLoaded(1);
 
-    for (uint32_t i = 0; i < NUM_COMPONENT_VARIATIONS; i++) {
+    for (uint32_t i = 0; i < NUM_COMPONENT_SECTIONS; i++) {
         CCharacterComponent::s_prepFunc[i](this);
     }
 
