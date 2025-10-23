@@ -12,6 +12,12 @@
 #include <common/ObjectAlloc.hpp>
 #include <tempest/Math.hpp>
 
+// Alignment helpers
+#define ALIGN(addr, type) ((addr + alignof(type) - 1) & ~(alignof(type) - 1))
+#define ALIGN_PAD(addr, type) (ALIGN(addr, type) - addr)
+#define ALIGN_SIZE(addr, type, count) ALIGN(addr + sizeof(type) * count, type) - addr
+#define ALIGN_BUFFER(current, start, type) (current + ALIGN_PAD((ptrdiff_t)((char*)current - (char*)start), type))
+
 uint32_t CM2Model::s_loadingSequence = 0xFFFFFFFF;
 uint8_t* CM2Model::s_sequenceBase;
 uint32_t CM2Model::s_sequenceBaseSize;
@@ -993,26 +999,31 @@ int32_t CM2Model::InitializeLoaded() {
         return 1;
     }
 
-    uint32_t dataSize
-        = (sizeof(M2ModelBone) * this->m_shared->m_data->bones.Count())
-        + (sizeof(uint32_t) * this->m_shared->m_data->loops.Count())
-        + (sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count())
-        + (sizeof(M2ModelColor) * this->m_shared->m_data->colors.Count())
-        + (sizeof(HTEXTURE) * this->m_shared->m_data->textures.Count())
-        + (sizeof(M2ModelTextureWeight) * this->m_shared->m_data->textureWeights.Count())
-        + (sizeof(M2ModelTextureTransform) * this->m_shared->m_data->textureTransforms.Count())
-        + (sizeof(M2ModelAttachment) * this->m_shared->m_data->attachments.Count())
-        + (sizeof(M2ModelLight) * this->m_shared->m_data->lights.Count())
-        + (sizeof(M2ModelCamera) * this->m_shared->m_data->cameras.Count());
+    // Allocate a single buffer to hold all unique per-model data per model object
 
-    // TODO
-    // allocate space for particles and ribbons
+    uint32_t bufferSize = 0;
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelBone, this->m_shared->m_data->bones.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, uint32_t, this->m_shared->m_data->loops.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, uint32_t, this->m_shared->skinProfile->skinSections.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelColor, this->m_shared->m_data->colors.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, HTEXTURE, this->m_shared->m_data->textures.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelTextureWeight, this->m_shared->m_data->textureWeights.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelTextureTransform, this->m_shared->m_data->textureTransforms.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelAttachment, this->m_shared->m_data->attachments.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelLight, this->m_shared->m_data->lights.Count());
+    bufferSize += ALIGN_SIZE(bufferSize, M2ModelCamera, this->m_shared->m_data->cameras.Count());
 
-    char* data = static_cast<char*>(SMemAlloc(dataSize, __FILE__, __LINE__, 0));
+    // TODO allocate space for particles and ribbons
+
+    auto buffer = static_cast<char*>(SMemAlloc(bufferSize, __FILE__, __LINE__, 0));
+    auto start = buffer;
+
+    // Allocate and initialize per-model data
 
     if (this->m_shared->m_data->bones.Count()) {
-        this->m_bones = reinterpret_cast<M2ModelBone*>(&data[0]);
-        data += (sizeof(M2ModelBone) * this->m_shared->m_data->bones.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelBone);
+        this->m_bones = reinterpret_cast<M2ModelBone*>(buffer);
+        buffer += sizeof(M2ModelBone) * this->m_shared->m_data->bones.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->bones.Count(); i++) {
             new (&this->m_bones[i]) M2ModelBone();
@@ -1031,8 +1042,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->loops.Count()) {
-        this->m_loops = reinterpret_cast<uint32_t*>(&data[0]);
-        data += (sizeof(uint32_t) * this->m_shared->m_data->loops.Count());
+        buffer = ALIGN_BUFFER(buffer, start, uint32_t);
+        this->m_loops = reinterpret_cast<uint32_t*>(buffer);
+        buffer += sizeof(uint32_t) * this->m_shared->m_data->loops.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->loops.Count(); i++) {
             if (this->m_loops[i]) {
@@ -1043,8 +1055,9 @@ int32_t CM2Model::InitializeLoaded() {
 
 
     if (this->m_shared->skinProfile->skinSections.Count()) {
-        this->m_skinSections = reinterpret_cast<uint32_t*>(&data[0]);
-        data += (sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count());
+        buffer = ALIGN_BUFFER(buffer, start, uint32_t);
+        this->m_skinSections = reinterpret_cast<uint32_t*>(buffer);
+        buffer += sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count();
 
         if (this->model30) {
             memcpy(this->m_skinSections, model30->m_skinSections, sizeof(uint32_t) * this->m_shared->skinProfile->skinSections.Count());
@@ -1061,8 +1074,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->colors.Count()) {
-        this->m_colors = reinterpret_cast<M2ModelColor*>(&data[0]);
-        data += (sizeof(M2ModelColor) * this->m_shared->m_data->colors.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelColor);
+        this->m_colors = reinterpret_cast<M2ModelColor*>(buffer);
+        buffer += sizeof(M2ModelColor) * this->m_shared->m_data->colors.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->colors.Count(); i++) {
             new (&this->m_colors[i]) M2ModelColor();
@@ -1070,8 +1084,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->textures.Count()) {
-        this->m_textures = reinterpret_cast<HTEXTURE*>(&data[0]);
-        data += (sizeof(HTEXTURE) * this->m_shared->m_data->textures.Count());
+        buffer = ALIGN_BUFFER(buffer, start, HTEXTURE);
+        this->m_textures = reinterpret_cast<HTEXTURE*>(buffer);
+        buffer += sizeof(HTEXTURE) * this->m_shared->m_data->textures.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->textures.Count(); i++) {
             HTEXTURE textureHandle = this->model30
@@ -1085,8 +1100,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->textureWeights.Count()) {
-        this->m_textureWeights = reinterpret_cast<M2ModelTextureWeight*>(&data[0]);
-        data += (sizeof(M2ModelTextureWeight) * this->m_shared->m_data->textureWeights.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelTextureWeight);
+        this->m_textureWeights = reinterpret_cast<M2ModelTextureWeight*>(buffer);
+        buffer += sizeof(M2ModelTextureWeight) * this->m_shared->m_data->textureWeights.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->textureWeights.Count(); i++) {
             new (&this->m_textureWeights[i]) M2ModelTextureWeight();
@@ -1096,8 +1112,9 @@ int32_t CM2Model::InitializeLoaded() {
     // TODO texture transforms
 
     if (this->m_shared->m_data->attachments.Count()) {
-        this->m_attachments = reinterpret_cast<M2ModelAttachment*>(&data[0]);
-        data += (sizeof(M2ModelAttachment) * this->m_shared->m_data->attachments.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelAttachment);
+        this->m_attachments = reinterpret_cast<M2ModelAttachment*>(buffer);
+        buffer += sizeof(M2ModelAttachment) * this->m_shared->m_data->attachments.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->attachments.Count(); i++) {
             new (&this->m_attachments[i]) M2ModelAttachment();
@@ -1108,8 +1125,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->lights.Count()) {
-        this->m_lights = reinterpret_cast<M2ModelLight*>(&data[0]);
-        data += (sizeof(M2ModelLight) * this->m_shared->m_data->lights.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelLight);
+        this->m_lights = reinterpret_cast<M2ModelLight*>(buffer);
+        buffer += sizeof(M2ModelLight) * this->m_shared->m_data->lights.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->lights.Count(); i++) {
             new (&this->m_lights[i]) M2ModelLight();
@@ -1126,8 +1144,9 @@ int32_t CM2Model::InitializeLoaded() {
     }
 
     if (this->m_shared->m_data->cameras.Count()) {
-        this->m_cameras = reinterpret_cast<M2ModelCamera*>(&data[0]);
-        data += (sizeof(M2ModelCamera) * this->m_shared->m_data->cameras.Count());
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelCamera);
+        this->m_cameras = reinterpret_cast<M2ModelCamera*>(buffer);
+        buffer += sizeof(M2ModelCamera) * this->m_shared->m_data->cameras.Count();
 
         for (int32_t i = 0; i < this->m_shared->m_data->cameras.Count(); i++) {
             new (&this->m_cameras[i]) M2ModelCamera();
