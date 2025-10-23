@@ -2,6 +2,7 @@
 #include "component/Texture.hpp"
 #include "component/Util.hpp"
 #include "db/Db.hpp"
+#include "gx/Blp.hpp"
 #include "gx/Device.hpp"
 #include "gx/Texture.hpp"
 #include "model/CM2Model.hpp"
@@ -228,7 +229,63 @@ void CCharacterComponent::PasteFromSkin(COMPONENT_SECTIONS section, void* srcTex
 }
 
 void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
-    // TODO
+    // Prepare first mip level
+
+    C2iVector curSrcSize = srcSize;
+
+    C2iVector curSrcPos = srcPos;
+    C2iVector curDstPos = dstPos;
+
+    uint32_t curSrcWidth = srcInfo.width >> srcMipLevel;
+    uint32_t curDstWidth = dstWidth;
+
+    // Paste texture for each mip level
+
+    for (int32_t curMipLevel = srcMipLevel; curMipLevel < srcInfo.mipCount; curMipLevel++) {
+        auto srcMip = TextureCacheGetMip(srcTexture, curMipLevel);
+        auto srcRow = &srcMip[(curSrcPos.y * curSrcWidth) + curSrcPos.x];
+
+        auto dstMip = reinterpret_cast<uint8_t*>(dstMips[curMipLevel + dstMipLevelOfs].mip[0]);
+        auto dstRow = &dstMip[(curDstPos.y * curDstWidth) + (curDstPos.x * 4)];
+
+        // Calculate the end of the source region
+        auto srcEnd = srcRow + curSrcWidth * curSrcSize.y;
+
+        // Copy each row
+        while (srcRow < srcEnd) {
+            auto dst = reinterpret_cast<C4Pixel*>(dstRow);
+
+            for (uint32_t x = 0; x < curSrcSize.x; x++) {
+                // Get palette entry
+                auto& src = srcPal[srcRow[x]];
+
+                // Copy color from palette entry
+                dst->b = src.b;
+                dst->g = src.g;
+                dst->r = src.r;
+                dst->a = 0xFF;
+
+                dst++;
+            }
+
+            // Move to next row
+            srcRow += curSrcWidth;
+            dstRow += curDstWidth;
+        }
+
+        // Prepare next mip level
+
+        curSrcSize.x = std::max(1, curSrcSize.x / 2);
+        curSrcSize.y = std::max(1, curSrcSize.y / 2);
+
+        curSrcPos.x /= 2;
+        curSrcPos.y /= 2;
+        curDstPos.x /= 2;
+        curDstPos.y /= 2;
+
+        curDstWidth /= 2;
+        curSrcWidth /= 2;
+    }
 }
 
 void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo) {
