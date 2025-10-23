@@ -76,6 +76,28 @@ uint16_t CM2Model::Sub8260C0(M2Data* data, uint32_t sequenceId, int32_t a3) {
     return -1;
 }
 
+CM2Model::~CM2Model() {
+    // TODO
+
+    // Unlink from lists
+
+    if (this->m_animatePrev) {
+        *this->m_animatePrev = this->m_animateNext;
+    }
+    if (this->m_animateNext) {
+        this->m_animateNext->m_animatePrev = this->m_animatePrev;
+    }
+
+    if (this->m_drawPrev) {
+        *this->m_drawPrev = this->m_drawNext;
+    }
+    if (this->m_drawNext) {
+        this->m_drawNext->m_drawPrev = this->m_drawPrev;
+    }
+
+    // TODO
+}
+
 void CM2Model::AddRef() {
     this->m_refCount++;
 }

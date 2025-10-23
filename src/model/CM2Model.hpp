@@ -143,6 +143,7 @@ class CM2Model {
             , m_flag200000(0)
             , m_flag400000(0)
             {};
+        ~CM2Model();
         void AddRef();
         void Animate();
         void AnimateAttachmentsMT();
