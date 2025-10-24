@@ -999,7 +999,7 @@ int32_t CM2Model::InitializeLoaded() {
         return 1;
     }
 
-    // Allocate a single buffer to hold all unique per-model data per model object
+    // Allocate a single buffer to hold unique per-model data
 
     uint32_t bufferSize = 0;
     bufferSize += ALIGN_SIZE(bufferSize, M2ModelBone, this->m_shared->m_data->bones.Count());
