@@ -292,6 +292,35 @@ void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C
     // TODO
 }
 
+void CCharacterComponent::PasteToSection(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips) {
+    if (!TextureCacheHasMips(srcTexture)) {
+        return;
+    }
+
+    auto& sectionInfo = CCharacterComponent::s_sectionInfo[section];
+
+    TCTEXTUREINFO srcInfo;
+    TextureCacheGetInfo(srcTexture, srcInfo, 1);
+
+    if (srcInfo.width >= sectionInfo.size.x || srcInfo.height >= sectionInfo.size.y) {
+        // Calculate source mip level appropriate for section size
+        int32_t srcMipLevel = 0;
+        int32_t srcWidth = srcInfo.width;
+        while (srcWidth > sectionInfo.size.x) {
+            srcWidth /= 2;
+            srcMipLevel++;
+        }
+
+        C2iVector srcPos = { 0, 0 };
+
+        CCharacterComponent::Paste(srcTexture, dstMips, sectionInfo.pos, srcPos, sectionInfo.size, srcInfo, srcMipLevel);
+    } else {
+        C2iVector srcPos = { 0, 0 };
+
+        CCharacterComponent::PasteScale(srcTexture, dstMips, sectionInfo.pos, srcPos, sectionInfo.size, srcInfo);
+    }
+}
+
 void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
     // TODO
 }
@@ -346,6 +375,21 @@ void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
     if (sectionsRec && sectionsRec->m_flags & 0x8) {
         auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
         CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, skin, CCharacterComponent::s_textureBuffer);
+    }
+
+    auto faceTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 0)];
+    if (faceTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    auto facialHairTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 0)];
+    if (facialHairTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    auto hairLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 1)];
+    if (hairLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, hairLowerTexture, CCharacterComponent::s_textureBuffer);
     }
 
     // TODO
@@ -632,7 +676,38 @@ void CCharacterComponent::ReplaceExtraSkinTexture(const char* a2) {
 }
 
 void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (isNPC) {
+        return;
+    }
+
+    auto skinSectionsRec = this->GetSectionsRecord(VARIATION_SKIN, 0, this->m_data.skinColorID, nullptr);
+
+    if (skinSectionsRec && skinSectionsRec->m_flags & 0x8) {
+        return;
+    }
+
+    if (!ComponentValidateBase(CCharacterComponent::s_chrVarArray, this->m_data.raceID, this->m_data.sexID, VARIATION_FACE, faceID, this->m_data.skinColorID)) {
+        return;
+    }
+
+    this->m_data.faceID = faceID;
+
+    this->LoadBaseVariation(VARIATION_FACE, 0, this->m_data.faceID, this->m_data.skinColorID, SECTION_HEAD_LOWER, a4);
+    this->LoadBaseVariation(VARIATION_FACE, 1, this->m_data.faceID, this->m_data.skinColorID, SECTION_HEAD_UPPER, a4);
+
+    if (a3) {
+        this->LoadBaseVariation(VARIATION_HAIR, 1, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_LOWER, a4);
+        this->LoadBaseVariation(VARIATION_HAIR, 2, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_UPPER, a4);
+    }
+
+    this->m_flags |= 0x4;
+    this->m_sections |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
+
     // TODO
+
+    this->m_flags &= ~0x8;
 }
 
 void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5) {
