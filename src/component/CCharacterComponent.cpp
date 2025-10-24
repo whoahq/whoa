@@ -377,22 +377,20 @@ void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
         CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, skin, CCharacterComponent::s_textureBuffer);
     }
 
-    auto faceTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 0)];
-    if (faceTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceTexture, CCharacterComponent::s_textureBuffer);
+    auto faceLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 0)];
+    if (faceLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceLowerTexture, CCharacterComponent::s_textureBuffer);
     }
 
-    auto facialHairTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 0)];
-    if (facialHairTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairTexture, CCharacterComponent::s_textureBuffer);
+    auto facialHairLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 0)];
+    if (facialHairLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairLowerTexture, CCharacterComponent::s_textureBuffer);
     }
 
     auto hairLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 1)];
     if (hairLowerTexture) {
         CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, hairLowerTexture, CCharacterComponent::s_textureBuffer);
     }
-
-    // TODO
 }
 
 void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
