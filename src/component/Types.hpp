@@ -47,4 +47,20 @@ enum COMPONENT_VARIATIONS {
     NUM_COMPONENT_VARIATIONS
 };
 
+enum ITEM_SLOT {
+    ITEMSLOT_0              = 0,
+    ITEMSLOT_1              = 1,
+    ITEMSLOT_2              = 2,
+    ITEMSLOT_3              = 3,
+    ITEMSLOT_4              = 4,
+    ITEMSLOT_5              = 5,
+    ITEMSLOT_6              = 6,
+    ITEMSLOT_7              = 7,
+    ITEMSLOT_8              = 8,
+    ITEMSLOT_9              = 9,
+    ITEMSLOT_10             = 10,
+    ITEMSLOT_11             = 11,
+    NUM_ITEM_SLOT
+};
+
 #endif
