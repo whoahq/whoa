@@ -454,6 +454,13 @@ void CCharacterComponent::RenderPrepLU(CCharacterComponent* component) {
     auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
     CCharacterComponent::PasteFromSkin(SECTION_LEG_UPPER, skin, CCharacterComponent::s_textureBuffer);
 
+    if ((component->m_flags & 0x20) || !(component->m_itemDisplays[ITEMSLOT_5].priorityDirty & ((1 << 0) | (1 << 1)))) {
+        auto underwearLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 0)];
+        if (underwearLowerTexture) {
+            CCharacterComponent::PasteToSection(SECTION_LEG_UPPER, underwearLowerTexture, CCharacterComponent::s_textureBuffer);
+        }
+    }
+
     // TODO
 }
 
