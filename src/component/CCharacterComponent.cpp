@@ -33,6 +33,24 @@ CompSectionInfo CCharacterComponent::s_sectionInfoRaw[] = {
     { 0,    384,    256,    128 },  // SECTION_HEAD_LOWER
 };
 
+/**
+ * Texture priorities for each item slot and component section.
+ */
+int32_t s_itemPriority[NUM_ITEM_SLOT][NUM_COMPONENT_SECTIONS] = {
+    { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }, // ITEMSLOT_0
+    { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 }, // ITEMSLOT_1
+    {  0,  0, -1,  0,  0, -1, -1, -1, -1, -1 }, // ITEMSLOT_2
+    {  1,  1, -1,  1,  1,  1,  1, -1, -1, -1 }, // ITEMSLOT_3
+    { -1, -1, -1, -1,  5,  2, -1, -1, -1, -1 }, // ITEMSLOT_4
+    { -1, -1, -1, -1, -1,  0,  0, -1, -1, -1 }, // ITEMSLOT_5
+    { -1, -1, -1, -1, -1, -1,  2,  0, -1, -1 }, // ITEMSLOT_6
+    { -1,  2, -1, -1, -1, -1, -1, -1, -1, -1 }, // ITEMSLOT_7
+    { -1,  3,  0, -1, -1, -1, -1, -1, -1, -1 }, // ITEMSLOT_8
+    { -1, -1, -1,  4,  4, -1, -1, -1, -1, -1 }, // ITEMSLOT_9
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 }, // ITEMSLOT_10
+    {  0,  0,  0,  0,  0,  0,  0,  0,  0,  0 }, // ITEMSLOT_11
+};
+
 int32_t s_bInRenderPrep = 0;
 char* s_pathEnd;
 char s_path[STORM_MAX_PATH];
