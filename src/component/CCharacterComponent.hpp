@@ -59,6 +59,12 @@ struct CompSectionInfo {
     C2iVector size;
 };
 
+struct ComponentItemDisplay {
+    void* texture[7] = {};
+    uint32_t displayID[7] = {};
+    uint32_t priorityDirty = 0;
+};
+
 class CCharacterComponent {
     public:
         // Static variables
@@ -105,6 +111,7 @@ class CCharacterComponent {
         ComponentData m_data;
         HTEXTURE m_baseTexture = nullptr;
         void* m_texture[NUM_COMPONENT_VARIATIONS * 3] = {};
+        ComponentItemDisplay m_itemDisplays[NUM_COMPONENT_SECTIONS] = {};
 
         // Member functions
         void CreateBaseTexture();
