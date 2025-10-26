@@ -475,6 +475,13 @@ void CCharacterComponent::RenderPrepTU(CCharacterComponent* component) {
     auto skin = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
     CCharacterComponent::PasteFromSkin(SECTION_TORSO_UPPER, skin, CCharacterComponent::s_textureBuffer);
 
+    if (!(component->m_itemDisplays[ITEMSLOT_3].priorityDirty & ((1 << 0) | (1 << 1) | (1 << 2)))) {
+        auto underwearUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 1)];
+        if (underwearUpperTexture) {
+            CCharacterComponent::PasteToSection(SECTION_TORSO_UPPER, underwearUpperTexture, CCharacterComponent::s_textureBuffer);
+        }
+    }
+
     // TODO
 }
 
