@@ -84,7 +84,71 @@ void Blit_Argb8888_Argb1555(const C2iVector& size, const void* in, uint32_t inSt
 }
 
 void Blit_Argb8888_Rgb565(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    WHOA_UNIMPLEMENTED();
+    if (size.y == 0) {
+        return;
+    }
+
+    auto inRow = static_cast<const uint8_t*>(in);
+    auto outRow = static_cast<uint8_t*>(out);
+
+    if (size.x >= 2) {
+        // Process two pixels at a time
+        for (int32_t row = 0; row < size.y; row++) {
+            for (int32_t col = 0; col < size.x; col += 2) {
+                // Each ARGB8888 pixel is 4 bytes: [B, G, R, A]
+
+                // First pixel (bytes 0-3)
+                auto b0 = inRow[col * 4 + 0];
+                auto g0 = inRow[col * 4 + 1];
+                auto r0 = inRow[col * 4 + 2];
+                // Ignore alpha
+
+                // Second pixel (bytes 4-7)
+                auto b1 = inRow[col * 4 + 4];
+                auto g1 = inRow[col * 4 + 5];
+                auto r1 = inRow[col * 4 + 6];
+                // Ignore alpha
+
+                // Convert to RGB565 (pack bits)
+                uint16_t p0 = ((r0 & 0xF8) << 8)    // Red: bits 15-11
+                            | ((g0 & 0xFC) << 3)    // Green: bits 10-5
+                            | ((b0 & 0xF8) >> 3);   // Blue: bits 4-0
+
+                uint16_t p1 = ((r1 & 0xF8) << 8)
+                            | ((g1 & 0xFC) << 3)
+                            | ((b1 & 0xF8) >> 3);
+
+                // Write packed pixels
+                *(reinterpret_cast<uint32_t*>(&outRow[col * 2])) = p0 | (p1 << 16);
+            }
+
+            inRow += inStride;
+            outRow += outStride;
+        }
+    } else {
+        // Process one pixel at a time
+        for (int32_t row = 0; row < size.y; row++) {
+            for (int32_t col = 0; col < size.x; col++) {
+                // Each ARGB8888 pixel is 4 bytes: [B, G, R, A]
+
+                uint8_t b = inRow[col * 4 + 0];
+                uint8_t g = inRow[col * 4 + 1];
+                uint8_t r = inRow[col * 4 + 2];
+                // Ignore alpha
+
+                // Convert to RGB565 (pack bits)
+                uint16_t px = ((r & 0xF8) << 8)     // Red: bits 15-11
+                            | ((g & 0xFC) << 3)     // Green: bits 10-5
+                            | ((b & 0xF8) >> 3);    // Blue: bits 4-0
+
+                // Write packed pixel
+                *(reinterpret_cast<uint16_t*>(&outRow[col * 2])) = px;
+            }
+
+            inRow += inStride;
+            outRow += outStride;
+        }
+    }
 }
 
 void Blit_Argb4444_Abgr8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
