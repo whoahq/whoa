@@ -159,6 +159,10 @@ void WowClientDB<T>::LoadRecords(SFile* f, const char* filename, int32_t linenum
         auto record = &this->m_records[i];
         record->Read(f, this->m_strings);
 
+        if (T::NeedIDAssigned()) {
+            record->SetID(i);
+        }
+
         this->m_maxID = record->GetID() > this->m_maxID ? record->GetID() : this->m_maxID;
         this->m_minID = record->GetID() < this->m_minID ? record->GetID() : this->m_minID;
     }
