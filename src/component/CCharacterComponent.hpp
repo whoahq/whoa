@@ -3,6 +3,7 @@
 
 #include "component/Types.hpp"
 #include "gx/Texture.hpp"
+#include <storm/String.hpp>
 #include <tempest/Vector.hpp>
 #include <cstdint>
 
@@ -29,7 +30,7 @@ struct ComponentData {
     int32_t hairStyleID = 0;
     CM2Model* model = nullptr;
     uint32_t flags = 0x0;
-    uint8_t byte28 = 0;
+    char npcBakedTexturePath[STORM_MAX_PATH] = { '\0' };
 
     uint32_t geosets[NUM_GEOSET] = {
         001,
