@@ -107,7 +107,7 @@ class CCharacterComponent {
 
         // Member variables
         uint32_t m_flags = 0x1 | 0x2 | 0x4;
-        uint32_t m_sections = 0xFFFFFFFF;
+        uint32_t m_sectionDirty = 0xFFFFFFFF;
         EGxTexFormat m_textureFormat = CCharacterComponent::s_gxFormat;
         ComponentData m_data;
         HTEXTURE m_baseTexture = nullptr;

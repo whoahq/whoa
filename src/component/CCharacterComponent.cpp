@@ -754,7 +754,7 @@ void CCharacterComponent::LoadBaseVariation(COMPONENT_VARIATIONS sectionIndex, i
         this->m_texture[index] = TextureCacheCreateTexture(s_path);
     }
 
-    this->m_sections |= 1 << section;
+    this->m_sectionDirty |= 1 << section;
 
     // TODO
 
@@ -810,8 +810,7 @@ void CCharacterComponent::RenderPrepAll() {
 
     this->m_flags &= ~0x1;
 
-    // TODO dirty mask?
-    this->m_sections = 0;
+    this->m_sectionDirty = 0;
 
     // TODO
 }
@@ -868,7 +867,7 @@ void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
     }
 
     this->m_flags |= 0x4;
-    this->m_sections |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
+    this->m_sectionDirty |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
 
     // TODO
 
