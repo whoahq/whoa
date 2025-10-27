@@ -6,6 +6,7 @@
 
 class CharSectionsRec;
 
+struct ComponentData;
 struct st_variation;
 
 struct st_color {
@@ -27,6 +28,8 @@ struct st_variation {
 };
 
 int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr);
+
+int32_t ComponentGetHairGeoset(ComponentData* data);
 
 int32_t ComponentGetNumColors(st_race* varArray, int32_t raceId, int32_t sexId, COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex);
 

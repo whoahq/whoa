@@ -1,4 +1,5 @@
 #include "component/Util.hpp"
+#include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
 #include "object/Types.hpp"
 #include <storm/Memory.hpp>
@@ -124,6 +125,19 @@ int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr) {
     }
 
     *varArrayPtr = varArray;
+
+    return 1;
+}
+
+int32_t ComponentGetHairGeoset(ComponentData* data) {
+    for (int32_t i = 0; i < g_charHairGeosetsDB.GetNumRecords(); i++) {
+        auto hairGeosetRec = g_charHairGeosetsDB.GetRecordByIndex(i);
+
+        if (hairGeosetRec->m_raceID == data->raceID && hairGeosetRec->m_sexID == data->sexID && hairGeosetRec->m_variationID == data->hairStyleID) {
+            auto geosetId = hairGeosetRec->m_geosetID;
+            return geosetId > 0 ? geosetId : 1;
+        }
+    }
 
     return 1;
 }

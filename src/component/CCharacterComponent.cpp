@@ -716,6 +716,7 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
     // TODO
 
     this->SetSkinColor(this->m_data.skinColorID, false, true, a3);
+    this->SetHairStyle(this->m_data.hairStyleID, a3);
 
     // TODO
 }
@@ -870,6 +871,44 @@ void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
     this->m_sectionDirty |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
 
     // TODO
+
+    this->m_flags &= ~0x8;
+}
+
+void CCharacterComponent::SetHairColor(int32_t hairColorID, bool a3, const char* a4) {
+    // TODO
+}
+
+void CCharacterComponent::SetHairStyle(int32_t hairStyleID, const char* a3) {
+    if (!ComponentValidateBase(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        VARIATION_HAIR,
+        hairStyleID,
+        this->m_data.hairColorID
+    )) {
+        return;
+    }
+
+    this->m_data.hairStyleID = hairStyleID;
+
+    auto hairGeoset = ComponentGetHairGeoset(&this->m_data);
+    this->m_data.geosets[0] = hairGeoset;
+
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (!isNPC) {
+        this->LoadBaseVariation(VARIATION_HAIR, 1, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_LOWER, a3);
+        this->LoadBaseVariation(VARIATION_HAIR, 2, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_UPPER, a3);
+    }
+
+    this->SetHairColor(this->m_data.hairColorID, false, a3);
+
+    this->m_flags |= 0x4;
+    this->m_sectionDirty |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
+
+    // TODO component request logic
 
     this->m_flags &= ~0x8;
 }
