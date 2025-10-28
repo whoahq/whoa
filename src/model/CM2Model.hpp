@@ -189,7 +189,10 @@ class CM2Model {
         void Sub826350(M2SequenceFallback& fallback, uint32_t sequenceId);
         int32_t Sub8269C0(uint32_t boneId, uint16_t boneIndex);
         void Sub826E60(uint32_t* a2, uint32_t* a3);
+        void UnlinkFromAnimateList();
+        void UnlinkFromAttachList();
         void UnlinkFromCallbackList();
+        void UnlinkFromDrawList();
         void UnoptimizeVisibleGeometry();
         void UnsetBoneSequence(uint32_t boneId, int32_t a3, int32_t a4);
         void UpdateLoaded();

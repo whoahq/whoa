@@ -86,21 +86,22 @@ CM2Model::~CM2Model() {
 
     // Unlink from lists
 
-    if (this->m_animatePrev) {
-        *this->m_animatePrev = this->m_animateNext;
-    }
-    if (this->m_animateNext) {
-        this->m_animateNext->m_animatePrev = this->m_animatePrev;
-    }
-
-    if (this->m_drawPrev) {
-        *this->m_drawPrev = this->m_drawNext;
-    }
-    if (this->m_drawNext) {
-        this->m_drawNext->m_drawPrev = this->m_drawPrev;
-    }
+    this->UnlinkFromCallbackList();
+    this->UnlinkFromAnimateList();
+    this->UnlinkFromDrawList();
 
     // TODO
+
+    this->DetachFromScene();
+
+    // TODO
+
+    this->UnlinkFromAttachList();
+
+    // TODO
+
+    this->m_attachParent = nullptr;
+    this->m_currentLighting = nullptr;
 }
 
 void CM2Model::AddRef() {
@@ -812,7 +813,22 @@ void CM2Model::DetachFromParent() {
 }
 
 void CM2Model::DetachFromScene() {
+    // Unlink from scene list
+
+    if (this->m_scenePrev) {
+        *this->m_scenePrev = this->m_sceneNext;
+    }
+
+    if (this->m_sceneNext) {
+        this->m_sceneNext->m_scenePrev = this->m_scenePrev;
+    }
+
+    this->m_scenePrev = nullptr;
+    this->m_sceneNext = nullptr;
+
     // TODO
+
+    this->m_scene = nullptr;
 }
 
 void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint32_t& currentKey, uint32_t& nextKey, float& ratio) {
@@ -1914,6 +1930,26 @@ void CM2Model::Sub826E60(uint32_t* a2, uint32_t* a3) {
     // TODO
 }
 
+void CM2Model::UnlinkFromAnimateList() {
+    if (this->m_animatePrev) {
+        *this->m_animatePrev = this->m_animateNext;
+    }
+
+    if (this->m_animateNext) {
+        this->m_animateNext->m_animatePrev = this->m_animatePrev;
+    }
+}
+
+void CM2Model::UnlinkFromAttachList() {
+    if (this->m_attachPrev) {
+        *this->m_attachPrev = this->m_attachNext;
+    }
+
+    if (this->m_attachNext) {
+        this->m_attachNext->m_attachPrev = this->m_attachPrev;
+    }
+}
+
 void CM2Model::UnlinkFromCallbackList() {
     if (this->m_callbackPrev) {
         *this->m_callbackPrev = this->m_callbackNext;
@@ -1926,6 +1962,16 @@ void CM2Model::UnlinkFromCallbackList() {
 
         this->m_callbackPrev = nullptr;
         this->m_callbackNext = nullptr;
+    }
+}
+
+void CM2Model::UnlinkFromDrawList() {
+    if (this->m_drawPrev) {
+        *this->m_drawPrev = this->m_drawNext;
+    }
+
+    if (this->m_drawNext) {
+        this->m_drawNext->m_drawPrev = this->m_drawPrev;
     }
 }
 
