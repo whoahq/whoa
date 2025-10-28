@@ -777,6 +777,14 @@ void CM2Model::CancelDeferredSequences(uint32_t boneIndex, bool a3) {
     // TODO
 }
 
+void CM2Model::DetachAllChildrenById(uint32_t id) {
+    for (auto model = this->m_attachList; model; model = model->m_attachNext) {
+        if (model->m_attachId == id) {
+            model->DetachFromParent();
+        }
+    }
+}
+
 void CM2Model::DetachFromParent() {
     // TODO
 }
