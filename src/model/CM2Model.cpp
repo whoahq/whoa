@@ -1190,7 +1190,12 @@ int32_t CM2Model::InitializeLoaded() {
             }
 
             case 1: {
-                // TODO
+                this->SetGeometryVisible(
+                    modelCall->args[0],
+                    modelCall->args[1],
+                    modelCall->args[2]
+                );
+
                 break;
             }
 
