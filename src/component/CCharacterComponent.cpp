@@ -857,6 +857,8 @@ void CCharacterComponent::RenderPrepSections() {
 
     this->m_flags &= ~0x1;
 
+    this->m_sectionDirty = 0;
+
     // TODO
 
     s_bInRenderPrep = 0;
