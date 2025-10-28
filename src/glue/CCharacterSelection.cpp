@@ -46,7 +46,18 @@ void CCharacterSelection::ClearCharacterList() {
 }
 
 void CCharacterSelection::ClearCharacterModel() {
-    // TODO
+    if (!CCharacterSelection::s_modelFrame) {
+        return;
+    }
+
+    auto model = CCharacterSelection::s_modelFrame->m_model;
+
+    if (model) {
+        model->DetachAllChildrenById(0);
+
+        // Might be an inlined function (perhaps ClearPetModel)
+        model->DetachAllChildrenById(1);
+    }
 }
 
 void CCharacterSelection::EnumerateCharactersCallback(const CHARACTER_INFO& info, void* param) {
