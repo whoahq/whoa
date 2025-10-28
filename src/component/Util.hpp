@@ -4,6 +4,7 @@
 #include "component/Types.hpp"
 #include <cstdint>
 
+class CharacterFacialHairStylesRec;
 class CharSectionsRec;
 
 struct ComponentData;
@@ -28,6 +29,8 @@ struct st_variation {
 };
 
 int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr);
+
+CharacterFacialHairStylesRec* ComponentGetFacialHairStyleRecord(ComponentData* data);
 
 int32_t ComponentGetHairGeoset(ComponentData* data);
 

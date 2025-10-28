@@ -129,6 +129,18 @@ int32_t BuildComponentArray(uint32_t varArrayLength, st_race** varArrayPtr) {
     return 1;
 }
 
+CharacterFacialHairStylesRec* ComponentGetFacialHairStyleRecord(ComponentData* data) {
+    for (int32_t i = 0; i < g_characterFacialHairStylesDB.GetNumRecords(); i++) {
+        auto facialHairStyleRec = g_characterFacialHairStylesDB.GetRecordByIndex(i);
+
+        if (facialHairStyleRec->m_raceID == data->raceID && facialHairStyleRec->m_sexID == data->sexID && facialHairStyleRec->m_variationID == data->facialHairStyleID) {
+            return facialHairStyleRec;
+        }
+    }
+
+    return nullptr;
+}
+
 int32_t ComponentGetHairGeoset(ComponentData* data) {
     for (int32_t i = 0; i < g_charHairGeosetsDB.GetNumRecords(); i++) {
         auto hairGeosetRec = g_charHairGeosetsDB.GetRecordByIndex(i);
