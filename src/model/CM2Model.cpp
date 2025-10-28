@@ -792,7 +792,24 @@ void CM2Model::DetachAllChildrenById(uint32_t id) {
 }
 
 void CM2Model::DetachFromParent() {
-    // TODO
+    if (this->m_attachPrev) {
+        *this->m_attachPrev = this->m_attachNext;
+    }
+
+    if (this->m_attachNext) {
+        this->m_attachNext->m_attachPrev = this->m_attachPrev;
+    }
+
+    this->m_flag40000 = 0;
+
+    this->m_attachPrev = nullptr;
+    this->m_attachNext = nullptr;
+    this->m_attachParent = nullptr;
+    this->m_attachId = -1;
+
+    // TODO this->dword174 = 0
+
+    this->Release();
 }
 
 void CM2Model::DetachFromScene() {
