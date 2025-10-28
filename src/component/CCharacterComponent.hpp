@@ -43,6 +43,7 @@ class CCharacterComponent {
 
         // Static functions
         static CCharacterComponent* AllocComponent();
+        static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
         static void InitDbData();

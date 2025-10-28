@@ -7,6 +7,7 @@
 #include "gx/Texture.hpp"
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
+#include "util/CStatus.hpp"
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
@@ -70,12 +71,18 @@ int32_t s_itemPriority[NUM_ITEM_SLOT][NUM_COMPONENT_SECTIONS] = {
 int32_t s_bInRenderPrep = 0;
 char* s_pathEnd;
 char s_path[STORM_MAX_PATH];
+CStatus s_status;
 
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {
     // TODO ObjectAlloc
     return STORM_NEW(CCharacterComponent);
+}
+
+HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* status) {
+    auto texFlags = CGxTexFlags(GxTex_LinearMipNearest, 0, 0, 0, 0, 0, 1);
+    return TextureCreate(fileName, texFlags, status, 0);
 }
 
 void CCharacterComponent::Initialize() {
@@ -841,7 +848,29 @@ void CCharacterComponent::ReplaceExtraSkinTexture(const char* a2) {
 }
 
 void CCharacterComponent::ReplaceHairTexture(int32_t hairStyleID, const char* a3) {
-    // TODO
+    if (!ComponentValidateBase(
+       CCharacterComponent::s_chrVarArray,
+       this->m_data.raceID,
+       this->m_data.sexID,
+       VARIATION_HAIR,
+       hairStyleID,
+       this->m_data.hairColorID
+    )) {
+        return;
+    }
+
+    auto sectionsRec = this->GetSectionsRecord(VARIATION_HAIR, hairStyleID, this->m_data.hairColorID, nullptr);
+    if (!*sectionsRec->m_textureName[0]) {
+        return;
+    }
+
+    SStrCopy(s_pathEnd, sectionsRec->m_textureName[0]);
+
+    auto hairTexture = CCharacterComponent::CreateTexture(s_path, &s_status);
+    if (hairTexture) {
+        this->m_data.model->ReplaceTexture(6, hairTexture);
+        HandleClose(hairTexture);
+    }
 }
 
 void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
