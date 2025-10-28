@@ -1,5 +1,5 @@
 #include "component/Util.hpp"
-#include "component/CCharacterComponent.hpp"
+#include "component/Types.hpp"
 #include "db/Db.hpp"
 #include "object/Types.hpp"
 #include <storm/Memory.hpp>
