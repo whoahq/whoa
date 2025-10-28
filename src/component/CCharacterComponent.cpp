@@ -1095,7 +1095,19 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
 
     this->SetFace(this->m_data.faceID, a3, a5);
 
-    // TODO
+    if (a4) {
+        this->m_flags |= 0x1;
+
+        // TODO component request logic
+
+        this->m_flags &= ~0x8;
+    }
+
+    this->m_sectionDirty = -1;
+
+    // TODO component request logic
+
+    this->m_flags &= ~0x8;
 }
 
 int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {
