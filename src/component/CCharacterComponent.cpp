@@ -8,6 +8,7 @@
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
 #include "util/CStatus.hpp"
+#include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
@@ -70,6 +71,7 @@ int32_t s_itemPriority[NUM_ITEM_SLOT][NUM_COMPONENT_SECTIONS] = {
 #define SECTION_HL_ITEM_PRIORITIES 0
 
 int32_t s_bInRenderPrep = 0;
+uint32_t* s_componentHeap;
 char* s_pathEnd;
 char s_path[STORM_MAX_PATH];
 CStatus s_status;
@@ -77,8 +79,17 @@ CStatus s_status;
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {
-    // TODO ObjectAlloc
-    return STORM_NEW(CCharacterComponent);
+    uint32_t memHandle;
+    void* mem;
+
+    if (!ObjectAlloc(*s_componentHeap, &memHandle, &mem, false)) {
+        return nullptr;
+    }
+
+    auto component = new (mem) CCharacterComponent();
+    component->m_memHandle = memHandle;
+
+    return component;
 }
 
 HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* status) {
@@ -94,7 +105,12 @@ void CCharacterComponent::Initialize() {
 }
 
 void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress) {
-    // TODO
+    if (!s_componentHeap) {
+        auto heapId = static_cast<uint32_t*>(STORM_ALLOC(sizeof(uint32_t)));
+        *heapId = ObjectAllocAddHeap(sizeof(CCharacterComponent), 32, "CCharacterComponent", true);
+
+        s_componentHeap = heapId;
+    }
 
     s_pathEnd = s_path;
 
