@@ -714,7 +714,7 @@ CharSectionsRec* CCharacterComponent::GetSectionsRecord(COMPONENT_VARIATIONS sec
     );
 }
 
-void CCharacterComponent::Init(ComponentData* data, const char* a3) {
+int32_t CCharacterComponent::Init(ComponentData* data, const char* a3) {
     if (data->model) {
         data->model->Release();
     }
@@ -725,8 +725,9 @@ void CCharacterComponent::Init(ComponentData* data, const char* a3) {
 
     this->SetSkinColor(this->m_data.skinColorID, false, true, a3);
     this->SetHairStyle(this->m_data.hairStyleID, a3);
+    this->SetBeardStyle(this->m_data.facialHairStyleID, false, a3);
 
-    // TODO
+    return 1;
 }
 
 int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
@@ -871,6 +872,49 @@ void CCharacterComponent::ReplaceHairTexture(int32_t hairStyleID, const char* a3
     if (hairTexture) {
         this->m_data.model->ReplaceTexture(6, hairTexture);
         HandleClose(hairTexture);
+    }
+}
+
+void CCharacterComponent::SetBeardStyle(int32_t facialHairStyleID, bool a3, const char* a4) {
+    auto listIndex = this->m_data.raceID * 2 + this->m_data.sexID;
+    if (facialHairStyleID < 0 || facialHairStyleID > CCharacterComponent::s_characterFacialHairStylesList[listIndex]) {
+        return;
+    }
+
+    this->m_data.facialHairStyleID = facialHairStyleID;
+
+    auto facialHairStyleRec = ComponentGetFacialHairStyleRecord(&this->m_data);
+
+    if (facialHairStyleRec) {
+        this->m_data.geosets[1] = 100 + facialHairStyleRec->m_geoset[0];
+        this->m_data.geosets[2] = 200 + facialHairStyleRec->m_geoset[2];
+        this->m_data.geosets[3] = 300 + facialHairStyleRec->m_geoset[1];
+        this->m_data.geosets[16] = 1600 + facialHairStyleRec->m_geoset[3];
+        this->m_data.geosets[17] = 1700 + facialHairStyleRec->m_geoset[4];
+
+        this->m_flags |= 0x4;
+
+        if (
+            (facialHairStyleRec->m_geoset[0] || facialHairStyleRec->m_geoset[1] || facialHairStyleRec->m_geoset[2])
+            && (!this->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 1)] || !this->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 2)])
+        ) {
+            this->ReplaceHairTexture(1, a4);
+        }
+    }
+
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (!isNPC) {
+        if (a3) {
+            this->LoadBaseVariation(VARIATION_FACIAL_HAIR, 0, this->m_data.facialHairStyleID, this->m_data.hairColorID, SECTION_HEAD_LOWER, a4);
+            this->LoadBaseVariation(VARIATION_FACIAL_HAIR, 1, this->m_data.facialHairStyleID, this->m_data.hairColorID, SECTION_HEAD_UPPER, a4);
+        }
+
+        this->m_sectionDirty |= (1 << SECTION_HEAD_LOWER) | (1 << SECTION_HEAD_UPPER);
+
+        // TODO component request logic
+
+        this->m_flags &= ~0x8;
     }
 }
 

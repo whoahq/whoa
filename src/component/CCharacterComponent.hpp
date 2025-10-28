@@ -81,7 +81,7 @@ class CCharacterComponent {
         void CreateBaseTexture();
         void GeosRenderPrep();
         CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);
-        void Init(ComponentData* data, const char* a3);
+        int32_t Init(ComponentData* data, const char* a3);
         int32_t ItemsLoaded(int32_t a2);
         void LoadBaseVariation(COMPONENT_VARIATIONS sectionIndex, int32_t textureIndex, int32_t variationIndex, int32_t colorIndex, COMPONENT_SECTIONS section, const char* a7);
         void PrepSections();
@@ -90,6 +90,7 @@ class CCharacterComponent {
         void RenderPrepSections();
         void ReplaceExtraSkinTexture(const char* a2);
         void ReplaceHairTexture(int32_t hairStyleID, const char* a3);
+        void SetBeardStyle(int32_t facialHairStyleID, bool a3, const char* a4);
         void SetFace(int32_t faceID, bool a3, const char* a4);
         void SetHairColor(int32_t hairColorID, bool a3, const char* a4);
         void SetHairStyle(int32_t hairStyleID, const char* a3);
