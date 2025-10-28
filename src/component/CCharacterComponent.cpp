@@ -866,7 +866,31 @@ void CCharacterComponent::RenderPrepSections() {
 }
 
 void CCharacterComponent::ReplaceExtraSkinTexture(const char* a2) {
-    // TODO
+    if (!ComponentValidateBase(
+       CCharacterComponent::s_chrVarArray,
+       this->m_data.raceID,
+       this->m_data.sexID,
+       VARIATION_SKIN,
+       0,
+       this->m_data.hairColorID
+    )) {
+        return;
+    }
+
+    auto sectionsRec = this->GetSectionsRecord(VARIATION_SKIN, 0, this->m_data.skinColorID, nullptr);
+
+    if (!*sectionsRec->m_textureName[1]) {
+        return;
+    }
+
+    SStrCopy(s_pathEnd, sectionsRec->m_textureName[1]);
+
+    auto extraSkinTexture = CCharacterComponent::CreateTexture(s_path, &s_status);
+
+    if (extraSkinTexture) {
+        this->m_data.model->ReplaceTexture(8, extraSkinTexture);
+        HandleClose(extraSkinTexture);
+    }
 }
 
 void CCharacterComponent::ReplaceHairTexture(int32_t hairStyleID, const char* a3) {
