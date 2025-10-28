@@ -5,12 +5,13 @@
 #include "model/CM2Shared.hpp"
 #include "model/M2Animate.hpp"
 #include "model/M2Data.hpp"
+#include "model/M2Internal.hpp"
 #include "model/M2Model.hpp"
-#include <cmath>
-#include <new>
 #include <common/DataMgr.hpp>
 #include <common/ObjectAlloc.hpp>
 #include <tempest/Math.hpp>
+#include <cmath>
+#include <new>
 
 // Alignment helpers
 #define ALIGN(addr, type) ((addr + alignof(type) - 1) & ~(alignof(type) - 1))
@@ -25,13 +26,11 @@ uint32_t CM2Model::s_skinProfileBoneCountMax[] = { 256, 64, 53, 21 };
 
 CM2Model* CM2Model::AllocModel(uint32_t* heapId) {
     uint32_t memHandle;
-    void* object = nullptr;
+    void* mem = nullptr;
 
-    if (ObjectAlloc(*heapId, &memHandle, &object, 0)) {
-        CM2Model* model = new (object) CM2Model();
-
-        // TODO
-        // model->uint2E8 = memHandle;
+    if (ObjectAlloc(*heapId, &memHandle, &mem, false)) {
+        auto model = new (mem) CM2Model();
+        model->m_memHandle = memHandle;
 
         return model;
     }
@@ -1420,8 +1419,19 @@ void CM2Model::ProcessCallbacksRecursive() {
     this->Release();
 }
 
-void CM2Model::Release() {
-    // TODO
+uint32_t CM2Model::Release() {
+    STORM_ASSERT(this->m_refCount > 0);
+
+    this->m_refCount--;
+
+    if (this->m_refCount > 0) {
+        return this->m_refCount;
+    }
+
+    this->~CM2Model();
+    ObjectFree(*g_modelPool, this->m_memHandle);
+
+    return 0;
 }
 
 void CM2Model::ReplaceTexture(uint32_t textureId, HTEXTURE texture) {

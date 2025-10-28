@@ -116,6 +116,7 @@ class CM2Model {
         void* m_lightingArg = nullptr;
         M2ModelCamera* m_cameras = nullptr;
         void* ptr2D0 = nullptr;
+        uint32_t m_memHandle;
 
         // Member functions
         CM2Model()
@@ -170,7 +171,7 @@ class CM2Model {
         void LinkToCallbackListTail();
         int32_t ProcessCallbacks();
         void ProcessCallbacksRecursive();
-        void Release();
+        uint32_t Release();
         void ReplaceTexture(uint32_t textureId, HTEXTURE texture);
         void SetAnimating(int32_t animating);
         void SetBoneSequence(uint32_t boneId, uint32_t sequenceId, uint32_t a4, uint32_t time, float a6, int32_t a7, int32_t a8);
