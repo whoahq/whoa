@@ -226,5 +226,7 @@ int32_t CountFacialFeatures(uint32_t varArrayLength, uint32_t** featuresListPtr)
         featuresList[listIndex]++;
     }
 
-    return 0;
+    *featuresListPtr = featuresList;
+
+    return 1;
 }
