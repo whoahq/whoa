@@ -840,6 +840,10 @@ void CCharacterComponent::ReplaceExtraSkinTexture(const char* a2) {
     // TODO
 }
 
+void CCharacterComponent::ReplaceHairTexture(int32_t hairStyleID, const char* a3) {
+    // TODO
+}
+
 void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
     bool isNPC = this->m_data.flags & 0x1;
 
@@ -876,7 +880,38 @@ void CCharacterComponent::SetFace(int32_t faceID, bool a3, const char* a4) {
 }
 
 void CCharacterComponent::SetHairColor(int32_t hairColorID, bool a3, const char* a4) {
-    // TODO
+    if (!ComponentValidateBase(
+        CCharacterComponent::s_chrVarArray,
+        this->m_data.raceID,
+        this->m_data.sexID,
+        VARIATION_HAIR,
+        this->m_data.hairStyleID,
+        hairColorID
+    )) {
+        return;
+    }
+
+    this->m_data.hairColorID = hairColorID;
+
+    auto raceRec = g_chrRacesDB.GetRecord(this->m_data.raceID);
+
+    if (this->m_data.sexID == UNITSEX_MALE && this->m_data.hairStyleID == 0 && raceRec->m_flags & 0x8) {
+        this->ReplaceHairTexture(1, a4);
+    }
+
+    this->ReplaceHairTexture(this->m_data.hairStyleID, a4);
+
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (!isNPC) {
+        if (a3) {
+            this->LoadBaseVariation(VARIATION_HAIR, 1, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_LOWER, a4);
+            this->LoadBaseVariation(VARIATION_HAIR, 2, this->m_data.hairStyleID, this->m_data.hairColorID, SECTION_HEAD_UPPER, a4);
+        }
+
+        this->LoadBaseVariation(VARIATION_FACIAL_HAIR, 0, this->m_data.facialHairStyleID, this->m_data.hairColorID, SECTION_HEAD_LOWER, a4);
+        this->LoadBaseVariation(VARIATION_FACIAL_HAIR, 1, this->m_data.facialHairStyleID, this->m_data.hairColorID, SECTION_HEAD_UPPER, a4);
+    }
 }
 
 void CCharacterComponent::SetHairStyle(int32_t hairStyleID, const char* a3) {

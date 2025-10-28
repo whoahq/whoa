@@ -87,6 +87,7 @@ class CCharacterComponent {
         void RenderPrepAll();
         void RenderPrepSections();
         void ReplaceExtraSkinTexture(const char* a2);
+        void ReplaceHairTexture(int32_t hairStyleID, const char* a3);
         void SetFace(int32_t faceID, bool a3, const char* a4);
         void SetHairColor(int32_t hairColorID, bool a3, const char* a4);
         void SetHairStyle(int32_t hairStyleID, const char* a3);
