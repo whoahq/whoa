@@ -732,8 +732,9 @@ CharSectionsRec* CCharacterComponent::GetSectionsRecord(COMPONENT_VARIATIONS sec
 }
 
 int32_t CCharacterComponent::Init(ComponentData* data, const char* a3) {
-    if (data->model) {
-        data->model->Release();
+    // If existing model is present, release it before copying in new data
+    if (this->m_data.model) {
+        this->m_data.model->Release();
     }
 
     this->m_data = *data;
