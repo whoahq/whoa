@@ -444,15 +444,7 @@ void CCharacterComponent::RenderPrepHA(CCharacterComponent* component) {
 }
 
 void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
-    auto sectionsRec = ComponentGetSectionsRecord(
-        CCharacterComponent::s_chrVarArray,
-        component->m_data.raceID,
-        component->m_data.sexID,
-        VARIATION_SKIN,
-        0,
-        component->m_data.skinColorID,
-        nullptr
-    );
+    auto sectionsRec = component->GetSectionsRecord(VARIATION_SKIN, 0, component->m_data.skinColorID, nullptr);
 
     // Skin texture
 
@@ -482,15 +474,7 @@ void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
 }
 
 void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
-    auto sectionsRec = ComponentGetSectionsRecord(
-        CCharacterComponent::s_chrVarArray,
-        component->m_data.raceID,
-        component->m_data.sexID,
-        VARIATION_SKIN,
-        0,
-        component->m_data.skinColorID,
-        nullptr
-    );
+    auto sectionsRec = component->GetSectionsRecord(VARIATION_SKIN, 0, component->m_data.skinColorID, nullptr);
 
     // Skin texture
 
@@ -1063,15 +1047,7 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
         0
     );
 
-    auto sectionsRec = ComponentGetSectionsRecord(
-        CCharacterComponent::s_chrVarArray,
-        this->m_data.raceID,
-        this->m_data.sexID,
-        VARIATION_SKIN,
-        0,
-        skinColorID,
-        nullptr
-    );
+    auto sectionsRec = this->GetSectionsRecord(VARIATION_SKIN, 0, skinColorID, nullptr);
 
     if (skinColorID < numColors && sectionsRec && !(sectionsRec->m_flags & 0x8)) {
         auto underwearRec = this->GetSectionsRecord(VARIATION_UNDERWEAR, 0, skinColorID, nullptr);
