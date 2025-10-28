@@ -1181,7 +1181,11 @@ int32_t CM2Model::InitializeLoaded() {
 
         switch (modelCall->type) {
             case 0: {
-                // TODO
+                auto textureId = modelCall->args[0];
+                auto texture = *reinterpret_cast<HTEXTURE*>(&modelCall->args[1]);
+
+                this->ReplaceTexture(textureId, texture);
+
                 break;
             }
 
@@ -1268,7 +1272,7 @@ int32_t CM2Model::InitializeLoaded() {
         this->m_modelCallList = modelCall->modelCallNext;
 
         if (modelCall->type == 0) {
-            HTEXTURE texture = reinterpret_cast<HTEXTURE>(&modelCall->args[1]);
+            auto texture = *reinterpret_cast<HTEXTURE*>(&modelCall->args[1]);
 
             if (texture) {
                 HandleClose(texture);
