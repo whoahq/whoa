@@ -11,6 +11,7 @@
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
+uint32_t* CCharacterComponent::s_characterFacialHairStylesList;
 st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
@@ -156,7 +157,7 @@ void CCharacterComponent::InitDbData() {
     CCharacterComponent::s_chrVarArrayLength = varArrayLength;
 
     BuildComponentArray(varArrayLength, &CCharacterComponent::s_chrVarArray);
-    // TODO CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
+    CountFacialFeatures(varArrayLength, &CCharacterComponent::s_characterFacialHairStylesList);
 }
 
 void CCharacterComponent::Paste(void* srcTexture, MipBits* dstMips, const C2iVector& dstPos, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel) {

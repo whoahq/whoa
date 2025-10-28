@@ -30,6 +30,7 @@ struct ComponentItemDisplay {
 class CCharacterComponent {
     public:
         // Static variables
+        static uint32_t* s_characterFacialHairStylesList;
         static st_race* s_chrVarArray;
         static uint32_t s_chrVarArrayLength;
         static EGxTexFormat s_gxFormat;

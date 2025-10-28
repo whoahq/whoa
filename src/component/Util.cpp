@@ -197,3 +197,22 @@ int32_t ComponentValidateBase(st_race* varArray, int32_t raceId, int32_t sexId, 
 
     return 1;
 }
+
+int32_t CountFacialFeatures(uint32_t varArrayLength, uint32_t** featuresListPtr) {
+    auto featuresList = static_cast<uint32_t*>(STORM_ALLOC_ZERO(sizeof(uint32_t) * varArrayLength));
+
+    if (g_characterFacialHairStylesDB.GetNumRecords() <= 0) {
+        *featuresListPtr = featuresList;
+
+        return 1;
+    }
+
+    for (int32_t i = 0; i < g_characterFacialHairStylesDB.GetNumRecords(); i++) {
+        auto facialHairStyleRec = g_characterFacialHairStylesDB.GetRecordByIndex(i);
+        auto listIndex =  facialHairStyleRec->m_raceID * 2 + facialHairStyleRec->m_sexID;
+
+        featuresList[listIndex]++;
+    }
+
+    return 0;
+}

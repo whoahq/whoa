@@ -37,4 +37,6 @@ CharSectionsRec* ComponentGetSectionsRecord(st_race* varArray, int32_t raceId, i
 
 int32_t ComponentValidateBase(st_race* varArray, int32_t raceId, int32_t sexId, COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex);
 
+int32_t CountFacialFeatures(uint32_t varArrayLength, uint32_t** featuresListPtr);
+
 #endif
