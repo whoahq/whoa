@@ -682,19 +682,36 @@ void CCharacterComponent::CreateBaseTexture() {
 }
 
 void CCharacterComponent::GeosRenderPrep() {
-    // TODO
+    // Check for eye glow
 
-    // Default all sections (0 - 2000) to hidden
+    bool eyeGlow = false;
+
+    if (this->m_data.classID == 6) {
+        eyeGlow = true;
+    } else {
+        auto sectionsRec = this->GetSectionsRecord(VARIATION_FACE, this->m_data.faceID, this->m_data.skinColorID, nullptr);
+
+        if (sectionsRec && sectionsRec->m_flags & 0x4) {
+            eyeGlow = true;
+        }
+    }
+
+    // Hide all geosets (0 - 2000)
+
     this->m_data.model->SetGeometryVisible(0, 2000, 0);
 
-    // Show base "skin" section (0)
+    // Show base skin geoset (0)
+
     this->m_data.model->SetGeometryVisible(0, 0, 1);
 
-    // Show selected geosets
-    for (int32_t i = 0; i < NUM_GEOSET; i++) {
-        // TODO handle 1703
+    // Show all enabled geosets
 
-        this->m_data.model->SetGeometryVisible(this->m_data.geosets[i], this->m_data.geosets[i], 1);
+    for (int32_t geoset = 0; geoset < NUM_GEOSET; geoset++) {
+        if (geoset == GEOSET_EYE_EFFECTS && eyeGlow) {
+            this->m_data.model->SetGeometryVisible(1703, 1703, 1);
+        } else {
+            this->m_data.model->SetGeometryVisible(this->m_data.geosets[geoset], this->m_data.geosets[geoset], 1);
+        }
     }
 
     // TODO
