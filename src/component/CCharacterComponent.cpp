@@ -495,19 +495,19 @@ void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
 
     auto faceUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 1)];
     if (faceUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceUpperTexture, CCharacterComponent::s_textureBuffer);
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, faceUpperTexture, CCharacterComponent::s_textureBuffer);
     }
 
     // Hair textures
 
     auto facialHairUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 1)];
     if (facialHairUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairUpperTexture, CCharacterComponent::s_textureBuffer);
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, facialHairUpperTexture, CCharacterComponent::s_textureBuffer);
     }
 
     auto hairUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 2)];
     if (hairUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, hairUpperTexture, CCharacterComponent::s_textureBuffer);
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, hairUpperTexture, CCharacterComponent::s_textureBuffer);
     }
 }
 
