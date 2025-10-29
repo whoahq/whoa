@@ -440,6 +440,62 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
     }
 }
 
+void CCharacterComponent::AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, int32_t a4) {
+    this->m_flags |= 0x4;
+
+    this->m_items[itemSlot] = displayRec->m_ID;
+
+    // Helm
+
+    if (itemSlot == ITEMSLOT_0) {
+        // TODO handle helm
+
+        return;
+    }
+
+    // Shoulders
+
+    if (itemSlot == ITEMSLOT_1) {
+        // TODO handle shoulders
+
+        return;
+    }
+
+    // Cape
+
+    if (itemSlot == ITEMSLOT_10) {
+        // TODO handle cape
+
+        return;
+    }
+
+    // Unk
+
+    if (itemSlot == ITEMSLOT_11) {
+        // TODO handle unknown item
+
+        return;
+    }
+
+    if (itemSlot == ITEMSLOT_3) {
+        // TODO flag manipulation
+    }
+
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (isNPC) {
+        return;
+    }
+
+    // Items don't manipulate head component sections
+
+    for (int32_t section = SECTION_ARM_UPPER; section <= SECTION_FOOT; section++) {
+        if (*displayRec->m_texture[section] && s_itemPriority[itemSlot][section] != -1) {
+            (this->*CCharacterComponent::s_itemFunc[section])(itemSlot, displayRec, true);
+        }
+    }
+}
+
 void CCharacterComponent::ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority) {
     if (priority == -1) {
         return;

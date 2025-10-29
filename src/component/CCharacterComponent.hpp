@@ -70,8 +70,10 @@ class CCharacterComponent {
         HTEXTURE m_baseTexture = nullptr;
         void* m_texture[NUM_COMPONENT_VARIATIONS * 3] = {};
         ComponentItemDisplay m_itemDisplays[NUM_COMPONENT_SECTIONS] = {};
+        int32_t m_items[NUM_ITEM_SLOT] = {};
 
         // Member functions
+        void AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, int32_t a4);
         void ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority);
         void CreateBaseTexture();
         void GeosRenderPrep();
