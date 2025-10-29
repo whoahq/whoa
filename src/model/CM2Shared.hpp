@@ -26,6 +26,7 @@ class CM2Shared {
         static void SkinProfileLoadedCallback(void* param);
 
         // Member variables
+        uint32_t m_refCount = 1;
         CM2Cache* m_cache;
         uint32_t m_m2DataLoaded : 1;
         uint32_t m_skinProfileLoaded : 1;
@@ -73,7 +74,7 @@ class CM2Shared {
         int32_t InitializeSkinProfile();
         int32_t Load(SFile* file, int32_t a3, CAaBox* a4);
         int32_t LoadSkinProfile(uint32_t profile);
-        void Release();
+        uint32_t Release();
         int32_t SetIndices();
         int32_t SetVertices(uint32_t a2);
         void SubstituteSimpleShaders();

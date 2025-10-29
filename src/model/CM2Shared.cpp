@@ -53,7 +53,9 @@ void CM2Shared::SkinProfileLoadedCallback(void* arg) {
 }
 
 void CM2Shared::AddRef() {
-    // TODO
+    // TODO free list management etc
+
+    this->m_refCount++;
 }
 
 int32_t CM2Shared::CallbackWhenLoaded(CM2Model* model) {
@@ -595,8 +597,20 @@ int32_t CM2Shared::LoadSkinProfile(uint32_t profile) {
     return 1;
 }
 
-void CM2Shared::Release() {
-    // TODO
+uint32_t CM2Shared::Release() {
+    STORM_ASSERT(this->m_refCount > 0);
+
+    this->m_refCount--;
+
+    if (this->m_refCount > 0) {
+        return this->m_refCount;
+    }
+
+    // TODO free list management etc
+
+    delete this;
+
+    return 0;
 }
 
 int32_t CM2Shared::SetIndices() {
