@@ -13,6 +13,7 @@
 #include "db/rec/ChrRacesRec.hpp"
 #include "db/rec/CreatureDisplayInfoRec.hpp"
 #include "db/rec/CreatureModelDataRec.hpp"
+#include "db/rec/ItemDisplayInfoRec.hpp"
 #include "db/rec/MapRec.hpp"
 
 extern WowClientDB<AchievementRec> g_achievementDB;
@@ -26,6 +27,7 @@ extern WowClientDB<ChrClassesRec> g_chrClassesDB;
 extern WowClientDB<ChrRacesRec> g_chrRacesDB;
 extern WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
 extern WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
+extern WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 extern WowClientDB<MapRec> g_mapDB;
 
 void ClientDBInitialize();
