@@ -1146,6 +1146,35 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
     this->m_flags &= ~0x8;
 }
 
+int32_t CCharacterComponent::UpdateItemDisplay(COMPONENT_SECTIONS section, const ItemDisplayInfoRec* newDisplayRec, int32_t priority) {
+    bool isNPC = this->m_data.flags & 0x1;
+
+    if (isNPC) {
+        return 0;
+    }
+
+    if (this->m_itemDisplays[section].displayID[priority]) {
+        auto curDisplayID = this->m_itemDisplays[section].displayID[priority];
+        auto curDisplayRec = g_itemDisplayInfoDB.GetRecord(curDisplayID);
+
+        // New display is same as old display
+        if (curDisplayRec && curDisplayRec->m_texture[section] == newDisplayRec->m_texture[section]) {
+            return 0;
+        }
+    }
+
+    this->m_itemDisplays[section].priorityDirty &= ~(1 << priority);
+
+    if (this->m_itemDisplays[section].texture[priority]) {
+        TextureCacheDestroyTexture(this->m_itemDisplays[section].texture[priority]);
+        this->m_itemDisplays[section].texture[priority] = nullptr;
+    }
+
+    this->m_itemDisplays[section].displayID[priority] = newDisplayRec->m_ID;
+
+    return 1;
+}
+
 int32_t CCharacterComponent::VariationsLoaded(int32_t a2) {
     TCTEXTUREINFO info;
 

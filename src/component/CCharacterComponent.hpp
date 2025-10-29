@@ -8,6 +8,7 @@
 class CACHEENTRY;
 class CCharacterComponent;
 class CharSectionsRec;
+class ItemDisplayInfoRec;
 
 struct BlpPalPixel;
 struct MipBits;
@@ -96,6 +97,7 @@ class CCharacterComponent {
         void SetHairColor(int32_t hairColorID, bool a3, const char* a4);
         void SetHairStyle(int32_t hairStyleID, const char* a3);
         void SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5);
+        int32_t UpdateItemDisplay(COMPONENT_SECTIONS section, const ItemDisplayInfoRec* newDisplayRec, int32_t priority);
         int32_t VariationsLoaded(int32_t a2);
 };
 
