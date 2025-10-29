@@ -80,6 +80,7 @@ class CCharacterComponent {
         ComponentItemDisplay m_itemDisplays[NUM_COMPONENT_SECTIONS] = {};
 
         // Member functions
+        void ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority);
         void CreateBaseTexture();
         void GeosRenderPrep();
         CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);

@@ -654,6 +654,21 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
     }
 }
 
+void CCharacterComponent::ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority) {
+    if (priority == -1) {
+        return;
+    }
+
+    if (this->m_itemDisplays[section].texture[priority]) {
+        TextureCacheDestroyTexture(this->m_itemDisplays[section].texture[priority]);
+        this->m_itemDisplays[section].texture[priority] = nullptr;
+    }
+
+    this->m_itemDisplays[section].displayID[priority] = 0;
+
+    this->m_itemDisplays[section].priorityDirty &= ~(1 << priority);
+}
+
 void CCharacterComponent::CreateBaseTexture() {
     auto dataFormat = this->m_textureFormat == GxTex_Dxt1
         ? GxTex_Dxt1
