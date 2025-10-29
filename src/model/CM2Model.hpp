@@ -96,7 +96,10 @@ class CM2Model {
         uint32_t uint74 = 0;
         float float88 = 0.0f;
         uint32_t uint90 = 0;
-        M2ModelBone* m_bones = nullptr;
+        union {
+            M2ModelBone* m_bones = nullptr;
+            void* m_internalResources;
+        };
         C44Matrix* m_boneMatrices = nullptr;
         M2ModelColor* m_colors = nullptr;
         uint32_t* m_skinSections = nullptr;
@@ -159,6 +162,7 @@ class CM2Model {
         void DetachFromParent();
         void DetachFromScene();
         void FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint32_t& currentKey, uint32_t& nextKey, float& ratio);
+        void FreeInternalResources();
         C44Matrix GetAttachmentWorldTransform(uint32_t id);
         CAaBox& GetBoundingBox(CAaBox& bounds);
         HCAMERA GetCameraByIndex(uint32_t index);

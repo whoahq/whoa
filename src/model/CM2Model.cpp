@@ -94,6 +94,15 @@ CM2Model::~CM2Model() {
 
     this->DetachFromScene();
 
+    if (this->m_shared) {
+        // TODO
+
+        this->FreeInternalResources();
+
+        this->m_shared->Release();
+        this->m_shared = nullptr;
+    }
+
     // TODO
 
     this->UnlinkFromAttachList();
@@ -953,6 +962,65 @@ LABEL_36:
         float v25 = static_cast<float>(v22[1] - v22[0]);
         ratio = v23 / v25;
     }
+}
+
+void CM2Model::FreeInternalResources() {
+    if (!this->m_internalResources) {
+        return;
+    }
+
+    if (this->m_bones) {
+        this->m_bones = nullptr;
+    }
+
+    if (this->m_loops) {
+        this->m_loops = nullptr;
+    }
+
+    if (this->m_skinSections) {
+        this->m_skinSections = nullptr;
+    }
+
+    if (this->m_colors) {
+        this->m_colors = nullptr;
+    }
+
+    if (this->m_textureWeights) {
+        this->m_textureWeights = nullptr;
+    }
+
+    // TODO
+    // if (this->m_textureTransforms) {
+    //     this->m_textureTransforms = nullptr;
+    // }
+
+    if (this->m_attachments) {
+        this->m_attachments = nullptr;
+    }
+
+    if (this->m_lights) {
+        for (int32_t i = 0; i < this->m_shared->m_data->lights.Count(); i++) {
+            this->m_lights[i].light.~CM2Light();
+        }
+
+        this->m_lights = nullptr;
+    }
+
+    if (this->m_cameras) {
+        this->m_cameras = nullptr;
+    }
+
+    // TODO
+    // if (this->m_ribbons) {
+    //     this->m_ribbons = nullptr;
+    // }
+
+    // TODO
+    // if (this->m_particles) {
+    //     this->m_particles = nullptr;
+    // }
+
+    STORM_FREE(this->m_internalResources);
 }
 
 C44Matrix CM2Model::GetAttachmentWorldTransform(uint32_t id) {
