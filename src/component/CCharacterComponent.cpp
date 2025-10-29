@@ -16,6 +16,7 @@ uint32_t* CCharacterComponent::s_characterFacialHairStylesList;
 st_race* CCharacterComponent::s_chrVarArray;
 uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
+ITEM_FUNC CCharacterComponent::s_itemFunc[];
 uint32_t CCharacterComponent::s_mipLevels;
 PREP_FUNC* CCharacterComponent::s_prepFunc[];
 CompSectionInfo CCharacterComponent::s_sectionInfo[];
@@ -125,7 +126,16 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     CCharacterComponent::s_prepFunc[SECTION_HEAD_UPPER]     = &CCharacterComponent::RenderPrepHU;
     CCharacterComponent::s_prepFunc[SECTION_HEAD_LOWER]     = &CCharacterComponent::RenderPrepHL;
 
-    // TODO
+    CCharacterComponent::s_itemFunc[SECTION_ARM_UPPER]      = &CCharacterComponent::UpdateItemAU;
+    CCharacterComponent::s_itemFunc[SECTION_ARM_LOWER]      = &CCharacterComponent::UpdateItemAL;
+    CCharacterComponent::s_itemFunc[SECTION_HAND]           = &CCharacterComponent::UpdateItemHA;
+    CCharacterComponent::s_itemFunc[SECTION_TORSO_UPPER]    = &CCharacterComponent::UpdateItemTU;
+    CCharacterComponent::s_itemFunc[SECTION_TORSO_LOWER]    = &CCharacterComponent::UpdateItemTL;
+    CCharacterComponent::s_itemFunc[SECTION_LEG_UPPER]      = &CCharacterComponent::UpdateItemLU;
+    CCharacterComponent::s_itemFunc[SECTION_LEG_LOWER]      = &CCharacterComponent::UpdateItemLL;
+    CCharacterComponent::s_itemFunc[SECTION_FOOT]           = &CCharacterComponent::UpdateItemFO;
+    CCharacterComponent::s_itemFunc[SECTION_HEAD_UPPER]     = &CCharacterComponent::UpdateItemHU;
+    CCharacterComponent::s_itemFunc[SECTION_HEAD_LOWER]     = &CCharacterComponent::UpdateItemHL;
 
     // Clamp mip levels between 6 and 9
     uint32_t mipLevels = std::min(std::max(textureLevel, 6u), 9u);
@@ -1159,6 +1169,46 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
     // TODO component request logic
 
     this->m_flags &= ~0x8;
+}
+
+void CCharacterComponent::UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemAU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemFO(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemHA(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemHL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // No item displays for head sections
+}
+
+void CCharacterComponent::UpdateItemHU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // No item displays for head sections
+}
+
+void CCharacterComponent::UpdateItemLL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemLU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemTL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
+}
+
+void CCharacterComponent::UpdateItemTU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    // TODO
 }
 
 int32_t CCharacterComponent::UpdateItemDisplay(COMPONENT_SECTIONS section, const ItemDisplayInfoRec* newDisplayRec, int32_t priority) {

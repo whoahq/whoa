@@ -15,6 +15,7 @@ struct MipBits;
 struct st_race;
 struct TCTEXTUREINFO;
 
+typedef void (CCharacterComponent::*ITEM_FUNC)(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
 typedef void (PREP_FUNC)(CCharacterComponent* component);
 
 struct CompSectionInfo {
@@ -35,6 +36,7 @@ class CCharacterComponent {
         static st_race* s_chrVarArray;
         static uint32_t s_chrVarArrayLength;
         static EGxTexFormat s_gxFormat;
+        static ITEM_FUNC s_itemFunc[NUM_COMPONENT_SECTIONS];
         static uint32_t s_mipLevels;
         static PREP_FUNC* s_prepFunc[NUM_COMPONENT_SECTIONS];
         static CompSectionInfo s_sectionInfo[NUM_COMPONENT_SECTIONS];
@@ -98,6 +100,16 @@ class CCharacterComponent {
         void SetHairColor(int32_t hairColorID, bool a3, const char* a4);
         void SetHairStyle(int32_t hairStyleID, const char* a3);
         void SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5);
+        void UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemAU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemFO(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemHA(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemHL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemHU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemLL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemLU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemTL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
+        void UpdateItemTU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
         int32_t UpdateItemDisplay(COMPONENT_SECTIONS section, const ItemDisplayInfoRec* newDisplayRec, int32_t priority);
         int32_t VariationsLoaded(int32_t a2);
 };
