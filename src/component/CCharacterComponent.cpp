@@ -18,7 +18,7 @@ uint32_t CCharacterComponent::s_chrVarArrayLength;
 EGxTexFormat CCharacterComponent::s_gxFormat;
 ITEM_FUNC CCharacterComponent::s_itemFunc[];
 uint32_t CCharacterComponent::s_mipLevels;
-PREP_FUNC* CCharacterComponent::s_prepFunc[];
+PREP_FUNC CCharacterComponent::s_prepFunc[];
 CompSectionInfo CCharacterComponent::s_sectionInfo[];
 MipBits* CCharacterComponent::s_textureBuffer;
 MipBits* CCharacterComponent::s_textureBufferCompressed;
@@ -401,230 +401,6 @@ void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPix
     // TODO
 }
 
-void CCharacterComponent::RenderPrepAL(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_ARM_LOWER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_ARM_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_AL_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_ARM_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepAU(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_ARM_UPPER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_ARM_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_AU_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_ARM_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepFO(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_FOOT];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_FOOT, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_FO_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_FOOT, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepHA(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_HAND];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_HAND, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_HA_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_HAND, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepHL(CCharacterComponent* component) {
-    auto sectionsRec = component->GetSectionsRecord(VARIATION_SKIN, 0, component->m_data.skinColorID, nullptr);
-
-    // Skin texture
-
-    if (sectionsRec && sectionsRec->m_flags & 0x8) {
-        auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-        CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    // Face texture
-
-    auto faceLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 0)];
-    if (faceLowerTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceLowerTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    // Hair textures
-
-    auto facialHairLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 0)];
-    if (facialHairLowerTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairLowerTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    auto hairLowerTexture = component->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 1)];
-    if (hairLowerTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, hairLowerTexture, CCharacterComponent::s_textureBuffer);
-    }
-}
-
-void CCharacterComponent::RenderPrepHU(CCharacterComponent* component) {
-    auto sectionsRec = component->GetSectionsRecord(VARIATION_SKIN, 0, component->m_data.skinColorID, nullptr);
-
-    // Skin texture
-
-    if (sectionsRec && sectionsRec->m_flags & 0x8) {
-        auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-        CCharacterComponent::PasteFromSkin(SECTION_HEAD_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    // Face texture
-
-    auto faceUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACE, 1)];
-    if (faceUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, faceUpperTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    // Hair textures
-
-    auto facialHairUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 1)];
-    if (facialHairUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, facialHairUpperTexture, CCharacterComponent::s_textureBuffer);
-    }
-
-    auto hairUpperTexture = component->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 2)];
-    if (hairUpperTexture) {
-        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, hairUpperTexture, CCharacterComponent::s_textureBuffer);
-    }
-}
-
-void CCharacterComponent::RenderPrepLL(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_LEG_LOWER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_LEG_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    auto firstPriority = 0;
-    auto itemPriorities = SECTION_LL_ITEM_PRIORITIES;
-
-    if (component->m_flags & 0x20) {
-        firstPriority = 1;
-        itemPriorities = SECTION_LL_ITEM_PRIORITIES - 2;
-    }
-
-    for (int32_t priority = firstPriority; priority < itemPriorities; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_LEG_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepLU(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_LEG_UPPER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_LEG_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Underwear texture
-
-    if ((component->m_flags & 0x20) || !(itemDisplay.priorityDirty & ((1 << 0) | (1 << 1)))) {
-        auto bottomUnderwearTexture = component->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 0)];
-        if (bottomUnderwearTexture) {
-            CCharacterComponent::PasteToSection(SECTION_LEG_UPPER, bottomUnderwearTexture, CCharacterComponent::s_textureBuffer);
-        }
-    }
-
-    // Item textures
-
-    auto firstPriority = (component->m_flags & 0x20) ? 1 : 0;
-
-    for (int32_t priority = firstPriority; priority < SECTION_LU_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_LEG_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepTL(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_TORSO_LOWER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_TORSO_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_TL_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_TORSO_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
-void CCharacterComponent::RenderPrepTU(CCharacterComponent* component) {
-    auto& itemDisplay = component->m_itemDisplays[SECTION_TORSO_UPPER];
-
-    // Skin texture
-
-    auto skinTexture = component->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
-    CCharacterComponent::PasteFromSkin(SECTION_TORSO_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
-
-    // Underwear texture
-
-    if (!(itemDisplay.priorityDirty & ((1 << 0) | (1 << 1) | (1 << 2)))) {
-        auto topUnderwearTexture = component->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 1)];
-        if (topUnderwearTexture) {
-            CCharacterComponent::PasteToSection(SECTION_TORSO_UPPER, topUnderwearTexture, CCharacterComponent::s_textureBuffer);
-        }
-    }
-
-    // Item textures
-
-    for (int32_t priority = 0; priority < SECTION_TU_ITEM_PRIORITIES; priority++) {
-        if (itemDisplay.priorityDirty & (1 << priority)) {
-            CCharacterComponent::PasteToSection(SECTION_TORSO_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
-        }
-    }
-}
-
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
     auto component = static_cast<CCharacterComponent*>(userArg);
 
@@ -847,6 +623,230 @@ int32_t CCharacterComponent::RenderPrep(int32_t a2) {
     return 1;
 }
 
+void CCharacterComponent::RenderPrepAL() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_ARM_LOWER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_ARM_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_AL_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_ARM_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepAU() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_ARM_UPPER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_ARM_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_AU_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_ARM_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepFO() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_FOOT];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_FOOT, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_FO_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_FOOT, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepHA() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_HAND];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_HAND, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_HA_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_HAND, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepHL() {
+    auto sectionsRec = this->GetSectionsRecord(VARIATION_SKIN, 0, this->m_data.skinColorID, nullptr);
+
+    // Skin texture
+
+    if (sectionsRec && sectionsRec->m_flags & 0x8) {
+        auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+        CCharacterComponent::PasteFromSkin(SECTION_HEAD_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    // Face texture
+
+    auto faceLowerTexture = this->m_texture[TEXTURE_INDEX(VARIATION_FACE, 0)];
+    if (faceLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, faceLowerTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    // Hair textures
+
+    auto facialHairLowerTexture = this->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 0)];
+    if (facialHairLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, facialHairLowerTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    auto hairLowerTexture = this->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 1)];
+    if (hairLowerTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_LOWER, hairLowerTexture, CCharacterComponent::s_textureBuffer);
+    }
+}
+
+void CCharacterComponent::RenderPrepHU() {
+    auto sectionsRec = this->GetSectionsRecord(VARIATION_SKIN, 0, this->m_data.skinColorID, nullptr);
+
+    // Skin texture
+
+    if (sectionsRec && sectionsRec->m_flags & 0x8) {
+        auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+        CCharacterComponent::PasteFromSkin(SECTION_HEAD_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    // Face texture
+
+    auto faceUpperTexture = this->m_texture[TEXTURE_INDEX(VARIATION_FACE, 1)];
+    if (faceUpperTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, faceUpperTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    // Hair textures
+
+    auto facialHairUpperTexture = this->m_texture[TEXTURE_INDEX(VARIATION_FACIAL_HAIR, 1)];
+    if (facialHairUpperTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, facialHairUpperTexture, CCharacterComponent::s_textureBuffer);
+    }
+
+    auto hairUpperTexture = this->m_texture[TEXTURE_INDEX(VARIATION_HAIR, 2)];
+    if (hairUpperTexture) {
+        CCharacterComponent::PasteToSection(SECTION_HEAD_UPPER, hairUpperTexture, CCharacterComponent::s_textureBuffer);
+    }
+}
+
+void CCharacterComponent::RenderPrepLL() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_LEG_LOWER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_LEG_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    auto firstPriority = 0;
+    auto itemPriorities = SECTION_LL_ITEM_PRIORITIES;
+
+    if (this->m_flags & 0x20) {
+        firstPriority = 1;
+        itemPriorities = SECTION_LL_ITEM_PRIORITIES - 2;
+    }
+
+    for (int32_t priority = firstPriority; priority < itemPriorities; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_LEG_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepLU() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_LEG_UPPER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_LEG_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Underwear texture
+
+    if ((this->m_flags & 0x20) || !(itemDisplay.priorityDirty & ((1 << 0) | (1 << 1)))) {
+        auto bottomUnderwearTexture = this->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 0)];
+        if (bottomUnderwearTexture) {
+            CCharacterComponent::PasteToSection(SECTION_LEG_UPPER, bottomUnderwearTexture, CCharacterComponent::s_textureBuffer);
+        }
+    }
+
+    // Item textures
+
+    auto firstPriority = (this->m_flags & 0x20) ? 1 : 0;
+
+    for (int32_t priority = firstPriority; priority < SECTION_LU_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_LEG_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepTL() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_TORSO_LOWER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_TORSO_LOWER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_TL_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_TORSO_LOWER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
+void CCharacterComponent::RenderPrepTU() {
+    auto& itemDisplay = this->m_itemDisplays[SECTION_TORSO_UPPER];
+
+    // Skin texture
+
+    auto skinTexture = this->m_texture[TEXTURE_INDEX(VARIATION_SKIN, 0)];
+    CCharacterComponent::PasteFromSkin(SECTION_TORSO_UPPER, skinTexture, CCharacterComponent::s_textureBuffer);
+
+    // Underwear texture
+
+    if (!(itemDisplay.priorityDirty & ((1 << 0) | (1 << 1) | (1 << 2)))) {
+        auto topUnderwearTexture = this->m_texture[TEXTURE_INDEX(VARIATION_UNDERWEAR, 1)];
+        if (topUnderwearTexture) {
+            CCharacterComponent::PasteToSection(SECTION_TORSO_UPPER, topUnderwearTexture, CCharacterComponent::s_textureBuffer);
+        }
+    }
+
+    // Item textures
+
+    for (int32_t priority = 0; priority < SECTION_TU_ITEM_PRIORITIES; priority++) {
+        if (itemDisplay.priorityDirty & (1 << priority)) {
+            CCharacterComponent::PasteToSection(SECTION_TORSO_UPPER, itemDisplay.texture[priority], CCharacterComponent::s_textureBuffer);
+        }
+    }
+}
+
 void CCharacterComponent::RenderPrepAll() {
     // TODO
 
@@ -856,7 +856,7 @@ void CCharacterComponent::RenderPrepAll() {
     this->ItemsLoaded(1);
 
     for (uint32_t i = 0; i < NUM_COMPONENT_SECTIONS; i++) {
-        CCharacterComponent::s_prepFunc[i](this);
+        (this->*CCharacterComponent::s_prepFunc[i])();
     }
 
     // TODO
