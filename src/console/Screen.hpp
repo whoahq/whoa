@@ -8,7 +8,6 @@ class CGxString;
 
 class CONSOLELINE : public TSLinkedNode<CONSOLELINE> {
     public:
-
         // Member variables
         char* buffer;
         uint32_t chars;
