@@ -213,6 +213,16 @@ void CCharacterSelection::ShowCharacter() {
 
     // TODO lighting callback/arg
 
+    character->component->m_data.model->SetBoneSequence(
+        0xFFFFFFFF,
+        0,
+        0xFFFFFFFF,
+        0,
+        1.0f,
+        1,
+        1
+    );
+
     // TODO load pet model
 
     CCharacterSelection::s_characterCount++;
