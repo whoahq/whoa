@@ -8,7 +8,6 @@
 #include "glue/Types.hpp"
 #include "model/CM2Shared.hpp"
 #include "net/Connection.hpp"
-#include "object/client/Player_C.hpp"
 #include "ui/CSimpleModelFFX.hpp"
 
 int32_t CCharacterSelection::s_characterCount;
@@ -62,7 +61,7 @@ void CCharacterSelection::ClearCharacterModel() {
 
 void CCharacterSelection::EnumerateCharactersCallback(const CHARACTER_INFO& info, void* param) {
     auto display = CCharacterSelection::s_characterList.New();
-    display->info = info;
+    display->m_info = info;
 
     // TODO
 }
@@ -97,7 +96,7 @@ void CCharacterSelection::RenderPrep() {
         return;
     }
 
-    auto component = character->component;
+    auto component = character->m_component;
     if (!component) {
         return;
     }
@@ -141,7 +140,7 @@ void CCharacterSelection::SetFacing(float facing) {
         return;
     }
 
-    auto component = CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex].component;
+    auto component = CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex].m_component;
     auto model = component->m_data.model;
 
     if (!model) {
@@ -163,71 +162,37 @@ void CCharacterSelection::ShowCharacter() {
 
     auto character = &CCharacterSelection::s_characterList[CCharacterSelection::s_selectionIndex];
 
-    if (character->component) {
-        auto parent = CCharacterSelection::s_modelFrame->m_model;
+    // Create character component and pet model
 
-        if (!parent) {
-            return;
-        }
+    if (!character->m_component) {
+        character->CreateModelData();
+    }
 
-        auto characterModel = character->component->m_data.model;
-        auto petModel = character->petModel;
-
-        characterModel->AttachToParent(parent, 0, nullptr, 0);
-
-        CCharacterSelection::SetFacing(0.0f);
-
-        if (petModel) {
-            petModel->AttachToParent(parent, 1, nullptr, 0);
-        }
-
-        // TODO a2 may be 1 in some circumstances
-        CGlueLoading::StartLoad(character->component, 0);
-
+    if (!character->m_component) {
         return;
     }
 
-    auto modelData = Player_C_GetModelName(character->info.raceID, character->info.sexID);
-    if (!modelData || !modelData->m_modelName) {
+    // Attach character display to model frame
+
+    auto parent = CCharacterSelection::s_modelFrame->m_model;
+
+    if (!parent) {
         return;
     }
 
-    character->component = CCharacterComponent::AllocComponent();
+    auto characterModel = character->m_component->m_data.model;
+    auto petModel = character->m_petModel;
 
-    ComponentData componentData = {};
-    componentData.raceID = character->info.raceID;
-    componentData.sexID = character->info.sexID;
-    componentData.skinColorID = character->info.skinColorID;
-    componentData.faceID = character->info.faceID;
-    componentData.hairStyleID = character->info.hairStyleID;
-    componentData.hairColorID = character->info.hairColorID;
-    componentData.facialHairStyleID = character->info.facialHairStyleID;
+    characterModel->AttachToParent(parent, 0, nullptr, 0);
 
-    auto scene = CCharacterSelection::s_modelFrame->GetScene();
-    auto model = scene->CreateModel(modelData->m_modelName, 0);
+    CCharacterSelection::SetFacing(0.0f);
 
-    componentData.flags |= 0x2;
-    componentData.model = model;
+    if (petModel) {
+        petModel->AttachToParent(parent, 1, nullptr, 0);
+    }
 
-    character->component->Init(&componentData, nullptr);
-
-    // TODO lighting callback/arg
-
-    character->component->m_data.model->SetBoneSequence(
-        0xFFFFFFFF,
-        0,
-        0xFFFFFFFF,
-        0,
-        1.0f,
-        1,
-        1
-    );
-
-    // TODO load pet model
-
-    CCharacterSelection::s_characterCount++;
-
-    // TODO
+    // TODO a2 may be 1 in some circumstances
+    CGlueLoading::StartLoad(character->m_component, 0);
 }
 
 void CCharacterSelection::UpdateCharacterList() {

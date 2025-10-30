@@ -148,7 +148,7 @@ void CGlueMgr::EnterWorld() {
 
     // Validate character flags
 
-    auto flags = CGlueMgr::m_characterInfo->info.flags;
+    auto flags = CGlueMgr::m_characterInfo->m_info.flags;
 
     if (flags & 0x4) {
         auto errorToken = ClientServices::GetErrorToken(84);
@@ -173,7 +173,7 @@ void CGlueMgr::EnterWorld() {
     }
 
     if (!(flags & 0x2000000)) {
-        if (NameNeedsDeclension(CURRENT_LANGUAGE, CGlueMgr::m_characterInfo->info.name)) {
+        if (NameNeedsDeclension(CURRENT_LANGUAGE, CGlueMgr::m_characterInfo->m_info.name)) {
             FrameScript_SignalEvent(24, nullptr);
 
             return;
@@ -182,8 +182,8 @@ void CGlueMgr::EnterWorld() {
 
     // Validate expansion
 
-    auto raceRec = g_chrRacesDB.GetRecord(character->info.raceID);
-    auto classRec = g_chrClassesDB.GetRecord(character->info.classID);
+    auto raceRec = g_chrRacesDB.GetRecord(character->m_info.raceID);
+    auto classRec = g_chrClassesDB.GetRecord(character->m_info.classID);
 
     if (
            !raceRec
@@ -203,7 +203,7 @@ void CGlueMgr::EnterWorld() {
     // TODO g_lastCharacterIndex->Set(indexStr, 1, 0, 0, 1);
 
     ClientServices::SetAccountName(CGlueMgr::m_accountName);
-    ClientServices::SetCharacterInfo(&CGlueMgr::m_characterInfo->info);
+    ClientServices::SetCharacterInfo(&CGlueMgr::m_characterInfo->m_info);
 
     // TODO game tip
     // TODO loading screen
@@ -724,13 +724,13 @@ void CGlueMgr::PollEnterWorld() {
         // TODO SI Logic
 
         // TODO TLS shenanigans with guid
-        ClientServices::Connection()->CharacterLogin(CGlueMgr::m_characterInfo->info.guid, 0);
+        ClientServices::Connection()->CharacterLogin(CGlueMgr::m_characterInfo->m_info.guid, 0);
 
         return;
     }
 
-    uint32_t mapId = CGlueMgr::m_characterInfo->info.mapID;
-    C3Vector position = CGlueMgr::m_characterInfo->info.position;
+    uint32_t mapId = CGlueMgr::m_characterInfo->m_info.mapID;
+    C3Vector position = CGlueMgr::m_characterInfo->m_info.position;
 
     // TODO TLS shenanigans with guid
     // TODO first login logic (play intro M2?)

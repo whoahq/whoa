@@ -93,26 +93,26 @@ int32_t Script_GetCharacterInfo(lua_State* L) {
     // Character exists at index
 
     auto& display = CCharacterSelection::s_characterList[index];
-    auto sex = static_cast<UNIT_SEX>(display.info.sexID);
+    auto sex = static_cast<UNIT_SEX>(display.m_info.sexID);
 
     // Name
-    lua_pushstring(L, display.info.name);
+    lua_pushstring(L, display.m_info.name);
 
     // Race
-    auto raceRec = g_chrRacesDB.GetRecord(display.info.raceID);
+    auto raceRec = g_chrRacesDB.GetRecord(display.m_info.raceID);
     auto raceName = CGUnit_C::GetDisplayRaceNameFromRecord(raceRec, sex, nullptr);
     lua_pushstring(L, raceName ? raceName : "");
 
     // Class
-    auto classRec = g_chrClassesDB.GetRecord(display.info.classID);
+    auto classRec = g_chrClassesDB.GetRecord(display.m_info.classID);
     auto className = CGUnit_C::GetDisplayClassNameFromRecord(classRec, sex, nullptr);
     lua_pushstring(L, className ? className : "");
 
     // Level
-    lua_pushnumber(L, display.info.experienceLevel);
+    lua_pushnumber(L, display.m_info.experienceLevel);
 
     // Zone
-    auto areaRec = g_areaTableDB.GetRecord(display.info.zoneID);
+    auto areaRec = g_areaTableDB.GetRecord(display.m_info.zoneID);
     if (areaRec) {
         lua_pushstring(L, areaRec->m_areaName);
     } else {
@@ -120,19 +120,19 @@ int32_t Script_GetCharacterInfo(lua_State* L) {
     }
 
     // Sex
-    lua_pushnumber(L, g_glueFrameScriptGenders[display.info.sexID]);
+    lua_pushnumber(L, g_glueFrameScriptGenders[display.m_info.sexID]);
 
     // Ghost
-    lua_pushboolean(L, display.info.flags & 0x2000);
+    lua_pushboolean(L, display.m_info.flags & 0x2000);
 
     // Paid class change
-    lua_pushboolean(L, display.info.customizeFlags & 0x1);
+    lua_pushboolean(L, display.m_info.customizeFlags & 0x1);
 
     // Paid race change
-    lua_pushboolean(L, display.info.customizeFlags & 0x100000);
+    lua_pushboolean(L, display.m_info.customizeFlags & 0x100000);
 
     // Paid faction change
-    lua_pushboolean(L, display.info.customizeFlags & 0x10000);
+    lua_pushboolean(L, display.m_info.customizeFlags & 0x10000);
 
     return 10;
 }
@@ -224,10 +224,10 @@ int32_t Script_GetSelectBackgroundModel(lua_State* L) {
 
     // Class background
 
-    auto classID = character->info.classID;
+    auto classID = character->m_info.classID;
 
     if (classID == 6) {
-        auto classRec = g_chrClassesDB.GetRecord(character->info.classID);
+        auto classRec = g_chrClassesDB.GetRecord(character->m_info.classID);
 
         if (classRec) {
             lua_pushstring(L, classRec->m_filename);
@@ -240,7 +240,7 @@ int32_t Script_GetSelectBackgroundModel(lua_State* L) {
 
     // Race background
 
-    auto raceID = character->info.raceID;
+    auto raceID = character->m_info.raceID;
 
     if (raceID == 7) {
         raceID = 3;
