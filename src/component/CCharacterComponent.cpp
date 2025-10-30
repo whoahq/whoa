@@ -440,6 +440,20 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
     }
 }
 
+void CCharacterComponent::AddItem(ITEM_SLOT itemSlot, int32_t displayID, int32_t a4) {
+    if (displayID <= 0) {
+        return;
+    }
+
+    auto displayRec = g_itemDisplayInfoDB.GetRecord(displayID);
+
+    if (!displayRec) {
+        return;
+    }
+
+    this->AddItem(itemSlot, displayRec, a4);
+}
+
 void CCharacterComponent::AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, int32_t a4) {
     this->m_flags |= 0x4;
 
