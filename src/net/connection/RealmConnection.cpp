@@ -1,6 +1,7 @@
 #include "net/connection/RealmConnection.hpp"
 #include "net/connection/RealmResponse.hpp"
 #include "net/Types.hpp"
+#include "object/Types.hpp"
 #include <common/DataStore.hpp>
 #include <common/SHA1.hpp>
 #include <storm/String.hpp>
@@ -246,10 +247,19 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
         msg->Get(character.petExperienceLevel);
         msg->Get(character.petCreatureFamilyID);
 
-        for (auto& item : character.items) {
-            msg->Get(item.displayID);
-            msg->Get(item.type);
-            msg->Get(item.auraID);
+        for (int32_t s = 0; s < NUM_INVENTORY_SLOTS; s++) {
+            uint32_t displayID;
+            msg->Get(displayID);
+
+            uint8_t itemType;
+            msg->Get(itemType);
+
+            uint32_t visualID;
+            msg->Get(visualID);
+
+            character.inventoryItemDisplayID[s] = displayID;
+            character.inventoryItemType[s] = itemType;
+            character.inventoryItemVisualID[s] = visualID;
         }
     }
 

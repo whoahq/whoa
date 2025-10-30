@@ -1,6 +1,7 @@
 #ifndef NET_TYPES_HPP
 #define NET_TYPES_HPP
 
+#include "object/Types.hpp"
 #include <tempest/Vector.hpp>
 #include <cstdint>
 
@@ -1186,12 +1187,6 @@ struct REALM_INFO {
     uint16_t revision;
 };
 
-struct INVENTORY_ITEM {
-    uint8_t type;
-    uint32_t displayID;
-    uint32_t auraID;
-};
-
 struct CHARACTER_INFO {
     uint64_t guid;
     char name[48];
@@ -1199,7 +1194,9 @@ struct CHARACTER_INFO {
     uint32_t zoneID;
     uint32_t guildID;
     C3Vector position;
-    INVENTORY_ITEM items[23];
+    uint32_t inventoryItemDisplayID[NUM_INVENTORY_SLOTS];
+    uint32_t inventoryItemType[NUM_INVENTORY_SLOTS];
+    uint32_t inventoryItemVisualID[NUM_INVENTORY_SLOTS];
     uint32_t petDisplayInfoID;
     uint32_t petExperienceLevel;
     uint32_t petCreatureFamilyID;
