@@ -510,6 +510,63 @@ void CCharacterComponent::AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* 
     }
 }
 
+void CCharacterComponent::AddItemBySlot(INVENTORY_SLOTS invSlot, int32_t displayID, int32_t a4) {
+    if (invSlot > EQUIPPED_LAST) {
+        return;
+    }
+
+    STORM_ASSERT(displayID > 0);
+
+    switch (invSlot) {
+    case INVSLOT_HEAD:
+        this->AddItem(ITEMSLOT_0, displayID, a4);
+        break;
+
+    case INVSLOT_SHOULDER:
+        this->AddItem(ITEMSLOT_1, displayID, a4);
+        break;
+
+    case INVSLOT_BODY:
+        this->AddItem(ITEMSLOT_2, displayID, a4);
+        break;
+
+    case INVSLOT_CHEST:
+        this->AddItem(ITEMSLOT_3, displayID, a4);
+        break;
+
+    case INVSLOT_WAIST:
+        this->AddItem(ITEMSLOT_4, displayID, a4);
+        break;
+
+    case INVSLOT_LEGS:
+        this->AddItem(ITEMSLOT_5, displayID, a4);
+        break;
+
+    case INVSLOT_FEET:
+        this->AddItem(ITEMSLOT_6, displayID, a4);
+        break;
+
+    case INVSLOT_WRIST:
+        this->AddItem(ITEMSLOT_7, displayID, a4);
+        break;
+
+    case INVSLOT_HAND:
+        this->AddItem(ITEMSLOT_8, displayID, a4);
+        break;
+
+    case INVSLOT_BACK:
+        this->AddItem(ITEMSLOT_10, displayID, a4);
+        break;
+
+    case INVSLOT_TABARD:
+        this->AddItem(ITEMSLOT_9, displayID, a4);
+        break;
+
+    default:
+        break;
+    }
+}
+
 void CCharacterComponent::ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority) {
     if (priority == -1) {
         return;

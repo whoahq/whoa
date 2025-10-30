@@ -3,6 +3,7 @@
 
 #include "component/Types.hpp"
 #include "gx/Texture.hpp"
+#include "object/Types.hpp"
 #include <tempest/Vector.hpp>
 
 class CACHEENTRY;
@@ -75,6 +76,7 @@ class CCharacterComponent {
         // Member functions
         void AddItem(ITEM_SLOT itemSlot, int32_t displayID, int32_t a4);
         void AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, int32_t a4);
+        void AddItemBySlot(INVENTORY_SLOTS invSlot, int32_t displayID, int32_t a4);
         void ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority);
         void CreateBaseTexture();
         void GeosRenderPrep();
