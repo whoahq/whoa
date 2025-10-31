@@ -8,6 +8,7 @@
 #include "model/CM2Model.hpp"
 #include "object/Types.hpp"
 #include "util/CStatus.hpp"
+#include "util/Unimplemented.hpp"
 #include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
@@ -381,7 +382,7 @@ void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPa
 }
 
 void CCharacterComponent::PasteScale(void* srcTexture, MipBits* dstMips, const C2iVector& a3, const C2iVector& a4, const C2iVector& a5, TCTEXTUREINFO& srcInfo) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void CCharacterComponent::PasteToSection(COMPONENT_SECTIONS section, void* srcTexture, MipBits* dstMips) {
@@ -414,15 +415,15 @@ void CCharacterComponent::PasteToSection(COMPONENT_SECTIONS section, void* srcTe
 }
 
 void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void CCharacterComponent::PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
-    // TODO
+    WHOA_UNIMPLEMENTED();
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
