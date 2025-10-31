@@ -38,6 +38,11 @@ enum INVENTORY_SLOTS {
     NUM_BAG_SLOTS       = INVSLOT_BAGLAST - INVSLOT_BAGFIRST + 1,
 };
 
+enum SHEATHE_TYPE {
+    SHEATHE_0           = 0,
+    NUM_SHEATHE_TYPES
+};
+
 enum UNIT_SEX {
     UNITSEX_MALE        = 0,
     UNITSEX_FEMALE      = 1,
