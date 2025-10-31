@@ -80,6 +80,7 @@ class CCharacterComponent {
         void AddItemBySlot(INVENTORY_SLOTS invSlot, int32_t displayID, int32_t a4);
         void ClearItemDisplay(COMPONENT_SECTIONS section, int32_t priority);
         void CreateBaseTexture();
+        void* CreateTexture(const ItemDisplayInfoRec* displayRec, int32_t section);
         void GeosRenderPrep();
         CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);
         int32_t Init(ComponentData* data, const char* a3);

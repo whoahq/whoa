@@ -37,6 +37,23 @@ CompSectionInfo CCharacterComponent::s_sectionInfoRaw[] = {
     { 0,    384,    256,    128 },  // SECTION_HEAD_LOWER
 };
 
+const char* s_componentSections[] = {
+    "ArmUpperTexture",
+    "ArmLowerTexture",
+    "HandTexture",
+    "TorsoUpperTexture",
+    "TorsoLowerTexture",
+    "LegUpperTexture",
+    "LegLowerTexture",
+    "FootTexture"
+};
+
+const char* s_fileDecorations[] = {
+    "M",
+    "F",
+    "U"
+};
+
 /**
  * Texture priorities for each item slot and component section. Determines order for pasting
  * textures in RenderPrep functions. Priority start and end for leg component sections is
@@ -75,6 +92,8 @@ int32_t s_bInRenderPrep = 0;
 uint32_t* s_componentHeap;
 char* s_pathEnd;
 char s_path[STORM_MAX_PATH];
+char* s_pathEnd2;
+char s_path2[STORM_MAX_PATH];
 CStatus s_status;
 
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
@@ -118,6 +137,7 @@ void CCharacterComponent::Initialize(EGxTexFormat textureFormat, uint32_t textur
     }
 
     s_pathEnd = s_path;
+    s_pathEnd2 = s_path2;
 
     CCharacterComponent::s_prepFunc[SECTION_ARM_UPPER]      = &CCharacterComponent::RenderPrepAU;
     CCharacterComponent::s_prepFunc[SECTION_ARM_LOWER]      = &CCharacterComponent::RenderPrepAL;
@@ -613,6 +633,24 @@ void CCharacterComponent::CreateBaseTexture() {
     this->m_data.model->ReplaceTexture(1, this->m_baseTexture);
 }
 
+void* CCharacterComponent::CreateTexture(const ItemDisplayInfoRec* displayRec, int32_t section) {
+    SStrPrintf(
+        s_path,
+        STORM_MAX_PATH,
+        "Item\\TextureComponents\\%s\\%s_%s.blp",
+        s_componentSections[section],
+        displayRec->m_texture[section],
+        s_fileDecorations[2]
+    );
+
+    // Substitute gender suffix
+    if (!SFile::FileExists(s_path)) {
+        s_path[SStrLen(s_path) - 5] = *s_fileDecorations[this->m_data.sexID];
+    }
+
+    return TextureCacheCreateTexture(s_path);
+}
+
 void CCharacterComponent::GeosRenderPrep() {
     // Check for eye glow
 
@@ -681,6 +719,40 @@ int32_t CCharacterComponent::Init(ComponentData* data, const char* a3) {
 }
 
 int32_t CCharacterComponent::ItemsLoaded(int32_t a2) {
+    if (a2) {
+        TCTEXTUREINFO info;
+
+        for (int32_t section = 0; section < NUM_COMPONENT_SECTIONS; section++) {
+            if (!(this->m_sectionDirty & (1 << section))) {
+                continue;
+            }
+
+            auto& itemDisplay = this->m_itemDisplays[section];
+
+            for (int32_t priority = 0; priority < 7; priority++) {
+                if (!itemDisplay.displayID[priority] && !itemDisplay.texture[priority]) {
+                    continue;
+                }
+
+                if (itemDisplay.displayID[priority] && !itemDisplay.texture[priority]) {
+                    auto displayRec = g_itemDisplayInfoDB.GetRecord(itemDisplay.displayID[priority]);
+                    itemDisplay.texture[priority] = this->CreateTexture(displayRec, section);
+                }
+
+                // Trigger texture load
+                TextureCacheGetInfo(itemDisplay.texture[priority], info, 1);
+
+                if (TextureCacheHasMips(itemDisplay.texture[priority])) {
+                    itemDisplay.priorityDirty |= (1 << priority);
+                } else {
+                    itemDisplay.priorityDirty &= ~(1 << priority);
+                }
+            }
+        }
+
+        return 1;
+    }
+
     // TODO
 
     return 1;
