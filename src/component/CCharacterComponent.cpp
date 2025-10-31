@@ -79,6 +79,10 @@ CStatus s_status;
 
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
+void CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool a5, bool a6, bool a7, int32_t a8) {
+    //  TODO
+}
+
 CCharacterComponent* CCharacterComponent::AllocComponent() {
     uint32_t memHandle;
     void* mem;
