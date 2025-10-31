@@ -1510,7 +1510,23 @@ void CCharacterComponent::UpdateItemLL(ITEM_SLOT itemSlot, const ItemDisplayInfo
 }
 
 void CCharacterComponent::UpdateItemLU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    // TODO
+    auto priority = s_itemPriority[itemSlot][SECTION_LEG_UPPER];
+
+    if (update) {
+        if (!this->UpdateItemDisplay(SECTION_LEG_UPPER, displayRec, priority)) {
+            return;
+        }
+    } else {
+        this->ClearItemDisplay(SECTION_LEG_UPPER, priority);
+    }
+
+    if (priority != -1) {
+        this->m_sectionDirty |= (1 << SECTION_LEG_UPPER);
+
+        // TODO component request logic
+
+        this->m_flags &= ~0x8;
+    }
 }
 
 void CCharacterComponent::UpdateItemTL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
