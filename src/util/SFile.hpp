@@ -14,6 +14,7 @@ class SFile {
     public:
         // Static functions
         static int32_t Close(SFile*);
+        static int32_t FileExists(const char* filename);
         static size_t GetFileSize(SFile*, size_t*);
         static int32_t IsStreamingMode();
         static int32_t IsStreamingTrial();

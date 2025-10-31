@@ -17,6 +17,22 @@ int32_t SFile::Close(SFile* file) {
 }
 
 // TODO Proper implementation
+int32_t SFile::FileExists(const char* filename) {
+    auto pathLen = SStrLen(filename);
+    char path[STORM_MAX_PATH];
+    SStrCopy(path, filename, sizeof(path));
+
+    for (int32_t i = 0; i < pathLen; ++i) {
+        if (path[i] == '\\') {
+            path[i] = '/';
+        }
+    }
+
+    std::ifstream f(path);
+    return f.good();
+}
+
+// TODO Proper implementation
 size_t SFile::GetFileSize(SFile* file, size_t* filesizeHigh) {
     return file->m_size;
 }
