@@ -13,6 +13,7 @@ WowClientDB<ChrRacesRec> g_chrRacesDB;
 WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
 WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
 WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
+WowClientDB<ItemVisualsRec> g_itemVisualsDB;
 WowClientDB<MapRec> g_mapDB;
 
 void LoadDB(WowClientDB_Base* db, const char* filename, int32_t linenumber) {
@@ -32,6 +33,7 @@ void StaticDBLoadAll(void (*loadFn)(WowClientDB_Base*, const char*, int32_t)) {
     loadFn(&g_creatureDisplayInfoDB, __FILE__, __LINE__);
     loadFn(&g_creatureModelDataDB, __FILE__, __LINE__);
     loadFn(&g_itemDisplayInfoDB, __FILE__, __LINE__);
+    loadFn(&g_itemVisualsDB, __FILE__, __LINE__);
     loadFn(&g_mapDB, __FILE__, __LINE__);
 };
 
