@@ -1442,7 +1442,31 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
 }
 
 void CCharacterComponent::UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    // TODO
+    auto priority = s_itemPriority[itemSlot][SECTION_ARM_LOWER];
+
+    if (displayRec && displayRec->m_geosetGroup[0]) {
+        if (itemSlot == ITEMSLOT_3) {
+            priority = 5;
+        } else if (itemSlot == ITEMSLOT_8) {
+            priority = 6;
+        }
+    }
+
+    if (update) {
+        if (!this->UpdateItemDisplay(SECTION_ARM_LOWER, displayRec, priority)) {
+            return;
+        }
+    } else {
+        this->ClearItemDisplay(SECTION_ARM_LOWER, priority);
+    }
+
+    if (priority != -1) {
+        this->m_sectionDirty |= (1 << SECTION_ARM_LOWER);
+
+        // TODO component request logic
+
+        this->m_flags &= ~0x8;
+    }
 }
 
 void CCharacterComponent::UpdateItemAU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
