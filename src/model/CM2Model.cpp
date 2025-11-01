@@ -879,21 +879,16 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
     auto& v24 = track.sequenceTimes[v7];
     auto v14 = v24.times.Data();
     auto v16 = v6 - v14[currentKey];
-    uint32_t* v17;
-    uint32_t* v18;
-    uint32_t* v19;
-    uint32_t v20;
-    uint32_t v21;
 
     if (v16 >= 500) {
         if (v16 < 0xFFFFFE0C) {
             v15 = 0;
 
             if (v6 >= 500) {
-                v20 = v12;
+                uint32_t v20 = v12;
 
                 while (1) {
-                    v21 = (v20 + v15) >> 1;
+                    uint32_t v21 = (v20 + v15) >> 1;
 
                     if (v6 >= v14[v21]) {
                         v15 = v21 + 1;
@@ -912,7 +907,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                 }
             }
 
-            v19 = v14 + 1;
+            uint32_t* v19 = v14 + 1;
 
             do {
                 if (*v19 > v6) {
@@ -923,7 +918,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                 ++v19;
             } while (v15 < v12 - 1);
         } else if (v15) {
-            v18 = &v14[v15];
+            uint32_t* v18 = &v14[v15];
 
             do {
                 if (*v18 <= v6) {
@@ -935,7 +930,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
             } while (v15);
         }
     } else if (v15 < v12 - 1) {
-        v17 = &v14[v15 + 1];
+        uint32_t* v17 = &v14[v15 + 1];
 
         do {
             if (*v17 > v6) {
