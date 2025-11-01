@@ -107,6 +107,7 @@ class CCharacterComponent {
         void SetHairColor(int32_t hairColorID, bool a3, const char* a4);
         void SetHairStyle(int32_t hairStyleID, const char* a3);
         void SetSkinColor(int32_t skinColorID, bool a3, bool a4, const char* a5);
+        void UpdateItem(ITEM_SLOT itemSlot, COMPONENT_SECTIONS section, const ItemDisplayInfoRec* displayRec, bool update);
         void UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
         void UpdateItemAU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);
         void UpdateItemFO(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update);

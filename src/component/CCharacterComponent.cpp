@@ -1441,60 +1441,80 @@ void CCharacterComponent::SetSkinColor(int32_t skinColorID, bool a3, bool a4, co
     this->m_flags &= ~0x8;
 }
 
-void CCharacterComponent::UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    auto priority = s_itemPriority[itemSlot][SECTION_ARM_LOWER];
+void CCharacterComponent::UpdateItem(ITEM_SLOT itemSlot, COMPONENT_SECTIONS section, const ItemDisplayInfoRec* displayRec, bool update) {
+    auto priority = s_itemPriority[itemSlot][section];
 
-    if (displayRec && displayRec->m_geosetGroup[0]) {
-        if (itemSlot == ITEMSLOT_3) {
-            priority = 5;
-        } else if (itemSlot == ITEMSLOT_8) {
-            priority = 6;
+    if (section == SECTION_ARM_LOWER) {
+        if (displayRec && displayRec->m_geosetGroup[0]) {
+            if (itemSlot == ITEMSLOT_3) {
+                priority = 5;
+            } else if (itemSlot == ITEMSLOT_8) {
+                priority = 6;
+            }
+        }
+    }
+
+    if (section == SECTION_LEG_LOWER) {
+        if (itemSlot == ITEMSLOT_3 && displayRec && displayRec->m_geosetGroup[2]) {
+            priority = 4;
+
+            this->m_flags |= 0x4;
+        }
+
+        if (itemSlot == ITEMSLOT_5 && displayRec && displayRec->m_geosetGroup[2]) {
+            // TODO
+
+            this->m_flags |= 0x4;
+        }
+
+        if (itemSlot == ITEMSLOT_6 && displayRec && displayRec->m_geosetGroup[0]) {
+            priority = 3;
+
+            this->m_flags |= 0x4;
+        }
+    }
+
+    if (section == SECTION_FOOT) {
+        if (this->m_flags & 0x10) {
+            update = false;
         }
     }
 
     if (update) {
-        if (!this->UpdateItemDisplay(SECTION_ARM_LOWER, displayRec, priority)) {
+        if (!this->UpdateItemDisplay(section, displayRec, priority)) {
             return;
         }
     } else {
-        this->ClearItemDisplay(SECTION_ARM_LOWER, priority);
+        this->ClearItemDisplay(section, priority);
+
+        if (section == SECTION_LEG_LOWER) {
+            // TODO
+        }
     }
 
     if (priority != -1) {
-        this->m_sectionDirty |= (1 << SECTION_ARM_LOWER);
+        this->m_sectionDirty |= (1 << section);
 
         // TODO component request logic
 
         this->m_flags &= ~0x8;
     }
+}
+
+void CCharacterComponent::UpdateItemAL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
+    this->UpdateItem(itemSlot, SECTION_ARM_LOWER, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemAU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    auto priority = s_itemPriority[itemSlot][SECTION_ARM_UPPER];
-
-    if (update) {
-        if (!this->UpdateItemDisplay(SECTION_ARM_UPPER, displayRec, priority)) {
-            return;
-        }
-    } else {
-        this->ClearItemDisplay(SECTION_ARM_UPPER, priority);
-    }
-
-    if (priority != -1) {
-        this->m_sectionDirty |= (1 << SECTION_ARM_UPPER);
-
-        // TODO component request logic
-
-        this->m_flags &= ~0x8;
-    }
+    this->UpdateItem(itemSlot, SECTION_ARM_UPPER, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemFO(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    // TODO
+    this->UpdateItem(itemSlot, SECTION_FOOT, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemHA(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    // TODO
+    this->UpdateItem(itemSlot, SECTION_HAND, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemHL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
@@ -1506,67 +1526,19 @@ void CCharacterComponent::UpdateItemHU(ITEM_SLOT itemSlot, const ItemDisplayInfo
 }
 
 void CCharacterComponent::UpdateItemLL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    // TODO
+    this->UpdateItem(itemSlot, SECTION_LEG_LOWER, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemLU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    auto priority = s_itemPriority[itemSlot][SECTION_LEG_UPPER];
-
-    if (update) {
-        if (!this->UpdateItemDisplay(SECTION_LEG_UPPER, displayRec, priority)) {
-            return;
-        }
-    } else {
-        this->ClearItemDisplay(SECTION_LEG_UPPER, priority);
-    }
-
-    if (priority != -1) {
-        this->m_sectionDirty |= (1 << SECTION_LEG_UPPER);
-
-        // TODO component request logic
-
-        this->m_flags &= ~0x8;
-    }
+    this->UpdateItem(itemSlot, SECTION_LEG_UPPER, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemTL(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    auto priority = s_itemPriority[itemSlot][SECTION_TORSO_LOWER];
-
-    if (update) {
-        if (!this->UpdateItemDisplay(SECTION_TORSO_LOWER, displayRec, priority)) {
-            return;
-        }
-    } else {
-        this->ClearItemDisplay(SECTION_TORSO_LOWER, priority);
-    }
-
-    if (priority != -1) {
-        this->m_sectionDirty |= (1 << SECTION_TORSO_LOWER);
-
-        // TODO component request logic
-
-        this->m_flags &= ~0x8;
-    }
+    this->UpdateItem(itemSlot, SECTION_TORSO_LOWER, displayRec, update);
 }
 
 void CCharacterComponent::UpdateItemTU(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, bool update) {
-    auto priority = s_itemPriority[itemSlot][SECTION_TORSO_UPPER];
-
-    if (update) {
-        if (!this->UpdateItemDisplay(SECTION_TORSO_UPPER, displayRec, priority)) {
-            return;
-        }
-    } else {
-        this->ClearItemDisplay(SECTION_TORSO_UPPER, priority);
-    }
-
-    if (priority != -1) {
-        this->m_sectionDirty |= (1 << SECTION_TORSO_UPPER);
-
-        // TODO component request logic
-
-        this->m_flags &= ~0x8;
-    }
+    this->UpdateItem(itemSlot, SECTION_TORSO_UPPER, displayRec, update);
 }
 
 int32_t CCharacterComponent::UpdateItemDisplay(COMPONENT_SECTIONS section, const ItemDisplayInfoRec* newDisplayRec, int32_t priority) {
