@@ -415,7 +415,73 @@ void CCharacterComponent::PasteToSection(COMPONENT_SECTIONS section, void* srcTe
 }
 
 void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
-    WHOA_UNIMPLEMENTED();
+    // Prepare first mip level
+
+    C2iVector curSrcSize = srcSize;
+
+    C2iVector curSrcPos = srcPos;
+    C2iVector curDstPos = dstPos;
+
+    uint32_t curSrcWidth = srcInfo.width >> srcMipLevel;
+    uint32_t curDstWidth = dstWidth;
+
+    uint32_t curSrcHeight = srcInfo.height >> srcMipLevel;
+
+    // Paste texture for each mip level
+
+    for (int32_t curMipLevel = srcMipLevel; curMipLevel < srcInfo.mipCount; curMipLevel++) {
+        auto srcMip = TextureCacheGetMip(srcTexture, curMipLevel);
+        auto srcRow = &srcMip[(curSrcPos.y * curSrcWidth) + curSrcPos.x];
+        auto srcAlphaRow = &srcMip[(curSrcWidth * curSrcHeight) + ((curSrcPos.y * curSrcWidth) + curSrcPos.x) / 8];
+
+        auto dstMip = reinterpret_cast<uint8_t*>(dstMips[curMipLevel + dstMipLevelOfs].mip[0]);
+        auto dstRow = &dstMip[(curDstPos.y * curDstWidth) + (curDstPos.x * 4)];
+
+        // Calculate the end of the source region
+        auto srcEnd = srcRow + curSrcWidth * curSrcSize.y;
+
+        // Copy each row
+        while (srcRow < srcEnd) {
+            auto dst = reinterpret_cast<C4Pixel*>(dstRow);
+
+            for (uint32_t x = 0; x < curSrcSize.x; x++) {
+                // Get palette entry
+                auto& src = srcPal[srcRow[x]];
+
+                // Get alpha
+                uint8_t packedAlpha = srcAlphaRow[x / 8];
+                uint8_t transparent = (packedAlpha & 1 << x % 8) == 0;
+
+                // Blend src color with dst
+                dst->b = transparent ? dst->b : src.b;
+                dst->g = transparent ? dst->g : src.g;
+                dst->r = transparent ? dst->r : src.r;
+                dst->a = 0xFF;
+
+                dst++;
+            }
+
+            // Move to next row
+            srcRow += curSrcWidth;
+            srcAlphaRow += curSrcWidth / 8;
+            dstRow += curDstWidth;
+        }
+
+        // Prepare next mip level
+
+        curSrcSize.x = std::max(1, curSrcSize.x / 2);
+        curSrcSize.y = std::max(1, curSrcSize.y / 2);
+
+        curSrcPos.x /= 2;
+        curSrcPos.y /= 2;
+        curDstPos.x /= 2;
+        curDstPos.y /= 2;
+
+        curDstWidth /= 2;
+        curSrcWidth /= 2;
+
+        curSrcHeight /= 2;
+    }
 }
 
 void CCharacterComponent::PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs) {
