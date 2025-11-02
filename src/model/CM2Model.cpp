@@ -885,7 +885,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
     if (v16 >= 500) {
         if (v16 < 0xFFFFFE0C) {
             if (sequenceTime >= 500) {
-                // Run binary search for key containing sequence time
+                // Perform binary search for key containing sequence time
 
                 int32_t lowKey = 0;
                 int32_t highKey = numKeys;
@@ -912,41 +912,37 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
 
                 foundKey = lowKey;
             } else {
-                foundKey = 0;
-                uint32_t* v19 = keyTimes + 1;
+                // Perform linear search forward from zero for key containing sequence time
 
-                do {
-                    if (*v19 > sequenceTime) {
-                        break;
-                    }
+                uint32_t key = 0;
 
-                    ++foundKey;
-                    ++v19;
-                } while (foundKey < numKeys - 1);
-            }
-        } else if (foundKey) {
-            uint32_t* v18 = &keyTimes[foundKey];
-
-            do {
-                if (*v18 <= sequenceTime) {
-                    break;
+                while (key < numKeys - 1 && sequenceTime >= keyTimes[key + 1]) {
+                    key++;
                 }
 
-                --foundKey;
-                --v18;
-            } while (foundKey);
-        }
-    } else if (foundKey < numKeys - 1) {
-        uint32_t* v17 = &keyTimes[foundKey + 1];
+                foundKey = key;
+            }
+        } else if (currentKey > 0) {
+            // Perform linear search backward from current key for key containing sequence time
 
-        do {
-            if (*v17 > sequenceTime) {
-                break;
+            uint32_t key = currentKey;
+
+            while (key > 0 && sequenceTime < keyTimes[key]) {
+                key--;
             }
 
-            ++foundKey;
-            ++v17;
-        } while (foundKey < numKeys - 1);
+            foundKey = key;
+        }
+    } else if (currentKey < numKeys - 1) {
+        // Perform linear search forward from current key for key containing sequence time
+
+        uint32_t key = currentKey;
+
+        while (key < numKeys - 1 && sequenceTime >= keyTimes[key + 1]) {
+            key++;
+        }
+
+        foundKey = key;
     }
 
     if (foundKey + 1 >= numKeys) {
