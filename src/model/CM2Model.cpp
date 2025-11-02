@@ -849,21 +849,23 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         return;
     }
 
-    uint32_t v6 = sequence->uint0;
-    uint32_t v7 = sequence->uint4;
+    uint32_t sequenceDuration = sequence->uint0;
+    uint32_t sequenceIndex = sequence->uint4;
 
     if (track.loopIndex == 0xFFFF) {
-        if (v7 >= track.sequenceTimes.Count()) {
-            v7 = 0;
+        if (sequenceIndex >= track.sequenceTimes.Count()) {
+            sequenceIndex = 0;
         }
     } else {
-        v6 = this->m_loops[track.loopIndex];
-        v7 = 0;
+        sequenceDuration = this->m_loops[track.loopIndex];
+        sequenceIndex = 0;
     }
 
-    uint32_t v12 = track.sequenceTimes[v7].times.Count();
+    auto& sequenceTimes = track.sequenceTimes[sequenceIndex];
+    auto numKeys = sequenceTimes.times.Count();
+    auto keyTimes = sequenceTimes.times.Data();
 
-    if (v12 <= 1) {
+    if (numKeys <= 1) {
         nextKey = 0;
         currentKey = 0;
         ratio = 0.0f;
@@ -871,29 +873,27 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         return;
     }
 
-    if (currentKey >= v12) {
+    if (currentKey >= numKeys) {
         currentKey = 0;
     }
 
     uint32_t v15 = currentKey;
-    auto& v24 = track.sequenceTimes[v7];
-    auto v14 = v24.times.Data();
-    auto v16 = v6 - v14[currentKey];
+    auto v16 = sequenceDuration - keyTimes[currentKey];
 
     if (v16 >= 500) {
         if (v16 < 0xFFFFFE0C) {
             v15 = 0;
 
-            if (v6 >= 500) {
-                uint32_t v20 = v12;
+            if (sequenceDuration >= 500) {
+                uint32_t v20 = numKeys;
 
                 do {
                     uint32_t v21 = (v20 + v15) >> 1;
 
-                    if (v6 >= v14[v21]) {
+                    if (sequenceDuration >= keyTimes[v21]) {
                         v15 = v21 + 1;
 
-                        if (v21 + 1 >= v12 || v6 < v14[v21 + 1]) {
+                        if (v21 + 1 >= numKeys || sequenceDuration < keyTimes[v21 + 1]) {
                             v15 = v21;
                             break;
                         }
@@ -902,22 +902,22 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                     }
                 } while (v15 < v20);
             } else {
-                uint32_t* v19 = v14 + 1;
+                uint32_t* v19 = keyTimes + 1;
 
                 do {
-                    if (*v19 > v6) {
+                    if (*v19 > sequenceDuration) {
                         break;
                     }
 
                     ++v15;
                     ++v19;
-                } while (v15 < v12 - 1);
+                } while (v15 < numKeys - 1);
             }
         } else if (v15) {
-            uint32_t* v18 = &v14[v15];
+            uint32_t* v18 = &keyTimes[v15];
 
             do {
-                if (*v18 <= v6) {
+                if (*v18 <= sequenceDuration) {
                     break;
                 }
 
@@ -925,20 +925,20 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                 --v18;
             } while (v15);
         }
-    } else if (v15 < v12 - 1) {
-        uint32_t* v17 = &v14[v15 + 1];
+    } else if (v15 < numKeys - 1) {
+        uint32_t* v17 = &keyTimes[v15 + 1];
 
         do {
-            if (*v17 > v6) {
+            if (*v17 > sequenceDuration) {
                 break;
             }
 
             ++v15;
             ++v17;
-        } while (v15 < v12 - 1);
+        } while (v15 < numKeys - 1);
     }
 
-    if (v15 + 1 >= v24.times.Count()) {
+    if (v15 + 1 >= numKeys) {
         nextKey = v15;
         currentKey = v15;
         ratio = 0.0f;
@@ -946,10 +946,10 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         currentKey = v15;
         nextKey = v15 + 1;
 
-        uint32_t* v22 = &v24.times[v15];
-        float v23 = static_cast<float>(v6 - v22[0]);
-        float v25 = static_cast<float>(v22[1] - v22[0]);
-        ratio = v23 / v25;
+        auto currentKeyTime = keyTimes[currentKey];
+        auto nextKeyTime = keyTimes[nextKey];
+
+        ratio = static_cast<float>(sequenceDuration - currentKeyTime) / static_cast<float>(nextKeyTime - currentKeyTime);
     }
 }
 
