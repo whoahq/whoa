@@ -879,7 +879,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         currentKey = 0;
     }
 
-    uint32_t v15 = currentKey;
+    uint32_t foundKey = currentKey;
     auto v16 = sequenceTime - keyTimes[currentKey];
 
     if (v16 >= 500) {
@@ -910,9 +910,9 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                     }
                 }
 
-                v15 = lowKey;
+                foundKey = lowKey;
             } else {
-                v15 = 0;
+                foundKey = 0;
                 uint32_t* v19 = keyTimes + 1;
 
                 do {
@@ -920,43 +920,43 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                         break;
                     }
 
-                    ++v15;
+                    ++foundKey;
                     ++v19;
-                } while (v15 < numKeys - 1);
+                } while (foundKey < numKeys - 1);
             }
-        } else if (v15) {
-            uint32_t* v18 = &keyTimes[v15];
+        } else if (foundKey) {
+            uint32_t* v18 = &keyTimes[foundKey];
 
             do {
                 if (*v18 <= sequenceTime) {
                     break;
                 }
 
-                --v15;
+                --foundKey;
                 --v18;
-            } while (v15);
+            } while (foundKey);
         }
-    } else if (v15 < numKeys - 1) {
-        uint32_t* v17 = &keyTimes[v15 + 1];
+    } else if (foundKey < numKeys - 1) {
+        uint32_t* v17 = &keyTimes[foundKey + 1];
 
         do {
             if (*v17 > sequenceTime) {
                 break;
             }
 
-            ++v15;
+            ++foundKey;
             ++v17;
-        } while (v15 < numKeys - 1);
+        } while (foundKey < numKeys - 1);
     }
 
-    if (v15 + 1 >= numKeys) {
-        currentKey = v15;
-        nextKey = v15;
+    if (foundKey + 1 >= numKeys) {
+        currentKey = foundKey;
+        nextKey = foundKey;
 
         ratio = 0.0f;
     } else {
-        currentKey = v15;
-        nextKey = v15 + 1;
+        currentKey = foundKey;
+        nextKey = foundKey + 1;
 
         auto currentKeyTime = keyTimes[currentKey];
         auto nextKeyTime = keyTimes[nextKey];
