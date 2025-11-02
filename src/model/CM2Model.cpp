@@ -842,14 +842,15 @@ void CM2Model::DetachFromScene() {
 
 void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint32_t& currentKey, uint32_t& nextKey, float& ratio) {
     if (!track.sequenceTimes.Count()) {
-        nextKey = 0;
         currentKey = 0;
+        nextKey = 0;
+
         ratio = 0.0f;
 
         return;
     }
 
-    uint32_t sequenceDuration = sequence->uint0;
+    uint32_t sequenceTime = sequence->uint0;
     uint32_t sequenceIndex = sequence->uint4;
 
     if (track.loopIndex == 0xFFFF) {
@@ -857,7 +858,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
             sequenceIndex = 0;
         }
     } else {
-        sequenceDuration = this->m_loops[track.loopIndex];
+        sequenceTime = this->m_loops[track.loopIndex];
         sequenceIndex = 0;
     }
 
@@ -866,8 +867,9 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
     auto keyTimes = sequenceTimes.times.Data();
 
     if (numKeys <= 1) {
-        nextKey = 0;
         currentKey = 0;
+        nextKey = 0;
+
         ratio = 0.0f;
 
         return;
@@ -878,34 +880,43 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
     }
 
     uint32_t v15 = currentKey;
-    auto v16 = sequenceDuration - keyTimes[currentKey];
+    auto v16 = sequenceTime - keyTimes[currentKey];
 
     if (v16 >= 500) {
         if (v16 < 0xFFFFFE0C) {
-            v15 = 0;
+            if (sequenceTime >= 500) {
+                // Run binary search for key containing sequence time
 
-            if (sequenceDuration >= 500) {
-                uint32_t v20 = numKeys;
+                int32_t lowKey = 0;
+                int32_t highKey = numKeys;
 
-                do {
-                    uint32_t v21 = (v20 + v15) >> 1;
+                while (lowKey < highKey) {
+                    int32_t midKey = (lowKey + highKey) / 2;
 
-                    if (sequenceDuration >= keyTimes[v21]) {
-                        v15 = v21 + 1;
-
-                        if (v21 + 1 >= numKeys || sequenceDuration < keyTimes[v21 + 1]) {
-                            v15 = v21;
-                            break;
-                        }
-                    } else {
-                        v20 = v21 - 1;
+                    if (midKey + 1 >= numKeys) {
+                        lowKey = midKey;
+                        break;
                     }
-                } while (v15 < v20);
+
+                    if (sequenceTime >= keyTimes[midKey] && sequenceTime < keyTimes[midKey + 1]) {
+                        lowKey = midKey;
+                        break;
+                    }
+
+                    if (sequenceTime >= keyTimes[midKey]) {
+                        lowKey = midKey + 1;
+                    } else {
+                        highKey = midKey - 1;
+                    }
+                }
+
+                v15 = lowKey;
             } else {
+                v15 = 0;
                 uint32_t* v19 = keyTimes + 1;
 
                 do {
-                    if (*v19 > sequenceDuration) {
+                    if (*v19 > sequenceTime) {
                         break;
                     }
 
@@ -917,7 +928,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
             uint32_t* v18 = &keyTimes[v15];
 
             do {
-                if (*v18 <= sequenceDuration) {
+                if (*v18 <= sequenceTime) {
                     break;
                 }
 
@@ -929,7 +940,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         uint32_t* v17 = &keyTimes[v15 + 1];
 
         do {
-            if (*v17 > sequenceDuration) {
+            if (*v17 > sequenceTime) {
                 break;
             }
 
@@ -939,8 +950,9 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
     }
 
     if (v15 + 1 >= numKeys) {
-        nextKey = v15;
         currentKey = v15;
+        nextKey = v15;
+
         ratio = 0.0f;
     } else {
         currentKey = v15;
@@ -949,7 +961,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
         auto currentKeyTime = keyTimes[currentKey];
         auto nextKeyTime = keyTimes[nextKey];
 
-        ratio = static_cast<float>(sequenceDuration - currentKeyTime) / static_cast<float>(nextKeyTime - currentKeyTime);
+        ratio = static_cast<float>(sequenceTime - currentKeyTime) / static_cast<float>(nextKeyTime - currentKeyTime);
     }
 }
 
