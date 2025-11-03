@@ -90,6 +90,7 @@ int32_t s_itemPriority[NUM_ITEM_SLOT][NUM_COMPONENT_SECTIONS] = {
 #define SECTION_HL_ITEM_PRIORITIES 0
 
 int32_t s_bInRenderPrep = 0;
+char s_buffer[STORM_MAX_PATH];
 uint32_t* s_componentHeap;
 char* s_pathEnd;
 char s_path[STORM_MAX_PATH];
@@ -99,8 +100,13 @@ CStatus s_status;
 
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
-int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool a5, bool a6, bool a7, int32_t a8) {
-    //  TODO
+int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool sheathed, bool shield, bool a7, int32_t visualID) {
+    if (!model || !displayRec || invSlot > INVSLOT_TABARD) {
+        return -1;
+    }
+
+    auto modelPath = "Item\\ObjectComponents\\Weapon\\";
+    auto texturePath = "Item\\ObjectComponents\\Weapon\\";
 
     GEOCOMPONENTLINKS itemLink;
     GEOCOMPONENTLINKS sheatheLink;
@@ -123,6 +129,38 @@ int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoR
         return -1;
     }
 
+    if (shield) {
+        modelPath = "Item\\ObjectComponents\\Shield\\";
+        texturePath = "Item\\ObjectComponents\\Shield\\";
+
+        itemLink = ATTACH_SHIELD;
+    }
+
+    CCharacterComponent::RemoveLinkpt(model, itemLink);
+    CCharacterComponent::RemoveLinkpt(model, sheatheLink);
+
+    auto link = sheathed ? sheatheLink : itemLink;
+
+    if (model->IsLoaded(0, 0) && !model->HasAttachment(link)) {
+        return -1;
+    }
+
+    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s", modelPath, displayRec->m_modelName[0]);
+    SStrCopy(s_pathEnd, s_buffer);
+
+    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s.blp", texturePath, displayRec->m_modelTexture[0]);
+    SStrCopy(s_pathEnd2, s_buffer);
+
+    if (visualID == 0) {
+        visualID = displayRec->m_itemVisual;
+    }
+
+    CCharacterComponent::AddLink(model, link, s_path, s_path2, visualID, displayRec);
+
+    return link;
+}
+
+void CCharacterComponent::AddLink(CM2Model* model, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t a5, const ItemDisplayInfoRec* displayRec) {
     // TODO
 }
 
@@ -594,6 +632,10 @@ void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPix
 
         curSrcHeight /= 2;
     }
+}
+
+void CCharacterComponent::RemoveLinkpt(CM2Model* model, GEOCOMPONENTLINKS link) {
+    // TODO
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {

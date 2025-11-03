@@ -53,7 +53,7 @@ enum COMPONENT_VARIATIONS {
 };
 
 enum GEOCOMPONENTLINKS {
-    // TODO
+    ATTACH_SHIELD           = 0,
     ATTACH_HANDR            = 1,
     ATTACH_HANDL            = 2,
     // TODO
