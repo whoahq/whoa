@@ -167,6 +167,7 @@ class CM2Model {
         CAaBox& GetBoundingBox(CAaBox& bounds);
         HCAMERA GetCameraByIndex(uint32_t index);
         C3Vector GetPosition();
+        bool HasAttachment(uint32_t id);
         int32_t Initialize(CM2Scene* scene, CM2Shared* shared, CM2Model* a4, uint32_t flags);
         int32_t InitializeLoaded();
         int32_t IsBatchDoodadCompatible(M2Batch* batch);

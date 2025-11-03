@@ -1081,6 +1081,18 @@ C3Vector CM2Model::GetPosition() {
     return reinterpret_cast<C3Vector&>(this->matrixF4.d0) * this->m_scene->m_viewInv;
 }
 
+bool CM2Model::HasAttachment(uint32_t id) {
+    if (!this->m_loaded) {
+        this->WaitForLoad("HasAttachment");
+    }
+
+    if (id < this->m_shared->m_data->attachmentIndicesById.Count()) {
+        return this->m_shared->m_data->attachmentIndicesById[id] < this->m_shared->m_data->attachments.Count();
+    }
+
+    return this->m_shared->m_data->attachments.Count() > 0xFFFF;
+}
+
 int32_t CM2Model::Initialize(CM2Scene* scene, CM2Shared* shared, CM2Model* a4, uint32_t flags) {
     this->AttachToScene(scene);
 
