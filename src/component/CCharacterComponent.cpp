@@ -99,8 +99,31 @@ CStatus s_status;
 
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
 
-void CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool a5, bool a6, bool a7, int32_t a8) {
+int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool a5, bool a6, bool a7, int32_t a8) {
     //  TODO
+
+    GEOCOMPONENTLINKS itemLink;
+    GEOCOMPONENTLINKS sheatheLink;
+
+    if (invSlot == INVSLOT_MAINHAND) {
+        itemLink = ATTACH_HANDR;
+        sheatheLink = CCharacterComponent::GetSheatheLink(sheatheType, true);
+    } else if (invSlot == INVSLOT_OFFHAND) {
+        itemLink = ATTACH_HANDL;
+        sheatheLink = CCharacterComponent::GetSheatheLink(sheatheType, false);
+    } else if (invSlot == INVSLOT_RANGED) {
+        if (a7) {
+            itemLink = ATTACH_HANDR;
+            sheatheLink = CCharacterComponent::GetSheatheLink(sheatheType, true);
+        } else {
+            itemLink = ATTACH_HANDL;
+            sheatheLink = CCharacterComponent::GetSheatheLink(sheatheType, false);
+        }
+    } else {
+        return -1;
+    }
+
+    // TODO
 }
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {
