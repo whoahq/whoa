@@ -52,6 +52,24 @@ enum COMPONENT_VARIATIONS {
     NUM_COMPONENT_VARIATIONS
 };
 
+enum GEOCOMPONENTLINKS {
+    // TODO
+    ATTACH_HANDR            = 1,
+    ATTACH_HANDL            = 2,
+    // TODO
+    ATTACH_SHEATH_MAINHAND  = 26,
+    ATTACH_SHEATH_OFFHAND   = 27,
+    ATTACH_SHEATH_SHIELD    = 28,
+    // TODO
+    ATTACH_LARGEWEAPONLEFT  = 30,
+    ATTACH_LARGEWEAPONRIGHT = 31,
+    // TODO
+    ATTACH_HIPWEAPONLEFT    = 32,
+    ATTACH_HIPWEAPONRIGHT   = 33,
+    // TODO
+    ATTACH_NONE             = 0xFFFFFFFF,
+};
+
 enum ITEM_SLOT {
     ITEMSLOT_0              = 0,
     ITEMSLOT_1              = 1,

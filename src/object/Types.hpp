@@ -40,6 +40,10 @@ enum INVENTORY_SLOTS {
 
 enum SHEATHE_TYPE {
     SHEATHE_0           = 0,
+    SHEATHE_1           = 1,
+    SHEATHE_2           = 2,
+    SHEATHE_3           = 3,
+    SHEATHE_4           = 4,
     NUM_SHEATHE_TYPES
 };
 

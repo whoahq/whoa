@@ -50,6 +50,7 @@ class CCharacterComponent {
         static void AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool a5, bool a6, bool a7, int32_t a8);
         static CCharacterComponent* AllocComponent();
         static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
+        static GEOCOMPONENTLINKS GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2);
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
         static void InitDbData();

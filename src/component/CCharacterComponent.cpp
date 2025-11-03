@@ -122,6 +122,21 @@ HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* statu
     return TextureCreate(fileName, texFlags, status, 0);
 }
 
+GEOCOMPONENTLINKS CCharacterComponent::GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2) {
+    switch (sheatheType) {
+    case SHEATHE_1:
+        return a2 ? ATTACH_SHEATH_MAINHAND : ATTACH_SHEATH_OFFHAND;
+    case SHEATHE_2:
+        return a2 ? ATTACH_LARGEWEAPONLEFT : ATTACH_LARGEWEAPONRIGHT;
+    case SHEATHE_3:
+        return a2 ? ATTACH_HIPWEAPONLEFT : ATTACH_HIPWEAPONRIGHT;
+    case SHEATHE_4:
+        return ATTACH_SHEATH_SHIELD;
+    default:
+        return ATTACH_NONE;
+    }
+}
+
 void CCharacterComponent::Initialize() {
     // TODO
 
