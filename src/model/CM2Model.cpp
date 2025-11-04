@@ -1298,6 +1298,27 @@ int32_t CM2Model::InitializeLoaded() {
 
     // TODO
 
+    // Process model attachments that occurred during load
+
+    CM2Model* attachNext = nullptr;
+    for (auto attachModel = this->m_attachList; attachModel; attachModel = attachNext) {
+        attachNext = attachModel->m_attachNext;
+
+        uint16_t attachIndex = 0xFFFF;
+
+        if (attachModel->m_attachId < this->m_shared->m_data->attachments.Count()) {
+            attachIndex = this->m_shared->m_data->attachmentIndicesById[attachModel->m_attachId];
+        }
+
+        if (attachIndex != 0xFFFF || attachModel->m_flag40000) {
+            attachModel->m_attachIndex = attachIndex;
+        } else {
+            attachModel->DetachFromParent();
+        }
+    }
+
+    // TODO
+
     this->m_loaded = 1;
 
     uint32_t savedTime = this->m_scene->m_time;
