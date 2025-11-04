@@ -200,12 +200,10 @@ void CCharacterComponent::AddLink(CM2Model* parent, GEOCOMPONENTLINKS link, char
     parent->DetachAllChildrenById(link);
     model->AttachToParent(parent, link, nullptr, 0);
 
-    // Add link point
-
     if (link == ATTACH_HANDR) {
-        // TODO CCharacterComponent::AddLinkpt(parent, 0);
+        CCharacterComponent::ComponentCloseFingers(parent, HAND_RIGHT);
     } else if (link == ATTACH_HANDL) {
-        // TODO CCharacterComponent::AddLinkpt(parent, 1);
+        CCharacterComponent::ComponentCloseFingers(parent, HAND_LEFT);
     }
 
     // Replace item particle color
@@ -227,6 +225,23 @@ CCharacterComponent* CCharacterComponent::AllocComponent() {
     component->m_memHandle = memHandle;
 
     return component;
+}
+
+void CCharacterComponent::ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT handSlot) {
+    uint32_t firstBone;
+    uint32_t lastBone;
+
+    if (handSlot == HAND_LEFT) {
+        firstBone = 13;
+        lastBone = 17;
+    } else {
+        firstBone = 8;
+        lastBone = 12;
+    }
+
+    for (uint32_t boneId = firstBone; boneId <= lastBone; boneId++) {
+        model->SetBoneSequence(boneId, 15, 0xFFFFFFFF, 0, 1.0f, 0, 1);
+    }
 }
 
 HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* status) {

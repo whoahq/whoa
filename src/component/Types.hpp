@@ -6,6 +6,11 @@
 
 class CM2Model;
 
+enum COMP_HAND_SLOT {
+    HAND_RIGHT              = 0,
+    HAND_LEFT               = 1,
+};
+
 enum COMPONENT_GEOSET {
     GEOSET_HEAD             = 0,
     GEOSET_BEARD            = 1,
