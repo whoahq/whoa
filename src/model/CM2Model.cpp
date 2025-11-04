@@ -693,15 +693,20 @@ void CM2Model::AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* pos
 
     this->SetAnimating(0);
 
-    auto& attachmentIndicesById = this->m_shared->m_data->attachmentIndicesById;
+    // Look up parent attachment index by given ID
 
     uint16_t attachIndex = 0xFFFF;
-    if (parent->m_loaded && id < attachmentIndicesById.count) {
-        attachIndex = attachmentIndicesById[id];
-    }
 
-    if (attachIndex == 0xFFFF && !a5) {
-        return;
+    if (parent->m_loaded) {
+        auto& parentAttachmentIndicesById = parent->m_shared->m_data->attachmentIndicesById;
+
+        if (id < parentAttachmentIndicesById.Count()) {
+            attachIndex = parentAttachmentIndicesById[id];
+        }
+
+        if (attachIndex == 0xFFFF && !a5) {
+            return;
+        }
     }
 
     this->m_attachIndex = attachIndex;
