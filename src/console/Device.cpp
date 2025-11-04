@@ -6,6 +6,7 @@
 #include "gx/Device.hpp"
 #include <cstring>
 
+static CGxDevice* s_device;
 CVar* s_cvGxMaximize;
 CVar* s_cvGxResolution;
 CVar* s_cvGxWidescreen;
@@ -198,7 +199,7 @@ void ConsoleDeviceInitialize(const char* title) {
     api = GxApi_GLL;
 #endif
 
-    CGxDevice* device = GxDevCreate(api, OsWindowProc, format);
+    s_device = GxDevCreate(api, OsWindowProc, format);
 
     // TODO
 
@@ -206,4 +207,8 @@ void ConsoleDeviceInitialize(const char* title) {
     OsGuiSetGxWindow(gxWindow);
 
     // TODO
+}
+
+int32_t ConsoleDeviceExists() {
+    return s_device != nullptr;
 }
