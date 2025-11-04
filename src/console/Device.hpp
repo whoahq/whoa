@@ -9,4 +9,6 @@ struct DefaultSettings {
 
 void ConsoleDeviceInitialize(const char* title);
 
+int32_t ConsoleDeviceExists();
+
 #endif
