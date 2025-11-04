@@ -47,15 +47,22 @@ void CharacterSelectionDisplay::CreateModelData() {
         auto displayID = this->m_info.inventoryItemDisplayID[invSlot];
         auto visualID = this->m_info.inventoryItemVisualID[invSlot];
 
-        // Only honor ranged slot for hunters
+        // Skip main hand and off-hand for hunters
+        if ((invSlot == INVSLOT_MAINHAND || invSlot == INVSLOT_OFFHAND) && displayID && this->m_info.classID == 3) {
+            continue;
+        }
+
+        // Skip ranged for non-hunters
         if (invSlot == INVSLOT_RANGED && displayID && this->m_info.classID != 3) {
             continue;
         }
 
+        // Flag - skip helm
         if (invSlot == INVSLOT_HEAD && (this->m_info.flags & 0x400)) {
             continue;
         }
 
+        // Flag - skip cape
         if (invSlot == INVSLOT_BACK && (this->m_info.flags & 0x800)) {
             continue;
         }
@@ -81,7 +88,7 @@ void CharacterSelectionDisplay::CreateModelData() {
             continue;
         }
 
-        // Main hand and off hand
+        // Main hand and off-hand
 
         if (invSlot == INVSLOT_MAINHAND || invSlot == INVSLOT_OFFHAND) {
             CCharacterComponent::AddHandItem(
