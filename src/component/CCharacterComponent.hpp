@@ -51,6 +51,7 @@ class CCharacterComponent {
         static void AddLink(CM2Model* parent, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t visualID, const ItemDisplayInfoRec* displayRec);
         static CCharacterComponent* AllocComponent();
         static void ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
+        static void ComponentOpenFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
         static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
         static GEOCOMPONENTLINKS GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2);
         static void Initialize();

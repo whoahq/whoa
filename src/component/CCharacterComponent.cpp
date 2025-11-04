@@ -244,6 +244,23 @@ void CCharacterComponent::ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT 
     }
 }
 
+void CCharacterComponent::ComponentOpenFingers(CM2Model* model, COMP_HAND_SLOT handSlot) {
+    uint32_t firstBone;
+    uint32_t lastBone;
+
+    if (handSlot == HAND_LEFT) {
+        firstBone = 13;
+        lastBone = 17;
+    } else {
+        firstBone = 8;
+        lastBone = 12;
+    }
+
+    for (uint32_t boneId = firstBone; boneId <= lastBone; boneId++) {
+        model->UnsetBoneSequence(boneId, 0, 1);
+    }
+}
+
 HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* status) {
     auto texFlags = CGxTexFlags(GxTex_LinearMipNearest, 0, 0, 0, 0, 0, 1);
     return TextureCreate(fileName, texFlags, status, 0);
