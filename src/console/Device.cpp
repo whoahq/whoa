@@ -7,14 +7,14 @@
 #include <cstring>
 
 static CGxDevice* s_device;
-CVar* s_cvGxMaximize;
-CVar* s_cvGxResolution;
-CVar* s_cvGxWidescreen;
-CVar* s_cvGxWindow;
-DefaultSettings s_defaults;
-bool s_hwDetect;
-bool s_hwChanged;
-CGxFormat s_requestedFormat;
+static CVar* s_cvGxMaximize;
+static CVar* s_cvGxResolution;
+static CVar* s_cvGxWidescreen;
+static CVar* s_cvGxWindow;
+static DefaultSettings s_defaults;
+static bool s_hwDetect;
+static bool s_hwChanged;
+static CGxFormat s_requestedFormat;
 
 bool CVGxMaximizeCallback(CVar*, const char*, const char*, void*) {
     // TODO
