@@ -718,7 +718,23 @@ void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPix
 }
 
 void CCharacterComponent::RemoveLinkpt(CM2Model* model, GEOCOMPONENTLINKS link) {
-    // TODO
+    if (link == ATTACH_NONE) {
+        return;
+    }
+
+    if (link == ATTACH_SHIELD || link == ATTACH_HANDL) {
+        CCharacterComponent::ComponentOpenFingers(model, HAND_LEFT);
+    }
+
+    if (link == ATTACH_HANDR) {
+        CCharacterComponent::ComponentOpenFingers(model, HAND_RIGHT);
+    }
+
+    if (model && model->IsLoaded(0, 0)) {
+        if (model->HasAttachment(link)) {
+            model->DetachAllChildrenById(link);
+        }
+    }
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {
