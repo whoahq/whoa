@@ -1989,8 +1989,7 @@ void CM2Model::SetVisible(int32_t visible) {
 }
 
 void CM2Model::SetWorldTransform(const C3Vector& position, float orientation, float scale) {
-    C44Matrix(this->matrixB4);
-
+    this->matrixB4.Identity();
     this->matrixB4.RotateAroundZ(orientation);
     this->matrixB4.Scale(scale);
     this->matrixB4.d0 = position.x;
