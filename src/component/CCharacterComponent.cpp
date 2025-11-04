@@ -105,8 +105,8 @@ int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoR
         return -1;
     }
 
-    auto modelPath = "Item\\ObjectComponents\\Weapon\\";
-    auto texturePath = "Item\\ObjectComponents\\Weapon\\";
+    auto itemModelPath = "Item\\ObjectComponents\\Weapon\\";
+    auto itemTexturePath = "Item\\ObjectComponents\\Weapon\\";
 
     GEOCOMPONENTLINKS itemLink;
     GEOCOMPONENTLINKS sheatheLink;
@@ -130,8 +130,8 @@ int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoR
     }
 
     if (shield) {
-        modelPath = "Item\\ObjectComponents\\Shield\\";
-        texturePath = "Item\\ObjectComponents\\Shield\\";
+        itemModelPath = "Item\\ObjectComponents\\Shield\\";
+        itemTexturePath = "Item\\ObjectComponents\\Shield\\";
 
         itemLink = ATTACH_SHIELD;
     }
@@ -145,10 +145,10 @@ int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoR
         return -1;
     }
 
-    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s", modelPath, displayRec->m_modelName[0]);
+    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s", itemModelPath, displayRec->m_modelName[0]);
     SStrCopy(s_pathEnd, s_buffer);
 
-    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s.blp", texturePath, displayRec->m_modelTexture[0]);
+    SStrPrintf(s_buffer, sizeof(s_buffer), "%s%s.blp", itemTexturePath, displayRec->m_modelTexture[0]);
     SStrCopy(s_pathEnd2, s_buffer);
 
     if (visualID == 0) {
