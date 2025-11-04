@@ -6,6 +6,7 @@
 #include "gx/Device.hpp"
 #include "gx/Texture.hpp"
 #include "model/CM2Model.hpp"
+#include "model/CM2Scene.hpp"
 #include "object/Types.hpp"
 #include "util/CStatus.hpp"
 #include "util/Unimplemented.hpp"
@@ -160,8 +161,58 @@ int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoR
     return link;
 }
 
-void CCharacterComponent::AddLink(CM2Model* model, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t a5, const ItemDisplayInfoRec* displayRec) {
-    // TODO
+void CCharacterComponent::AddLink(CM2Model* parent, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t visualID, const ItemDisplayInfoRec* displayRec) {
+    if (!parent) {
+        return;
+    }
+
+    // Create item model
+
+    auto model = parent->m_scene->CreateModel(modelPath, 0);
+
+    if (!model) {
+        return;
+    }
+
+    // Create item texture
+
+    auto textureFlags = CGxTexFlags(GxTex_LinearMipNearest, 0, 0, 0, 0, 0, 1);
+    auto texture = TextureCreate(texturePath, textureFlags, &s_status, 0);
+
+    if (!texture) {
+        model->Release();
+        return;
+    }
+
+    // Replace item texture
+
+    model->ReplaceTexture(2, texture);
+    HandleClose(texture);
+
+    // Add item visual
+
+    if (visualID > 0) {
+        // TODO CCharacterComponent::ComponentUtilAddItemVisual(model, visualID);
+    }
+
+    // Attach item to parent
+
+    parent->DetachAllChildrenById(link);
+    model->AttachToParent(parent, link, nullptr, 0);
+
+    // Add link point
+
+    if (link == ATTACH_HANDR) {
+        // TODO CCharacterComponent::AddLinkpt(parent, 0);
+    } else if (link == ATTACH_HANDL) {
+        // TODO CCharacterComponent::AddLinkpt(parent, 1);
+    }
+
+    // Replace item particle color
+
+    // TODO ReplaceParticleColor(displayRec->m_particleColorID, model);
+
+    model->Release();
 }
 
 CCharacterComponent* CCharacterComponent::AllocComponent() {

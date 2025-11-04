@@ -48,7 +48,7 @@ class CCharacterComponent {
 
         // Static functions
         static int32_t AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool sheathed, bool shield, bool a7, int32_t a8);
-        static void AddLink(CM2Model* model, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t a5, const ItemDisplayInfoRec* displayRec);
+        static void AddLink(CM2Model* parent, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t visualID, const ItemDisplayInfoRec* displayRec);
         static CCharacterComponent* AllocComponent();
         static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
         static GEOCOMPONENTLINKS GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2);
