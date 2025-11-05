@@ -852,6 +852,8 @@ void CGlueMgr::PollRealmList(const char* msg, int32_t complete, int32_t result, 
         FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
 
         CGlueMgr::SetIdleState(IDLE_NONE);
+
+        return;
     }
 
     // Success
