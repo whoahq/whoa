@@ -490,7 +490,7 @@ void CSimpleButton::SetFontString(CSimpleFontString* text) {
     }
 
     if (text) {
-        text->SetFrame(this, 2, 1);
+        text->SetFrame(this, DRAWLAYER_ARTWORK, 1);
     }
 
     if (!text->Sub482AC0()) {
