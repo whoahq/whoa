@@ -550,7 +550,7 @@ int32_t CGlueMgr::NetDisconnectHandler(const void* a1, void* a2) {
     } else {
         ClientServices::SelectRealm("");
 
-        // TODO FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
+        FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
     }
 
     ClientServices::LoginConnection()->Logoff();
