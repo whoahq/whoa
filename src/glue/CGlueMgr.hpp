@@ -38,6 +38,7 @@ class CGlueMgr {
         static float m_aspect;
         static bool m_authenticated;
         static const CharacterSelectionDisplay* m_characterInfo;
+        static int32_t m_clientKickReason;
         static char m_currentScreen[];
         static int32_t m_disconnectPending;
         static int32_t m_displayingQueueDialog;

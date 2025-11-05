@@ -25,6 +25,7 @@
 #include "util/Filesystem.hpp"
 #include "util/Locale.hpp"
 #include "util/Log.hpp"
+#include <common/DataStore.hpp>
 #include <common/MD5.hpp>
 #include <cstdio>
 
@@ -55,6 +56,7 @@ char CGlueMgr::m_accountName[1280];
 float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
 const CharacterSelectionDisplay* CGlueMgr::m_characterInfo;
+int32_t CGlueMgr::m_clientKickReason;
 char CGlueMgr::m_currentScreen[64];
 int32_t CGlueMgr::m_disconnectPending;
 int32_t CGlueMgr::m_displayingQueueDialog;
@@ -528,7 +530,7 @@ int32_t CGlueMgr::NetDisconnectHandler(const void* a1, void* a2) {
     if (notAccountLogin) {
         // TODO ConsolePrintf("CGlueMgr::NetDisconnectHandler: Displaying script");
 
-        // TODO FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
+        FrameScript_SignalEvent(DISCONNECTED_FROM_SERVER, "%d", CGlueMgr::m_clientKickReason);
 
         ClientServices::LoginConnection()->Logoff();
 
@@ -557,9 +559,40 @@ int32_t CGlueMgr::NetDisconnectHandler(const void* a1, void* a2) {
 }
 
 int32_t CGlueMgr::OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
-    // TODO
+    // Nothing to read
+    if (msg->IsRead()) {
+        CGlueMgr::m_clientKickReason = 0;
+        return 1;
+    }
 
-    return 0;
+    uint8_t reason = 0;
+    msg->Get(reason);
+
+    // Message only contained reason code
+    if (msg->IsRead()) {
+        CGlueMgr::m_clientKickReason = reason;
+        return 1;
+    }
+
+    // UI isn't currently running
+    if (!CGlueMgr::m_initialized || CGlueMgr::m_suspended) {
+        CGlueMgr::m_clientKickReason = reason;
+        return 1;
+    }
+
+    // TODO
+    //
+    // char v6[16];
+    // msg->GetArray(v6, sizeof(v6));
+    //
+    // if (!msg->IsValid()) {
+    //    CGlueMgr::m_clientKickReason = reason;
+    //    return 1;
+    // }
+    //
+    // Sub4042C0(v6);
+
+    return 1;
 }
 
 void CGlueMgr::PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op) {
