@@ -449,7 +449,7 @@ void FrameScript_GetColor(lua_State* L, int32_t idx, CImVector& color) {
 
     float a = 1.0f;
     if (lua_isnumber(L, idx + 3)) {
-        a = lua_tonumber(L, idx + 2);
+        a = lua_tonumber(L, idx + 3);
         a = std::max(0.0f, std::min(a, 1.0f));
     }
 
