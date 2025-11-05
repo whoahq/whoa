@@ -382,7 +382,15 @@ void NetClient::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, voi
 }
 
 void NetClient::WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
-    // TODO
+    if (conn == this->m_redirectConnection) {
+        // TODO
+
+        return;
+    }
+
+    if (conn == this->m_serverConnection) {
+        this->m_netEventQueue->AddEvent(EVENT_ID_NET_CANTCONNECT, conn, this, nullptr, 0);
+    }
 }
 
 void NetClient::WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr) {
