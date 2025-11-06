@@ -61,11 +61,13 @@ int32_t CFramePoint::GetRelativeRect(CRect& rect) {
         return 0;
     }
 
+    // Nothing appears to override the default IsAttachmentOrigin implementation, which always
+    // returns false
     if (relative->IsAttachmentOrigin()) {
-        rect.minY -= rect.minY;
-        rect.minX -= rect.minX;
-        rect.maxY -= rect.minY;
         rect.maxX -= rect.minX;
+        rect.maxY -= rect.minY;
+        rect.minX -= rect.minX;
+        rect.minY -= rect.minY;
     }
 
     if (!flag2initial) {
