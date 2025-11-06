@@ -559,7 +559,7 @@ void CGxString::InitializeViewTranslation() {
         this->m_viewTranslation.x += (this->m_blockWidth * 0.5f);
     }
 
-    float v13 = ((this->m_spacing * (float)GetScreenPixelHeight()) + 0.9999499917030334f) / (float)GetScreenPixelHeight();
+    float v13 = CMath::fuint_pi(this->m_spacing * static_cast<float>(GetScreenPixelHeight())) / GetScreenPixelHeight();
     float v24 = v13 * (float)(this->m_intB0 - 1) + (float)this->m_intB0 * this->m_currentFontHeight;
 
     if (this->m_intD4 >= 4) {
