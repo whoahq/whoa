@@ -554,8 +554,8 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
 
     float v22 = GetScreenPixelHeight();
     float v14 = v22 * a7;
-    float v13 = v14 + 0.99994999f;
-    float v23 = v13 / v22;
+    auto v13 = CMath::fuint_pi(v14);
+    auto v23 = static_cast<float>(v13) / v22;
 
     return (v18 / v22 + v23 * (float)(numLines - 1) + (float)numLines * a3);
 }
