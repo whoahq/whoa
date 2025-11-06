@@ -493,7 +493,7 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
     int32_t advance;
     uint32_t numBytes;
     uint32_t code;
-    int32_t v8 = 0;
+    int32_t numLines = 0;
     float extent = 0.0f;
     float v17 = 0.0f;
     float v18 = 0.0f;
@@ -504,7 +504,7 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
     while (currentText && *currentText) {
         QUOTEDCODE quotedCode = GxuDetermineQuotedCode(currentText, advance, nullptr, flags, code);
 
-        if (flags & 0x2000 && v8 == 1) {
+        if (flags & 0x2000 && numLines == 1) {
             a4 = a4 - g_indentNormWidth;
         }
 
@@ -531,7 +531,7 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
             }
         }
 
-        v8++;
+        numLines++;
         currentText = nextText;
 
         float v14 = (float)GetScreenPixelHeight() * a3;
@@ -545,10 +545,10 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
     }
 
     if (!(flags & 0x02) && currentText > text && GxuDetermineQuotedCode(currentText - 1, advance, nullptr, flags, code) == CODE_NEWLINE) {
-        v8++;
+        numLines++;
     }
 
-    if (!v8) {
+    if (!numLines) {
         return 0.0f;
     }
 
@@ -557,7 +557,7 @@ float GxuFontGetWrappedTextHeight(CGxFont* font, const char* text, float a3, flo
     float v13 = v14 + 0.99994999f;
     float v23 = v13 / v22;
 
-    return (v18 / v22 + v23 * (float)(v8 - 1) + (float)v8 * a3);
+    return (v18 / v22 + v23 * (float)(numLines - 1) + (float)numLines * a3);
 }
 
 void GxuFontInitialize() {
