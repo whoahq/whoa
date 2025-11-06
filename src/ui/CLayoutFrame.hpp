@@ -44,6 +44,7 @@ class CLayoutFrame {
 
         // Virtual member functions
         virtual ~CLayoutFrame();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual CLayoutFrame* GetLayoutParent();
         virtual bool SetLayoutScale(float scale, bool force);
         virtual void SetWidth(float width);
@@ -73,7 +74,6 @@ class CLayoutFrame {
         int32_t IsResizeDependency(CLayoutFrame* dependentFrame);
         uint32_t IsResizePending();
         float Left();
-        void LoadXML(XMLNode* node, CStatus* status);
         int32_t OnFrameResize();
         void OnProtectedAttach(CLayoutFrame* frame);
         int32_t PtInFrameRect(const C2Vector& pt);
