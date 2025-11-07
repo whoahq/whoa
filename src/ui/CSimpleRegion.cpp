@@ -51,7 +51,49 @@ bool CSimpleRegion::IsShown() {
 
 void CSimpleRegion::OnColorChanged(bool a2) {
     if (this->m_parent) {
-        // TODO adjust color based on parent
+        uint8_t effectiveAlpha = this->m_parent->m_alpha * this->m_parent->alphaBD / 255;
+
+        if (effectiveAlpha < 254) {
+            if (this->m_colorCount == 0) {
+                this->m_alphaCount = 1;
+                this->m_colorCount = 1;
+
+                this->m_alpha[0] = 255;
+
+                this->m_color[0].r = 255;
+                this->m_color[0].g = 255;
+                this->m_color[0].b = 255;
+
+                a2 = true;
+            }
+        } else {
+            if (this->m_colorCount) {
+                bool clearColors = true;
+
+                for (uint32_t i = 0; i < this->m_colorCount; i++) {
+                    auto alpha = this->m_alpha[i];
+                    auto& color = this->m_color[i];
+
+                    // If any color is set to a non-default value, do not clear colors
+                    if (alpha < 254 || color.r != 255 || color.g != 255 || color.b != 255) {
+                        clearColors = false;
+                        break;
+                    }
+                }
+
+                // If all colors were set to default values, clear colors
+                if (clearColors) {
+                    this->m_colorCount = 0;
+                    this->m_alphaCount = 0;
+
+                    a2 = true;
+                }
+            }
+        }
+
+        for (uint32_t i = 0; i < this->m_colorCount; i++) {
+            this->m_color[i].a = this->m_alpha[i] * effectiveAlpha / 255;
+        }
     }
 
     if (a2) {
