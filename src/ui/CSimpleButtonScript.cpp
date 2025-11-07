@@ -101,7 +101,28 @@ int32_t CSimpleButton_SetButtonState(lua_State* L) {
 }
 
 int32_t CSimpleButton_SetNormalFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleButton::GetObjectType();
+    auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
+
+    CSimpleFont* font = nullptr;
+
+    if (lua_type(L, 2) == LUA_TSTRING) {
+        auto fontName = lua_tostring(L, 2);
+        font = CSimpleFont::GetFont(fontName, 0);
+    } else if (lua_type(L, 2) == LUA_TTABLE) {
+        lua_rawgeti(L, 2, 0);
+        font = static_cast<CSimpleFont*>(lua_touserdata(L, -1));
+        lua_settop(L, -2);
+    }
+
+    if (!button || !font || !font->IsA(CSimpleFont::GetObjectType())) {
+        return luaL_error(L, "Usage: %s:SetNormalFontObject(\"fontname\" or fontObject)", button->GetDisplayName());
+    }
+
+    button->m_normalFont = font;
+    button->UpdateTextState(button->m_state);
+
+    return 0;
 }
 
 int32_t CSimpleButton_GetNormalFontObject(lua_State* L) {
