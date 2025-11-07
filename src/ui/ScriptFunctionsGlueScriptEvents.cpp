@@ -489,11 +489,33 @@ int32_t Script_IsScanDLLFinished(lua_State* L) {
 }
 
 int32_t Script_IsWindowsClient(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+#if defined(WHOA_SYSTEM_WIN)
+    lua_pushnumber(L, 1.0);
+#else
+    lua_pushnil(L);
+#endif
+
+    return 1;
 }
 
-int32_t Script_IsOtherPlatformClient(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+int32_t Script_IsMacClient(lua_State* L) {
+#if defined(WHOA_SYSTEM_MAC)
+    lua_pushnumber(L, 1.0);
+#else
+    lua_pushnil(L);
+#endif
+
+    return 1;
+}
+
+int32_t Script_IsLinuxClient(lua_State* L) {
+#if defined(WHOA_SYSTEM_LINUX)
+    lua_pushnumber(L, 1.0);
+#else
+    lua_pushnil(L);
+#endif
+
+    return 1;
 }
 
 int32_t Script_SetRealmSplitState(lua_State* L) {
@@ -729,8 +751,8 @@ FrameScript_Method FrameScript::s_ScriptFunctions_GlueScriptEvents[NUM_SCRIPT_FU
     { "ScanDLLContinueAnyway",      &Script_ScanDLLContinueAnyway },
     { "IsScanDLLFinished",          &Script_IsScanDLLFinished },
     { "IsWindowsClient",            &Script_IsWindowsClient },
-    { "IsMacClient",                &Script_IsOtherPlatformClient },
-    { "IsLinuxClient",              &Script_IsOtherPlatformClient },
+    { "IsMacClient",                &Script_IsMacClient },
+    { "IsLinuxClient",              &Script_IsLinuxClient },
     { "SetRealmSplitState",         &Script_SetRealmSplitState },
     { "RequestRealmSplitInfo",      &Script_RequestRealmSplitInfo },
     { "CancelLogin",                &Script_CancelLogin },
