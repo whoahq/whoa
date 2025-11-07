@@ -35,6 +35,8 @@ class CSimpleFrame : public CScriptRegion {
         int32_t m_id = 0;
         uint32_t m_flags = 0;
         float m_frameScale = 1.0f;
+        uint8_t m_alpha = 255;
+        uint8_t alphaBD = 255;
         float m_depth = 0.0;
         FRAME_STRATA m_strata = FRAME_STRATA_MEDIUM;
         int32_t m_level = 0;
@@ -112,6 +114,7 @@ class CSimpleFrame : public CScriptRegion {
         virtual int32_t HideThis();
         virtual int32_t ShowThis();
         virtual bool UpdateScale(bool a2);
+        virtual void UpdateAlpha();
         virtual void UpdateDepth(bool a2);
         virtual void ParentFrame(CSimpleFrame* frame);
         virtual void OnFrameSizeChanged(const CRect& rect);

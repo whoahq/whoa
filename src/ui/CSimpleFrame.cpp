@@ -1331,7 +1331,12 @@ void CSimpleFrame::SetBeingScrolled(int32_t a2, int32_t a3) {
 }
 
 void CSimpleFrame::SetFrameAlpha(uint8_t alpha) {
-    // TODO
+    if (this->m_alpha == alpha) {
+        return;
+    }
+
+    this->m_alpha = alpha;
+    this->UpdateAlpha();
 }
 
 void CSimpleFrame::SetFrameFlag(int32_t flag, int32_t on) {
@@ -1587,4 +1592,17 @@ void CSimpleFrame::UnregisterRegion(CSimpleRegion* region) {
     STORM_ASSERT(region);
 
     this->m_regions.UnlinkNode(region);
+}
+
+void CSimpleFrame::UpdateAlpha() {
+    for (auto region = this->m_regions.Head(); region; region = this->m_regions.Link(region)->Next()) {
+        region->OnColorChanged(false);
+    }
+
+    auto effectiveAlpha = this->m_alpha * this->alphaBD / 255;
+
+    for (auto child = this->m_children.Head(); child; child = this->m_children.Link(child)->Next()) {
+        child->frame->alphaBD = effectiveAlpha;
+        child->frame->UpdateAlpha();
+    }
 }
