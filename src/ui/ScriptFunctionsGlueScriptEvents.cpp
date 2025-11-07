@@ -621,7 +621,7 @@ int32_t Script_IsStreamingMode(lua_State* L) {
 }
 
 int32_t Script_IsStreamingTrial(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    return SFile::IsStreamingTrial();
 }
 
 int32_t Script_IsConsoleActive(lua_State* L) {
