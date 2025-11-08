@@ -45,6 +45,7 @@ class FrameScript_Object {
         int32_t RegisterScriptEvent(const char* name);
         void RegisterScriptObject(const char* name);
         void RunScript(ScriptIx const& script, int32_t argCount, const char* a4);
+        int32_t SetScript(lua_State* L);
         void UnregisterScriptObject(const char* name);
 };
 

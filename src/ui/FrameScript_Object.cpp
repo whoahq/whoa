@@ -142,6 +142,30 @@ void FrameScript_Object::RunScript(ScriptIx const& script, int32_t argCount, con
     FrameScript_Execute(script.luaRef, this, argCount, a4 ? a4 : script.unk, nullptr);
 }
 
+int32_t FrameScript_Object::SetScript(lua_State* L) {
+    if (!lua_isstring(L, 2) || lua_type(L, 3) != LUA_TFUNCTION && lua_type(L, 3)) {
+        return luaL_error(L, "Usage: %s:SetScript(\"type\", function)", this->GetDisplayName());
+    }
+
+    ScriptData data;
+    auto script = this->GetScriptByName(lua_tostring(L, 2), data);
+
+    if (!script) {
+        return luaL_error(L, "%s doesn't have a \"%s\" script", this->GetDisplayName(), lua_tostring(L, 2));
+    }
+
+    if (script->luaRef) {
+        luaL_unref(L, LUA_REGISTRYINDEX, script->luaRef);
+    }
+
+    auto luaRef = luaL_ref(L, LUA_REGISTRYINDEX);
+    script->luaRef = luaRef <= 0 ? 0 : luaRef;
+
+    // TODO taint tracking
+
+    return 0;
+}
+
 void FrameScript_Object::UnregisterScriptObject(const char* name) {
     auto L = FrameScript_GetContext();
 
