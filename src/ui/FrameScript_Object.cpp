@@ -143,7 +143,7 @@ void FrameScript_Object::RunScript(ScriptIx const& script, int32_t argCount, con
 }
 
 int32_t FrameScript_Object::SetScript(lua_State* L) {
-    if (!lua_isstring(L, 2) || lua_type(L, 3) != LUA_TFUNCTION && lua_type(L, 3)) {
+    if (!lua_isstring(L, 2) || lua_type(L, 3) != LUA_TFUNCTION && lua_type(L, 3) != LUA_TNIL) {
         return luaL_error(L, "Usage: %s:SetScript(\"type\", function)", this->GetDisplayName());
     }
 
