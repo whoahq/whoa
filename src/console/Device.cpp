@@ -3,8 +3,10 @@
 #include "console/Console.hpp"
 #include "console/CVar.hpp"
 #include "event/Input.hpp"
+#include "gx/Adapter.hpp"
 #include "gx/Device.hpp"
 #include <cstring>
+#include <storm/Array.hpp>
 
 static CGxDevice* s_device;
 static CVar* s_cvGxMaximize;
@@ -12,6 +14,7 @@ static CVar* s_cvGxResolution;
 static CVar* s_cvGxWidescreen;
 static CVar* s_cvGxWindow;
 static DefaultSettings s_defaults;
+static TSGrowableArray<CGxMonitorMode> s_gxMonitorModes;
 static bool s_hwDetect;
 static bool s_hwChanged;
 static CGxFormat s_requestedFormat;
@@ -157,6 +160,8 @@ void ConsoleDeviceInitialize(const char* title) {
     RegisterGxCVars();
 
     // TODO ConsoleCommandRegister("gxRestart", &CCGxRestart, 1, nullptr);
+
+    GxAdapterMonitorModes(s_gxMonitorModes);
 
     // TODO
 

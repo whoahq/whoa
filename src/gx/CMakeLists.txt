@@ -8,16 +8,26 @@ file(GLOB GX_SOURCES
 )
 
 if(WHOA_SYSTEM_WIN)
-    file(GLOB D3D_SOURCES "d3d/*.cpp")
-    list(APPEND GX_SOURCES ${D3D_SOURCES})
+    file(GLOB WIN_SOURCES
+        "d3d/*.cpp"
+        "win/*.cpp"
+    )
+
+    list(APPEND GX_SOURCES ${WIN_SOURCES})
 endif()
 
 if(WHOA_SYSTEM_MAC)
-    file(GLOB GLL_SOURCES "gll/*.cpp" "gll/*.mm")
-    set_source_files_properties(${GLL_SOURCES}
+    file(GLOB MAC_SOURCES
+        "gll/*.cpp"
+        "gll/*.mm"
+        "mac/*.cpp"
+    )
+
+    set_source_files_properties(${MAC_SOURCES}
         PROPERTIES COMPILE_FLAGS "-x objective-c++"
     )
-    list(APPEND GX_SOURCES ${GLL_SOURCES})
+
+    list(APPEND GX_SOURCES ${MAC_SOURCES})
 endif()
 
 add_library(gx STATIC ${GX_SOURCES})

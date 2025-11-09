@@ -1,21 +1,25 @@
 #include "gx/CGxDevice.hpp"
+#include "gx/CGxMonitorMode.hpp"
 #include "gx/Gx.hpp"
 #include "gx/Shader.hpp"
 #include "gx/texture/CGxTex.hpp"
 #include "util/SFile.hpp"
+#include <storm/Error.hpp>
+#include <storm/Memory.hpp>
 #include <algorithm>
 #include <cstring>
 #include <limits>
 #include <new>
-#include <storm/Error.hpp>
-#include <storm/Memory.hpp>
 
 #if defined(WHOA_SYSTEM_WIN)
     #include "gx/d3d/CGxDeviceD3d.hpp"
+    #include "gx/win/Display.hpp"
 #endif
 
 #if defined(WHOA_SYSTEM_MAC)
     #include "gx/gll/CGxDeviceGLL.hpp"
+    #include "gx/mac/Display.hpp"
+    #include <ApplicationServices/ApplicationServices.h>
 #endif
 
 uint32_t CGxDevice::s_alphaRef[] = {
@@ -92,6 +96,42 @@ uint32_t CGxDevice::s_texFormatBytesPerBlock[] = {
     4       // GxTex_D24X8
 };
 
+int32_t CGxDevice::AdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
+#if defined(WHOA_SYSTEM_WIN)
+
+    return CGxDevice::WinAdapterMonitorModes(monitorModes);
+
+#elif defined(WHOA_SYSTEM_MAC)
+
+    // TODO conditional check on s_cvGxApi
+    auto api = GxApi_OpenGl; // avoiding GLLAdapterMonitorModes for now
+
+    if (api == GxApi_OpenGl) {
+        return CGxDevice::MacAdapterMonitorModes(monitorModes);
+    }
+
+    if (api == GxApi_GLL) {
+        return CGxDevice::GLLAdapterMonitorModes(monitorModes);
+    }
+
+#elif defined(WHOA_SYSTEM_LINUX)
+
+    // TODO
+
+#else
+
+    return 0;
+
+#endif
+}
+
+#if defined(WHOA_SYSTEM_MAC)
+int32_t CGxDevice::GLLAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
+    // TODO
+    return 0;
+}
+#endif
+
 void CGxDevice::Log(const char* format, ...) {
     // TODO
 }
@@ -99,6 +139,31 @@ void CGxDevice::Log(const char* format, ...) {
 void CGxDevice::Log(const CGxFormat& format) {
     // TODO
 }
+
+#if defined(WHOA_SYSTEM_MAC)
+int32_t CGxDevice::MacAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
+    monitorModes.SetCount(0);
+
+    // TODO this should use display global var, which is set somewhere in the Mac OpenGL init path
+    auto displayModes = CGDisplayAvailableModes(CGMainDisplayID());
+
+    if (displayModes) {
+        auto count = CFArrayGetCount(displayModes);
+
+        for (int32_t i = 0; i < count; i++) {
+            auto displayMode = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex(displayModes, i));
+
+            if (displayMode) {
+                ConvertDisplayMode(*monitorModes.New(), displayMode);
+            }
+        }
+    }
+
+    qsort(monitorModes.Ptr(), monitorModes.Count(), sizeof(CGxMonitorMode), CGxMonitorModeSort);
+
+    return monitorModes.Count() != 0;
+}
+#endif
 
 #if defined(WHOA_SYSTEM_WIN)
 CGxDevice* CGxDevice::NewD3d() {
@@ -135,6 +200,40 @@ uint32_t CGxDevice::PrimCalcCount(EGxPrim primType, uint32_t count) {
 
     return count - CGxDevice::s_primVtxAdjust[primType];
 }
+
+#if defined(WHOA_SYSTEM_WIN)
+int32_t CGxDevice::WinAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
+    monitorModes.SetCount(0);
+
+    DISPLAY_DEVICE device;
+    if (!FindDisplayDevice(&device, DISPLAY_DEVICE_PRIMARY_DEVICE)) {
+        return 0;
+    }
+
+    DEVMODE deviceMode;
+    deviceMode.dmSize = sizeof(DEVMODE);
+
+    DWORD deviceNum = 0;
+    while (EnumDisplaySettings(device.DeviceName, deviceNum++, &deviceMode)) {
+        if (
+            deviceMode.dmPelsWidth >= 640
+            && deviceMode.dmPelsHeight >= 480
+            && deviceMode.dmBitsPerPel >= 16
+        ) {
+            auto monitorMode = monitorModes.New();
+
+            monitorMode->size.x = deviceMode.dmPelsWidth;
+            monitorMode->size.y = deviceMode.dmPelsHeight;
+            monitorMode->bpp = deviceMode.dmBitsPerPel;
+            monitorMode->refreshRate = deviceMode.dmDisplayFrequency;
+        }
+    }
+
+    qsort(monitorModes.Ptr(), monitorModes.Count(), sizeof(CGxMonitorMode), CGxMonitorModeSort);
+
+    return monitorModes.Count() != 0;
+}
+#endif
 
 CGxDevice::CGxDevice() {
     // TODO
