@@ -14,6 +14,7 @@
 #include <tempest/Rect.hpp>
 
 class CGxBatch;
+class CGxMonitorMode;
 class CGxTex;
 class CGxTexFlags;
 
@@ -48,8 +49,15 @@ class CGxDevice {
         static uint32_t s_texFormatBytesPerBlock[];
 
         // Static functions
+        static int32_t AdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
+#if defined(WHOA_SYSTEM_MAC)
+        static int32_t GLLAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
+#endif
         static void Log(const char* format, ...);
         static void Log(const CGxFormat& format);
+#if defined(WHOA_SYSTEM_MAC)
+        static int32_t MacAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
+#endif
 #if defined(WHOA_SYSTEM_WIN)
         static CGxDevice* NewD3d();
         static CGxDevice* NewD3d9Ex();
@@ -59,6 +67,9 @@ class CGxDevice {
 #endif
         static CGxDevice* NewOpenGl();
         static uint32_t PrimCalcCount(EGxPrim primType, uint32_t count);
+#if defined(WHOA_SYSTEM_WIN)
+        static int32_t WinAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
+#endif
 
         // Member variables
         TSGrowableArray<CGxPushedRenderState> m_pushedStates;
