@@ -39,7 +39,56 @@ int32_t Script_GetScreenResolutions(lua_State* L) {
 }
 
 int32_t Script_GetCurrentResolution(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // Get available screen resolutions
+
+    SetupResolutions();
+
+    if (s_screenResolutions.Count() == 0) {
+        lua_pushnumber(L, 1.0);
+
+        return 1;
+    }
+
+    auto resolutionVar = CVar::Lookup("gxResolution");
+
+    if (!resolutionVar) {
+        lua_pushnumber(L, 1.0);
+
+        return 1;
+    }
+
+    auto resolutionStr = resolutionVar->GetString();
+
+    if (!resolutionStr) {
+        lua_pushnumber(L, 1.0);
+
+        return 1;
+    }
+
+    // Search for current resolution in available screen resolutions
+
+    char sep;
+    int32_t width = 0;
+    int32_t height = 0;
+    sscanf(resolutionStr, "%d%c%d", &width, &sep, &height);
+
+    for (int32_t i = 0; i < s_screenResolutions.Count(); i++) {
+        auto& resolution = s_screenResolutions[i];
+
+        if (resolution.x == width && resolution.y == height) {
+            // Resolution found
+
+            lua_pushnumber(L, i + 1);
+
+            return 1;
+        }
+    }
+
+    // Resolution not found
+
+    lua_pushnumber(L, 1.0);
+
+    return 1;
 }
 
 int32_t Script_SetScreenResolution(lua_State* L) {
