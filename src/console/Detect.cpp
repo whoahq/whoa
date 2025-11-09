@@ -5,6 +5,7 @@ void AddResolution(TSGrowableArray<C2iVector>& resolutions, const C2iVector& res
     resolutions.Add(1, &resolution);
 }
 
+// TODO sometimes 640x480 is included, sometimes its ignored -- more than one function?
 void ConsoleDetectGetResolutions(TSGrowableArray<C2iVector>& resolutions, int32_t widescreen) {
     // Widescreen resolutions
 
