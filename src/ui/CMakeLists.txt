@@ -1,4 +1,7 @@
-file(GLOB PRIVATE_SOURCES "*.cpp")
+file(GLOB PRIVATE_SOURCES
+    "*.cpp"
+    "game/*.cpp"
+)
 
 add_library(ui STATIC
     ${PRIVATE_SOURCES}

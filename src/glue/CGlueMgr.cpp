@@ -22,6 +22,7 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
+#include "ui/game/CGVideoOptions.hpp"
 #include "util/Filesystem.hpp"
 #include "util/Locale.hpp"
 #include "util/Log.hpp"
@@ -923,7 +924,8 @@ void CGlueMgr::Resume() {
 
     // TODO
     // AccountMsg_RegisterScriptFunctions();
-    // CGVideoOptions::RegisterScriptFunctions();
+
+    CGVideoOptions::RegisterScriptFunctions();
 
     // TODO
     // FrameScript::s_scriptFunctionsLoaded = 1;
