@@ -252,7 +252,7 @@ void FrameScript_Execute(int32_t function, FrameScript_Object* objectThis, int32
 
     if (firstArg < argCount) {
         for (int32_t i = firstArg; i < argCount; i++) {
-            argId = i + 1;
+            argId++;
 
             if (argId >= 10) {
                 SStrPrintf(&argName[3], 3, "%d", argId);
