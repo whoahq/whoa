@@ -245,7 +245,7 @@ void FrameScript_Execute(int32_t function, FrameScript_Object* objectThis, int32
         lua_rawset(L, LUA_GLOBALSINDEX);
     }
 
-    char argName[7] = { 'a', 'r', 'g', 0, 0, 0 };
+    static char argName[] = { 'a', 'r', 'g', '0', 0, 0, 0 };
 
     int32_t firstArg = event != 0;
     int32_t argId = 0;
