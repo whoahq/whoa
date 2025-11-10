@@ -1,6 +1,7 @@
 #include "ui/game/CGVideoOptionsScript.hpp"
 #include "console/CVar.hpp"
 #include "console/Detect.hpp"
+#include "gx/Gx.hpp"
 #include "ui/Types.hpp"
 #include "ui/game/CGVideoOptions.hpp"
 #include "util/Lua.hpp"
@@ -136,7 +137,13 @@ int32_t Script_SetTerrainMip(lua_State* L) {
 }
 
 int32_t Script_IsStereoVideoAvailable(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (GxCaps().m_stereoAvailable) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_IsPlayerResolutionAvailable(lua_State* L) {
