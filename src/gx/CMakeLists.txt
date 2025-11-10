@@ -42,7 +42,6 @@ target_link_libraries(gx
         event
         math
         model
-        ui
         util
     PUBLIC
         bc

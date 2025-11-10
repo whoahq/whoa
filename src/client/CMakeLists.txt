@@ -35,6 +35,7 @@ target_include_directories(client
 
 target_link_libraries(client
     PRIVATE
+        ui
         async
         console
         db
@@ -42,7 +43,6 @@ target_link_libraries(client
         gx
         model
         net
-        ui
         util
         world
     PUBLIC
