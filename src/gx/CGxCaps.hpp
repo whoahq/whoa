@@ -22,6 +22,7 @@ class CGxCaps {
         int32_t m_texFilterAnisotropic = 0;
         uint32_t m_maxTexAnisotropy = 0;
         int32_t m_depthBias = 0;
+        int32_t m_stereoAvailable = 0;
         int32_t int130 = 1;
         int32_t int134 = 0;
         int32_t int138 = 0;
