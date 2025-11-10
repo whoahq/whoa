@@ -88,7 +88,36 @@ int32_t forceinsecure(lua_State* L) {
 }
 
 int32_t securecall(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // TODO taint checks and management
+
+    // If string is provided, resolve to actual function
+    if (lua_isstring(L, 1)) {
+        auto fnName = lua_tostring(L, 1);
+        lua_pushstring(L, fnName);
+        lua_rawget(L, LUA_GLOBALSINDEX);
+        lua_remove(L, 1);
+        lua_insert(L, 1);
+    }
+
+    if (lua_gettop(L) == 0) {
+        lua_pushnil(L);
+    }
+
+    // Set up error handler
+    lua_rawgeti(L, LUA_REGISTRYINDEX, FrameScript::s_errorHandlerRef);
+    lua_insert(L, 1);
+
+    // Make function call
+    auto nargs = lua_gettop(L) - 2;
+    if (lua_pcall(L, nargs, -1, 1)) {
+        lua_settop(L, -3);
+    } else {
+        lua_remove(L, 1);
+    }
+
+    auto top = lua_gettop(L);
+
+    return top;
 }
 
 int32_t hooksecurefunc(lua_State* L) {
