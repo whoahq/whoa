@@ -27,16 +27,16 @@ MipBits* CCharacterComponent::s_textureBufferCompressed;
 uint32_t CCharacterComponent::s_textureSize;
 
 CompSectionInfo CCharacterComponent::s_sectionInfoRaw[] = {
-    { 0,    0,      256,    128 },  // SECTION_ARM_UPPER
-    { 0,    128,    256,    128 },  // SECTION_ARM_LOWER
-    { 0,    256,    256,    64  },  // SECTION_HAND
-    { 256,  0,      256,    128 },  // SECTION_TORSO_UPPER
-    { 256,  128,    256,    64  },  // SECTION_TORSO_LOWER
-    { 256,  192,    256,    128 },  // SECTION_LEG_UPPER
-    { 256,  320,    256,    128 },  // SECTION_LEG_LOWER
-    { 256,  448,    256,    64  },  // SECTION_FOOT
-    { 0,    320,    256,    64  },  // SECTION_HEAD_UPPER
-    { 0,    384,    256,    128 },  // SECTION_HEAD_LOWER
+    { { 0,   0   }, { 256, 128 } }, // SECTION_ARM_UPPER
+    { { 0,   128 }, { 256, 128 } }, // SECTION_ARM_LOWER
+    { { 0,   256 }, { 256, 64  } }, // SECTION_HAND
+    { { 256, 0,  }, { 256, 128 } }, // SECTION_TORSO_UPPER
+    { { 256, 128 }, { 256, 64  } }, // SECTION_TORSO_LOWER
+    { { 256, 192 }, { 256, 128 } }, // SECTION_LEG_UPPER
+    { { 256, 320 }, { 256, 128 } }, // SECTION_LEG_LOWER
+    { { 256, 448 }, { 256, 64  } }, // SECTION_FOOT
+    { { 0,   320 }, { 256, 64  } }, // SECTION_HEAD_UPPER
+    { { 0,   384 }, { 256, 128 } }, // SECTION_HEAD_LOWER
 };
 
 const char* s_componentSections[] = {
