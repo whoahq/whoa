@@ -19,6 +19,10 @@ class CGxFormat {
             Formats_Last = 8
         };
 
+        // Static variables
+        static int32_t formatToBitsUint[Formats_Last];
+        static const char* formatToBitsString[Formats_Last];
+
         // Member variables
         bool hwTnL;
         int8_t window;
