@@ -1376,10 +1376,10 @@ void CGxDeviceD3d::ISetPresentParms(D3DPRESENT_PARAMETERS& d3dpp, const CGxForma
         break;
     }
 
-    if (format.sampleCount <= 1) {
+    if (format.multisampleCount <= 1) {
         d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
     } else {
-        d3dpp.MultiSampleType = static_cast<D3DMULTISAMPLE_TYPE>(format.sampleCount);
+        d3dpp.MultiSampleType = static_cast<D3DMULTISAMPLE_TYPE>(format.multisampleCount);
 
         // TODO MultiSampleQuality
     }
