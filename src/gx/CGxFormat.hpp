@@ -36,4 +36,6 @@ class CGxFormat {
         C2iVector pos;
 };
 
+int32_t AdapterFormatSort(const void* a, const void* b);
+
 #endif
