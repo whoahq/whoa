@@ -1,6 +1,7 @@
 #include "ui/game/CGVideoOptionsScript.hpp"
 #include "console/CVar.hpp"
 #include "console/Detect.hpp"
+#include "gx/Adapter.hpp"
 #include "gx/Gx.hpp"
 #include "ui/Types.hpp"
 #include "ui/game/CGVideoOptions.hpp"
@@ -8,7 +9,62 @@
 #include "util/Unimplemented.hpp"
 #include <tempest/Vector.hpp>
 
+static TSGrowableArray<C3iVector> s_multisampleFormats;
 static TSGrowableArray<C2iVector> s_screenResolutions;
+
+void SetupFormats() {
+    if (s_multisampleFormats.Count()) {
+        return;
+    }
+
+    // TODO proper api selection
+
+    TSGrowableArray<CGxFormat> adapterFormats;
+    GxAdapterFormats(GxApi_OpenGl, adapterFormats);
+
+    int32_t gxColorBits = 0;
+    auto gxColorBitsVar = CVar::Lookup("gxColorBits");
+    if (gxColorBitsVar) {
+        gxColorBits = gxColorBitsVar->GetInt();
+    }
+
+    int32_t gxDepthBits = 0;
+    auto gxDepthBitsVar = CVar::Lookup("gxDepthBits");
+    if (gxDepthBitsVar) {
+        gxDepthBits = gxDepthBitsVar->GetInt();
+    }
+
+    // TODO what about gxMultisample CVar?
+
+    for (uint32_t i = 0; i < adapterFormats.Count(); i++) {
+        auto& adapterFormat = adapterFormats[i];
+
+        auto colorBits = CGxFormat::formatToBitsUint[adapterFormat.colorFormat];
+        auto depthBits = CGxFormat::formatToBitsUint[adapterFormat.depthFormat];
+        auto multisampleCount = static_cast<int32_t>(adapterFormat.multisampleCount);
+
+        if (colorBits != gxColorBits || depthBits != gxDepthBits) {
+            continue;
+        }
+
+        int32_t formatPresent = false;
+
+        for (uint32_t j = 0; j < s_multisampleFormats.Count(); j++) {
+            auto& multisampleFormat = s_multisampleFormats[j];
+
+            if (multisampleFormat.x == colorBits && multisampleFormat.y == depthBits && multisampleFormat.z == multisampleCount) {
+                formatPresent = true;
+                break;
+            }
+        }
+
+        if (formatPresent) {
+            continue;
+        }
+
+        *s_multisampleFormats.New() = { colorBits, depthBits, multisampleCount };
+    }
+}
 
 void SetupResolutions() {
     if (s_screenResolutions.Count()) {
@@ -105,7 +161,17 @@ int32_t Script_SetupFullscreenScale(lua_State* L) {
 }
 
 int32_t Script_GetMultisampleFormats(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    SetupFormats();
+
+    lua_checkstack(L, s_multisampleFormats.Count() * 3);
+
+    for (uint32_t i = 0; i < s_multisampleFormats.Count(); i++) {
+        lua_pushnumber(L, s_multisampleFormats[i].x);
+        lua_pushnumber(L, s_multisampleFormats[i].y);
+        lua_pushnumber(L, s_multisampleFormats[i].z);
+    }
+
+    return s_multisampleFormats.Count() * 3;
 }
 
 int32_t Script_GetCurrentMultisampleFormat(lua_State* L) {
