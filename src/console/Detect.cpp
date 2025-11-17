@@ -7,7 +7,11 @@ void AddResolution(TSGrowableArray<C2iVector>& resolutions, const C2iVector& res
 
 // TODO sometimes 640x480 is included, sometimes its ignored -- more than one function?
 void ConsoleDetectGetResolutions(TSGrowableArray<C2iVector>& resolutions, int32_t widescreen) {
-    // Widescreen resolutions
+    // "Widescreen" resolutions
+    //
+    // This branch is just dynamically enumerating resolutions above a minimum size and aspect
+    // ratio as opposed to using a fixed list of common 1.33:1 resolutions. The name widescreen
+    // comes from the CVar that feeds the argument (see: SetupResolutions).
 
     if (widescreen) {
         TSGrowableArray<CGxMonitorMode> monitorModes;
@@ -19,12 +23,12 @@ void ConsoleDetectGetResolutions(TSGrowableArray<C2iVector>& resolutions, int32_
             auto& monitorMode = monitorModes[i];
             auto& resolution = monitorMode.size;
 
-            // "Widescreen" aspect ratio
+            // Minimum aspect ratio
             if (static_cast<float>(resolution.x) / static_cast<float>(resolution.y) < 1.248f) {
                 continue;
             }
 
-            // At least 640x480
+            // Minimum resolution
             if (resolution.x < 640 || resolution.y < 480) {
                 continue;
             }
