@@ -1,14 +1,16 @@
 #include "console/Device.hpp"
 #include "client/Gui.hpp"
-#include "console/Console.hpp"
 #include "console/CVar.hpp"
+#include "console/Console.hpp"
 #include "event/Input.hpp"
 #include "gx/Adapter.hpp"
 #include "gx/Device.hpp"
-#include <cstring>
 #include <storm/Array.hpp>
+#include <cstring>
 
 static CGxDevice* s_device;
+static CVar* s_cvGxColorBits;
+static CVar* s_cvGxDepthBits;
 static CVar* s_cvGxMaximize;
 static CVar* s_cvGxResolution;
 static CVar* s_cvGxWidescreen;
@@ -18,6 +20,16 @@ static TSGrowableArray<CGxMonitorMode> s_gxMonitorModes;
 static bool s_hwDetect;
 static bool s_hwChanged;
 static CGxFormat s_requestedFormat;
+
+bool CVGxColorBitsCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxDepthBitsCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
 
 bool CVGxMaximizeCallback(CVar*, const char*, const char*, void*) {
     // TODO
@@ -76,8 +88,33 @@ void RegisterGxCVars() {
         false
     );
 
-    // TODO s_cvGxColorBits
-    // TODO s_cvGxDepthBits
+    char colorBits[260];
+    SStrPrintf(colorBits, sizeof(colorBits), "%s", CGxFormat::formatToBitsString[format.colorFormat]);
+    s_cvGxColorBits = CVar::Register(
+        "gxColorBits",
+        "color bits",
+        0x1 | 0x2,
+        colorBits,
+        &CVGxColorBitsCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
+    char depthBits[260];
+    SStrPrintf(depthBits, sizeof(depthBits), "%s", CGxFormat::formatToBitsString[format.depthFormat]);
+    s_cvGxDepthBits = CVar::Register(
+        "gxDepthBits",
+        "depth bits",
+        0x1 | 0x2,
+        depthBits,
+        &CVGxDepthBitsCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
 
     char resolution[260];
     SStrPrintf(resolution, 260, "%dx%d", format.size.x, format.size.y);
