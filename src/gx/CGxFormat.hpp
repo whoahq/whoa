@@ -29,7 +29,7 @@ class CGxFormat {
         int32_t maximize;
         Format depthFormat;
         C2iVector size;
-        uint32_t sampleCount;
+        uint32_t multisampleCount;
         Format colorFormat;
         uint32_t refreshRate;
         uint32_t vsync;

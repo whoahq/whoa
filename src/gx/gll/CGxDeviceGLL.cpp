@@ -313,7 +313,7 @@ int32_t CGxDeviceGLL::DeviceSetFormat(const CGxFormat& format) {
         format.refreshRate,
         v7,
         format.window ^ 1,
-        format.sampleCount
+        format.multisampleCount
     );
 
     OsInputPostEvent(OS_INPUT_SIZE, v15.right - v15.left, v15.bottom - v15.top, 0, 0);
