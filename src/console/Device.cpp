@@ -163,8 +163,9 @@ void UpdateGxCVars() {
 void SetGxCVars(const CGxFormat& format) {
     char value[1024];
 
-    // TODO s_cvGxColorBits
-    // TODO s_cvGxDepthBits
+    s_cvGxColorBits->Set(CGxFormat::formatToBitsString[format.colorFormat], true, false, false, true);
+
+    s_cvGxDepthBits->Set(CGxFormat::formatToBitsString[format.depthFormat], true, false, false, true);
 
     SStrPrintf(value, sizeof(value), "%d", format.window);
     s_cvGxWindow->Set(value, true, false, false, true);
