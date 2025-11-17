@@ -148,8 +148,8 @@ void RegisterGxCVars() {
 }
 
 void UpdateGxCVars() {
-    // TODO others
-
+    s_cvGxColorBits->Update();
+    s_cvGxDepthBits->Update();
     s_cvGxWindow->Update();
     s_cvGxResolution->Update();
 
