@@ -49,8 +49,14 @@ class CGxDevice {
         static uint32_t s_texFormatBytesPerBlock[];
 
         // Static functions
+        static int32_t AdapterFormats(EGxApi api, TSGrowableArray<CGxFormat>& adapterFormats);
         static int32_t AdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
+#if defined(WHOA_SYSTEM_WIN)
+        static void D3dAdapterFormats(TSGrowableArray<CGxFormat>& formats);
+        static void D3d9ExAdapterFormats(TSGrowableArray<CGxFormat>& formats);
+#endif
 #if defined(WHOA_SYSTEM_MAC)
+        static void GLLAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats);
         static int32_t GLLAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);
 #endif
         static void Log(const char* format, ...);
@@ -66,6 +72,7 @@ class CGxDevice {
         static CGxDevice* NewGLL();
 #endif
         static CGxDevice* NewOpenGl();
+        static void OpenGlAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats);
         static uint32_t PrimCalcCount(EGxPrim primType, uint32_t count);
 #if defined(WHOA_SYSTEM_WIN)
         static int32_t WinAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes);

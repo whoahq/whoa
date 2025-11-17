@@ -20,6 +20,7 @@
     #include "gx/gll/CGxDeviceGLL.hpp"
     #include "gx/mac/Display.hpp"
     #include <ApplicationServices/ApplicationServices.h>
+    #include <OpenGL/OpenGL.h>
 #endif
 
 uint32_t CGxDevice::s_alphaRef[] = {
@@ -96,6 +97,37 @@ uint32_t CGxDevice::s_texFormatBytesPerBlock[] = {
     4       // GxTex_D24X8
 };
 
+int32_t CGxDevice::AdapterFormats(EGxApi api, TSGrowableArray<CGxFormat>& adapterFormats) {
+    adapterFormats.SetCount(0);
+    adapterFormats.Reserve(256, 1);
+
+#if defined(WHOA_SYSTEM_WIN)
+
+    if (api == GxApi_OpenGl) {
+        CGxDevice::OpenGlAdapterFormats(adapterFormats);
+    } else if (api == GxApi_D3d9) {
+        CGxDevice::D3dAdapterFormats(adapterFormats);
+    } else if (api == GxApi_D3d9Ex) {
+        CGxDevice::D3d9ExAdapterFormats(adapterFormats);
+    }
+
+#elif defined(WHOA_SYSTEM_MAC)
+
+    if (api == GxApi_OpenGl) {
+        CGxDevice::OpenGlAdapterFormats(adapterFormats);
+    } else if (api == GxApi_GLL) {
+        CGxDevice::GLLAdapterFormats(adapterFormats);
+    }
+
+#elif defined(WHOA_SYSTEM_LINUX)
+
+    // TODO
+
+#endif
+
+    return adapterFormats.Count() != 0;
+}
+
 int32_t CGxDevice::AdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
 #if defined(WHOA_SYSTEM_WIN)
 
@@ -125,7 +157,21 @@ int32_t CGxDevice::AdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorM
 #endif
 }
 
+#if defined(WHOA_SYSTEM_WIN)
+void CGxDevice::D3dAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats) {
+    // TODO
+}
+
+void CGxDevice::D3d9ExAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats) {
+    // TODO
+}
+#endif
+
 #if defined(WHOA_SYSTEM_MAC)
+void CGxDevice::GLLAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats) {
+    // TODO
+}
+
 int32_t CGxDevice::GLLAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monitorModes) {
     // TODO
     return 0;
@@ -190,6 +236,102 @@ CGxDevice* CGxDevice::NewOpenGl() {
     // return new (m) CGxDeviceOpenGl();
 
     return nullptr;
+}
+
+void CGxDevice::OpenGlAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats) {
+#if defined(WHOA_SYSTEM_WIN)
+
+    // TODO
+
+#elif defined(WHOA_SYSTEM_MAC)
+
+    uint32_t maxMultisampleCount = 1;
+
+    // TODO this should use display global var, which is set somewhere in the Mac OpenGL init path
+    auto displayMask = CGDisplayIDToOpenGLDisplayMask(CGMainDisplayID());
+
+    CGLRendererInfoObj rend;
+    GLint nrend;
+
+    if (CGLQueryRendererInfo(displayMask, &rend, &nrend) == kCGLNoError) {
+        for (int32_t i = 0; i < nrend; i++) {
+            GLint accelerated;
+
+            if (CGLDescribeRenderer(rend, i, kCGLRPAccelerated, &accelerated) == kCGLNoError) {
+                if (accelerated) {
+                    GLint maxSamples;
+
+                    if (CGLDescribeRenderer(rend, i, kCGLRPMaxSamples, &maxSamples) == kCGLNoError) {
+                        if (maxSamples > maxMultisampleCount) {
+                            maxMultisampleCount = maxSamples;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (maxMultisampleCount > 16) {
+        maxMultisampleCount = 16;
+    }
+
+    // TODO this should use display global var, which is set somewhere in the Mac OpenGL init path
+    auto displayModes = CGDisplayAvailableModes(CGMainDisplayID());
+
+    if (displayModes) {
+        auto count = CFArrayGetCount(displayModes);
+
+        for (int32_t i = 0; i < count; i++) {
+            auto displayMode = static_cast<CFDictionaryRef>(CFArrayGetValueAtIndex(displayModes, i));
+
+            int32_t width = 0;
+            auto widthValue = static_cast<CFNumberRef>(CFDictionaryGetValue(displayMode, kCGDisplayWidth));
+            CFNumberGetValue(widthValue, kCFNumberIntType, &width);
+
+            int32_t height = 0;
+            auto heightValue = static_cast<CFNumberRef>(CFDictionaryGetValue(displayMode, kCGDisplayHeight));
+            CFNumberGetValue(heightValue, kCFNumberIntType, &height);
+
+            uint32_t bitsPerPixel = 0;
+            auto bppValue = static_cast<CFNumberRef>(CFDictionaryGetValue(displayMode, kCGDisplayBitsPerPixel));
+            CFNumberGetValue(bppValue, kCFNumberIntType, &bitsPerPixel);
+
+            if (width >= 640 && height >= 480 && bitsPerPixel >= 16) {
+                uint32_t refreshRate = 0;
+                auto refreshRateValue = static_cast<CFNumberRef>(CFDictionaryGetValue(displayMode, kCGDisplayRefreshRate));
+                CFNumberGetValue(refreshRateValue, kCFNumberIntType, &refreshRate);
+
+                uint32_t multisampleCount = 1;
+
+                while (multisampleCount <= maxMultisampleCount) {
+                    CGxFormat format = {};
+
+                    format.size = { width, height };
+                    format.colorFormat = bitsPerPixel == 32 ? CGxFormat::Fmt_ArgbX888 : CGxFormat::Fmt_Rgb565;
+                    format.depthFormat = CGxFormat::Fmt_Ds24X;
+                    format.refreshRate = refreshRate;
+                    format.multisampleCount = multisampleCount;
+
+                    *adapterFormats.New() = format;
+
+                    if (bitsPerPixel == 16) {
+                        break;
+                    }
+
+                    // 1 -> 2 -> 4 -> 6 and so on
+                    if (multisampleCount == 1) {
+                        multisampleCount = 2;
+                    } else {
+                        multisampleCount += 2;
+                    }
+                }
+            }
+        }
+    }
+
+    qsort(adapterFormats.Ptr(), adapterFormats.Count(), sizeof(CGxFormat), AdapterFormatSort);
+
+#endif
 }
 
 uint32_t CGxDevice::PrimCalcCount(EGxPrim primType, uint32_t count) {
