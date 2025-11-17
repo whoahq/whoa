@@ -169,7 +169,38 @@ int32_t Script_GetMultisampleFormats(lua_State* L) {
 }
 
 int32_t Script_GetCurrentMultisampleFormat(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // Load available multisample formats
+
+    SetupFormats();
+
+    auto gxColorBitsVar = CVar::Lookup("gxColorBits");
+    int32_t gxColorBits = gxColorBitsVar ? gxColorBitsVar->GetInt() : 0;
+
+    auto gxDepthBitsVar = CVar::Lookup("gxDepthBits");
+    int32_t gxDepthBits = gxDepthBitsVar ? gxDepthBitsVar->GetInt() : 0;
+
+    auto gxMultisampleVar = CVar::Lookup("gxMultisample");
+    int32_t gxMultisample = gxMultisampleVar ? gxMultisampleVar->GetInt() : 0;
+
+    // Search for matching multisample format in available multisample formats
+
+    for (int32_t i = 0; i < s_multisampleFormats.Count(); i++) {
+        auto& multisampleFormat = s_multisampleFormats[i];
+
+        if (multisampleFormat.x == gxColorBits && multisampleFormat.y == gxDepthBits && multisampleFormat.z == gxMultisample) {
+            // Multisample format found
+
+            lua_pushnumber(L, i + 1);
+
+            return 1;
+        }
+    }
+
+    // Multisample format not found
+
+    lua_pushnumber(L, 1.0);
+
+    return 1;
 }
 
 int32_t Script_SetMultisampleFormat(lua_State* L) {
