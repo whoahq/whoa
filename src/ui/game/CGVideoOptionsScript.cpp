@@ -22,17 +22,11 @@ void SetupFormats() {
     TSGrowableArray<CGxFormat> adapterFormats;
     GxAdapterFormats(GxApi_OpenGl, adapterFormats);
 
-    int32_t gxColorBits = 0;
     auto gxColorBitsVar = CVar::Lookup("gxColorBits");
-    if (gxColorBitsVar) {
-        gxColorBits = gxColorBitsVar->GetInt();
-    }
+    int32_t gxColorBits = gxColorBitsVar ? gxColorBitsVar->GetInt() : 0;
 
-    int32_t gxDepthBits = 0;
     auto gxDepthBitsVar = CVar::Lookup("gxDepthBits");
-    if (gxDepthBitsVar) {
-        gxDepthBits = gxDepthBitsVar->GetInt();
-    }
+    int32_t gxDepthBits = gxDepthBitsVar ? gxDepthBitsVar->GetInt() : 0;
 
     // TODO what about gxMultisample CVar?
 
@@ -47,7 +41,7 @@ void SetupFormats() {
             continue;
         }
 
-        int32_t formatPresent = false;
+        auto formatPresent = false;
 
         for (uint32_t j = 0; j < s_multisampleFormats.Count(); j++) {
             auto& multisampleFormat = s_multisampleFormats[j];
