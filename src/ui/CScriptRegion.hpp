@@ -47,6 +47,7 @@ class CScriptRegion : public CScriptObject, public CLayoutFrame {
         // Member functions
         void LoadXML_Animations(XMLNode* node, CStatus* status);
         bool ProtectedFunctionsAllowed();
+        void SetParent(CSimpleFrame* parent);
 };
 
 #endif

@@ -117,6 +117,10 @@ bool CScriptRegion::ProtectedFunctionsAllowed() {
     return true;
 }
 
+void CScriptRegion::SetParent(CSimpleFrame* parent) {
+    this->m_parent = parent;
+}
+
 void CScriptRegion::StopAnimating() {
     // TODO
 }
