@@ -25,6 +25,19 @@ CVar* Client::g_accountNameVar;
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
 
+static CVar* s_desktopGammaCvar;
+static CVar* s_gammaCvar;
+
+bool DesktopGammaCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    return true;
+}
+
+bool GammaCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    return true;
+}
+
 void AsyncFileInitialize() {
     // TODO
     AsyncFileReadInitialize(0, 100);
@@ -83,6 +96,32 @@ void ClientMiscInitialize() {
         "",
         nullptr,
         GAME,
+        false,
+        nullptr,
+        false
+    );
+
+    // TODO
+
+    s_desktopGammaCvar = CVar::Register(
+        "DesktopGamma",
+        nullptr,
+        0x0,
+        "0",
+        &DesktopGammaCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
+    s_gammaCvar = CVar::Register(
+        "Gamma",
+        nullptr,
+        0x0,
+        "1.0",
+        &GammaCallback,
+        GRAPHICS,
         false,
         nullptr,
         false
