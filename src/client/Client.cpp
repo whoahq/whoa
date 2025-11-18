@@ -74,7 +74,7 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
     // TODO
 }
 
-void ClientMiscInitialize() {
+void ClientRegisterConsoleCommands() {
     // TODO
 
     Client::g_accountNameVar = CVar::Register(
@@ -490,10 +490,7 @@ void WowClientInit() {
     // EventRegister(EVENT_ID_5, (int)sub_4020E0);
     // _cfltcvt_init_0();
 
-    ClientMiscInitialize();
-
-    // sub_401B60();
-
+    ClientRegisterConsoleCommands();
     ClientDBInitialize();
 
     // LoadingScreenInitialize();
