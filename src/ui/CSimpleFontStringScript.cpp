@@ -73,7 +73,24 @@ int32_t CSimpleFontString_IsShown(lua_State* L) {
 }
 
 int32_t CSimpleFontString_GetFontObject(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    auto font = string->GetFontObject();
+
+    if (!font) {
+        lua_pushnil(L);
+
+        return 1;
+    }
+
+    if (!font->lua_registered) {
+        font->RegisterScriptObject(nullptr);
+    }
+
+    lua_rawgeti(L, LUA_REGISTRYINDEX, font->lua_objectRef);
+
+    return 1;
 }
 
 int32_t CSimpleFontString_SetFontObject(lua_State* L) {
