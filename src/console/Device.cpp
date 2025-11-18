@@ -10,12 +10,18 @@
 
 static CGxDevice* s_device;
 static CVar* s_cvGxColorBits;
+static CVar* s_cvGxCursor;
 static CVar* s_cvGxDepthBits;
+static CVar* s_cvGxFixLag;
 static CVar* s_cvGxMaximize;
 static CVar* s_cvGxRefresh;
 static CVar* s_cvGxResolution;
+static CVar* s_cvGxStereoEnabled;
+static CVar* s_cvGxTripleBuffer;
+static CVar* s_cvGxVSync;
 static CVar* s_cvGxWidescreen;
 static CVar* s_cvGxWindow;
+static CVar* s_cvWindowResizeLock;
 static DefaultSettings s_defaults;
 static TSGrowableArray<CGxMonitorMode> s_gxMonitorModes;
 static bool s_hwDetect;
@@ -27,7 +33,17 @@ bool CVGxColorBitsCallback(CVar*, const char*, const char*, void*) {
     return true;
 }
 
+bool CVGxCursorCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
 bool CVGxDepthBitsCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxFixLagCallback(CVar*, const char*, const char*, void*) {
     // TODO
     return true;
 }
@@ -47,7 +63,27 @@ bool CVGxResolutionCallback(CVar*, const char*, const char*, void*) {
     return true;
 }
 
+bool CVGxStereoEnabledCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxTripleBufferCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxVSyncCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
 bool CVGxWindowCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVWindowResizeLockCallback(CVar*, const char*, const char*, void*) {
     // TODO
     return true;
 }
@@ -148,19 +184,91 @@ void RegisterGxCVars() {
         false
     );
 
-    // TODO s_cvGxTripleBuffer
+    s_cvGxTripleBuffer = CVar::Register(
+        "gxTripleBuffer",
+        "triple buffer",
+        0x1 | 0x2,
+        "0",
+        &CVGxTripleBufferCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvGxApi
-    // TODO s_cvGxVSync
+
+    s_cvGxVSync = CVar::Register(
+        "gxVSync",
+        "vsync on or off",
+        0x1 | 0x2,
+        "1",
+        &CVGxVSyncCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvGxAspect
-    // TODO s_cvGxCursor
+
+    s_cvGxCursor = CVar::Register(
+        "gxCursor",
+        "toggle hardware cursor",
+        0x1 | 0x2,
+        "1",
+        &CVGxCursorCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvGxMultisample
-    // TODO s_cvGxFixLag
-    // TODO s_cvGxStereoEnabled
+
+    char fixLag[260];
+    SStrPrintf(fixLag, sizeof(fixLag), "%d", 0); // TODO value from s_hardware
+    s_cvGxFixLag = CVar::Register(
+        "gxFixLag",
+        "prevent cursor lag",
+        0x1 | 0x2,
+        fixLag,
+        &CVGxFixLagCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
+    s_cvGxStereoEnabled = CVar::Register(
+        "gxStereoEnabled",
+        "Enable stereoscopic rendering",
+        0x1,
+        "0",
+        &CVGxStereoEnabledCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvGxOverride
     // TODO s_cvGxAspect
     // TODO s_cvGxMaxFPS
     // TODO s_cvGxMaxFPSBk
-    // TODO s_cvWindowResizeLock
+
+    s_cvWindowResizeLock = CVar::Register(
+        "windowResizeLock",
+        "prevent resizing in windowed mode",
+        0x1,
+        "0",
+        &CVWindowResizeLockCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvFixedFunction
 }
 
