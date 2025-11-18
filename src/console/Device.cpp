@@ -12,6 +12,7 @@ static CGxDevice* s_device;
 static CVar* s_cvGxColorBits;
 static CVar* s_cvGxDepthBits;
 static CVar* s_cvGxMaximize;
+static CVar* s_cvGxRefresh;
 static CVar* s_cvGxResolution;
 static CVar* s_cvGxWidescreen;
 static CVar* s_cvGxWindow;
@@ -32,6 +33,11 @@ bool CVGxDepthBitsCallback(CVar*, const char*, const char*, void*) {
 }
 
 bool CVGxMaximizeCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxRefreshCallback(CVar*, const char*, const char*, void*) {
     // TODO
     return true;
 }
@@ -130,7 +136,18 @@ void RegisterGxCVars() {
         false
     );
 
-    // TODO s_cvGxRefresh
+    s_cvGxRefresh = CVar::Register(
+        "gxRefresh",
+        "refresh rate",
+        0x1 | 0x2,
+        "75",
+        &CVGxRefreshCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
     // TODO s_cvGxTripleBuffer
     // TODO s_cvGxApi
     // TODO s_cvGxVSync
