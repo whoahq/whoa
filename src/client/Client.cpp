@@ -487,9 +487,7 @@ void WowClientInit() {
     // DBCache_RegisterHandlers();
     // DBCache_Initialize(a1);
 
-    // TODO
-    // sub_78E400();
-
+    CWorldParam::Initialize();
     CWorld::Initialize();
 
     // TODO

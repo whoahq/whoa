@@ -2,5 +2,6 @@
 #define WORLD_WORLD_HPP
 
 #include "world/CWorld.hpp"
+#include "world/CWorldParam.hpp"
 
 #endif
