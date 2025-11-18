@@ -277,12 +277,22 @@ void UpdateGxCVars() {
     s_cvGxDepthBits->Update();
     s_cvGxWindow->Update();
     s_cvGxResolution->Update();
+    s_cvGxRefresh->Update();
+    s_cvGxTripleBuffer->Update();
 
-    // TODO others
+    // TODO s_cvGxApi
+
+    s_cvGxVSync->Update();
+
+    // TODO s_cvGxAspect
 
     s_cvGxMaximize->Update();
+    s_cvGxCursor->Update();
 
-    // TODO others
+    // TODO s_cvGxMultisample
+    // TODO s_cvGxMultisampleQuality;
+
+    s_cvGxFixLag->Update();
 }
 
 void SetGxCVars(const CGxFormat& format) {
