@@ -1,8 +1,10 @@
 #include "ui/CScriptRegionScript.hpp"
 #include "gx/Coordinate.hpp"
-#include "ui/FrameScript_Object.hpp"
+#include "ui/CSimpleFontString.hpp"
 #include "ui/CScriptRegion.hpp"
+#include "ui/CSimpleTexture.hpp"
 #include "ui/CSimpleTop.hpp"
+#include "ui/FrameScript_Object.hpp"
 #include "util/Lua.hpp"
 #include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
@@ -18,7 +20,56 @@ int32_t CScriptRegion_CanChangeProtectedState(lua_State* L) {
 }
 
 int32_t CScriptRegion_SetParent(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    int32_t type = CScriptRegion::GetObjectType();
+    auto region = static_cast<CScriptRegion*>(FrameScript_GetObjectThis(L, type));
+
+    if (!region->ProtectedFunctionsAllowed()) {
+        // TODO
+
+        return 0;
+    }
+
+    if (lua_type(L, 2) == LUA_TNIL) {
+        if (region->IsA(CSimpleFontString::GetObjectType()) || region->IsA(CSimpleTexture::GetObjectType())) {
+            return luaL_error(L, "%s:SetParent(): Cannot set a 'nil' parent for fonts or textures", region->GetDisplayName());
+        }
+
+        region->SetParent(nullptr);
+
+        return 0;
+    }
+
+    CScriptObject* parent = nullptr;
+
+    if (lua_isstring(L, 2)) {
+        parent = CScriptObject::GetScriptObjectByName(lua_tostring(L, 2), CSimpleFrame::GetObjectType());
+    } else if (lua_type(L, 2) == LUA_TTABLE) {
+        lua_rawgeti(L, 2, 0);
+        parent = static_cast<CScriptObject*>(lua_touserdata(L, -1));
+        lua_settop(L, -2);
+
+        if (!parent) {
+            return luaL_error(L, "%s:SetParent(): Couldn't find 'this' in parent object", region->GetDisplayName());
+        }
+
+        if (!parent->IsA(CSimpleFrame::GetObjectType())) {
+            return luaL_error(L, "%s:SetParent(): Wrong parent object type, expected Frame", region->GetDisplayName());
+        }
+    }
+
+    if (!parent) {
+        return luaL_error(L, "%s:SetParent(): Couldn't find region named '%s'", region->GetDisplayName(), lua_tostring(L, 2));
+    }
+
+    for (auto p = parent; p; p = p->GetScriptObjectParent()) {
+        if (p == region) {
+            return luaL_error(L, "%s:SetParent(): Would create a loop parenting to %s", region->GetDisplayName(), p->GetName());
+        }
+    }
+
+    region->SetParent(static_cast<CSimpleFrame*>(parent));
+
+    return 0;
 }
 
 int32_t CScriptRegion_GetRect(lua_State* L) {
