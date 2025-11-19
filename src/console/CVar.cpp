@@ -123,6 +123,10 @@ const char* CVar::GetDefaultValue() {
     return this->m_defaultValue.GetString();
 }
 
+float CVar::GetFloat() {
+    return this->m_floatValue;
+}
+
 int32_t CVar::GetInt() {
     return this->m_intValue;
 }
