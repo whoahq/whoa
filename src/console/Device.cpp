@@ -16,7 +16,9 @@ static CVar* s_cvGxFixLag;
 static CVar* s_cvGxMaximize;
 static CVar* s_cvGxRefresh;
 static CVar* s_cvGxResolution;
+static CVar* s_cvGxStereoConvergence;
 static CVar* s_cvGxStereoEnabled;
+static CVar* s_cvGxStereoSeparation;
 static CVar* s_cvGxTripleBuffer;
 static CVar* s_cvGxVSync;
 static CVar* s_cvGxWidescreen;
@@ -63,7 +65,17 @@ bool CVGxResolutionCallback(CVar*, const char*, const char*, void*) {
     return true;
 }
 
+bool CVGxStereoConvergenceCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
 bool CVGxStereoEnabledCallback(CVar*, const char*, const char*, void*) {
+    // TODO
+    return true;
+}
+
+bool CVGxStereoSeparationCallback(CVar*, const char*, const char*, void*) {
     // TODO
     return true;
 }
@@ -319,6 +331,34 @@ void SetGxCVars(const CGxFormat& format) {
     UpdateGxCVars();
 }
 
+void ConsoleDeviceStereoInitialize() {
+    s_cvGxStereoConvergence = CVar::Register(
+        "gxStereoConvergence",
+        "Set stereoscopic rendering convergence depth",
+        0x1,
+        "1",
+        &CVGxStereoConvergenceCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
+    s_cvGxStereoSeparation = CVar::Register(
+        "gxStereoSeparation",
+        "Set stereoscopic rendering separation percentage",
+        0x1,
+        "25",
+        &CVGxStereoSeparationCallback,
+        GRAPHICS,
+        false,
+        nullptr,
+        false
+    );
+
+    // TODO stereo changed device callback
+}
+
 void ConsoleDeviceInitialize(const char* title) {
     // TODO
 
@@ -383,6 +423,10 @@ void ConsoleDeviceInitialize(const char* title) {
 
     auto gxWindow = GxDevWindow();
     OsGuiSetGxWindow(gxWindow);
+
+    // TODO
+
+    ConsoleDeviceStereoInitialize();
 
     // TODO
 }
