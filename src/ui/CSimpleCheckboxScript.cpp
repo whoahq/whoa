@@ -1,4 +1,6 @@
 #include "ui/CSimpleCheckboxScript.hpp"
+#include "ui/CSimpleCheckbox.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
@@ -7,7 +9,16 @@ int32_t CSimpleCheckbox_SetChecked(lua_State* L) {
 }
 
 int32_t CSimpleCheckbox_GetChecked(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleCheckbox::GetObjectType();
+    auto checkbox = static_cast<CSimpleCheckbox*>(FrameScript_GetObjectThis(L, type));
+
+    if (checkbox->GetChecked()) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleCheckbox_GetCheckedTexture(lua_State* L) {

@@ -34,3 +34,7 @@ bool CSimpleCheckbox::IsA(int32_t type) {
         || type == CScriptRegion::s_objectType
         || type == CScriptObject::s_objectType;
 }
+
+int32_t CSimpleCheckbox::GetChecked() {
+    return this->m_checked;
+}
