@@ -22,7 +22,23 @@ int32_t CSimpleFontString_SetDrawLayer(lua_State* L) {
 }
 
 int32_t CSimpleFontString_SetVertexColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector currentColor = {};
+    string->GetVertexColor(currentColor);
+
+    CImVector newColor = {};
+    FrameScript_GetColor(L, 2, newColor);
+
+    if (!lua_isnumber(L, 5)) {
+        newColor.a = currentColor.a;
+    }
+
+    string->SetVertexColor(newColor);
+    string->m_fontableFlags &= ~FLAG_COLOR_UPDATE;
+
+    return 0;
 }
 
 int32_t CSimpleFontString_GetAlpha(lua_State* L) {
