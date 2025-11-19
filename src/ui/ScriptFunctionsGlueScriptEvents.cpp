@@ -591,7 +591,26 @@ int32_t Script_GetCVarDefault(lua_State* L) {
 }
 
 int32_t Script_GetCVarMin(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: GetCVarMin(\"cvar\")");
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (!var) {
+        return luaL_error(L, "Couldn't find CVar named '%s'", varName);
+    }
+
+    if (!SStrCmpI(var->m_key.GetString(), "extShadowQuality")) {
+        lua_pushnumber(L, 0.0);
+    } else if (!SStrCmpI(var->m_key.GetString(), "farclip")) {
+        lua_pushnumber(L, 177.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetCVarMax(lua_State* L) {
