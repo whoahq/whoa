@@ -24,6 +24,7 @@ class CSimpleCheckbox : public CSimpleButton {
         virtual int32_t GetScriptMetaTable();
         virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual void Enable(int32_t enabled);
+        virtual void OnClick(const char* btn, int32_t a3);
 
         // Member functions
         CSimpleCheckbox(CSimpleFrame* parent)

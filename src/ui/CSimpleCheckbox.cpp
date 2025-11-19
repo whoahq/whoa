@@ -70,6 +70,11 @@ void CSimpleCheckbox::LoadXML(XMLNode* node, CStatus* status) {
     }
 }
 
+void CSimpleCheckbox::OnClick(const char* btn, int32_t a3) {
+    this->SetChecked(this->m_checked == 0, 0);
+    this->CSimpleButton::OnClick(btn, a3);
+}
+
 void CSimpleCheckbox::SetChecked(int32_t checked, int32_t force) {
     if (checked == this->m_checked && !force) {
         return;
