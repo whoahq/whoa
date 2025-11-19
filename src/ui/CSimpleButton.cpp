@@ -41,7 +41,7 @@ CSimpleButton::CSimpleButton(CSimpleFrame* parent) : CSimpleFrame(parent) {
     this->m_textures[BUTTONSTATE_NORMAL] = nullptr;
     this->m_textures[BUTTONSTATE_PUSHED] = nullptr;
 
-    this->Enable(1);
+    CSimpleButton::Enable(1);
     this->EnableEvent(SIMPLE_EVENT_MOUSE, -1);
     this->SetFrameFlag(0x10000, 1);
 }
