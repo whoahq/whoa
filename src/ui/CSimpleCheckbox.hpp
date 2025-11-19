@@ -15,13 +15,17 @@ class CSimpleCheckbox : public CSimpleButton {
         static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
+        int32_t m_checked = 0;
+        CSimpleTexture* m_checkedTexture = nullptr;
+        CSimpleTexture* m_disabledTexture = nullptr;
 
         // Virtual member functions
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
 
         // Member functions
-        CSimpleCheckbox(CSimpleFrame* parent);
+        CSimpleCheckbox(CSimpleFrame* parent)
+            : CSimpleButton(parent) {};
 };
 
 #endif

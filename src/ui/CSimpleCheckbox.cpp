@@ -23,10 +23,6 @@ void CSimpleCheckbox::RegisterScriptMethods(lua_State* L) {
     FrameScript_Object::FillScriptMethodTable(L, SimpleCheckboxMethods, NUM_SIMPLE_CHECKBOX_SCRIPT_METHODS);
 }
 
-CSimpleCheckbox::CSimpleCheckbox(CSimpleFrame* parent) : CSimpleButton(parent) {
-    // TODO
-}
-
 int32_t CSimpleCheckbox::GetScriptMetaTable() {
     return CSimpleCheckbox::s_metatable;
 }
