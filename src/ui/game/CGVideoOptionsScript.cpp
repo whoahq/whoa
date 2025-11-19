@@ -212,7 +212,11 @@ int32_t Script_GetVideoCaps(lua_State* L) {
 }
 
 int32_t Script_GetGamma(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto gammaVar = CVar::Lookup("gamma");
+
+    lua_pushnumber(L, 1.0 - gammaVar->GetFloat());
+
+    return 1;
 }
 
 int32_t Script_SetGamma(lua_State* L) {
