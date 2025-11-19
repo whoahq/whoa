@@ -27,6 +27,7 @@ class CSimpleCheckbox : public CSimpleButton {
         CSimpleCheckbox(CSimpleFrame* parent)
             : CSimpleButton(parent) {};
         int32_t GetChecked();
+        void SetChecked(int32_t checked, int32_t force);
 };
 
 #endif

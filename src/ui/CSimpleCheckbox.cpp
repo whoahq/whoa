@@ -1,5 +1,6 @@
 #include "ui/CSimpleCheckbox.hpp"
 #include "ui/CSimpleCheckboxScript.hpp"
+#include "ui/CSimpleTexture.hpp"
 
 int32_t CSimpleCheckbox::s_metatable;
 int32_t CSimpleCheckbox::s_objectType;
@@ -37,4 +38,28 @@ bool CSimpleCheckbox::IsA(int32_t type) {
 
 int32_t CSimpleCheckbox::GetChecked() {
     return this->m_checked;
+}
+
+void CSimpleCheckbox::SetChecked(int32_t checked, int32_t force) {
+    if (checked == this->m_checked && !force) {
+        return;
+    }
+
+    this->m_checked = checked;
+
+    if (this->m_checkedTexture) {
+        this->m_checkedTexture->Hide();
+    }
+
+    if (this->m_disabledTexture) {
+        this->m_disabledTexture->Hide();
+    }
+
+    if (this->m_checked) {
+        if (this->m_disabledTexture && this->m_state == BUTTONSTATE_DISABLED) {
+            this->m_disabledTexture->Show();
+        } else if (this->m_checkedTexture) {
+            this->m_checkedTexture->Show();
+        }
+    }
 }

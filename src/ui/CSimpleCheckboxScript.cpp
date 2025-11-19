@@ -1,11 +1,18 @@
 #include "ui/CSimpleCheckboxScript.hpp"
 #include "ui/CSimpleCheckbox.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
 int32_t CSimpleCheckbox_SetChecked(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleCheckbox::GetObjectType();
+    auto checkbox = static_cast<CSimpleCheckbox*>(FrameScript_GetObjectThis(L, type));
+
+    auto checked = StringToBOOL(L, 2, 1);
+    checkbox->SetChecked(checked, 0);
+
+    return 0;
 }
 
 int32_t CSimpleCheckbox_GetChecked(lua_State* L) {
