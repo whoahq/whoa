@@ -22,12 +22,15 @@ class CSimpleCheckbox : public CSimpleButton {
         // Virtual member functions
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
 
         // Member functions
         CSimpleCheckbox(CSimpleFrame* parent)
             : CSimpleButton(parent) {};
         int32_t GetChecked();
         void SetChecked(int32_t checked, int32_t force);
+        void SetCheckedTexture(CSimpleTexture* texture);
+        void SetDisabledCheckedTexture(CSimpleTexture* texture);
 };
 
 #endif
