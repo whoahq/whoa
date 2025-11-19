@@ -295,7 +295,16 @@ int32_t CSimpleFrame_Hide(lua_State* L) {
 }
 
 int32_t CSimpleFrame_IsVisible(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (frame->m_visible) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleFrame_IsShown(lua_State* L) {
