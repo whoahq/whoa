@@ -39,6 +39,11 @@ bool CSimpleCheckbox::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
+void CSimpleCheckbox::Enable(int32_t enabled) {
+    this->CSimpleButton::Enable(enabled);
+    this->SetChecked(this->m_checked, 1);
+}
+
 int32_t CSimpleCheckbox::GetChecked() {
     return this->m_checked;
 }

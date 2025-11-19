@@ -23,6 +23,7 @@ class CSimpleCheckbox : public CSimpleButton {
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
         virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void Enable(int32_t enabled);
 
         // Member functions
         CSimpleCheckbox(CSimpleFrame* parent)
