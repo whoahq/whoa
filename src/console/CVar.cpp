@@ -119,6 +119,10 @@ CVar::CVar() : TSHashObject<CVar, HASHKEY_STRI>() {
     // TODO
 }
 
+const char* CVar::GetDefaultValue() {
+    return this->m_defaultValue.GetString();
+}
+
 int32_t CVar::GetInt() {
     return this->m_intValue;
 }
