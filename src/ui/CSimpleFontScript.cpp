@@ -1,4 +1,6 @@
 #include "ui/CSimpleFontScript.hpp"
+#include "ui/CSimpleFont.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
@@ -46,8 +48,22 @@ int32_t CSimpleFont_SetTextColor(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }
 
+int32_t CSimpleFont_GetTextColor(const char* name, CSimpleFont* font, lua_State* L) {
+    auto& color = font->m_attributes.m_color;
+
+    lua_pushnumber(L, color.r / 255.0);
+    lua_pushnumber(L, color.g / 255.0);
+    lua_pushnumber(L, color.b / 255.0);
+    lua_pushnumber(L, color.a / 255.0);
+
+    return 4;
+}
+
 int32_t CSimpleFont_GetTextColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFont::GetObjectType();
+    auto font = static_cast<CSimpleFont*>(FrameScript_GetObjectThis(L, type));
+
+    return CSimpleFont_GetTextColor(font->GetDisplayName(), font, L);
 }
 
 int32_t CSimpleFont_SetShadowColor(lua_State* L) {
