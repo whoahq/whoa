@@ -568,7 +568,26 @@ int32_t Script_SetCVar(lua_State* L) {
 }
 
 int32_t Script_GetCVarDefault(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: GetCVarDefault(\"cvar\")");
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (!var) {
+        return luaL_error(L, "Couldn't find CVar named '%s'", varName);
+    }
+
+    auto defaultValue = var->GetDefaultValue();
+
+    if (defaultValue) {
+        lua_pushstring(L, defaultValue);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetCVarMin(lua_State* L) {
