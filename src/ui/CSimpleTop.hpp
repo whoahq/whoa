@@ -54,7 +54,7 @@ class CSimpleTop : public CLayoutFrame {
         STORM_EXPLICIT_LIST(CSimpleFrame, m_destroyedLink) m_destroyed;
         CFrameStrata* m_strata[NUM_FRAME_STRATA];
         frame_layout m_layout;
-        CSimpleSortedArray<FRAMEPRIORITY*> m_eventqueue[NUM_FRAME_STRATA][NUM_SIMPLE_EVENTS];
+        CSimpleSortedArray<FRAMEPRIORITY*> m_eventqueue[NUM_SIMPLE_EVENTS][NUM_FRAME_STRATA];
         int32_t m_checkFocus = 1;
         EVENT_DATA_MOUSE m_mousePosition;
         int32_t (*m_mouseButtonCallback)(CMouseEvent*) = nullptr;

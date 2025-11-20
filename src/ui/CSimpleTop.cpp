@@ -28,15 +28,15 @@ int32_t CSimpleTop::OnChar(const EVENT_DATA_CHAR* pCharData, void* param) {
     charEvent = *pCharData;
     charEvent.id = 0x40060067;
 
-    for (int32_t strata = FRAME_STRATA_TOOLTIP; strata >= FRAME_STRATA_WORLD; strata--) {
+    for (int32_t strata = NUM_FRAME_STRATA - 1; strata >= 0; strata--) {
         if (eaten) {
             break;
         }
 
-        auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_CHAR];
+        auto& queue = top->m_eventqueue[SIMPLE_EVENT_CHAR][strata];
 
-        for (uint32_t i = 0; i < priorities->Count(); i++) {
-            auto priority = priorities->operator[](i);
+        for (uint32_t i = 0; i < queue.Count(); i++) {
+            auto priority = queue[i];
 
             if (!priority || eaten) {
                 break;
@@ -96,15 +96,15 @@ int32_t CSimpleTop::OnKeyDown(const EVENT_DATA_KEY* pKeyData, void* param) {
 
     int32_t eaten = 0;
 
-    for (int32_t strata = FRAME_STRATA_TOOLTIP; strata >= FRAME_STRATA_WORLD; strata--) {
+    for (int32_t strata = NUM_FRAME_STRATA - 1; strata >= 0; strata--) {
         if (eaten) {
             break;
         }
 
-        auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_KEY];
+        auto& queue = top->m_eventqueue[SIMPLE_EVENT_KEY][strata];
 
-        for (uint32_t i = 0; i < priorities->Count(); i++) {
-            auto priority = priorities->operator[](i);
+        for (uint32_t i = 0; i < queue.Count(); i++) {
+            auto priority = queue[i];
 
             if (!priority || eaten) {
                 break;
@@ -265,11 +265,11 @@ int32_t CSimpleTop::OnMouseMove(const EVENT_DATA_MOUSE* pMouseData, void* param)
         mouseCapture->OnLayerTrackUpdate(mouseEvent);
     }
 
-    for (int32_t strata = FRAME_STRATA_DIALOG; strata >= FRAME_STRATA_WORLD; strata--) {
-        auto priorities = &top->m_eventqueue[strata][SIMPLE_EVENT_MOUSE];
+    for (int32_t strata = NUM_FRAME_STRATA - 1; strata >= 0; strata--) {
+        auto& queue = top->m_eventqueue[SIMPLE_EVENT_MOUSE][strata];
 
-        for (int32_t i = 0; i < priorities->Count(); i++) {
-            auto priority = priorities->operator[](i);
+        for (int32_t i = 0; i < queue.Count(); i++) {
+            auto priority = queue[i];
             auto frame = priority->frame;
 
             if (frame->OnLayerTrackUpdate(mouseEvent)) {
@@ -538,7 +538,7 @@ int32_t CSimpleTop::RaiseFrame(CSimpleFrame* frame, int32_t checkOcclusion) {
 }
 
 void CSimpleTop::RegisterForEvent(CSimpleFrame* frame, CSimpleEventType event, int32_t a4, uint32_t priority) {
-    auto& queue = this->m_eventqueue[frame->m_strata][event];
+    auto& queue = this->m_eventqueue[event][frame->m_strata];
 
     auto m = SMemAlloc(sizeof(FRAMEPRIORITY), __FILE__, __LINE__, 0x0);
     auto framePriority = new (m) FRAMEPRIORITY();
@@ -578,7 +578,7 @@ int32_t CSimpleTop::StartMoveOrResizeFrame(CSimpleFrame* frame, MOVERESIZE_REASO
 }
 
 void CSimpleTop::UnregisterForEvent(CSimpleFrame* frame, CSimpleEventType event, int32_t a4) {
-    auto& queue = this->m_eventqueue[frame->m_strata][event];
+    auto& queue = this->m_eventqueue[event][frame->m_strata];
 
     int32_t found = 0;
 
