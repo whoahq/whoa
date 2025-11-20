@@ -40,6 +40,16 @@ static CImVector s_colorArray[] = {
     { 0x00, 0x00, 0x00, 0xC0 }, // BACKGROUND_COLOR
 };
 
+CONSOLELINE::~CONSOLELINE() {
+    if (this->buffer) {
+        STORM_FREE(this->buffer);
+    }
+
+    if (this->fontPointer) {
+        GxuFontDestroyString(this->fontPointer);
+    }
+}
+
 void DrawBackground() {
     uint16_t indices[] = {
         0, 1, 2, 3
