@@ -40,6 +40,26 @@ static CImVector s_colorArray[] = {
     { 0x00, 0x00, 0x00, 0xC0 }, // BACKGROUND_COLOR
 };
 
+void CONSOLELINE::Backspace() {
+    if (this->inputpos > this->inputstart) {
+        if (this->chars <= this->inputpos) {
+            this->buffer[this->inputpos - 1] = '\0';
+        }
+        else {
+            memcpy(
+                &this->buffer[this->inputpos - 1],
+                &this->buffer[this->inputpos],
+                this->chars - this->inputpos + 1
+            );
+        }
+
+        this->inputpos--;
+        this->chars--;
+
+        SetInputString(this->buffer);
+    }
+}
+
 void DrawBackground() {
     uint16_t indices[] = {
         0, 1, 2, 3
