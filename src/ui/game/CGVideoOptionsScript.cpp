@@ -12,6 +12,17 @@
 static TSGrowableArray<C3iVector> s_multisampleFormats;
 static TSGrowableArray<C2iVector> s_screenResolutions;
 
+int32_t SortRefreshRates(const void* a, const void* b) {
+    auto rateA = static_cast<const uint32_t*>(a);
+    auto rateB = static_cast<const uint32_t*>(b);
+
+    if (*rateA >= *rateB) {
+        return *rateB < *rateA;
+    }
+
+    return -1;
+}
+
 void SetupFormats() {
     if (s_multisampleFormats.Count()) {
         return;
@@ -147,7 +158,63 @@ int32_t Script_SetScreenResolution(lua_State* L) {
 }
 
 int32_t Script_GetRefreshRates(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // Load available resolutions
+
+    SetupResolutions();
+
+    // Find matching resolution
+
+    uint32_t resolutionIndex = 0;
+
+    if (lua_isnumber(L, 1)) {
+        if (lua_tonumber(L, 1) - 1 < s_screenResolutions.Count()) {
+            resolutionIndex = static_cast<uint32_t>(lua_tonumber(L, 1)) - 1;
+        } else {
+            resolutionIndex = s_screenResolutions.Count();
+        }
+    }
+
+    if (resolutionIndex >= s_screenResolutions.Count()) {
+        return 0;
+    }
+
+    auto& screenResolution = s_screenResolutions[resolutionIndex];
+
+    // Load available monitor modes
+
+    TSGrowableArray<CGxMonitorMode> monitorModes;
+    GxAdapterMonitorModes(monitorModes);
+
+    // Find refresh rates matching desired resolution
+
+    uint32_t rateCount = 0;
+    auto refreshRates = static_cast<uint32_t*>(alloca(sizeof(uint32_t) * monitorModes.Count()));
+
+    for (uint32_t i = 0; i < monitorModes.Count(); i++) {
+        auto& monitorMode = monitorModes[i];
+
+        if (monitorMode.size.x == screenResolution.x && monitorMode.size.y == screenResolution.y) {
+            refreshRates[rateCount++] = monitorModes[i].refreshRate;
+        }
+    }
+
+    // Sort refresh rates
+
+    if (rateCount > 0) {
+        qsort(refreshRates, rateCount, sizeof(uint32_t), &SortRefreshRates);
+    }
+
+    // Return sorted refresh rates
+
+    int32_t nargs = 0;
+    for (uint32_t i = 0; i < rateCount; i++) {
+        if (i == 0 || refreshRates[i] != refreshRates[i - 1]) {
+            lua_pushnumber(L, refreshRates[i]);
+            nargs++;
+        }
+    }
+
+    return nargs;
 }
 
 int32_t Script_SetupFullscreenScale(lua_State* L) {
