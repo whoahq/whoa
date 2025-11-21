@@ -14,6 +14,7 @@
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
 #include "net/Poll.hpp"
+#include "sound/Interface.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
 #include "world/World.hpp"
@@ -496,9 +497,9 @@ void WowClientInit() {
     // LoadingScreenInitialize();
 
     FrameScript_Initialize(0);
+    SI2::Init(0);
 
     // TODO
-    // SI2::Init(0);
     // sub_6F66B0();
 
     FrameXML_RegisterDefault();
