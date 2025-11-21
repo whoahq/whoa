@@ -1,7 +1,16 @@
 #include "sound/SI2.hpp"
 #include "console/CVar.hpp"
 #include "sound/CVarHandlers.hpp"
+#include "sound/SESound.hpp"
 #include "ui/FrameScript.hpp"
+
+CVar* SI2::s_pCVar_Sound_EnableReverb;
+CVar* SI2::s_pCVar_Sound_EnableSoftwareHRTF;
+CVar* SI2::s_pCVar_Sound_NumChannels;
+CVar* SI2::s_pCVar_Sound_OutputDriverIndex;
+CVar* SI2::s_pCVar_Sound_OutputDriverName;
+
+static int32_t s_initFlags;
 
 int32_t SI2::Init(int32_t a1) {
     // TODO
@@ -24,6 +33,93 @@ int32_t SI2::Init(int32_t a1) {
 
         SI2::RegisterCVars();
     }
+
+    // Enable reverb
+
+    int32_t enableReverb = 0;
+
+    if (!(s_initFlags & 0x1)) {
+        SI2::s_pCVar_Sound_EnableReverb = CVar::Lookup("Sound_EnableReverb");
+        s_initFlags |= 0x1;
+    }
+
+    auto enableReverbVar = SI2::s_pCVar_Sound_EnableReverb;
+
+    if (enableReverbVar) {
+        enableReverb = enableReverbVar->GetInt();
+    }
+
+    // Enable software HRTF
+
+    int32_t enableSoftwareHRTF = 0;
+
+    if (!(s_initFlags & 0x2)) {
+        SI2::s_pCVar_Sound_EnableSoftwareHRTF = CVar::Lookup("Sound_EnableSoftwareHRTF");
+        s_initFlags |= 0x2;
+    }
+
+    auto enableSoftwareHRTFVar = SI2::s_pCVar_Sound_EnableSoftwareHRTF;
+
+    if (enableSoftwareHRTFVar) {
+        enableSoftwareHRTF = enableSoftwareHRTFVar->GetInt();
+    }
+
+    // Num channels
+
+    int32_t numChannels = 4;
+
+    if (!(s_initFlags & 0x4)) {
+        SI2::s_pCVar_Sound_NumChannels = CVar::Lookup("Sound_NumChannels");
+        s_initFlags |= 0x4;
+    }
+
+    auto numChannelsVar = SI2::s_pCVar_Sound_NumChannels;
+
+    if (numChannelsVar) {
+        numChannels = numChannelsVar->GetInt();
+    }
+
+    // Output driver index
+
+    int32_t outputDriverIndex = 0;
+
+    if (!(s_initFlags & 0x8)) {
+        SI2::s_pCVar_Sound_OutputDriverIndex = CVar::Lookup("Sound_OutputDriverIndex");
+        s_initFlags |= 0x8;
+    }
+
+    auto outputDriverIndexVar = SI2::s_pCVar_Sound_OutputDriverIndex;
+
+    if (outputDriverIndexVar) {
+        outputDriverIndex = outputDriverIndexVar->GetInt();
+    }
+
+    // Output driver name
+
+    const char* outputDriverName = "";
+
+    if (!(s_initFlags & 0x10)) {
+        SI2::s_pCVar_Sound_OutputDriverName = CVar::Lookup("Sound_OutputDriverName");
+        s_initFlags |= 0x10;
+    }
+
+    auto outputDriverNameVar = SI2::s_pCVar_Sound_OutputDriverName;
+
+    if (outputDriverNameVar) {
+        outputDriverName = outputDriverNameVar->GetString();
+    }
+
+    SESound::Init(
+        512,
+        nullptr,                // TODO callback fn
+        enableReverb,
+        enableSoftwareHRTF,
+        &numChannels,
+        &outputDriverIndex,
+        outputDriverName,
+        nullptr,                // TODO callback fn
+        a1
+    );
 
     // TODO
 

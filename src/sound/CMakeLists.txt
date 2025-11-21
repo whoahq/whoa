@@ -13,4 +13,6 @@ target_link_libraries(sound
     PRIVATE
         ui
         util
+    PUBLIC
+        fmod
 )
