@@ -2,7 +2,10 @@
 #include "console/CVar.hpp"
 #include "sound/CVarHandlers.hpp"
 #include "sound/SESound.hpp"
+#include "sound/SOUNDKITDEF.hpp"
 #include "ui/FrameScript.hpp"
+
+TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
 
 int32_t SI2::Init(int32_t a1) {
     // TODO
@@ -90,7 +93,77 @@ int32_t SI2::Init(int32_t a1) {
 
     // TODO
 
+    if (!a1) {
+        SI2::InitSoundKitDefs();
+    }
+
+    // TODO
+
     return 0;
+}
+
+void SI2::InitSoundKitDefs() {
+    SI2::s_SoundKitDefs.SetCount(g_soundEntriesDB.m_maxID + 1);
+
+    for (uint32_t i = 0; i < g_soundEntriesDB.GetNumRecords(); i++) {
+        auto soundEntriesRec = g_soundEntriesDB.GetRecordByIndex(i);
+
+        // Sound kit definition
+
+        auto soundKitDef = STORM_NEW(SOUNDKITDEF);
+
+        // Combine directory base and file into full path
+
+        for (uint32_t j = 0; j < 10; j++) {
+            auto file = soundEntriesRec->m_file[j];
+            auto directoryBase = soundEntriesRec->m_directoryBase;
+
+            if (!file || !*file) {
+                break;
+            }
+
+            uint32_t combinedLength = std::strlen(file) + 1;
+            if (*directoryBase) {
+                combinedLength += std::strlen(directoryBase) + 1;
+            }
+
+            auto fullPath = static_cast<char*>(calloc(1, combinedLength));
+
+            if (*directoryBase) {
+                bool directoryEndsInSlash = directoryBase[std::strlen(directoryBase) - 1] == '\\';
+
+                if (directoryEndsInSlash) {
+                    sprintf(fullPath, "%s%s", directoryBase, file);
+                } else {
+                    sprintf(fullPath, "%s\\%s", directoryBase, file);
+                }
+            } else {
+                sprintf(fullPath, "%s", file);
+            }
+
+            soundKitDef->files[j] = fullPath;
+            soundKitDef->fileCount++;
+        }
+
+        soundKitDef->flags = soundEntriesRec->m_flags;
+        soundKitDef->name = soundEntriesRec->m_name;
+        soundKitDef->minDistance = soundEntriesRec->m_minDistance;
+        soundKitDef->distanceCutoff = soundEntriesRec->m_distanceCutoff;
+        soundKitDef->volume = soundEntriesRec->m_volumeFloat;
+        soundKitDef->ID = soundEntriesRec->m_ID;
+        soundKitDef->advancedID = soundEntriesRec->m_soundEntriesAdvancedID;
+        soundKitDef->advanced = nullptr;
+
+        if (soundKitDef->advancedID) {
+            soundKitDef->advanced = g_soundEntriesAdvancedDB.GetRecord(soundKitDef->advancedID);
+        }
+
+        SI2::s_SoundKitDefs[soundEntriesRec->GetID()] = soundKitDef;
+
+        // Sound kit lookup
+
+        // TODO SOUNDKITLOOKUP
+    }
 }
 
 void SI2::RegisterCVars() {
