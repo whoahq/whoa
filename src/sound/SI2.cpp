@@ -9,6 +9,14 @@
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
 TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> SI2::s_SoundKitLookupTable;
 
+SOUNDKITDEF* SI2::GetSoundKitDef(int32_t id) {
+    if (id >= SI2::s_SoundKitDefs.Count() || id <= 0) {
+        return nullptr;
+    }
+
+    return SI2::s_SoundKitDefs[id];
+}
+
 int32_t SI2::Init(int32_t a1) {
     // TODO
     // if (CmdLineGetBool(26)) {

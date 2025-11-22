@@ -19,6 +19,7 @@ class SI2 {
         static TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> s_SoundKitLookupTable;
 
         // Static functions
+        static SOUNDKITDEF* GetSoundKitDef(int32_t id);
         static int32_t Init(int32_t a1);
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();
