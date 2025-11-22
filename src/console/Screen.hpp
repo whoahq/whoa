@@ -16,6 +16,8 @@ class CONSOLELINE : public TSLinkedNode<CONSOLELINE> {
         uint32_t inputstart;
         COLOR_T colorType;
         CGxString* fontPointer;
+
+        void Backspace();
 };
 
 void ConsoleScreenAnimate(float elapsedSec);
