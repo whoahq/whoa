@@ -16,6 +16,7 @@
 #include "db/rec/ItemDisplayInfoRec.hpp"
 #include "db/rec/ItemVisualsRec.hpp"
 #include "db/rec/MapRec.hpp"
+#include "db/rec/SoundEntriesRec.hpp"
 
 extern WowClientDB<AchievementRec> g_achievementDB;
 extern WowClientDB<AreaTableRec> g_areaTableDB;
@@ -31,6 +32,7 @@ extern WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
 extern WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 extern WowClientDB<ItemVisualsRec> g_itemVisualsDB;
 extern WowClientDB<MapRec> g_mapDB;
+extern WowClientDB<SoundEntriesRec> g_soundEntriesDB;
 
 void ClientDBInitialize();
 
