@@ -2,8 +2,11 @@
 #define SOUND_SOUND_KIT_DEF_HPP
 
 #include "db/Db.hpp"
-#include <fmod.hpp>
 #include <cstdint>
+
+namespace FMOD {
+    class SoundGroup;
+}
 
 class SOUNDKITDEF {
     public:

@@ -18,6 +18,23 @@ void FSoundFreeCallback(void* ptr, FMOD_MEMORY_TYPE type, const char *sourcestr)
     SMemFree(ptr, "FMod", 0, 0x0);
 }
 
+FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible) {
+    FMOD::SoundGroup* group = nullptr;
+    FMOD_RESULT result;
+
+    result = SESound::s_pGameSystem->createSoundGroup(name, &group);
+    if (result != FMOD_OK && result != FMOD_ERR_CHANNEL_STOLEN && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_OUTPUT_DRIVERCALL) {
+        LOG_WRITE(result, "");
+    }
+
+    result = group->setMaxAudible(maxAudible);
+    if (result != FMOD_OK && result != FMOD_ERR_CHANNEL_STOLEN && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_OUTPUT_DRIVERCALL) {
+        LOG_WRITE(result, "");
+    }
+
+    return group;
+}
+
 void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32_t enableSoftwareHRTF, int32_t* numChannels, int32_t* outputDriverIndex, const char* outputDriverName, void* a8, int32_t a9) {
     // TODO
 

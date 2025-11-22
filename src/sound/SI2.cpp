@@ -97,7 +97,10 @@ int32_t SI2::Init(int32_t a1) {
 
     if (!a1) {
         SI2::InitSoundKitDefs();
+        // TODO
     }
+
+    SI2::InitSoundKitGroups();
 
     // TODO
 
@@ -173,6 +176,17 @@ void SI2::InitSoundKitDefs() {
         }
 
         soundKitLookup->ID = soundEntriesRec->GetID();
+    }
+}
+
+void SI2::InitSoundKitGroups() {
+    for (uint32_t i = 0; i < SI2::s_SoundKitDefs.Count(); i++) {
+        auto soundKitDef = SI2::s_SoundKitDefs[i];
+
+        if (soundKitDef && soundKitDef->name) {
+            soundKitDef->soundGroup1 = SESound::CreateSoundGroup(soundKitDef->name, 3);
+            soundKitDef->soundGroup2 = SESound::CreateSoundGroup(soundKitDef->name, 3);
+        }
     }
 }
 
