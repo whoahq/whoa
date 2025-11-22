@@ -3,9 +3,11 @@
 #include "sound/CVarHandlers.hpp"
 #include "sound/SESound.hpp"
 #include "sound/SOUNDKITDEF.hpp"
+#include "sound/SOUNDKITLOOKUP.hpp"
 #include "ui/FrameScript.hpp"
 
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
+TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> SI2::s_SoundKitLookupTable;
 
 int32_t SI2::Init(int32_t a1) {
     // TODO
@@ -108,7 +110,7 @@ void SI2::InitSoundKitDefs() {
     for (uint32_t i = 0; i < g_soundEntriesDB.GetNumRecords(); i++) {
         auto soundEntriesRec = g_soundEntriesDB.GetRecordByIndex(i);
 
-        // Sound kit definition
+        // Populate sound kit definitions
 
         auto soundKitDef = STORM_NEW(SOUNDKITDEF);
 
@@ -145,6 +147,8 @@ void SI2::InitSoundKitDefs() {
             soundKitDef->fileCount++;
         }
 
+        // Copy relevant record fields
+
         soundKitDef->flags = soundEntriesRec->m_flags;
         soundKitDef->name = soundEntriesRec->m_name;
         soundKitDef->minDistance = soundEntriesRec->m_minDistance;
@@ -160,9 +164,15 @@ void SI2::InitSoundKitDefs() {
 
         SI2::s_SoundKitDefs[soundEntriesRec->GetID()] = soundKitDef;
 
-        // Sound kit lookup
+        // Populate sound kit lookups
 
-        // TODO SOUNDKITLOOKUP
+        auto soundKitLookup = SI2::s_SoundKitLookupTable.Ptr(soundEntriesRec->m_name);
+
+        if (!soundKitLookup) {
+            soundKitLookup = SI2::s_SoundKitLookupTable.New(soundEntriesRec->m_name, 0, 0x0);
+        }
+
+        soundKitLookup->ID = soundEntriesRec->GetID();
     }
 }
 
