@@ -23,6 +23,7 @@ class SI2 {
         static int32_t Init(int32_t a1);
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();
+        static void PlayUISound(int32_t id);
         static void RegisterCVars();
         static void RegisterScriptFunctions();
 };

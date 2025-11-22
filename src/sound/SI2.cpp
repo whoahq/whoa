@@ -208,6 +208,10 @@ void SI2::InitSoundKitGroups() {
     }
 }
 
+void SI2::PlayUISound(int32_t id) {
+    // TODO
+}
+
 void SI2::RegisterCVars() {
     CVar::Register(
         "StartTalkingDelay",
