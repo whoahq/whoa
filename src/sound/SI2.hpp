@@ -26,6 +26,7 @@ class SI2 {
         static void PlayUISound(int32_t id);
         static void RegisterCVars();
         static void RegisterScriptFunctions();
+        static void StartGlueMusic(const char* name);
 };
 
 #endif

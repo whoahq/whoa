@@ -534,3 +534,7 @@ void SI2::RegisterScriptFunctions() {
         );
     }
 }
+
+void SI2::StartGlueMusic(const char* name) {
+    // TODO
+}

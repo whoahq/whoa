@@ -1,13 +1,14 @@
 #include "ui/ScriptFunctions.hpp"
 #include "client/Client.hpp"
 #include "client/ClientServices.hpp"
+#include "console/CVar.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "gx/Coordinate.hpp"
 #include "net/connection/ClientConnection.hpp"
+#include "sound/Interface.hpp"
 #include "ui/CSimpleTop.hpp"
 #include "ui/Types.hpp"
-#include "console/CVar.hpp"
 #include "util/Lua.hpp"
 #include "util/SFile.hpp"
 #include "util/Unimplemented.hpp"
@@ -102,7 +103,15 @@ int32_t Script_QuitGameAndRunLauncher(lua_State* L) {
 }
 
 int32_t Script_PlayGlueMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: PlayGlueMusic(\"filename\")");
+    }
+
+    auto name = lua_tostring(L, 1);
+
+    SI2::StartGlueMusic(name);
+
+    return 0;
 }
 
 int32_t Script_PlayCreditsMusic(lua_State* L) {
