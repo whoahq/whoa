@@ -17,6 +17,16 @@ SOUNDKITDEF* SI2::GetSoundKitDef(int32_t id) {
     return SI2::s_SoundKitDefs[id];
 }
 
+int32_t SI2::GetSoundKitID(const char* name) {
+    auto lookup = SI2::s_SoundKitLookupTable.Ptr(name);
+
+    if (lookup) {
+        return lookup->ID;
+    }
+
+    return 0;
+}
+
 int32_t SI2::Init(int32_t a1) {
     // TODO
     // if (CmdLineGetBool(26)) {

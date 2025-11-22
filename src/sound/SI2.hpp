@@ -2,10 +2,9 @@
 #define SOUND_SI2_HPP
 
 #include "sound/SI2Script.hpp"
-#include "storm/hash/Hashkey.hpp"
-#include "storm/hash/TSHashTable.hpp"
 #include "ui/Types.hpp"
 #include <storm/Array.hpp>
+#include <storm/Hash.hpp>
 #include <cstdint>
 
 class SOUNDKITDEF;
@@ -20,6 +19,7 @@ class SI2 {
 
         // Static functions
         static SOUNDKITDEF* GetSoundKitDef(int32_t id);
+        static int32_t GetSoundKitID(const char* name);
         static int32_t Init(int32_t a1);
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();
