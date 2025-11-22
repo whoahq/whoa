@@ -5,7 +5,25 @@
 #include "util/Unimplemented.hpp"
 
 int32_t Script_PlaySound(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (lua_isnumber(L, 1)) {
+        int32_t id = lua_tonumber(L, 1);
+        SI2::PlayUISound(id);
+
+        return 0;
+    }
+
+    if (!lua_isstring(L, 1)) {
+        lua_pushfstring(L, "Usage: PlaySound(\"sound\")");
+        lua_error(L);
+    }
+
+    char name[256];
+    SStrCopy(name, lua_tostring(L, 1), sizeof(name));
+
+    int32_t id = SI2::GetSoundKitID(name);
+    SI2::PlayUISound(id);
+
+    return 0;
 }
 
 int32_t Script_PlayMusic(lua_State* L) {
