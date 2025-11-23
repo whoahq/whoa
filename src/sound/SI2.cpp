@@ -9,6 +9,27 @@
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
 TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> SI2::s_SoundKitLookupTable;
 
+char SI2::s_SoundCategory[32][18] = {
+    "SFX",
+    "MUSIC",
+    "AMBIENCE",
+    "CINEMATIC",
+    "SCRIPTSOUND",
+    "SCRIPTMUSIC",
+    "RACIALCINEMATIC",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+    "SFX",
+};
+
 SOUNDKITDEF* SI2::GetSoundKitDef(int32_t id) {
     if (id >= SI2::s_SoundKitDefs.Count() || id <= 0) {
         return nullptr;
