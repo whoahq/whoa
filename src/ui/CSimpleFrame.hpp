@@ -155,7 +155,7 @@ class CSimpleFrame : public CScriptRegion {
         void SetFrameAlpha(uint8_t alpha);
         void SetFrameFlag(int32_t flag, int32_t on);
         void SetFrameLevel(int32_t level, int32_t shiftChildren);
-        bool SetFrameScale(float scale, bool a3);
+        bool SetFrameScale(float scale, bool force);
         void SetFrameStrata(FRAME_STRATA strata);
         void SetHitRect();
         void SetParent(CSimpleFrame* parent);
