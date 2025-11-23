@@ -4,6 +4,7 @@
 #define LOG_WRITE(result, ...) \
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
+int32_t SESound::s_Initialized;
 FMOD::System* SESound::s_pGameSystem;
 
 void* FSoundAllocCallback(uint32_t size, FMOD_MEMORY_TYPE type, const char* sourcestr) {
@@ -36,6 +37,8 @@ FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible
 }
 
 void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32_t enableSoftwareHRTF, int32_t* numChannels, int32_t* outputDriverIndex, const char* outputDriverName, void* a8, int32_t a9) {
+    SESound::s_Initialized = 0;
+
     // TODO
 
     FMOD_INITFLAGS fmodFlags = FMOD_INIT_NORMAL;
@@ -149,6 +152,8 @@ void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32
     }
 
     // TODO
+
+    SESound::s_Initialized = 1;
 
     LOG_WRITE(FMOD_OK, " - FMOD System Init OK!");
     LOG_WRITE(FMOD_OK, "=> Game Sound is ready.");

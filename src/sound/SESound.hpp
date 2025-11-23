@@ -7,6 +7,7 @@
 class SESound {
     public:
         // Static variables
+        static int32_t s_Initialized;
         static FMOD::System* s_pGameSystem;
 
         // Static functions
