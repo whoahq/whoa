@@ -1373,14 +1373,14 @@ void CSimpleFrame::SetFrameLevel(int32_t level, int32_t shiftChildren) {
     }
 }
 
-bool CSimpleFrame::SetFrameScale(float scale, bool a3) {
-    if (scale == 0.0f || (!a3 && AreEqual(scale, this->m_frameScale, WHOA_EPSILON_1))) {
+bool CSimpleFrame::SetFrameScale(float scale, bool force) {
+    if (scale == 0.0f || (!force && AreEqual(scale, this->m_frameScale, WHOA_EPSILON_1))) {
         return false;
     }
 
     this->m_frameScale = scale;
 
-    return this->UpdateScale(a3);
+    return this->UpdateScale(force);
 }
 
 void CSimpleFrame::SetFrameStrata(FRAME_STRATA strata) {
