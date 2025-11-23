@@ -1,4 +1,5 @@
 #include "sound/SI2.hpp"
+#include "SoundKitProperties.hpp"
 #include "console/CVar.hpp"
 #include "sound/CVarHandlers.hpp"
 #include "sound/SESound.hpp"
@@ -229,8 +230,26 @@ void SI2::InitSoundKitGroups() {
     }
 }
 
-void SI2::PlayUISound(int32_t id) {
+void SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, const SoundKitProperties& properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
     // TODO
+}
+
+void SI2::PlayUISound(int32_t id) {
+    static auto voiceChatOnID = SI2::GetSoundKitID("VoiceChatOn");
+    static auto voiceChatOffID = SI2::GetSoundKitID("VoiceChatOff");
+
+    SoundKitProperties properties;
+    properties.ResetToDefaults();
+
+    if (id == voiceChatOnID || id == voiceChatOffID) {
+        properties.m_type = 3;
+    }
+
+    properties.int20 = 128;
+    properties.uint24 = 2;
+    properties.uint3C = 0;
+
+    SI2::PlaySoundKit(id, 0, nullptr, properties, 0, nullptr, 1, 0);
 }
 
 void SI2::RegisterCVars() {

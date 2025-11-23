@@ -9,6 +9,7 @@
 
 class SOUNDKITDEF;
 struct SOUNDKITLOOKUP;
+class SoundKitProperties;
 
 class SI2 {
     public:
@@ -24,6 +25,7 @@ class SI2 {
         static int32_t Init(int32_t a1);
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();
+        static void PlaySoundKit(int32_t id, int32_t a2, void* handle, const SoundKitProperties& properties, int32_t a5,  void* a6, int32_t a7, int32_t a8);
         static void PlayUISound(int32_t id);
         static void RegisterCVars();
         static void RegisterScriptFunctions();
