@@ -160,6 +160,10 @@ void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32
     LOG_WRITE(FMOD_OK, " ");
 }
 
+int32_t SESound::IsInitialized() {
+    return SESound::s_Initialized == 1;
+}
+
 void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, const char* fmt, ...) {
     // TODO
 }
