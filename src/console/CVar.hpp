@@ -18,7 +18,7 @@ class CVar : public TSHashObject<CVar, HASHKEY_STRI> {
         static int32_t Load(const char* filename);
         static CVar* Lookup(const char* name);
         static CVar* LookupRegistered(const char* name);
-        static CVar* Register(const char* name, const char* help, uint32_t flags, const char* value, bool (*fcn)(CVar*, const char*, const char*, void*), uint32_t category, bool a7, void* arg, bool a9);
+        static CVar* Register(const char* name, const char* help, uint32_t flags, const char* value, bool (*fcn)(CVar*, const char*, const char*, void*), uint32_t category, bool a7 = false, void* arg = nullptr, bool a9 = false);
 
         // Member variables
         uint32_t m_category = 0;
