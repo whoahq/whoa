@@ -10,6 +10,9 @@ class SoundKitProperties {
         // TODO
         int32_t int20;
         uint32_t uint24;
+        uint32_t uint28;
+        // TODO
+        uint8_t byte38;
         // TODO
         uint32_t uint3C;
         // TODO

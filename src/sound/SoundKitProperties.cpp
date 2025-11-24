@@ -16,6 +16,14 @@ void SoundKitProperties::ResetToDefaults() {
 
     // TODO
 
+    this->uint28 = 0;
+
+    // TODO
+
+    this->byte38 = 0;
+
+    // TODO
+
     this->m_streaming = SFile::IsStreamingMode() != 0;
 
     // TODO
