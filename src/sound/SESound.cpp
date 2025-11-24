@@ -170,7 +170,13 @@ void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, cons
 }
 
 void SESound::CompleteLoad() {
-    // TODO
+    if (!this->m_internal) {
+        return;
+    }
+
+    if (this->m_internal->m_type == 1 && this->m_internal->m_loaded) {
+        static_cast<SEDiskSound*>(this->m_internal)->CompleteNonBlockingLoad();
+    }
 }
 
 int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10) {

@@ -5,3 +5,7 @@ SESoundInternal::SESoundInternal() {
     // TODO
     this->m_uniqueID = SESound::s_UniqueID++;
 }
+
+void SEDiskSound::CompleteNonBlockingLoad() {
+    // TODO
+}

@@ -48,6 +48,9 @@ class SEDiskSound : public SESoundInternal {
         FMOD::Sound* m_fmodSound = nullptr;
         // TODO
         SoundCacheNode* m_cacheNode = nullptr;
+
+        // Member functions
+        void CompleteNonBlockingLoad();
 };
 
 class SEMemorySound : public SESoundInternal {
