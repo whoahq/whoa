@@ -1,11 +1,22 @@
 #ifndef SOUND_SE_SOUND_INTERNAL_HPP
 #define SOUND_SE_SOUND_INTERNAL_HPP
 
+#include <storm/List.hpp>
 #include <fmod.hpp>
 #include <cstdint>
 
 class SESound;
 class SFile;
+
+struct SoundCacheNode : TSLinkedNode<SoundCacheNode> {
+    // Member variables
+    FMOD::Sound* sound;
+    int32_t loaded;
+    char filename[128];
+    uint32_t hashval;
+    // TODO dword94
+    // TODO dword98
+};
 
 class SESoundInternal {
     public:
@@ -32,10 +43,11 @@ class SEDiskSound : public SESoundInternal {
     public:
         // Member variables
         // TODO
-        SFile* m_file;
+        SFile* m_file = nullptr;
         // TODO
-        FMOD::Sound* m_fmodSound;
+        FMOD::Sound* m_fmodSound = nullptr;
         // TODO
+        SoundCacheNode* m_cacheNode = nullptr;
 };
 
 class SEMemorySound : public SESoundInternal {
