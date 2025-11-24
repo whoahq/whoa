@@ -20,7 +20,7 @@ class SESound {
         SESoundInternal* m_internal = nullptr;
 
         // Member functions
-        // TODO
+        int32_t Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10);
 };
 
 #endif

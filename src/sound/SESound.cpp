@@ -163,3 +163,9 @@ void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32
 void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, const char* fmt, ...) {
     // TODO
 }
+
+int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10) {
+    // TODO
+
+    return 0;
+}
