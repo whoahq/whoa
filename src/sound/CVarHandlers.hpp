@@ -27,4 +27,20 @@ bool VoiceChatModeHandler(CVar* var, const char* oldValue, const char* value, vo
 
 bool VoiceChatOutputDriverHandler(CVar* var, const char* oldValue, const char* value, void* arg);
 
+bool AmbienceVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool EnableAllSound_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool EnableAmbience_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool EnableMusic_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool EnableSFX_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool MasterVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool MusicVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
+bool SFXVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg);
+
 #endif

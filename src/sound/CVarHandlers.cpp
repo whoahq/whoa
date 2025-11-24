@@ -61,3 +61,43 @@ bool VoiceChatOutputDriverHandler(CVar* var, const char* oldValue, const char* v
     // TODO
     WHOA_UNIMPLEMENTED(true);
 }
+
+bool AmbienceVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool EnableAllSound_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool EnableAmbience_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool EnableMusic_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool EnableSFX_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool MasterVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool MusicVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}
+
+bool SFXVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    WHOA_UNIMPLEMENTED(true);
+}

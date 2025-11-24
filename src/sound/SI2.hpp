@@ -28,6 +28,7 @@ class SI2 {
         static int32_t PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8);
         static void PlayUISound(int32_t id);
         static void RegisterCVars();
+        static void RegisterUserCVars();
         static void RegisterScriptFunctions();
         static void StartGlueMusic(const char* name);
 };

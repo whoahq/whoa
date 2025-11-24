@@ -53,9 +53,7 @@ int32_t SI2::Init(int32_t a1) {
     // TODO
     // if (CmdLineGetBool(26)) {
     //     SI2::RegisterCVars();
-    //
-    //     // TODO
-    //     // sub_4D1600();
+    //     SI2::RegisterUserCVars();
     //
     //     return 17;
     // }
@@ -134,6 +132,8 @@ int32_t SI2::Init(int32_t a1) {
     );
 
     // TODO
+
+    SI2::RegisterUserCVars();
 
     if (!a1) {
         SI2::InitSoundKitDefs();
@@ -700,6 +700,182 @@ void SI2::RegisterCVars() {
         nullptr,
         false
     );
+}
+
+void SI2::RegisterUserCVars() {
+    CVar::Register("ChatMusicVolume",
+        "music volume (0.0 to 1.0)",
+        0x0,
+        "0.3",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "ChatSoundVolume",
+        "sound volume (0.0 to 1.0)",
+        0x0,
+        "0.4",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "ChatAmbienceVolume",
+        "Ambience Volume (0.0 to 1.0)",
+        0x0,
+        "0.3",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableSFX",
+        "",
+        0x0,
+        "1",
+        &EnableSFX_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableAmbience",
+        "Enable Ambience",
+        0x0,
+        "1",
+        &EnableAmbience_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableErrorSpeech",
+        "error speech",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableMusic",
+        "Enables music",
+        0x0,
+        "1",
+        &EnableMusic_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableAllSound",
+        "",
+        0x0,
+        "1",
+        &EnableAllSound_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_MasterVolume",
+        "master volume (0.0 to 1.0)",
+        0x0,
+        "1.0",
+        &MasterVolume_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_SFXVolume",
+        "sound volume (0.0 to 1.0)",
+        0x0,
+        "1.0",
+        &SFXVolume_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_MusicVolume",
+        "music volume (0.0 to 1.0)",
+        0x0,
+        "0.4",
+        &MusicVolume_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_AmbienceVolume",
+        "Ambience Volume (0.0 to 1.0)",
+        0x0,
+        "0.6",
+        &AmbienceVolume_CVarCallback,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_ListenerAtCharacter",
+        "lock listener at character",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableEmoteSounds",
+        "",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_ZoneMusicNoDelay",
+        "",
+        0x0,
+        "0",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableArmorFoleySoundForSelf",
+        "",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableArmorFoleySoundForOthers",
+        "",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    // TODO
+
+    CVar::Register(
+        "Sound_EnablePetSounds",
+        "Enables pet sounds",
+        0x0,
+        "1",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_EnableSoundWhenGameIsInBG",
+        "Enable Sound When Game Is In Background",
+        0x0,
+        "0",
+        nullptr,
+        SOUND
+    );
+
+    // TODO
 }
 
 void SI2::RegisterScriptFunctions() {
