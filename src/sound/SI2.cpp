@@ -230,8 +230,144 @@ void SI2::InitSoundKitGroups() {
     }
 }
 
-void SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, const SoundKitProperties& properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
+int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
+    // Basic validations
+
+    if (id <= 0) {
+        return 5;
+    }
+
+    auto soundKitDef = SI2::GetSoundKitDef(id);
+
+    if (!soundKitDef) {
+        return 5;
+    }
+
+    if (!soundKitDef->fileCount) {
+        return 6;
+    }
+
+    if (!SESound::IsInitialized()) {
+        return 17;
+    }
+
+    // Default properties
+
+    SoundKitProperties defaultProperties;
+    defaultProperties.ResetToDefaults();
+
+    if (!properties) {
+        properties = &defaultProperties;
+    }
+
+    // Sound type checks
+
+    static auto enableAllSoundVar = CVar::Lookup("Sound_EnableAllSound");
+
+    if (!enableAllSoundVar || !enableAllSoundVar->GetInt() /* TODO || dword_BD0800 */) {
+        return 17;
+    }
+
     // TODO
+
+    if (!std::strcmp(SI2::s_SoundCategory[properties->m_type], "SFX")) {
+        static auto enableSFXVar = CVar::Lookup("Sound_EnableSFX");
+
+        if (!enableSFXVar || !enableSFXVar->GetInt()) {
+            return 9;
+        }
+    }
+
+    if (
+        !std::strcmp(SI2::s_SoundCategory[properties->m_type], "MUSIC")
+        || !strcmp(SI2::s_SoundCategory[properties->m_type], "SCRIPTMUSIC")
+    ) {
+        static auto enableMusicVar = CVar::Lookup("Sound_EnableMusic");
+
+        if (!enableMusicVar || !enableMusicVar->GetInt()) {
+            return 10;
+        }
+    }
+
+    if (properties->m_type == 2) {
+        static auto enableAmbienceVar = CVar::Lookup("Sound_EnableAmbience");
+
+        if (!enableAmbienceVar || !enableAmbienceVar->GetInt()) {
+            return 11;
+        }
+    }
+
+    if (properties->m_type >= 18) {
+        return 8;
+    }
+
+    // TODO
+
+    if (properties->uint24 == 2) {
+        soundKitDef->flags |= 0x20;
+    }
+
+    if (properties->uint24 == 1) {
+        soundKitDef->flags &= ~0x20u;
+    }
+
+    if (!(soundKitDef->flags & 0x20) /* TODO || !dword_B4A394 */) {
+        // TODO
+
+        return 15;
+    }
+
+    SESound* sound;
+
+    if (handle) {
+        // TODO sound = handle->sound;
+        // TODO
+    } else {
+        SESound newSound = {};
+        sound = &newSound;
+
+        // TODO
+    }
+
+    // TODO SOUNDKITDEF::SelectNextFile
+    auto filename = soundKitDef->files[0];
+
+    // TODO
+
+    int32_t unkInt = 0;
+    bool unkBool = true;
+
+    // TODO
+
+    if (a2) {
+        // TODO
+    } else {
+        auto result = sound->Load(
+            filename,
+            unkInt,
+            soundKitDef->soundGroup1,
+            soundKitDef->soundGroup2,
+            unkBool,
+            properties->byte38,
+            properties->uint3C,
+            properties->int20,
+            properties->uint28
+        );
+
+        if (!result) {
+            // TODO sound->Sub8799E0();
+
+            return 16;
+        }
+    }
+
+    // TODO
+
+    sound->CompleteLoad();
+
+    // TODO
+
+    return 0;
 }
 
 void SI2::PlayUISound(int32_t id) {
@@ -249,7 +385,7 @@ void SI2::PlayUISound(int32_t id) {
     properties.uint24 = 2;
     properties.uint3C = 0;
 
-    SI2::PlaySoundKit(id, 0, nullptr, properties, 0, nullptr, 1, 0);
+    SI2::PlaySoundKit(id, 0, nullptr, &properties, 0, nullptr, 1, 0);
 }
 
 void SI2::RegisterCVars() {
