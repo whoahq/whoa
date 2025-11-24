@@ -6,6 +6,7 @@
 
 int32_t SESound::s_Initialized;
 FMOD::System* SESound::s_pGameSystem;
+uint32_t SESound::s_UniqueID;
 
 void* FSoundAllocCallback(uint32_t size, FMOD_MEMORY_TYPE type, const char* sourcestr) {
     return SMemAlloc(size, "FMod", 0, 0x8);

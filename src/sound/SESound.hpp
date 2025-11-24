@@ -10,6 +10,7 @@ class SESound {
         // Static variables
         static int32_t s_Initialized;
         static FMOD::System* s_pGameSystem;
+        static uint32_t s_UniqueID;
 
         // Static functions
         static FMOD::SoundGroup* CreateSoundGroup(const char* name, int32_t maxAudible);
