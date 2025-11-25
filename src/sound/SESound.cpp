@@ -1,4 +1,5 @@
 #include "sound/SESound.hpp"
+#include "event/Event.hpp"
 #include "console/CVar.hpp"
 #include "util/SFile.hpp"
 #include <storm/Memory.hpp>
@@ -8,6 +9,7 @@
 #define LOG_WRITE(result, ...) \
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
+SCritSect SESound::s_CritSect3;
 int32_t SESound::s_Initialized;
 SCritSect SESound::s_InternalCritSect;
 TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> SESound::s_InternalLookupTable;
@@ -107,6 +109,30 @@ FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible
     return group;
 }
 
+int32_t SESound::Heartbeat(const void* data, void* param) {
+    if (!SESound::s_Initialized) {
+        SESound::s_pGameSystem->update();
+
+        return 1;
+    }
+
+    SESound::s_CritSect3.Enter();
+
+    // TODO
+
+    SESound::ProcessLoadedDiskSounds();
+
+    // TODO
+
+    SESound::s_pGameSystem->update();
+
+    // TODO
+
+    SESound::s_CritSect3.Leave();
+
+    return 1;
+}
+
 void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32_t enableSoftwareHRTF, int32_t* numChannels, int32_t* outputDriverIndex, const char* outputDriverName, void* a8, int32_t a9) {
     SESound::s_Initialized = 0;
 
@@ -160,7 +186,9 @@ void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32
 
     SESound::s_pGameSystem->setOutput(FMOD_OUTPUTTYPE_AUTODETECT);
 
-    // TODO
+    // Register heartbeat
+
+    EventRegister(EVENT_ID_POLL, &SESound::Heartbeat);
 
     // Get FMOD version
 
@@ -367,6 +395,10 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
 }
 
 void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, const char* fmt, ...) {
+    // TODO
+}
+
+void SESound::ProcessLoadedDiskSounds() {
     // TODO
 }
 
