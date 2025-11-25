@@ -10,7 +10,17 @@ SESoundInternal::SESoundInternal() {
 }
 
 void SESoundInternal::Play() {
+    FMOD_RESULT result;
+
     // TODO
+
+    // Unpause channel (triggers playback)
+
+    result = this->m_fmodChannel->setPaused(false);
+
+    if (result != FMOD_OK && result != FMOD_ERR_CHANNEL_STOLEN && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_OUTPUT_DRIVERCALL) {
+        LOG_WRITE(result, "");
+    }
 }
 
 void SEDiskSound::Abort(FMOD_RESULT result) {
