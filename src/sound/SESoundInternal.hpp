@@ -18,7 +18,7 @@ struct SoundCacheNode : TSLinkedNode<SoundCacheNode> {
     // TODO dword98
 };
 
-class SESoundInternal {
+class SESoundInternal : public TSLinkedNode<SESoundInternal> {
     public:
         // Member variables
         // TODO

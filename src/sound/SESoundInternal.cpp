@@ -26,6 +26,8 @@ void SESoundInternal::Play() {
 SEDiskSound::SEDiskSound() : SESoundInternal() {
     SESound::s_InternalCritSect.Enter();
 
+    SESound::s_InternalList.LinkToTail(this);
+
     auto lookup = SESound::s_InternalLookupTable.New(this->m_uniqueID, SESound::s_InternalLookupKey, 0, 0x0);
     lookup->m_internal = this;
 

@@ -12,6 +12,7 @@
 SCritSect SESound::s_CritSect3;
 int32_t SESound::s_Initialized;
 SCritSect SESound::s_InternalCritSect;
+STORM_LIST(SESoundInternal) SESound::s_InternalList;
 TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> SESound::s_InternalLookupTable;
 HASHKEY_NONE SESound::s_InternalLookupKey;
 SCritSect SESound::s_LoadingCritSect;

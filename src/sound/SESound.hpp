@@ -17,6 +17,7 @@ class SESound {
         static SCritSect s_CritSect3;
         static int32_t s_Initialized;
         static SCritSect s_InternalCritSect;
+        static STORM_LIST(SESoundInternal) s_InternalList;
         static TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> s_InternalLookupTable;
         static HASHKEY_NONE s_InternalLookupKey;
         static SCritSect s_LoadingCritSect;
