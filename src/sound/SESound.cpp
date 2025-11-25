@@ -99,7 +99,11 @@ FMOD_RESULT SEOpenCallback(const char* name, uint32_t* filesize, void** handle, 
 
     *filesize = SFile::GetFileSize(internal->m_file, nullptr);
     *handle = internal->m_file;
-    *(&userdata) = nullptr;
+    userdata = nullptr;
+
+    internal->m_file = nullptr;
+
+    SESound::s_InternalCritSect.Leave();
 
     return FMOD_OK;
 }
