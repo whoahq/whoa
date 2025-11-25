@@ -386,7 +386,7 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
         return 0;
     }
 
-    int32_t loaded = 0;
+    int32_t nonblockingReady = 0;
 
     fmodMode |= FMOD_VIRTUAL_PLAYFROMSTART | FMOD_IGNORETAGS | FMOD_NONBLOCKING;
 
@@ -439,7 +439,7 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
 
     // TODO
 
-    internal->m_loaded = loaded;
+    internal->m_nonblockingReady = nonblockingReady;
 
     s_LoadingCritSect.Leave();
 
@@ -459,7 +459,7 @@ void SESound::CompleteLoad() {
         return;
     }
 
-    if (this->m_internal->m_type == 1 && this->m_internal->m_loaded) {
+    if (this->m_internal->m_type == 1 && this->m_internal->m_nonblockingReady) {
         static_cast<SEDiskSound*>(this->m_internal)->CompleteNonBlockingLoad();
     }
 }
