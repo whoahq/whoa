@@ -1,10 +1,18 @@
 #include "sound/SESound.hpp"
+#include "console/CVar.hpp"
+#include "util/SFile.hpp"
 #include <storm/Memory.hpp>
+#include <storm/String.hpp>
+#include <cstdlib>
 
 #define LOG_WRITE(result, ...) \
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
 int32_t SESound::s_Initialized;
+SCritSect SESound::s_InternalCritSect;
+TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> SESound::s_InternalLookupTable;
+HASHKEY_NONE SESound::s_InternalLookupKey;
+SCritSect SESound::s_LoadingCritSect;
 FMOD::System* SESound::s_pGameSystem;
 uint32_t SESound::s_UniqueID;
 
@@ -18,6 +26,68 @@ void* FSoundReallocCallback(void* ptr, uint32_t size, FMOD_MEMORY_TYPE type, con
 
 void FSoundFreeCallback(void* ptr, FMOD_MEMORY_TYPE type, const char *sourcestr) {
     SMemFree(ptr, "FMod", 0, 0x0);
+}
+
+FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* sound, FMOD_RESULT result) {
+    // TODO
+    return FMOD_OK;
+}
+
+FMOD_RESULT SEOpenCallback(const char* name, uint32_t* filesize, void** handle, void* userdata) {
+    uint32_t hashval = std::atol(name);
+
+    SESound::s_InternalCritSect.Enter();
+
+    auto lookup = SESound::s_InternalLookupTable.Ptr(hashval, SESound::s_InternalLookupKey);
+
+    if (!lookup) {
+        SESound::s_InternalCritSect.Leave();
+
+        return FMOD_ERR_FILE_NOTFOUND;
+    }
+
+    auto internal = static_cast<SEDiskSound*>(lookup->m_internal);
+
+    *filesize = SFile::GetFileSize(internal->m_file, nullptr);
+    *handle = internal->m_file;
+    *(&userdata) = nullptr;
+
+    return FMOD_OK;
+}
+
+FMOD_RESULT SECloseCallback(void* handle, void* userdata) {
+    auto file = static_cast<SFile*>(handle);
+
+    if (SFile::Close(file)) {
+        return FMOD_OK;
+    } else {
+        return FMOD_ERR_INVALID_HANDLE;
+    }
+}
+
+FMOD_RESULT SEReadCallback(void* handle, void* buffer, uint32_t sizebytes, uint32_t* bytesread, void* userdata) {
+    // TODO
+
+    size_t read = 0;
+    auto file = static_cast<SFile*>(handle);
+
+    auto result = SFile::Read(file, buffer, sizebytes, &read, nullptr, nullptr);
+
+    *bytesread = read;
+
+    // TODO
+
+    if (result) {
+        return FMOD_OK;
+    } else {
+        // TODO
+        return FMOD_ERR_FILE_EOF;
+    }
+}
+
+FMOD_RESULT SESeekCallback(void* handle, uint32_t pos, void* userdata) {
+    // TODO
+    return FMOD_OK;
 }
 
 FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible) {
@@ -165,6 +235,137 @@ int32_t SESound::IsInitialized() {
     return SESound::s_Initialized == 1;
 }
 
+int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, FMOD_MODE fmodMode, SESound* sound, FMOD::SoundGroup* fmodSoundGroup1, FMOD::SoundGroup* fmodSoundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16) {
+    SESound::s_LoadingCritSect.Enter();
+
+    FMOD_RESULT result;
+
+    // TODO
+
+    auto internal = STORM_NEW(SEDiskSound);
+
+    // TODO populate various SEDiskSound members
+
+    internal->m_fmodSystem = fmodSystem;
+    internal->m_fmodMode = fmodMode;
+    internal->m_type = 1;
+    internal->m_useCache = 0;
+    internal->m_fmodChannel = nullptr;
+
+    internal->m_sound = sound;
+    sound->m_internal = internal;
+
+    FMOD_CREATESOUNDEXINFO info = {};
+    info.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+    info.nonblockcallback = &DoneLoadingCallback;
+    info.fileuseropen = &SEOpenCallback;
+    info.fileuserclose = &SECloseCallback;
+    info.fileuserread = &SEReadCallback;
+    info.fileuserseek = &SESeekCallback;
+    info.decodebuffersize = decodeBufferSize;
+    info.userdata = &internal->m_uniqueID;
+    info.suggestedsoundtype = FMOD_SOUND_TYPE_UNKNOWN;
+    info.initialseekposition = 0;
+    info.initialseekpostype = 0;
+
+    bool useCache = true;
+
+    auto ext = SStrChrR(filename, '.');
+    if (ext) {
+        if (!SStrCmpI(ext, ".wav")) {
+            info.suggestedsoundtype = SFile::IsStreamingTrial() ? FMOD_SOUND_TYPE_UNKNOWN: FMOD_SOUND_TYPE_WAV;
+        } else if (!SStrCmpI(ext, ".mp3")) {
+            useCache = false;
+            fmodMode |= FMOD_MPEGSEARCH;
+            info.suggestedsoundtype = FMOD_SOUND_TYPE_MPEG;
+        }
+    }
+
+    char fmodName[300];
+    SStrPrintf(fmodName, sizeof(fmodName), "%-24d%s", internal->m_uniqueID, filename);
+
+    // TODO
+
+    if (useCache) {
+        // TODO
+    }
+
+    // Validate file exists
+
+    if (!SFile::OpenEx(nullptr, filename, 1, &internal->m_file)) {
+        LOG_WRITE(FMOD_ERR_FILE_NOTFOUND, filename);
+
+        SESound::s_InternalCritSect.Enter();
+
+        // TODO
+
+        SESound::s_InternalCritSect.Leave();
+
+        SESound::s_LoadingCritSect.Leave();
+
+        return 0;
+    }
+
+    int32_t loaded = 0;
+
+    fmodMode |= FMOD_VIRTUAL_PLAYFROMSTART | FMOD_IGNORETAGS | FMOD_NONBLOCKING;
+
+    uint32_t maxCacheSize = 1048576;
+    static auto maxCacheSizeVar = CVar::Lookup("Sound_MaxCacheableSizeInBytes");
+    if (maxCacheSizeVar) {
+        maxCacheSize = maxCacheSizeVar->GetInt() > 2097152 ? 2097152 : maxCacheSizeVar->GetInt();
+    }
+
+    uint32_t fileSize = internal->m_file ? SFile::GetFileSize(internal->m_file, nullptr) : 0;
+
+    // Create FMOD stream or sound
+
+    if (fileSize > maxCacheSize || !useCache) {
+        useCache = false;
+
+        result = fmodSystem->createStream(fmodName, fmodMode, &info, &internal->m_fmodSound);
+
+        // TODO counter
+    } else {
+        result = fmodSystem->createSound(fmodName, fmodMode, &info, &internal->m_fmodSound);
+
+        // TODO other counter
+    }
+
+    // Create FMOD stream or sound failed
+
+    if (result != FMOD_OK) {
+        if (result != FMOD_ERR_OUTPUT_CREATEBUFFER) {
+            LOG_WRITE(result, filename);
+        }
+
+        s_InternalCritSect.Enter();
+
+        SFile::Close(internal->m_file);
+        internal->m_file = nullptr;
+
+        // TODO
+
+        s_InternalCritSect.Leave();
+
+        s_LoadingCritSect.Leave();
+
+        return 0;
+    }
+
+    if (useCache) {
+        // TODO
+    }
+
+    // TODO
+
+    internal->m_loaded = loaded;
+
+    s_LoadingCritSect.Leave();
+
+    return 1;
+}
+
 void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, const char* fmt, ...) {
     // TODO
 }
@@ -202,9 +403,4 @@ int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundG
         1.0f,
         nullptr
     );
-}
-
-int32_t SESound::LoadDiskSound(FMOD::System* system, const char* filename, FMOD_MODE mode, SESound* sound, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16) {
-    // TODO
-    return 0;
 }

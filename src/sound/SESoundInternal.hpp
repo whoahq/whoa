@@ -52,6 +52,7 @@ class SEDiskSound : public SESoundInternal {
         SoundCacheNode* m_cacheNode = nullptr;
 
         // Member functions
+        SEDiskSound();
         void Abort(FMOD_RESULT result);
         void CompleteNonBlockingLoad();
 };

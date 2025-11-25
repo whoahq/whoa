@@ -3,12 +3,22 @@
 
 #include "sound/SESoundInternal.hpp"
 #include <fmod.hpp>
+#include <storm/Hash.hpp>
+#include <storm/Thread.hpp>
 #include <cstdint>
+
+struct SOUND_INTERNAL_LOOKUP : TSHashObject<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> {
+    SESoundInternal* m_internal;
+};
 
 class SESound {
     public:
         // Public static variables
         static int32_t s_Initialized;
+        static SCritSect s_InternalCritSect;
+        static TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> s_InternalLookupTable;
+        static HASHKEY_NONE s_InternalLookupKey;
+        static SCritSect s_LoadingCritSect;
         static FMOD::System* s_pGameSystem;
         static uint32_t s_UniqueID;
 
@@ -24,7 +34,7 @@ class SESound {
 
     private:
         // Private static functions
-        static int32_t LoadDiskSound(FMOD::System* system, const char* filename, FMOD_MODE mode, SESound* sound, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16);
+        static int32_t LoadDiskSound(FMOD::System* fmodSystem, const char* filename, FMOD_MODE fmodMode, SESound* sound, FMOD::SoundGroup* fmodSoundGroup1, FMOD::SoundGroup* fmodSoundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16);
 
         // Private member variables
         SESoundInternal* m_internal = nullptr;

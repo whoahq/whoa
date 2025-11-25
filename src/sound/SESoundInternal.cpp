@@ -23,6 +23,15 @@ void SESoundInternal::Play() {
     }
 }
 
+SEDiskSound::SEDiskSound() : SESoundInternal() {
+    SESound::s_InternalCritSect.Enter();
+
+    auto lookup = SESound::s_InternalLookupTable.New(this->m_uniqueID, SESound::s_InternalLookupKey, 0, 0x0);
+    lookup->m_internal = this;
+
+    SESound::s_InternalCritSect.Leave();
+}
+
 void SEDiskSound::Abort(FMOD_RESULT result) {
     // TODO
 }
