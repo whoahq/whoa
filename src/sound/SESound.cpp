@@ -30,8 +30,55 @@ void FSoundFreeCallback(void* ptr, FMOD_MEMORY_TYPE type, const char *sourcestr)
     SMemFree(ptr, "FMod", 0, 0x0);
 }
 
-FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* sound, FMOD_RESULT result) {
-    // TODO
+FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* sound, FMOD_RESULT callbackResult) {
+    FMOD_RESULT result;
+
+    // Get hash value
+
+    void* userData = nullptr;
+
+    result = FMOD_Sound_GetUserData(sound, &userData);
+
+    if (result != FMOD_OK && result != FMOD_ERR_CHANNEL_STOLEN && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_OUTPUT_DRIVERCALL) {
+        LOG_WRITE(result, "");
+
+        return result;
+    }
+
+    auto hashval = *static_cast<uint32_t*>(userData);
+
+    SESound::s_InternalCritSect.Enter();
+
+    // Get internal lookup
+
+    auto lookup = SESound::s_InternalLookupTable.Ptr(hashval, SESound::s_InternalLookupKey);
+
+    if (!lookup) {
+        SESound::s_InternalCritSect.Leave();
+
+        return FMOD_OK;
+    }
+
+    auto internal = static_cast<SEDiskSound*>(lookup->m_internal);
+
+    if (callbackResult != FMOD_OK) {
+        // TODO
+
+        return callbackResult;
+    }
+
+    // TODO pending load list
+
+    SESound::s_InternalCritSect.Leave();
+
+    SESound::s_LoadingCritSect.Enter();
+
+    if (internal->m_useCache) {
+        internal->m_cacheNode->loaded = 1;
+    }
+
+    SESound::s_LoadingCritSect.Leave();
+
     return FMOD_OK;
 }
 
