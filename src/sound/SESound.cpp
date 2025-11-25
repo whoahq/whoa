@@ -180,7 +180,31 @@ void SESound::CompleteLoad() {
 }
 
 int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10) {
-    // TODO
+    if (!SESound::s_Initialized) {
+        return 0;
+    }
 
+    return SESound::LoadDiskSound(
+        SESound::s_pGameSystem,
+        filename,
+        ((a3 != 0) + 1) | (0x40 | 0x8), // TODO FMOD_MODE
+        this,
+        soundGroup1,
+        soundGroup2,
+        a6,
+        a9,
+        a8,
+        a7,
+        a10,
+        0,
+        360.0f,
+        360.0f,
+        1.0f,
+        nullptr
+    );
+}
+
+int32_t SESound::LoadDiskSound(FMOD::System* system, const char* filename, FMOD_MODE mode, SESound* sound, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16) {
+    // TODO
     return 0;
 }
