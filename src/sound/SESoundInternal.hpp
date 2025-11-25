@@ -30,6 +30,7 @@ class SESoundInternal {
         int32_t m_type = 0;
         // TODO
         FMOD_MODE m_fmodMode = FMOD_DEFAULT;
+        uint8_t m_playing = 0;
         // TODO
         int32_t m_loaded = 0;
         // TODO
@@ -37,6 +38,7 @@ class SESoundInternal {
 
         // Member functions
         SESoundInternal();
+        void Play();
 };
 
 class SEDiskSound : public SESoundInternal {
@@ -50,6 +52,7 @@ class SEDiskSound : public SESoundInternal {
         SoundCacheNode* m_cacheNode = nullptr;
 
         // Member functions
+        void Abort(FMOD_RESULT result);
         void CompleteNonBlockingLoad();
 };
 
