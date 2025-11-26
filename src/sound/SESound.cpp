@@ -185,7 +185,7 @@ int32_t SESound::Heartbeat(const void* data, void* param) {
 
     // TODO
 
-    SESound::ProcessLoadedDiskSounds();
+    SESound::ProcessReadyDiskSounds();
 
     // TODO
 
@@ -464,8 +464,11 @@ void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, cons
     // TODO
 }
 
-void SESound::ProcessLoadedDiskSounds() {
-    // TODO
+void SESound::ProcessReadyDiskSounds() {
+    while (auto diskSound = SESound::s_ReadyDiskSounds.Head()) {
+        SESound::s_ReadyDiskSounds.UnlinkNode(diskSound);
+        diskSound->CompleteNonBlockingLoad();
+    }
 }
 
 void SESound::CompleteLoad() {

@@ -39,7 +39,7 @@ class SESound {
     private:
         // Private static functions
         static int32_t LoadDiskSound(FMOD::System* fmodSystem, const char* filename, FMOD_MODE fmodMode, SESound* sound, FMOD::SoundGroup* fmodSoundGroup1, FMOD::SoundGroup* fmodSoundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16);
-        static void ProcessLoadedDiskSounds();
+        static void ProcessReadyDiskSounds();
 
         // Private member variables
         SESoundInternal* m_internal = nullptr;
