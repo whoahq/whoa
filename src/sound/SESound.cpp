@@ -505,3 +505,17 @@ int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundG
         nullptr
     );
 }
+
+void SESound::Play() {
+    if (!this->m_internal) {
+        return;
+    }
+
+    // TODO volume
+
+    this->m_internal->m_playing = 1;
+
+    if (this->m_internal->m_fmodChannel) {
+        this->m_internal->Play();
+    }
+}

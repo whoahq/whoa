@@ -367,6 +367,10 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperti
 
     // TODO
 
+    sound->Play();
+
+    // TODO
+
     return 0;
 }
 
