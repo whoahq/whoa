@@ -331,9 +331,27 @@ int32_t SESound::IsInitialized() {
 int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, FMOD_MODE fmodMode, SESound* sound, FMOD::SoundGroup* fmodSoundGroup1, FMOD::SoundGroup* fmodSoundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16) {
     SESound::s_LoadingCritSect.Enter();
 
+    if (!sound || !fmodSystem || !filename || !*filename) {
+        SESound::s_LoadingCritSect.Leave();
+
+        return 0;
+    }
+
     FMOD_RESULT result;
 
-    // TODO
+    if (sound->m_internal) {
+        // TODO sound->m_internal->byte6D = 1;
+
+        if (sound->m_internal->m_fmodChannel) {
+            sound->m_internal->m_fmodChannel->stop();
+            sound->m_internal->m_fmodChannel = nullptr;
+        }
+
+        if (sound->m_internal) {
+            sound->m_internal->m_sound = nullptr;
+            sound->m_internal = nullptr;
+        }
+    }
 
     auto internal = STORM_NEW(SEDiskSound);
 
