@@ -14,6 +14,7 @@ struct SOUND_INTERNAL_LOOKUP : TSHashObject<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE>
 class SESound {
     public:
         // Public static variables
+        static STORM_LIST(SoundCacheNode) s_CacheList;
         static SCritSect s_CritSect3;
         static int32_t s_Initialized;
         static SCritSect s_InternalCritSect;

@@ -4,6 +4,10 @@
 #define LOG_WRITE(result, ...) \
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
+SoundCacheNode::SoundCacheNode() {
+    SESound::s_CacheList.LinkToTail(this);
+}
+
 SESoundInternal::SESoundInternal() {
     // TODO
     this->m_uniqueID = SESound::s_UniqueID++;

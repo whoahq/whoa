@@ -9,6 +9,7 @@
 #define LOG_WRITE(result, ...) \
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
+STORM_LIST(SoundCacheNode) SESound::s_CacheList;
 SCritSect SESound::s_CritSect3;
 int32_t SESound::s_Initialized;
 SCritSect SESound::s_InternalCritSect;
@@ -86,7 +87,7 @@ FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* fmodSound, FMOD_RESULT callbackResul
     // Mark cache sound node as loaded
 
     if (lookup->m_internal->m_useCache) {
-        static_cast<SEDiskSound*>(lookup->m_internal)->m_cacheNode->loaded = 1;
+        static_cast<SEDiskSound*>(lookup->m_internal)->m_cacheNode->m_loaded = 1;
     }
 
     SESound::s_LoadingCritSect.Leave();
@@ -390,13 +391,44 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
         }
     }
 
+    // Generate name
+
     char fmodName[300];
     SStrPrintf(fmodName, sizeof(fmodName), "%-24d%s", internal->m_uniqueID, filename);
 
-    // TODO
+    // Generate cache key
+
+    char cacheKey[400];
+    auto loopStr = fmodMode & FMOD_LOOP_NORMAL ? "_LOOP_" : "_NOLOOP_";
+    auto positionStr = fmodMode & FMOD_2D ? "_2D_" : "_3D_";
+    SStrPrintf(cacheKey, sizeof(cacheKey), "%s%s%s", filename, positionStr, loopStr);
+
+    auto cacheHashval = SStrHash(cacheKey);
+
+    // Load from cache
 
     if (useCache) {
-        // TODO
+        for (auto cacheNode = SESound::s_CacheList.Head(); cacheNode; cacheNode = SESound::s_CacheList.Link(cacheNode)->Next()) {
+            if (cacheNode->m_hashval == cacheHashval) {
+                // Cache hit
+
+                internal->m_fmodSound = cacheNode->m_fmodSound;
+                internal->m_useCache = 1;
+                internal->m_cacheNode = cacheNode;
+
+                // TODO
+
+                if (cacheNode->m_loaded) {
+                    internal->m_nonblockingReady = 1;
+                }
+
+                // TODO
+
+                SESound::s_LoadingCritSect.Leave();
+
+                return 1;
+            }
+        }
     }
 
     // Validate file exists
@@ -414,8 +446,6 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
 
         return 0;
     }
-
-    int32_t nonblockingReady = 0;
 
     fmodMode |= FMOD_VIRTUAL_PLAYFROMSTART | FMOD_IGNORETAGS | FMOD_NONBLOCKING;
 
@@ -462,14 +492,25 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
         return 0;
     }
 
+    // Create cache node
+
     if (useCache) {
+        auto cacheNode = STORM_NEW(SoundCacheNode);
+
+        cacheNode->m_fmodSound = internal->m_fmodSound;
+        cacheNode->m_hashval = cacheHashval;
+        SStrCopy(cacheNode->m_filename, filename, sizeof(cacheNode->m_filename));
+
         // TODO
+
+        internal->m_useCache = 1;
+        internal->m_cacheNode = cacheNode;
     }
 
     // TODO
 
-    // Used to permit instant playback of cached sounds
-    internal->m_nonblockingReady = nonblockingReady;
+    // No cache hit (yet)
+    internal->m_nonblockingReady = 0;
 
     s_LoadingCritSect.Leave();
 

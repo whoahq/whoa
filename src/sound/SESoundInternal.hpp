@@ -8,14 +8,18 @@
 class SESound;
 class SFile;
 
-struct SoundCacheNode : TSLinkedNode<SoundCacheNode> {
-    // Member variables
-    FMOD::Sound* sound;
-    int32_t loaded;
-    char filename[128];
-    uint32_t hashval;
-    // TODO dword94
-    // TODO dword98
+class SoundCacheNode : public TSLinkedNode<SoundCacheNode> {
+    public:
+        // Member variables
+        FMOD::Sound* m_fmodSound = nullptr;
+        int32_t m_loaded = 0;
+        char m_filename[128];
+        uint32_t m_hashval = 0;
+        // TODO dword94
+        // TODO dword98
+
+        // Member functions
+        SoundCacheNode();
 };
 
 class SESoundInternal : public TSLinkedNode<SESoundInternal> {
