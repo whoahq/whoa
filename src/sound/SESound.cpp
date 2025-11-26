@@ -61,8 +61,6 @@ FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* fmodSound, FMOD_RESULT callbackResul
         return FMOD_OK;
     }
 
-    auto internal = static_cast<SEDiskSound*>(lookup->m_internal);
-
     if (callbackResult != FMOD_OK) {
         // TODO
 
@@ -71,8 +69,8 @@ FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* fmodSound, FMOD_RESULT callbackResul
 
     // Add to ready list (processed by SESound::Heartbeat)
 
-    for (auto existing = SESound::s_InternalList.Head(); existing; existing = SESound::s_InternalList.Link(internal)->Next()) {
-        auto pendingLoad = internal->m_type == 1
+    for (auto existing = SESound::s_InternalList.Head(); existing; existing = SESound::s_InternalList.Link(existing)->Next()) {
+        auto pendingLoad = existing->m_type == 1
             && static_cast<SEDiskSound*>(existing)->m_fmodSound == reinterpret_cast<FMOD::Sound*>(fmodSound)
             && !existing->m_fmodChannel;
 
@@ -87,8 +85,8 @@ FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* fmodSound, FMOD_RESULT callbackResul
 
     // Mark cache sound node as loaded
 
-    if (internal->m_useCache) {
-        internal->m_cacheNode->loaded = 1;
+    if (lookup->m_internal->m_useCache) {
+        static_cast<SEDiskSound*>(lookup->m_internal)->m_cacheNode->loaded = 1;
     }
 
     SESound::s_LoadingCritSect.Leave();
