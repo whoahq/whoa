@@ -45,6 +45,7 @@ class SEDiskSound : public SESoundInternal {
     public:
         // Member variables
         // TODO
+        TSLink<SEDiskSound> m_readyLink;
         SFile* m_file = nullptr;
         // TODO
         FMOD::Sound* m_fmodSound = nullptr;

@@ -22,6 +22,7 @@ class SESound {
         static HASHKEY_NONE s_InternalLookupKey;
         static SCritSect s_LoadingCritSect;
         static FMOD::System* s_pGameSystem;
+        static STORM_EXPLICIT_LIST(SEDiskSound, m_readyLink) s_ReadyDiskSounds;
         static uint32_t s_UniqueID;
 
         // Public static functions

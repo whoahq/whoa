@@ -17,6 +17,7 @@ TSHashTable<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> SESound::s_InternalLookupTable;
 HASHKEY_NONE SESound::s_InternalLookupKey;
 SCritSect SESound::s_LoadingCritSect;
 FMOD::System* SESound::s_pGameSystem;
+STORM_EXPLICIT_LIST(SEDiskSound, m_readyLink) SESound::s_ReadyDiskSounds;
 uint32_t SESound::s_UniqueID;
 
 void* FSoundAllocCallback(uint32_t size, FMOD_MEMORY_TYPE type, const char* sourcestr) {
@@ -31,14 +32,14 @@ void FSoundFreeCallback(void* ptr, FMOD_MEMORY_TYPE type, const char *sourcestr)
     SMemFree(ptr, "FMod", 0, 0x0);
 }
 
-FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* sound, FMOD_RESULT callbackResult) {
+FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* fmodSound, FMOD_RESULT callbackResult) {
     FMOD_RESULT result;
 
     // Get hash value
 
     void* userData = nullptr;
 
-    result = FMOD_Sound_GetUserData(sound, &userData);
+    result = FMOD_Sound_GetUserData(fmodSound, &userData);
 
     if (result != FMOD_OK && result != FMOD_ERR_CHANNEL_STOLEN && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_OUTPUT_DRIVERCALL) {
         LOG_WRITE(result, "");
@@ -68,11 +69,23 @@ FMOD_RESULT DoneLoadingCallback(FMOD_SOUND* sound, FMOD_RESULT callbackResult) {
         return callbackResult;
     }
 
-    // TODO pending load list
+    // Add to ready list (processed by SESound::Heartbeat)
+
+    for (auto existing = SESound::s_InternalList.Head(); existing; existing = SESound::s_InternalList.Link(internal)->Next()) {
+        auto pendingLoad = internal->m_type == 1
+            && static_cast<SEDiskSound*>(existing)->m_fmodSound == reinterpret_cast<FMOD::Sound*>(fmodSound)
+            && !existing->m_fmodChannel;
+
+        if (pendingLoad) {
+            SESound::s_ReadyDiskSounds.LinkToTail(static_cast<SEDiskSound*>(existing));
+        }
+    }
 
     SESound::s_InternalCritSect.Leave();
 
     SESound::s_LoadingCritSect.Enter();
+
+    // Mark cache sound node as loaded
 
     if (internal->m_useCache) {
         internal->m_cacheNode->loaded = 1;
@@ -439,6 +452,7 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
 
     // TODO
 
+    // Used to permit instant playback of cached sounds
     internal->m_nonblockingReady = nonblockingReady;
 
     s_LoadingCritSect.Leave();
