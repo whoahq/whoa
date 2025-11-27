@@ -21,8 +21,10 @@ class SI2 {
         static char s_SoundCategory[32][18];
 
         // Static functions
+        static int32_t CreditsMusicUpdate(const void* data, void* param);
         static SOUNDKITDEF* GetSoundKitDef(int32_t id);
         static int32_t GetSoundKitID(const char* name);
+        static int32_t GlueMusicUpdate(const void* data, void* param);
         static int32_t Init(int32_t a1);
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();

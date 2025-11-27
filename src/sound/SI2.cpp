@@ -1,5 +1,6 @@
 #include "sound/SI2.hpp"
 #include "console/CVar.hpp"
+#include "event/Event.hpp"
 #include "sound/CVarHandlers.hpp"
 #include "sound/SESound.hpp"
 #include "sound/SI2USERDATA.hpp"
@@ -33,6 +34,15 @@ char SI2::s_SoundCategory[32][18] = {
     "SFX",
 };
 
+static char s_CreditsMusicName[128];
+static SOUNDKITOBJECT s_CreditsMusicObject;
+static char s_GlueMusicName[128];
+static SOUNDKITOBJECT s_GlueMusicObject;
+
+int32_t SI2::CreditsMusicUpdate(const void* data, void* param) {
+    // TODO
+}
+
 SOUNDKITDEF* SI2::GetSoundKitDef(int32_t id) {
     if (id >= SI2::s_SoundKitDefs.Count() || id <= 0) {
         return nullptr;
@@ -49,6 +59,10 @@ int32_t SI2::GetSoundKitID(const char* name) {
     }
 
     return 0;
+}
+
+int32_t SI2::GlueMusicUpdate(const void* data, void* param) {
+    // TODO
 }
 
 int32_t SI2::Init(int32_t a1) {
@@ -923,5 +937,55 @@ void SI2::RegisterScriptFunctions() {
 }
 
 void SI2::StartGlueMusic(const char* name) {
-    // TODO
+    // Currently playing
+
+    if (SI2::IsPlaying(&s_GlueMusicObject)) {
+        return;
+    }
+
+    auto id = SI2::GetSoundKitID(name);
+
+    if (!id) {
+        return;
+    }
+
+    auto def = SI2::GetSoundKitDef(id);
+
+    if (!def) {
+        return;
+    }
+
+    auto userData = static_cast<SI2USERDATA*>(s_GlueMusicObject.m_sound.GetUserData());
+
+    if (userData && userData->m_ID == id) {
+        return;
+    }
+
+    // Stop playing credits music
+
+    EventUnregister(EVENT_ID_POLL, &SI2::CreditsMusicUpdate);
+    // TODO SI2::Sub4C6390(&s_CreditsMusicObject, 0, 3.0, 1);
+
+    if (!name) {
+        return;
+    }
+
+    if (!SStrCmpI(name, s_GlueMusicName)) {
+        return;
+    }
+
+    // Start playing glue music
+
+    // TODO SI2::Sub9860E0(-1.0);
+
+    SStrCopy(s_GlueMusicName, name, sizeof(s_GlueMusicName));
+
+    SoundKitProperties properties;
+    properties.ResetToDefaults();
+    properties.m_type = 1;
+    properties.uint28 = 0;
+
+    SI2::PlaySoundKit(s_GlueMusicName, 0, &s_GlueMusicObject, &properties);
+
+    EventRegister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
 }
