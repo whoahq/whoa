@@ -36,6 +36,7 @@ class SI2 {
         static void RegisterUserCVars();
         static void RegisterScriptFunctions();
         static void StartGlueMusic(const char* name);
+        static int32_t StopGlueMusic(float fadeOutTime);
         static int32_t StopOrFadeOut(SOUNDKITOBJECT* object, int32_t stop, float fadeOutTime, int32_t a4);
 };
 

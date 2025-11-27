@@ -1018,6 +1018,18 @@ void SI2::StartGlueMusic(const char* name) {
     EventRegister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
 }
 
+int32_t SI2::StopGlueMusic(float fadeOutTime) {
+    EventUnregister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
+
+    s_GlueMusicName[0] = '\0';
+
+    if (fadeOutTime < 0.0f) {
+        fadeOutTime = -1.0f;
+    }
+
+    return SI2::StopOrFadeOut(&s_GlueMusicObject, 0, fadeOutTime, 1);
+}
+
 int32_t SI2::StopOrFadeOut(SOUNDKITOBJECT* object, int32_t stop, float fadeOutTime, int32_t a4) {
     auto userData = static_cast<SI2USERDATA*>(object->m_sound.GetUserData());
 
