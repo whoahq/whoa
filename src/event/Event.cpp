@@ -166,6 +166,10 @@ void EventRegisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, float pr
     }
 }
 
+void EventUnregister(EVENTID id, EVENTHANDLERFUNC handler) {
+    EventUnregisterEx(id, handler, nullptr, -1);
+}
+
 void EventUnregisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32_t flags) {
     HEVENTCONTEXT hContext = PropGet(PROP_EVENTCONTEXT);
 
