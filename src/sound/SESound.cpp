@@ -538,6 +538,21 @@ void SESound::CompleteLoad() {
     }
 }
 
+bool SESound::IsPlaying() {
+    if (!this->m_internal) {
+        return 0;
+    }
+
+    if (!this->m_internal->m_fmodChannel) {
+        return 0;
+    }
+
+    bool isPlaying;
+    this->m_internal->m_fmodChannel->isPlaying(&isPlaying);
+
+    return isPlaying;
+}
+
 int32_t SESound::Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10) {
     if (!SESound::s_Initialized) {
         return 0;

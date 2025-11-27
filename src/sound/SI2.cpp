@@ -5,6 +5,7 @@
 #include "sound/SESound.hpp"
 #include "sound/SOUNDKITDEF.hpp"
 #include "sound/SOUNDKITLOOKUP.hpp"
+#include "sound/SOUNDKITOBJECT.hpp"
 #include "ui/FrameScript.hpp"
 
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
@@ -228,6 +229,10 @@ void SI2::InitSoundKitGroups() {
             soundKitDef->soundGroup2 = SESound::CreateSoundGroup(soundKitDef->name, 3);
         }
     }
+}
+
+bool SI2::IsPlaying(SOUNDKITOBJECT* object) {
+    return object->m_sound->IsPlaying();
 }
 
 int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
