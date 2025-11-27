@@ -13,6 +13,22 @@ SESoundInternal::SESoundInternal() {
     this->m_uniqueID = SESound::s_UniqueID++;
 }
 
+float SESoundInternal::GetVolume() {
+    if (!SESound::s_Initialized) {
+        return 0.0f;
+    }
+
+    float volume = this->m_volume;
+
+    if (this->m_fadeIn || this->m_fadeOut) {
+        volume *= this->m_fadeVolume;
+    }
+
+    // TODO
+
+    return volume;
+}
+
 void SESoundInternal::Play() {
     FMOD_RESULT result;
 

@@ -50,6 +50,7 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
 
         // Member functions
         SESoundInternal();
+        float GetVolume();
         void Play();
 };
 
