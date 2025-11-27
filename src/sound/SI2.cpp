@@ -1,11 +1,12 @@
 #include "sound/SI2.hpp"
-#include "SoundKitProperties.hpp"
 #include "console/CVar.hpp"
 #include "sound/CVarHandlers.hpp"
 #include "sound/SESound.hpp"
+#include "sound/SI2USERDATA.hpp"
 #include "sound/SOUNDKITDEF.hpp"
 #include "sound/SOUNDKITLOOKUP.hpp"
 #include "sound/SOUNDKITOBJECT.hpp"
+#include "sound/SoundKitProperties.hpp"
 #include "ui/FrameScript.hpp"
 
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
@@ -380,6 +381,16 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
             return 16;
         }
     }
+
+    // TODO
+
+    auto userData = STORM_NEW(SI2USERDATA);
+    userData->m_name = soundKitDef->name ? soundKitDef->name : "<UNKNOWN ERROR>";
+    userData->m_ID = id;
+    userData->m_def = soundKitDef;
+    userData->m_type = properties->m_type;
+    // TODO
+    sound->SetUserData(userData);
 
     // TODO
 

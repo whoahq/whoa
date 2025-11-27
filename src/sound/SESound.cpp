@@ -591,3 +591,11 @@ void SESound::Play() {
         this->m_internal->Play();
     }
 }
+
+void SESound::SetUserData(SEUserData* userData) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    this->m_internal->m_userData = userData;
+}

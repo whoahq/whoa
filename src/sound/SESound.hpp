@@ -2,10 +2,11 @@
 #define SOUND_SE_SOUND_HPP
 
 #include "sound/SESoundInternal.hpp"
+#include "sound/SEUserData.hpp"
+#include <cstdint>
 #include <fmod.hpp>
 #include <storm/Hash.hpp>
 #include <storm/Thread.hpp>
-#include <cstdint>
 
 struct SOUND_INTERNAL_LOOKUP : TSHashObject<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> {
     SESoundInternal* m_internal;
@@ -38,6 +39,7 @@ class SESound {
         bool IsPlaying();
         int32_t Load(const char* filename, int32_t a3, FMOD::SoundGroup* soundGroup1, FMOD::SoundGroup* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10);
         void Play();
+        void SetUserData(SEUserData* userData);
 
     private:
         // Private static functions

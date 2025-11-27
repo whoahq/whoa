@@ -6,6 +6,7 @@
 #include <cstdint>
 
 class SESound;
+class SEUserData;
 class SFile;
 
 class SoundCacheNode : public TSLinkedNode<SoundCacheNode> {
@@ -29,6 +30,7 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
         FMOD::System* m_fmodSystem;
         FMOD::Channel* m_fmodChannel = nullptr;
         SESound* m_sound = nullptr;
+        SEUserData* m_userData = nullptr;
         // TODO
         int32_t m_useCache = 0;
         int32_t m_type = 0;
