@@ -992,7 +992,7 @@ void SI2::StartGlueMusic(const char* name) {
     // Stop playing credits music
 
     EventUnregister(EVENT_ID_POLL, &SI2::CreditsMusicUpdate);
-    // TODO SI2::Sub4C6390(&s_CreditsMusicObject, 0, 3.0, 1);
+    SI2::StopOrFadeOut(&s_CreditsMusicObject, 0, 3.0f, 1);
 
     if (!name) {
         return;
@@ -1016,4 +1016,20 @@ void SI2::StartGlueMusic(const char* name) {
     SI2::PlaySoundKit(s_GlueMusicName, 0, &s_GlueMusicObject, &properties);
 
     EventRegister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
+}
+
+int32_t SI2::StopOrFadeOut(SOUNDKITOBJECT* object, int32_t stop, float fadeOutTime, int32_t a4) {
+    auto userData = static_cast<SI2USERDATA*>(object->m_sound.GetUserData());
+
+    if (userData) {
+        // TODO
+    }
+
+    object->m_sound.StopOrFadeOut(stop, fadeOutTime);
+
+    if (a4) {
+        // TODO
+    }
+
+    return 0;
 }
