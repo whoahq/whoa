@@ -345,7 +345,7 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
         soundKitDef->flags &= ~0x20u;
     }
 
-    if (!(soundKitDef->flags & 0x20) /* TODO || !dword_B4A394 */) {
+    if ((soundKitDef->flags & 0x20) && false /* TODO dword_B4A394 */) {
         // TODO
 
         return 15;
