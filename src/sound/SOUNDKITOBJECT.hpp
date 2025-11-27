@@ -7,7 +7,7 @@ class SOUNDKITOBJECT {
     public:
         // Member variables
         // TODO
-        SESound* m_sound;
+        SESound m_sound;
         // TODO
 };
 

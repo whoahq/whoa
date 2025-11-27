@@ -233,7 +233,7 @@ void SI2::InitSoundKitGroups() {
 }
 
 bool SI2::IsPlaying(SOUNDKITOBJECT* object) {
-    return object->m_sound->IsPlaying();
+    return object->m_sound.IsPlaying();
 }
 
 int32_t SI2::PlaySoundKit(const char *name, int a2, SOUNDKITOBJECT* object, SoundKitProperties* properties) {
@@ -340,7 +340,7 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
     SESound* sound;
 
     if (object) {
-        sound = object->m_sound;
+        sound = &object->m_sound;
 
         // TODO
     } else {
