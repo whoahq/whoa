@@ -548,11 +548,11 @@ SEUserData* SESound::GetUserData() {
 
 bool SESound::IsPlaying() {
     if (!this->m_internal) {
-        return 0;
+        return false;
     }
 
     if (!this->m_internal->m_fmodChannel) {
-        return 0;
+        return false;
     }
 
     bool isPlaying;
