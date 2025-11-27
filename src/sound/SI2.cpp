@@ -62,7 +62,16 @@ int32_t SI2::GetSoundKitID(const char* name) {
 }
 
 int32_t SI2::GlueMusicUpdate(const void* data, void* param) {
-    // TODO
+    if (!SI2::IsPlaying(&s_GlueMusicObject)) {
+        SoundKitProperties properties;
+        properties.ResetToDefaults();
+        properties.m_type = 1;
+        properties.uint28 = 0;
+
+        SI2::PlaySoundKit(s_GlueMusicName, 0, &s_GlueMusicObject, &properties);
+    }
+
+    return 1;
 }
 
 int32_t SI2::Init(int32_t a1) {
