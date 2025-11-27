@@ -1018,6 +1018,11 @@ void SI2::StartGlueMusic(const char* name) {
     EventRegister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
 }
 
+int32_t SI2::StopCreditsMusic() {
+    EventUnregister(EVENT_ID_POLL, &SI2::CreditsMusicUpdate);
+    return SI2::StopOrFadeOut(&s_CreditsMusicObject, 0, 3.0f, 1);
+}
+
 int32_t SI2::StopGlueMusic(float fadeOutTime) {
     EventUnregister(EVENT_ID_POLL, &SI2::GlueMusicUpdate);
 
