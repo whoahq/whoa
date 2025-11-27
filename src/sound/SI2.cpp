@@ -235,6 +235,20 @@ bool SI2::IsPlaying(SOUNDKITOBJECT* object) {
     return object->m_sound->IsPlaying();
 }
 
+int32_t SI2::PlaySoundKit(const char *name, int a2, SOUNDKITOBJECT* object, SoundKitProperties* properties) {
+    if (!SESound::IsInitialized()) {
+        return 17;
+    }
+
+    auto id = SI2::GetSoundKitID(name);
+
+    if (!id) {
+        return 7;
+    }
+
+    return SI2::PlaySoundKit(id, a2, object, properties, 0, nullptr, 1, 0);
+}
+
 int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
     // Basic validations
 
