@@ -4,6 +4,7 @@
 #include "util/SFile.hpp"
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+#include <algorithm>
 #include <cstdlib>
 
 #define LOG_WRITE(result, ...) \
@@ -621,4 +622,16 @@ void SESound::SetUserData(SEUserData* userData) {
     }
 
     this->m_internal->m_userData = userData;
+}
+
+void SESound::SetVolume(float volume) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    this->m_internal->m_volume = std::min(std::max(volume, 0.0f), 1.0f);
+
+    if (this->m_internal->m_fmodChannel) {
+        this->m_internal->m_fmodChannel->setVolume(this->m_internal->GetVolume());
+    }
 }
