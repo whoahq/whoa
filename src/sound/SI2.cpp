@@ -1012,8 +1012,7 @@ void SI2::StartGlueMusic(const char* name) {
 
     // Stop playing credits music
 
-    EventUnregister(EVENT_ID_POLL, &SI2::CreditsMusicUpdate);
-    SI2::StopOrFadeOut(&s_CreditsMusicObject, 0, 3.0f, 1);
+    SI2::StopCreditsMusic();
 
     if (!name) {
         return;
@@ -1023,9 +1022,11 @@ void SI2::StartGlueMusic(const char* name) {
         return;
     }
 
-    // Start playing glue music
+    // Stop any existing glue music
 
-    // TODO SI2::Sub9860E0(-1.0);
+    SI2::StopGlueMusic(-1.0f);
+
+    // Start playing new glue music
 
     SStrCopy(s_GlueMusicName, name, sizeof(s_GlueMusicName));
 
