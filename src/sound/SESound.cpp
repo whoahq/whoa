@@ -538,6 +538,14 @@ void SESound::CompleteLoad() {
     }
 }
 
+SEUserData* SESound::GetUserData() {
+    if (!this->m_internal) {
+        return nullptr;
+    }
+
+    return this->m_internal->m_userData;
+}
+
 bool SESound::IsPlaying() {
     if (!this->m_internal) {
         return 0;
