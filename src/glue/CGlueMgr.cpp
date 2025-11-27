@@ -755,7 +755,7 @@ void CGlueMgr::PollEnterWorld() {
     if (CGlueMgr::m_suspended) {
         CGlueMgr::SetIdleState(IDLE_NONE);
 
-        // TODO SI Logic
+        SI2::StopGlueMusic(3.0f);
 
         // TODO TLS shenanigans with guid
         ClientServices::Connection()->CharacterLogin(CGlueMgr::m_characterInfo->m_info.guid, 0);
