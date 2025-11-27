@@ -8,6 +8,9 @@ void SoundKitProperties::ResetToDefaults() {
 
     // TODO
 
+    this->m_fadeInTime = 0.0f;
+    this->m_fadeOutTime = 0.0f;
+
     this->m_type = 0;
 
     // TODO

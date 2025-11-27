@@ -599,6 +599,22 @@ void SESound::Play() {
     }
 }
 
+void SESound::SetFadeInTime(float fadeInTime) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    this->m_internal->m_fadeInTime = fadeInTime;
+}
+
+void SESound::SetFadeOutTime(float fadeOutTime) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    this->m_internal->m_fadeOutTime = fadeOutTime;
+}
+
 void SESound::SetUserData(SEUserData* userData) {
     if (!this->m_internal) {
         return;

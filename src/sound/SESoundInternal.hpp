@@ -31,6 +31,12 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
         FMOD::Channel* m_fmodChannel = nullptr;
         SESound* m_sound = nullptr;
         SEUserData* m_userData = nullptr;
+        float m_volume = 1.0f;
+        float m_fadeVolume = 0.0f;
+        float m_fadeInTime = 0.0f;
+        float m_fadeOutTime = 0.0f;
+        uint8_t m_fadeIn = 0;
+        uint8_t m_fadeOut = 0;
         // TODO
         int32_t m_useCache = 0;
         int32_t m_type = 0;

@@ -8,6 +8,9 @@ class SoundKitProperties {
         // Member variables
         uint32_t m_type;
         // TODO
+        float m_fadeInTime;
+        float m_fadeOutTime;
+        // TODO
         int32_t int20;
         uint32_t uint24;
         uint32_t uint28;

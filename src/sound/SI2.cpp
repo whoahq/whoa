@@ -426,6 +426,16 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
 
     // TODO
 
+    if (properties->m_fadeInTime >= 0.0f) {
+        sound->SetFadeInTime(properties->m_fadeInTime);
+    }
+
+    if (properties->m_fadeOutTime >= 0.0f) {
+        sound->SetFadeOutTime(properties->m_fadeOutTime);
+    }
+
+    // TODO
+
     sound->CompleteLoad();
 
     // TODO
