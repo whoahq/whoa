@@ -551,12 +551,11 @@ bool SESound::IsPlaying() {
         return false;
     }
 
-    if (!this->m_internal->m_fmodChannel) {
-        return false;
-    }
+    bool isPlaying = this->m_internal->m_playing;
 
-    bool isPlaying;
-    this->m_internal->m_fmodChannel->isPlaying(&isPlaying);
+    if (this->m_internal->m_fmodChannel) {
+        this->m_internal->m_fmodChannel->isPlaying(&isPlaying);
+    }
 
     return isPlaying;
 }
