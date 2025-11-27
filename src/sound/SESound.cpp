@@ -337,21 +337,7 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
         return 0;
     }
 
-    FMOD_RESULT result;
-
-    if (sound->m_internal) {
-        // TODO sound->m_internal->byte6D = 1;
-
-        if (sound->m_internal->m_fmodChannel) {
-            sound->m_internal->m_fmodChannel->stop();
-            sound->m_internal->m_fmodChannel = nullptr;
-        }
-
-        if (sound->m_internal) {
-            sound->m_internal->m_sound = nullptr;
-            sound->m_internal = nullptr;
-        }
-    }
+    sound->StopOrFadeOut(1, -1.0f);
 
     auto internal = STORM_NEW(SEDiskSound);
 
@@ -459,6 +445,8 @@ int32_t SESound::LoadDiskSound(FMOD::System* fmodSystem, const char* filename, F
     uint32_t fileSize = internal->m_file ? SFile::GetFileSize(internal->m_file, nullptr) : 0;
 
     // Create FMOD stream or sound
+
+    FMOD_RESULT result;
 
     if (fileSize > maxCacheSize || !useCache) {
         useCache = false;
@@ -634,4 +622,29 @@ void SESound::SetVolume(float volume) {
     if (this->m_internal->m_fmodChannel) {
         this->m_internal->m_fmodChannel->setVolume(this->m_internal->GetVolume());
     }
+}
+
+void SESound::StopOrFadeOut(int32_t stop, float fadeOutTime) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    if (fadeOutTime >= 0.0f) {
+        this->m_internal->m_fadeOutTime = fadeOutTime;
+    }
+
+    if (stop || this->m_internal->m_fadeOutTime <= 0.0f) {
+        this->m_internal->m_stopped = 1;
+
+        if (this->m_internal->m_fmodChannel) {
+            this->m_internal->m_fmodChannel->stop();
+            this->m_internal->m_fmodChannel = nullptr;
+        }
+    } else {
+        this->m_internal->m_fadeIn = 0;
+        this->m_internal->m_fadeOut = 1;
+    }
+
+    this->m_internal->m_sound = nullptr;
+    this->m_internal = nullptr;
 }

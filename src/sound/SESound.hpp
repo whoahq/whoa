@@ -44,6 +44,7 @@ class SESound {
         void SetFadeOutTime(float fadeOutTime);
         void SetUserData(SEUserData* userData);
         void SetVolume(float volume);
+        void StopOrFadeOut(int32_t stop, float fadeOutTime);
 
     private:
         // Private static functions

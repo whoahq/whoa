@@ -43,6 +43,7 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
         // TODO
         FMOD_MODE m_fmodMode = FMOD_DEFAULT;
         uint8_t m_playing = 0;
+        uint8_t m_stopped = 0;
         // TODO
         int32_t m_nonblockingReady = 0;
         // TODO
