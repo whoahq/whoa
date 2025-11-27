@@ -964,6 +964,27 @@ void SI2::RegisterScriptFunctions() {
     }
 }
 
+void SI2::StartCreditsMusic(const char* name) {
+    SI2::StopCreditsMusic();
+    SI2::StopGlueMusic(3.0f);
+
+    if (!name) {
+        return;
+    }
+
+    SStrCopy(s_CreditsMusicName, name, 128);
+    // TODO SI2::Sub4C6330(s_CreditsMusicName);
+
+    SoundKitProperties properties;
+    properties.ResetToDefaults();
+    properties.m_type = 1;
+    // TODO properties.dword18 = 0;
+
+    SI2::PlaySoundKit(s_CreditsMusicName, 0, &s_CreditsMusicObject, &properties);
+
+    EventRegister(EVENT_ID_POLL, &SI2::CreditsMusicUpdate);
+}
+
 void SI2::StartGlueMusic(const char* name) {
     // Currently playing
 
