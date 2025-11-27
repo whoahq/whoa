@@ -40,7 +40,16 @@ static char s_GlueMusicName[128];
 static SOUNDKITOBJECT s_GlueMusicObject;
 
 int32_t SI2::CreditsMusicUpdate(const void* data, void* param) {
-    // TODO
+    if (!SI2::IsPlaying(&s_CreditsMusicObject)) {
+        SoundKitProperties properties;
+        properties.ResetToDefaults();
+        properties.m_type = 1;
+        // TODO properties.dword18 = 0;
+
+        SI2::PlaySoundKit(s_CreditsMusicName, 0, &s_CreditsMusicObject, &properties);
+    }
+
+    return 1;
 }
 
 SOUNDKITDEF* SI2::GetSoundKitDef(int32_t id) {
