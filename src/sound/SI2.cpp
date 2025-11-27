@@ -235,7 +235,7 @@ bool SI2::IsPlaying(SOUNDKITOBJECT* object) {
     return object->m_sound->IsPlaying();
 }
 
-int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
+int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8) {
     // Basic validations
 
     if (id <= 0) {
@@ -324,8 +324,9 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperti
 
     SESound* sound;
 
-    if (handle) {
-        // TODO sound = handle->sound;
+    if (object) {
+        sound = object->m_sound;
+
         // TODO
     } else {
         SESound newSound = {};

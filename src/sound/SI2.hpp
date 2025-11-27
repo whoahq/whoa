@@ -27,7 +27,7 @@ class SI2 {
         static void InitSoundKitDefs();
         static void InitSoundKitGroups();
         static bool IsPlaying(SOUNDKITOBJECT* object);
-        static int32_t PlaySoundKit(int32_t id, int32_t a2, void* handle, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8);
+        static int32_t PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundKitProperties* properties, int32_t a5,  void* a6, int32_t a7, int32_t a8);
         static void PlayUISound(int32_t id);
         static void RegisterCVars();
         static void RegisterUserCVars();
