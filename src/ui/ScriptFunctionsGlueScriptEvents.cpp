@@ -115,7 +115,15 @@ int32_t Script_PlayGlueMusic(lua_State* L) {
 }
 
 int32_t Script_PlayCreditsMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: PlayCreditsMusic( \"Sound kit name\" )");
+    }
+
+    auto name = lua_tostring(L, 1);
+
+    SI2::StartCreditsMusic(name);
+
+    return 0;
 }
 
 int32_t Script_StopGlueMusic(lua_State* L) {
