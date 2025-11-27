@@ -119,7 +119,10 @@ int32_t Script_PlayCreditsMusic(lua_State* L) {
 }
 
 int32_t Script_StopGlueMusic(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    SI2::StopCreditsMusic();
+    SI2::StopGlueMusic(-1.0f);
+
+    return 0;
 }
 
 int32_t Script_GetMovieResolution(lua_State* L) {
