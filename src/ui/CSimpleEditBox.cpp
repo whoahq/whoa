@@ -1058,6 +1058,14 @@ void CSimpleEditBox::RunOnTextChangedScript(int32_t changed) {
     }
 }
 
+void CSimpleEditBox::RunOnTextSetScript(const char* a2) {
+    if (this->m_onTextSet.luaRef) {
+        this->RunScript(this->m_onTextSet, 0, a2);
+    }
+
+    // TODO action
+}
+
 void CSimpleEditBox::SetCursorPosition(int32_t position) {
     if (position >= 0) {
         this->m_cursorPos = std::min(this->m_textLength, position);
@@ -1100,6 +1108,21 @@ void CSimpleEditBox::SetMultiLine(int32_t enabled) {
     this->m_string->SetNonSpaceWrap(1);
 
     this->UpdateSizes();
+}
+
+void CSimpleEditBox::SetText(const char* text, const char* a3) {
+    if (this->m_highlightLeft != this->m_highlightRight) {
+        this->m_dirtyFlags |= 0x2;
+        this->m_highlightRight = 0;
+        this->m_highlightLeft = 0;
+    }
+
+    if (SStrCmp(text, this->m_text)) {
+        this->DeleteSubstring(0, this->m_textLength, 1);
+        this->m_visiblePos = 0;
+        this->Insert(text, a3, 0, 0, 1);
+        this->RunOnTextSetScript(a3);
+    }
 }
 
 void CSimpleEditBox::StartHighlight() {

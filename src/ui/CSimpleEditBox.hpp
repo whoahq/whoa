@@ -120,9 +120,11 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         void RunOnEscapePressedScript();
         void RunOnTabPressedScript();
         void RunOnTextChangedScript(int32_t changed);
+        void RunOnTextSetScript(const char* a2);
         void SetCursorPosition(int32_t position);
         void SetHistoryLines(int32_t a2);
         void SetMultiLine(int32_t enabled);
+        void SetText(const char* text, const char* a3);
         void StartHighlight();
         void UpdateDirtyBits();
         void UpdateSizes();
