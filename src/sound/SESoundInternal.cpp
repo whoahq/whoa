@@ -32,7 +32,7 @@ float SESoundInternal::GetVolume() {
         auto channelGroupIndex = this->m_channelGroup;
 
         while (channelGroupIndex != -1) {
-            auto channelGroup = &SESound::s_ChannelGroups[this->m_channelGroup];
+            auto channelGroup = &SESound::s_ChannelGroups[channelGroupIndex];
             auto channelGroupVolume = channelGroup->m_volume * channelGroup->m_muteVolume;
 
             volume *= channelGroupVolume;
