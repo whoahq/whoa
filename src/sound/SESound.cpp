@@ -186,6 +186,45 @@ FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible
     return group;
 }
 
+SEChannelGroup* SESound::GetChannelGroup(const char* name, bool create, bool createInMaster) {
+    if (!SESound::s_Initialized) {
+        return nullptr;
+    }
+
+    auto nameHash = SStrHashHT(name);
+
+    // No groups or only master group exist
+
+    if (SESound::s_ChannelGroups.Count() <= 1) {
+        if (!create) {
+            return nullptr;
+        }
+
+        auto newChannelGroup = SESound::s_ChannelGroups.New();
+        newChannelGroup->m_nameHash = nameHash;
+        newChannelGroup->m_parentChannelGroup = createInMaster ? 0 : -1;
+        newChannelGroup->m_volume = 1.0f;
+        newChannelGroup->m_muteVolume = 1.0f;
+        newChannelGroup->m_dirty = true;
+
+        return newChannelGroup;
+    }
+
+    // Find non-master group matching name hash
+
+    for (int32_t i = 1; i < SESound::s_ChannelGroups.Count(); i++) {
+        auto channelGroup = &SESound::s_ChannelGroups[i];
+
+        if (channelGroup->m_nameHash == nameHash) {
+            return channelGroup;
+        }
+    }
+
+    // No matches
+
+    return nullptr;
+}
+
 int32_t SESound::Heartbeat(const void* data, void* param) {
     if (!SESound::s_Initialized) {
         SESound::s_pGameSystem->update();

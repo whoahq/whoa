@@ -31,6 +31,7 @@ class SESound {
 
         // Public static functions
         static FMOD::SoundGroup* CreateSoundGroup(const char* name, int32_t maxAudible);
+        static SEChannelGroup* GetChannelGroup(const char* name, bool create, bool createInMaster);
         static int32_t Heartbeat(const void* data, void* param);
         static void Init(int32_t maxChannels, int32_t (*a2), int32_t enableReverb, int32_t enableSoftwareHRTF, int32_t* numChannels, int32_t* outputDriverIndex, const char* outputDriverName, void (*a8), int32_t a9);
         static int32_t IsInitialized();
