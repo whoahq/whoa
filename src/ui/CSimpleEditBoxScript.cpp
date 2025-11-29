@@ -129,7 +129,19 @@ int32_t CSimpleEditBox_Insert(lua_State* L) {
 }
 
 int32_t CSimpleEditBox_SetText(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    int32_t type = CSimpleEditBox::GetObjectType();
+    auto editBox = static_cast<CSimpleEditBox*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isstring(L, 2)) {
+        return luaL_error(L, "Usage: %s:SetText(\"text\")", editBox->GetDisplayName());
+    }
+
+    const char* lua_tainted = nullptr;
+    auto text = lua_tostring(L, 2);
+
+    editBox->SetText(text, lua_tainted);
+
+    return 0;
 }
 
 int32_t CSimpleEditBox_GetText(lua_State* L) {
