@@ -590,6 +590,24 @@ void SESound::ProcessReadyDiskSounds() {
     }
 }
 
+void SESound::SetChannelGroupVolume(const char* name, float volume) {
+    if (!SESound::s_Initialized) {
+        return;
+    }
+
+    if (volume < 0.0f || volume > 1.0f) {
+        return;
+    }
+
+    if (!name) {
+        return;
+    }
+
+    auto channelGroup = SESound::GetChannelGroup(name, true, true);
+    channelGroup->m_volume = volume;
+    channelGroup->m_dirty = true;
+}
+
 void SESound::CompleteLoad() {
     if (!this->m_internal) {
         return;
