@@ -11,6 +11,7 @@
     SESound::Log_Write(__LINE__, __FILE__, result, __VA_ARGS__);
 
 STORM_LIST(SoundCacheNode) SESound::s_CacheList;
+TSGrowableArray<SEChannelGroup> SESound::s_ChannelGroups;
 SCritSect SESound::s_CritSect3;
 int32_t SESound::s_Initialized;
 SCritSect SESound::s_InternalCritSect;
@@ -155,6 +156,17 @@ FMOD_RESULT SEReadCallback(void* handle, void* buffer, uint32_t sizebytes, uint3
 FMOD_RESULT SESeekCallback(void* handle, uint32_t pos, void* userdata) {
     // TODO
     return FMOD_OK;
+}
+
+void SESound::CreateMasterChannelGroup() {
+    SESound::s_ChannelGroups.Clear();
+
+    auto masterChannelGroup = SESound::s_ChannelGroups.New();
+    masterChannelGroup->m_nameHash = SStrHashHT("<master>");
+    masterChannelGroup->m_parentChannelGroup = -1;
+    masterChannelGroup->m_volume = 1.0f;
+    masterChannelGroup->m_muteVolume = 1.0f;
+    masterChannelGroup->m_dirty = false;
 }
 
 FMOD::SoundGroup* SESound::CreateSoundGroup(const char* name, int32_t maxAudible) {
@@ -314,6 +326,10 @@ void SESound::Init(int32_t maxChannels, int32_t* a2, int32_t enableReverb, int32
 
         return;
     }
+
+    // TODO
+
+    SESound::CreateMasterChannelGroup();
 
     // TODO
 

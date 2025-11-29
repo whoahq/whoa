@@ -1,6 +1,7 @@
 #ifndef SOUND_SE_SOUND_HPP
 #define SOUND_SE_SOUND_HPP
 
+#include "sound/SEChannelGroup.hpp"
 #include "sound/SESoundInternal.hpp"
 #include "sound/SEUserData.hpp"
 #include <cstdint>
@@ -16,6 +17,7 @@ class SESound {
     public:
         // Public static variables
         static STORM_LIST(SoundCacheNode) s_CacheList;
+        static TSGrowableArray<SEChannelGroup> s_ChannelGroups;
         static SCritSect s_CritSect3;
         static int32_t s_Initialized;
         static SCritSect s_InternalCritSect;
@@ -48,6 +50,7 @@ class SESound {
 
     private:
         // Private static functions
+        static void CreateMasterChannelGroup();
         static int32_t LoadDiskSound(FMOD::System* fmodSystem, const char* filename, FMOD_MODE fmodMode, SESound* sound, FMOD::SoundGroup* fmodSoundGroup1, FMOD::SoundGroup* fmodSoundGroup2, bool a7, int32_t a8, uint32_t a9, int32_t a10, uint32_t decodeBufferSize, int32_t a12, float a13, float a14, float a15, float* a16);
         static void ProcessReadyDiskSounds();
 
