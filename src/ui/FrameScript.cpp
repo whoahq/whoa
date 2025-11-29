@@ -844,6 +844,209 @@ void FrameScript_SignalEvent(uint32_t index, const char* format, ...) {
     va_end(args);
 }
 
+const char* FrameScript_Sprintf(lua_State* L, int startIndex, char* buffer, size_t bufferSize) {
+    char v8;
+    char v9;
+    const char *v10;
+    char v11;
+    char j;
+    size_t v14;
+    int32_t option;
+    lua_Number v16;
+    size_t v17;
+    size_t v18;
+    size_t v19;
+    char *p_Format;
+    lua_Number v21;
+    lua_Number v22;
+    size_t v23;
+    const char *v24;
+    size_t v25;
+    char Format;
+    char v27[127];
+    size_t v28;
+    size_t v29;
+    char v31[8];
+
+    char* v4 = buffer;
+    int32_t v5 = startIndex;
+    size_t maxchars = bufferSize;
+    int32_t v32 = startIndex;
+
+    const char *format = luaL_checklstring(L, startIndex, &v29);
+    const char* v30 = &format[v29];
+
+    if ( format < &format[v29] ) {
+        while ( maxchars > 1 ) {
+            v8 = *format++;
+
+            if ( v8 == '%' ) {
+                v9 = *format;
+
+                if ( *format == '%' ) {
+                    *v4++ = '%';
+                    ++format;
+                    --maxchars;
+                }
+                else {
+                    Format = '%';
+
+                    if ( v9 >= '0' && v9 <= '9' && format[1] == '$' ) {
+                        v32 = v9 + v5 - 49;
+                        format += 2;
+                    }
+
+                    ++v32;
+                    v10 = format;
+
+                    while (true) {
+                        v11 = *format;
+
+                        if ( *format != '-' && v11 != '+' && v11 != ' ' && v11 != '#' && v11 != '0' ) {
+                            break;
+                        }
+
+                        ++format;
+                    }
+
+                    for ( char i = *format; i >= '0'; i = *++format ) {
+                        if ( i > '9' ) {
+                            break;
+                        }
+                    }
+
+                    if ( *format == '.' ) {
+                        ++format;
+                    }
+
+                    if ( *format == '-' ) {
+                        ++format;
+                    }
+
+                    for ( j = *format; j >= '0'; j = *++format ) {
+                        if ( j > '9' ) {
+                            break;
+                        }
+                    }
+
+                    v14 = format - v10;
+
+                    if ( format - v10 > 125 ) {
+                        luaL_error(L, "invalid format (width or precision too long)");
+                    }
+
+                    memcpy(v27, v10, v14 + 1);
+
+                    option = *format++ - 69;
+                    v27[v14 + 1] = 0;
+
+                    switch ( option ) {
+                    case 0:
+                    case 2:
+                    case 32:
+                    case 33:
+                    case 34:
+                        v22 = luaL_checknumber(L, v32);
+                        v23 = SStrPrintf(v4, maxchars, &Format, v22);
+
+                        if ( v23 > 0 ) {
+                            v4 += v23;
+                            maxchars -= v23;
+                        }
+
+                        break;
+
+                    case 1:
+                        p_Format = &Format;
+
+                        if ( Format ) {
+                            do {
+                                if ( *p_Format == 'F' ) {
+                                    *p_Format = 'f';
+                                }
+
+                                ++p_Format;
+                            } while ( *p_Format );
+                        }
+
+                        v21 = luaL_checknumber(L, v32);
+                        v17 = SStrPrintf(v4, maxchars, &Format, v21);
+
+                        goto LABEL_35;
+
+                    case 19:
+                    case 42:
+                    case 48:
+                    case 51:
+                        *v31 = luaL_checknumber(L, v32);
+                        v19 = SStrPrintf(v4, maxchars, &Format, *v31);
+
+                        if ( v19 > 0 ) {
+                            v4 += v19;
+                            maxchars -= v19;
+                        }
+
+                        break;
+
+                    case 30:
+                        *v4++ = luaL_checknumber(L, v32);
+                        --maxchars;
+                        break;
+
+                    case 31:
+                    case 36:
+                        v16 = luaL_checknumber(L, v32);
+                        v17 = SStrPrintf(v4, maxchars, &Format, v16);
+
+                    LABEL_35:
+                        v18 = v17;
+                        if ( v17 > 0 ) {
+                            // TODO
+                            //lua_convertdecimal(v4);
+                            v4 += v18;
+                            maxchars -= v18;
+                        }
+
+                        break;
+
+                    case 46:
+                        v24 = luaL_checklstring(L, v32, &v28);
+                        v25 = SStrPrintf(v4, maxchars, &Format, v24);
+
+                        if ( v25 > 0 ) {
+                            v4 += v25;
+                            maxchars -= v25;
+                        }
+
+                        break;
+
+                    default:
+                        luaL_error(L, "invalid option in `format'");
+                    }
+                }
+            }
+            else {
+                *v4++ = v8;
+                --maxchars;
+            }
+
+            if ( format >= v30 ) {
+                break;
+            }
+
+            v5 = startIndex;
+        }
+
+        *v4 = 0;
+
+        return buffer;
+    }
+
+    *buffer = 0;
+
+    return buffer;
+}
+
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event) {
     if (event->pendingSignalCount) {
         auto node = event->unregisterListeners.Head();
