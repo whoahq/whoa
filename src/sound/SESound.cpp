@@ -2,6 +2,7 @@
 #include "event/Event.hpp"
 #include "console/CVar.hpp"
 #include "util/SFile.hpp"
+#include <common/Time.hpp>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 #include <algorithm>
@@ -245,6 +246,10 @@ int32_t SESound::Heartbeat(const void* data, void* param) {
     }
 
     SESound::s_CritSect3.Enter();
+
+    // TODO
+
+    SESound::ProcessVolumeUpdates();
 
     // TODO
 
@@ -597,6 +602,99 @@ void SESound::ProcessReadyDiskSounds() {
         SESound::s_ReadyDiskSounds.UnlinkNode(diskSound);
         diskSound->CompleteNonBlockingLoad();
     }
+}
+
+void SESound::ProcessVolumeUpdates() {
+    if (!SESound::s_Initialized) {
+        return;
+    }
+
+    static uint32_t lastProcessedMs = OsGetAsyncTimeMsPrecise();
+
+    uint32_t currentMs = OsGetAsyncTimeMsPrecise();
+    uint32_t elapsedMs = currentMs - lastProcessedMs;
+    float elapsedSeconds = elapsedMs / 1000.0f;
+
+    if (currentMs - lastProcessedMs < 0) {
+        lastProcessedMs = currentMs;
+        return;
+    }
+
+    // Determine dirty channel groups
+
+    bool dirtyChannelGroups[SESound::s_ChannelGroups.Count()];
+    memset(dirtyChannelGroups, 0, SESound::s_ChannelGroups.Count() * sizeof(bool));
+
+    for (uint32_t i = 0; i < SESound::s_ChannelGroups.Count(); i++) {
+        auto channelGroup = &SESound::s_ChannelGroups[i];
+
+        if (channelGroup->m_dirty) {
+            channelGroup->m_dirty = false;
+            dirtyChannelGroups[i] = true;
+        }
+    }
+
+    for (uint32_t i = 0; i < SESound::s_ChannelGroups.Count(); i++) {
+        auto channelGroup = &SESound::s_ChannelGroups[i];
+
+        if (!dirtyChannelGroups[i] && dirtyChannelGroups[channelGroup->m_parentChannelGroup]) {
+            dirtyChannelGroups[i] = true;
+        }
+    }
+
+    SESound::s_InternalCritSect.Enter();
+
+    for (auto internal = SESound::s_InternalList.Head(); internal; internal = SESound::s_InternalList.Link(internal)->Next()) {
+        internal->UpdateVolume();
+
+        if (internal->m_fadeOut) {
+            internal->m_fadeVolume -= elapsedSeconds / internal->m_fadeOutTime;
+
+            if (internal->m_fadeVolume < 0.0f || internal->m_fadeOutTime < 0.0f) {
+                internal->m_fadeVolume = 0.0f;
+            }
+
+            if (internal->m_fadeVolume == 0.0f) {
+                internal->m_fadeOut = false;
+
+                SESound sound;
+                sound.m_internal = nullptr;
+
+                if (!internal->m_sound) {
+                    internal->m_sound = &sound;
+                    sound.m_internal = internal;
+                }
+
+                // TODO callback
+
+                internal->m_sound->StopOrFadeOut(1, -1.0f);
+
+                // TODO
+            }
+        } else if (internal->m_fadeIn) {
+            internal->m_fadeVolume += elapsedSeconds / internal->m_fadeInTime;
+
+            if (internal->m_fadeVolume > 1.0f) {
+                internal->m_fadeVolume = 1.0f;
+            }
+
+            internal->UpdateVolume();
+
+            if (internal->m_fadeVolume == 1.0f) {
+                internal->m_fadeIn = false;
+            }
+        } else {
+            // Likely redundant call give the UpdateVolume call at the start of the list iterator.
+            // Included here for posterity.
+            if (dirtyChannelGroups[internal->m_channelGroup]) {
+                internal->UpdateVolume();
+            }
+        }
+    }
+
+    SESound::s_InternalCritSect.Leave();
+
+    lastProcessedMs = currentMs;
 }
 
 void SESound::SetChannelGroupVolume(const char* name, float volume) {
