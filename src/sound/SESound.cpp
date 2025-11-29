@@ -670,7 +670,7 @@ void SESound::Play() {
         return;
     }
 
-    // TODO volume
+    this->m_internal->UpdateVolume();
 
     this->m_internal->m_playing = 1;
 
