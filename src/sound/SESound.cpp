@@ -225,6 +225,24 @@ SEChannelGroup* SESound::GetChannelGroup(const char* name, bool create, bool cre
     return nullptr;
 }
 
+float SESound::GetChannelGroupVolume(const char* name) {
+    if (!SESound::s_Initialized) {
+        return 0.0f;
+    }
+
+    if (!name) {
+        return 0.0f;
+    }
+
+    auto channelGroup = SESound::GetChannelGroup(name, false, false);
+
+    if (!channelGroup) {
+        return 0.0f;
+    }
+
+    return channelGroup->m_volume * channelGroup->m_muteVolume;
+}
+
 int32_t SESound::Heartbeat(const void* data, void* param) {
     if (!SESound::s_Initialized) {
         SESound::s_pGameSystem->update();
