@@ -193,23 +193,6 @@ SEChannelGroup* SESound::GetChannelGroup(const char* name, bool create, bool cre
 
     auto nameHash = SStrHashHT(name);
 
-    // No groups or only master group exist
-
-    if (SESound::s_ChannelGroups.Count() <= 1) {
-        if (!create) {
-            return nullptr;
-        }
-
-        auto newChannelGroup = SESound::s_ChannelGroups.New();
-        newChannelGroup->m_nameHash = nameHash;
-        newChannelGroup->m_parentChannelGroup = createInMaster ? 0 : -1;
-        newChannelGroup->m_volume = 1.0f;
-        newChannelGroup->m_muteVolume = 1.0f;
-        newChannelGroup->m_dirty = true;
-
-        return newChannelGroup;
-    }
-
     // Find non-master group matching name hash
 
     for (int32_t i = 1; i < SESound::s_ChannelGroups.Count(); i++) {
@@ -222,7 +205,18 @@ SEChannelGroup* SESound::GetChannelGroup(const char* name, bool create, bool cre
 
     // No matches
 
-    return nullptr;
+    if (!create) {
+        return nullptr;
+    }
+
+    auto newChannelGroup = SESound::s_ChannelGroups.New();
+    newChannelGroup->m_nameHash = nameHash;
+    newChannelGroup->m_parentChannelGroup = createInMaster ? 0 : -1;
+    newChannelGroup->m_volume = 1.0f;
+    newChannelGroup->m_muteVolume = 1.0f;
+    newChannelGroup->m_dirty = true;
+
+    return newChannelGroup;
 }
 
 float SESound::GetChannelGroupVolume(const char* name) {
