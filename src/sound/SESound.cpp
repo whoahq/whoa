@@ -622,7 +622,7 @@ void SESound::ProcessVolumeUpdates() {
 
     // Determine dirty channel groups
 
-    bool dirtyChannelGroups[SESound::s_ChannelGroups.Count()];
+    auto dirtyChannelGroups = static_cast<bool*>(alloca(SESound::s_ChannelGroups.Count() * sizeof(bool)));
     memset(dirtyChannelGroups, 0, SESound::s_ChannelGroups.Count() * sizeof(bool));
 
     for (uint32_t i = 0; i < SESound::s_ChannelGroups.Count(); i++) {
