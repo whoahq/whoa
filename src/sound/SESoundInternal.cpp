@@ -43,6 +43,14 @@ void SESoundInternal::Play() {
     }
 }
 
+void SESoundInternal::UpdateVolume() {
+    if (!this->m_fmodChannel) {
+        return;
+    }
+
+    this->m_fmodChannel->setVolume(this->GetVolume());
+}
+
 SEDiskSound::SEDiskSound() : SESoundInternal() {
     SESound::s_InternalCritSect.Enter();
 

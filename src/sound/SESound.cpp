@@ -679,6 +679,26 @@ void SESound::Play() {
     }
 }
 
+void SESound::SetChannelGroup(const char* name, bool inMaster) {
+    if (!this->m_internal) {
+        return;
+    }
+
+    if (!SESound::s_Initialized || !name) {
+        return;
+    }
+
+    auto channelGroup = SESound::GetChannelGroup(name, true, inMaster);
+
+    // Get index in array (probably a member function on TSBaseArray)
+    auto channelGroupOffset = reinterpret_cast<intptr_t>(channelGroup) - reinterpret_cast<intptr_t>(SESound::s_ChannelGroups.m_data);
+    auto channelGroupIndex = static_cast<int32_t>(channelGroupOffset / sizeof(SEChannelGroup));
+
+    this->m_internal->m_channelGroup = channelGroupIndex;
+
+    this->m_internal->UpdateVolume();
+}
+
 void SESound::SetFadeInTime(float fadeInTime) {
     if (!this->m_internal) {
         return;

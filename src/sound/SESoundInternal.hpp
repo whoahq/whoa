@@ -41,6 +41,7 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
         int32_t m_useCache = 0;
         int32_t m_type = 0;
         // TODO
+        int32_t m_channelGroup = 0;
         FMOD_MODE m_fmodMode = FMOD_DEFAULT;
         uint8_t m_playing = 0;
         uint8_t m_stopped = 0;
@@ -53,6 +54,7 @@ class SESoundInternal : public TSLinkedNode<SESoundInternal> {
         SESoundInternal();
         float GetVolume();
         void Play();
+        void UpdateVolume();
 };
 
 class SEDiskSound : public SESoundInternal {

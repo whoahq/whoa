@@ -414,7 +414,11 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
         }
     }
 
-    // TODO
+    // Set channel group based on sound type
+
+    sound->SetChannelGroup(SI2::s_ChannelGroupNames[properties->m_type], properties->m_type != 3);
+
+    // Set user data
 
     auto userData = STORM_NEW(SI2USERDATA);
     userData->m_name = soundKitDef->name ? soundKitDef->name : "<UNKNOWN ERROR>";
