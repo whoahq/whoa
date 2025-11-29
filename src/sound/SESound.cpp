@@ -730,9 +730,7 @@ void SESound::SetVolume(float volume) {
 
     this->m_internal->m_volume = std::min(std::max(volume, 0.0f), 1.0f);
 
-    if (this->m_internal->m_fmodChannel) {
-        this->m_internal->m_fmodChannel->setVolume(this->m_internal->GetVolume());
-    }
+    this->m_internal->UpdateVolume();
 }
 
 void SESound::StopOrFadeOut(int32_t stop, float fadeOutTime) {
