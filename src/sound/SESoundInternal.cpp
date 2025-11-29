@@ -49,6 +49,15 @@ void SESoundInternal::Play() {
 
     // TODO
 
+    // Set up fade
+
+    if (this->m_fadeInTime <= 0.0f) {
+        this->m_fadeVolume = 1.0f;
+    } else {
+        this->m_fadeOut = 0;
+        this->m_fadeIn = 1;
+    }
+
     // Update volume
 
     this->UpdateVolume();
