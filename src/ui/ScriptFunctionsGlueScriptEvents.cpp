@@ -584,7 +584,29 @@ int32_t Script_GetCVarBool(lua_State* L) {
 }
 
 int32_t Script_SetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        return luaL_error(L, "Usage: SetCVar(\"cvar\", value [, \"scriptCvar\")");
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (!var) {
+        return luaL_error(L, "Couldn't find CVar named '%s'", varName);
+    }
+
+    if (var->m_flags & 0x4) {
+        return luaL_error(L, "\"%s\" is read-only", varName);
+    }
+
+    auto value = lua_tostring(L, 2);
+    if (!value) {
+        value = "0";
+    }
+
+    var->Set(value, true, false, false, true);
+
+    return 0;
 }
 
 int32_t Script_GetCVarDefault(lua_State* L) {
