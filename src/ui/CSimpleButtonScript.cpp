@@ -72,7 +72,12 @@ int32_t CSimpleButton_Disable(lua_State* L) {
 }
 
 int32_t CSimpleButton_IsEnabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleButton::GetObjectType();
+    auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
+
+    lua_pushnumber(L, button->GetButtonState() != BUTTONSTATE_DISABLED);
+
+    return 1;
 }
 
 int32_t CSimpleButton_GetButtonState(lua_State* L) {
