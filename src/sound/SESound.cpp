@@ -577,6 +577,21 @@ void SESound::Log_Write(int32_t line, const char* file, FMOD_RESULT result, cons
     // TODO
 }
 
+void SESound::MuteChannelGroup(const char* name, bool mute) {
+    if (!SESound::s_Initialized || !name) {
+        return;
+    }
+
+    auto channelGroup = SESound::GetChannelGroup(name, false, false);
+
+    if (!channelGroup) {
+        return;
+    }
+
+    channelGroup->m_dirty = true;
+    channelGroup->m_muteVolume = mute ? 0.0f : 1.0f;
+}
+
 void SESound::ProcessReadyDiskSounds() {
     while (auto diskSound = SESound::s_ReadyDiskSounds.Head()) {
         SESound::s_ReadyDiskSounds.UnlinkNode(diskSound);
