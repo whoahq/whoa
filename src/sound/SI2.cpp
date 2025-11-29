@@ -13,7 +13,7 @@
 TSGrowableArray<SOUNDKITDEF*> SI2::s_SoundKitDefs;
 TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> SI2::s_SoundKitLookupTable;
 
-char SI2::s_SoundCategory[32][18] = {
+char SI2::s_ChannelGroupNames[32][18] = {
     "SFX",
     "MUSIC",
     "AMBIENCE",
@@ -322,7 +322,7 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
 
     // TODO
 
-    if (!std::strcmp(SI2::s_SoundCategory[properties->m_type], "SFX")) {
+    if (!std::strcmp(SI2::s_ChannelGroupNames[properties->m_type], "SFX")) {
         static auto enableSFXVar = CVar::Lookup("Sound_EnableSFX");
 
         if (!enableSFXVar || !enableSFXVar->GetInt()) {
@@ -331,8 +331,8 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
     }
 
     if (
-        !std::strcmp(SI2::s_SoundCategory[properties->m_type], "MUSIC")
-        || !strcmp(SI2::s_SoundCategory[properties->m_type], "SCRIPTMUSIC")
+        !std::strcmp(SI2::s_ChannelGroupNames[properties->m_type], "MUSIC")
+        || !strcmp(SI2::s_ChannelGroupNames[properties->m_type], "SCRIPTMUSIC")
     ) {
         static auto enableMusicVar = CVar::Lookup("Sound_EnableMusic");
 

@@ -18,7 +18,7 @@ class SI2 {
         static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_SI2];
         static TSGrowableArray<SOUNDKITDEF*> s_SoundKitDefs;
         static TSHashTable<SOUNDKITLOOKUP, HASHKEY_CONSTSTRI> s_SoundKitLookupTable;
-        static char s_SoundCategory[32][18];
+        static char s_ChannelGroupNames[32][18];
 
         // Static functions
         static int32_t CreditsMusicUpdate(const void* data, void* param);
