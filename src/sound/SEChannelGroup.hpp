@@ -10,7 +10,7 @@ class SEChannelGroup {
         int32_t m_parentChannelGroup;
         float m_volume;
         float m_muteVolume;
-        bool m_needsUpdate;
+        bool m_dirty;
 };
 
 #endif
