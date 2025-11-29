@@ -20,11 +20,26 @@ float SESoundInternal::GetVolume() {
 
     float volume = this->m_volume;
 
+    // Apply fade volume
+
     if (this->m_fadeIn || this->m_fadeOut) {
         volume *= this->m_fadeVolume;
     }
 
-    // TODO
+    // Apply channel group volume
+
+    if (SESound::s_ChannelGroups.Count()) {
+        auto channelGroupIndex = this->m_channelGroup;
+
+        while (channelGroupIndex != -1) {
+            auto channelGroup = &SESound::s_ChannelGroups[this->m_channelGroup];
+            auto channelGroupVolume = channelGroup->m_volume * channelGroup->m_muteVolume;
+
+            volume *= channelGroupVolume;
+
+            channelGroupIndex = channelGroup->m_parentChannelGroup;
+        }
+    }
 
     return volume;
 }
