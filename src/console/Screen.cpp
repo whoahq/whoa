@@ -15,13 +15,16 @@
 #include <algorithm>
 
 static CGxStringBatch* s_batch;
+static uint32_t s_baseTextFlags;
 static float s_caretpixwidth;
 static float s_caretpixheight;
+static float s_charSpacing;
 static float s_consoleLines = 10.0f;
 static float s_fontHeight = 0.02f;
 static float s_consoleHeight = s_consoleLines * s_fontHeight;
 static char s_fontName[STORM_MAX_PATH];
 static HIGHLIGHTSTATE s_highlightState;
+static CGxString* s_inputString;
 static HLAYER s_layerBackground;
 static HLAYER s_layerText;
 static RECTF s_rect = { 0.0f, 1.0f, 1.0f, 1.0f };
@@ -39,6 +42,37 @@ static CImVector s_colorArray[] = {
     { 0xFF, 0xFF, 0xFF, 0x80 }, // HIGHLIGHT_COLOR
     { 0x00, 0x00, 0x00, 0xC0 }, // BACKGROUND_COLOR
 };
+
+static void SetInputString(char* text) {
+    if (s_inputString) {
+        GxuFontDestroyString(s_inputString);
+    }
+
+    s_inputString = nullptr;
+
+    if (text && *text) {
+        C3Vector pos = { 0.0f, 0.0f, 1.0f };
+
+        auto font = TextBlockGetFontPtr(s_textFont);
+
+        GxuFontCreateString(
+            font,
+            text,
+            s_fontHeight,
+            pos,
+            1.0f,
+            s_fontHeight,
+            0.0f,
+            s_inputString,
+            EGxFontVJusts::GxVJ_Middle,
+            EGxFontHJusts::GxHJ_Left,
+            s_baseTextFlags,
+            s_colorArray[INPUT_COLOR],
+            s_charSpacing,
+            1.0f
+        );
+    }
+}
 
 CONSOLELINE::~CONSOLELINE() {
     if (this->buffer) {
