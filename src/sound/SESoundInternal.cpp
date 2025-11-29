@@ -49,6 +49,10 @@ void SESoundInternal::Play() {
 
     // TODO
 
+    // Update volume
+
+    this->UpdateVolume();
+
     // Unpause channel (triggers playback)
 
     result = this->m_fmodChannel->setPaused(false);
