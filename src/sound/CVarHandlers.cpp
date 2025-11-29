@@ -1,6 +1,8 @@
 #include "sound/CVarHandlers.hpp"
 #include "console/CVar.hpp"
+#include "sound/SESound.hpp"
 #include "util/Unimplemented.hpp"
+#include <storm/String.hpp>
 
 bool EnableMicrophoneHandler(CVar* var, const char* oldValue, const char* value, void* arg) {
     // TODO
@@ -68,8 +70,27 @@ bool AmbienceVolume_CVarCallback(CVar* var, const char* oldValue, const char* va
 }
 
 bool EnableAllSound_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    // Enable
+
+    if (SStrToInt(value)) {
+        static auto enableSfxCVar = CVar::Lookup("Sound_EnableSFX");
+        static auto enableMusicCVar = CVar::Lookup("Sound_EnableMusic");
+        static auto enableAmbienceCVar = CVar::Lookup("Sound_EnableAmbience");
+
+        SESound::MuteChannelGroup("SFX", enableSfxCVar->GetInt() == 0);
+        SESound::MuteChannelGroup("MUSIC", enableMusicCVar->GetInt() == 0);
+        SESound::MuteChannelGroup("AMBIENCE", enableAmbienceCVar->GetInt() == 0);
+
+        return true;
+    }
+
+    // Disable
+
+    SESound::MuteChannelGroup("SFX", true);
+    SESound::MuteChannelGroup("MUSIC", true);
+    SESound::MuteChannelGroup("AMBIENCE", true);
+
+    return true;
 }
 
 bool EnableAmbience_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
