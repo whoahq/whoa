@@ -24,6 +24,7 @@ class CSimpleSlider : public CSimpleFrame {
         float m_value = 0.0f;
         float m_valueStep = 0.0f;
         CSimpleTexture* m_thumbTexture = nullptr;
+        SLIDER_ORIENTATION m_orientation = SLIDER_VERTICAL;
         ScriptIx m_onValueChanged;
         ScriptIx m_onMinMaxChanged;
 
