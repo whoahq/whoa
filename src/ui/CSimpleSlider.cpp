@@ -326,3 +326,11 @@ float CSimpleSlider::Sub96BC10(float value) {
     // TODO
     return value;
 }
+
+void CSimpleSlider::UnregisterRegion(CSimpleRegion* region) {
+    if (this->m_thumbTexture == region) {
+        this->m_thumbTexture = nullptr;
+    }
+
+    this->CSimpleFrame::UnregisterRegion(region);
+}

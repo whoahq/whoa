@@ -33,6 +33,7 @@ class CSimpleSlider : public CSimpleFrame {
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
         virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void UnregisterRegion(CSimpleRegion* region);
         virtual void OnLayerHide();
         virtual void OnLayerUpdate(float elapsedSec);
         virtual int32_t OnLayerTrackUpdate(const CMouseEvent& evt);
