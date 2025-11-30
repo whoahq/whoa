@@ -936,7 +936,14 @@ void SI2::RegisterUserCVars() {
         SOUND
     );
 
-    // TODO
+    CVar::Register(
+        "Sound_EnableDSPEffects",
+        "",
+        0x0,
+        "1", /* TODO OsGetProcessorCount() >= 2 ? "1" : "0" */
+        nullptr,
+        SOUND
+    );
 
     CVar::Register(
         "Sound_EnablePetSounds",
@@ -952,6 +959,26 @@ void SI2::RegisterUserCVars() {
         "Enable Sound When Game Is In Background",
         0x0,
         "0",
+        nullptr,
+        SOUND
+    );
+
+    // TODO
+
+    CVar::Register(
+        "Sound_MaxCacheSizeInBytes",
+        "Max cache size in bytes",
+        0x0,
+        "16777216",
+        nullptr,
+        SOUND
+    );
+
+    CVar::Register(
+        "Sound_MaxCacheableSizeInBytes",
+        "Max sound size that will be cached, larger files will be streamed instead",
+        0x0,
+        "1048576",
         nullptr,
         SOUND
     );
