@@ -98,7 +98,7 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         void DeleteBackward(int32_t a2);
         void DeleteForward(int32_t a2);
         void DeleteHighlight(int32_t a2);
-        void DeleteSubstring(int32_t left, int32_t right, int32_t a4);
+        void DeleteSubstring(int32_t left, int32_t right, int32_t userInput);
         void DispatchAction(int32_t action);
         int32_t GetNumToLen(int32_t offset, int32_t amount, bool a4);
         void GrowText(int32_t size);
