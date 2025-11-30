@@ -715,6 +715,20 @@ void SESound::SetChannelGroupVolume(const char* name, float volume) {
     channelGroup->m_dirty = true;
 }
 
+void SESound::SetMasterVolume(float volume) {
+    if (!SESound::s_Initialized) {
+        return;
+    }
+
+    if (volume < 0.0f || volume > 1.0f) {
+        return;
+    }
+
+    auto masterChannelGroup = &SESound::s_ChannelGroups[0];
+    masterChannelGroup->m_volume = volume;
+    masterChannelGroup->m_dirty = true;
+}
+
 void SESound::CompleteLoad() {
     if (!this->m_internal) {
         return;

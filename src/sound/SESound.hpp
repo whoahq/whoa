@@ -39,6 +39,7 @@ class SESound {
         static void Log_Write(int32_t line, const char* file, FMOD_RESULT result, const char* fmt, ...);
         static void MuteChannelGroup(const char* name, bool mute);
         static void SetChannelGroupVolume(const char* name, float volume);
+        static void SetMasterVolume(float volume);
 
         // Public member functions
         void CompleteLoad();
