@@ -122,6 +122,9 @@ bool MusicVolume_CVarCallback(CVar* var, const char* oldValue, const char* value
 }
 
 bool SFXVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    auto volume = SStrToFloat(value);
+
+    SESound::SetChannelGroupVolume("SFX", volume);
+
+    return true;
 }
