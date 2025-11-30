@@ -2,8 +2,9 @@
 #define WORLD_C_WORLD_HPP
 
 #include <tempest/Vector.hpp>
-
 #include <cstdint>
+
+class Weather;
 
 class CWorld {
     public:
@@ -46,6 +47,7 @@ class CWorld {
         // Static variables
         static uint32_t s_enables;
         static uint32_t s_enables2;
+        static Weather* s_weather;
 
         // Static functions
         static void Initialize(void);

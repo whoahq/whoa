@@ -3,9 +3,12 @@
 #include "gx/Shader.hpp"
 #include "model/Model2.hpp"
 #include "world/Map.hpp"
+#include "world/Weather.hpp"
+#include <storm/Memory.hpp>
 
 uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
+Weather* CWorld::s_weather;
 
 void CWorld::Initialize() {
     CWorld::s_enables |=
@@ -40,6 +43,10 @@ void CWorld::Initialize() {
         (m2Flags & 0x8) != 0,
         (CWorld::s_enables2 & Enables2::Enable_HwPcf) != 0
     );
+
+    // TODO
+
+    CWorld::s_weather = STORM_NEW(Weather);
 
     // TODO
 }
