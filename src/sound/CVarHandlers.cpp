@@ -107,8 +107,15 @@ bool EnableMusic_CVarCallback(CVar* var, const char* oldValue, const char* value
 }
 
 bool EnableSFX_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    auto allSoundVar = CVar::Lookup("Sound_EnableAllSound");
+
+    if (allSoundVar) {
+        bool mute = !SStrToInt(value) || !allSoundVar->GetInt();
+
+        SESound::MuteChannelGroup("SFX", mute);
+    }
+
+    return true;
 }
 
 bool MasterVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
