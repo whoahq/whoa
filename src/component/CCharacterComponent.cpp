@@ -1,6 +1,7 @@
 #include "component/CCharacterComponent.hpp"
 #include "component/Texture.hpp"
 #include "component/Util.hpp"
+#include "console/CVar.hpp"
 #include "db/Db.hpp"
 #include "gx/Blp.hpp"
 #include "gx/Device.hpp"
@@ -99,7 +100,26 @@ char* s_pathEnd2;
 char s_path2[STORM_MAX_PATH];
 CStatus s_status;
 
+static CVar* s_componentTextureLevelCvar;
+static CVar* s_componentThreadCvar;
+static CVar* s_componentCompressCvar;
+
 #define TEXTURE_INDEX(section, texture) (3 * section + texture)
+
+bool ComponentTextureLevelCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // 3.3.5a release client has no logic, only returns true
+    return true;
+}
+
+bool ComponentThreadCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // 3.3.5a release client has no logic, only returns true
+    return true;
+}
+
+bool ComponentCompressCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // 3.3.5a release client has no logic, only returns true
+    return true;
+}
 
 int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool sheathed, bool shield, bool a7, int32_t visualID) {
     if (!model || !displayRec || invSlot > INVSLOT_TABARD) {
@@ -282,6 +302,33 @@ GEOCOMPONENTLINKS CCharacterComponent::GetSheatheLink(SHEATHE_TYPE sheatheType, 
 }
 
 void CCharacterComponent::Initialize() {
+    s_componentTextureLevelCvar = CVar::Register(
+        "componentTextureLevel",
+        "Number of mip levels used for character component textures",
+        0x1,
+        "8",
+        &ComponentTextureLevelCallback,
+        DEBUG
+    );
+
+    s_componentThreadCvar = CVar::Register(
+        "componentThread",
+        "Multi thread character component processing",
+        0x1,
+        "1",
+        &ComponentThreadCallback,
+        DEBUG
+    );
+
+    s_componentCompressCvar = CVar::Register(
+        "componentCompress",
+        "Character component texture compression",
+        0x1,
+        "1",
+        &ComponentCompressCallback,
+        DEBUG
+    );
+
     // TODO
 
     // TODO proper implementation
