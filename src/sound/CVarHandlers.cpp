@@ -65,8 +65,11 @@ bool VoiceChatOutputDriverHandler(CVar* var, const char* oldValue, const char* v
 }
 
 bool AmbienceVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    auto volume = SStrToFloat(value);
+
+    SESound::SetChannelGroupVolume("AMBIENCE", volume);
+
+    return true;
 }
 
 bool EnableAllSound_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
