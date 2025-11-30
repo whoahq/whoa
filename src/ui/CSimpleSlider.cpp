@@ -133,6 +133,16 @@ void CSimpleSlider::OnLayerHide() {
     this->CSimpleFrame::OnLayerHide();
 }
 
+int32_t CSimpleSlider::OnLayerMouseDown(const CMouseEvent& evt, const char* btn) {
+    // TODO something like CSimpleFrame::IsEnabled or CSimpleFrame::GetFrameFlag
+    if (!(this->m_flags & 0x400)) {
+        this->m_buttonDown = 1;
+        this->OnLayerTrackUpdate(evt);
+    }
+
+    return this->CSimpleFrame::OnLayerMouseDown(evt, btn);
+}
+
 int32_t CSimpleSlider::OnLayerTrackUpdate(const CMouseEvent& evt) {
     if (this->m_buttonDown && this->m_thumbTexture) {
         auto thumbTexture = this->m_thumbTexture;

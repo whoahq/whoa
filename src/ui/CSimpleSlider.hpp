@@ -36,6 +36,7 @@ class CSimpleSlider : public CSimpleFrame {
         virtual void OnLayerHide();
         virtual void OnLayerUpdate(float elapsedSec);
         virtual int32_t OnLayerTrackUpdate(const CMouseEvent& evt);
+        virtual int32_t OnLayerMouseDown(const CMouseEvent& evt, const char* btn);
 
         // Member functions
         CSimpleSlider(CSimpleFrame* parent)
