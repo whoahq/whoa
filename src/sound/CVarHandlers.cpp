@@ -109,8 +109,11 @@ bool EnableSFX_CVarCallback(CVar* var, const char* oldValue, const char* value, 
 }
 
 bool MasterVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    auto volume = SStrToFloat(value);
+
+    SESound::SetMasterVolume(volume);
+
+    return true;
 }
 
 bool MusicVolume_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
