@@ -2,6 +2,7 @@
 #include "ui/CSimpleFont.hpp"
 #include "ui/CSimpleFontString.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
@@ -235,7 +236,16 @@ int32_t CSimpleFontString_GetJustifyH(lua_State* L) {
 }
 
 int32_t CSimpleFontString_SetJustifyH(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    uint32_t justifyH;
+    if (!lua_isstring(L, 2) || !StringToJustify(lua_tostring(L, 2), justifyH)) {
+        return luaL_error(L, "Usage: %s:SetJustifyH(\"justify\")", string->GetDisplayName());
+    }
+
+    string->SetJustifyH(justifyH);
+    string->m_fontableFlags &= ~FLAG_STYLE_UPDATE;
 }
 
 int32_t CSimpleFontString_GetJustifyV(lua_State* L) {
