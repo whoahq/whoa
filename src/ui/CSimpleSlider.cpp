@@ -79,6 +79,23 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
     }
 
     // TODO
+
+    auto orientationStr = node->GetAttributeByName("orientation");
+    if (orientationStr && *orientationStr) {
+        SLIDER_ORIENTATION orientation;
+
+        if (StringToOrientation(orientationStr, orientation)) {
+            this->SetOrientation(orientation);
+        } else {
+            status->Add(
+                STATUS_WARNING,
+                "Frame %s: Unknown orientation %s in element %s",
+                this->GetDisplayName(),
+                orientationStr,
+                node->GetName()
+            );
+        }
+    }
 }
 
 void CSimpleSlider::OnLayerUpdate(float elapsedSec) {
@@ -149,6 +166,16 @@ void CSimpleSlider::SetMinMaxValues(float min, float max) {
         // Fit current value within range
         this->SetValue(this->m_value);
     }
+}
+
+void CSimpleSlider::SetOrientation(SLIDER_ORIENTATION orientation) {
+    this->m_orientation = orientation;
+
+    if (this->m_thumbTexture) {
+        this->m_thumbTexture->ClearAllPoints();
+    }
+
+    this->m_changed = 1;
 }
 
 void CSimpleSlider::SetThumbTexture(CSimpleTexture* texture, int32_t drawLayer) {

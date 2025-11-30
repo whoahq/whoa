@@ -48,6 +48,7 @@ class CSimpleSlider : public CSimpleFrame {
         void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
         void SetMinMaxValues(float min, float max);
+        void SetOrientation(SLIDER_ORIENTATION orientation);
         void SetThumbTexture(CSimpleTexture* texture, int32_t drawLayer);
         void SetValue(float value);
         float Sub96BC10(float value);
