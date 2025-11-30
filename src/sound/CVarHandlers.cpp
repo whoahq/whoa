@@ -102,8 +102,19 @@ bool EnableAmbience_CVarCallback(CVar* var, const char* oldValue, const char* va
 }
 
 bool EnableMusic_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
-    WHOA_UNIMPLEMENTED(true);
+    auto allSoundVar = CVar::Lookup("Sound_EnableAllSound");
+
+    if (allSoundVar) {
+        bool mute = !SStrToInt(value) || !allSoundVar->GetInt();
+
+        SESound::MuteChannelGroup("MUSIC", mute);
+
+        if (mute) {
+            // TODO
+        }
+    }
+
+    return true;
 }
 
 bool EnableSFX_CVarCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
