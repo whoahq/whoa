@@ -127,6 +127,12 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
     }
 }
 
+void CSimpleSlider::OnLayerHide() {
+    this->m_buttonDown = 0;
+
+    this->CSimpleFrame::OnLayerHide();
+}
+
 void CSimpleSlider::OnLayerUpdate(float elapsedSec) {
     this->CSimpleFrame::OnLayerUpdate(elapsedSec);
 
