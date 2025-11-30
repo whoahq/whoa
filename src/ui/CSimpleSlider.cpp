@@ -143,6 +143,12 @@ int32_t CSimpleSlider::OnLayerMouseDown(const CMouseEvent& evt, const char* btn)
     return this->CSimpleFrame::OnLayerMouseDown(evt, btn);
 }
 
+int32_t CSimpleSlider::OnLayerMouseUp(const CMouseEvent& evt, const char* btn) {
+    this->m_buttonDown = 0;
+
+    return this->CSimpleFrame::OnLayerMouseUp(evt, btn);
+}
+
 int32_t CSimpleSlider::OnLayerTrackUpdate(const CMouseEvent& evt) {
     if (this->m_buttonDown && this->m_thumbTexture) {
         auto thumbTexture = this->m_thumbTexture;
