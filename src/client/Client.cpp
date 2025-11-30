@@ -28,6 +28,9 @@ HEVENTCONTEXT Client::g_clientEventContext;
 
 static CVar* s_desktopGammaCvar;
 static CVar* s_gammaCvar;
+static CVar* s_textureCacheSizeCvar;
+static CVar* s_textureFilteringModeCvar;
+static CVar* s_uiFasterCvar;
 
 bool DesktopGammaCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
     // TODO
@@ -35,6 +38,21 @@ bool DesktopGammaCallback(CVar* var, const char* oldValue, const char* value, vo
 }
 
 bool GammaCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    return true;
+}
+
+bool TextureCacheSizeCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    return true;
+}
+
+bool TextureFilteringCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
+    // TODO
+    return true;
+}
+
+bool UIFasterCalllback(CVar* var, const char* oldValue, const char* value, void* arg) {
     // TODO
     return true;
 }
@@ -176,41 +194,32 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
     ScrnInitialize(0);
     ConsoleScreenInitialize(nullptr); // TODO argument
 
-    // s_cvarTextureFilteringMode = CVar::Register(
-    //     "textureFilteringMode",
-    //     "Texture filtering mode",
-    //     1,
-    //     "1",
-    //     &TextureFilteringCallback,
-    //     1,
-    //     0,
-    //     0,
-    //     0
-    // );
+    s_textureFilteringModeCvar = CVar::Register(
+        "textureFilteringMode",
+        "Texture filtering mode",
+        0x1,
+        "1",
+        &TextureFilteringCallback,
+        GRAPHICS
+    );
 
-    // s_cvarUIFaster = CVar::Register(
-    //     "UIFaster",
-    //     "UI acceleration option",
-    //     0,
-    //     "3",
-    //     &UIFasterCalllback,
-    //     1,
-    //     0,
-    //     0,
-    //     0
-    // );
+    s_uiFasterCvar = CVar::Register(
+        "UIFaster",
+        "UI acceleration option",
+        0x0,
+        "3",
+        &UIFasterCalllback,
+        GRAPHICS
+    );
 
-    // s_cvarTextureCacheSize = CVar::Register(
-    //     "textureCacheSize",
-    //     "Texture cache size in bytes",
-    //     1,
-    //     "32",
-    //     &TextureCacheSizeCallback,
-    //     1,
-    //     0,
-    //     0,
-    //     0
-    // );
+    s_textureCacheSizeCvar = CVar::Register(
+        "textureCacheSize",
+        "Texture cache size in bytes",
+        0x1,
+        "32",
+        &TextureCacheSizeCallback,
+        GRAPHICS
+    );
 
     // sub_4B6580(*(_DWORD *)(dword_B2F9FC + 48) << 20);
 
