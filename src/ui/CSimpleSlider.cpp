@@ -64,6 +64,8 @@ bool CSimpleSlider::IsA(int32_t type) {
 void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
     this->CSimpleFrame::LoadXML(node, status);
 
+    // Thumb
+
     int32_t drawLayer = DRAWLAYER_ARTWORK_OVERLAY;
 
     auto drawLayerStr = node->GetAttributeByName("drawLayer");
@@ -78,7 +80,34 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
         }
     }
 
-    // TODO
+    // Value step
+
+    auto valueStepStr = node->GetAttributeByName("valueStep");
+    auto valueStep = valueStepStr && *valueStepStr ? SStrToFloat(valueStepStr) : 0.001f;
+    this->SetValueStep(valueStep);
+
+    // Min, max, and default values
+
+    auto minValueStr = node->GetAttributeByName("minValue");
+    if (minValueStr && *minValueStr) {
+        auto minValue = SStrToFloat(minValueStr);
+
+        auto maxValueStr = node->GetAttributeByName("maxValue");
+        if (maxValueStr && *maxValueStr) {
+            auto maxValue = SStrToFloat(maxValueStr);
+
+            this->SetMinMaxValues(minValue, maxValue);
+
+            auto defaultValueStr = node->GetAttributeByName("defaultValue");
+            if (defaultValueStr && *defaultValueStr) {
+                auto defaultValue = SStrToFloat(defaultValueStr);
+
+                this->SetValue(defaultValue);
+            }
+        }
+    }
+
+    // Orientation
 
     auto orientationStr = node->GetAttributeByName("orientation");
     if (orientationStr && *orientationStr) {
@@ -231,6 +260,20 @@ void CSimpleSlider::SetValue(float value) {
       this->m_valueSet = 1;
 
       this->RunOnValueChangedScript();
+    }
+}
+
+void CSimpleSlider::SetValueStep(float valueStep) {
+    valueStep = std::min(valueStep, 0.00000011920929f);
+
+    if (CMath::fequal(this->m_valueStep, valueStep)) {
+        return;
+    }
+
+    this->m_valueStep = valueStep;
+
+    if (this->m_valueSet) {
+        this->SetValue(this->m_value);
     }
 }
 
