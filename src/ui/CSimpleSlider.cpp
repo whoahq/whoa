@@ -287,7 +287,7 @@ void CSimpleSlider::SetValue(float value) {
         v4 = maxValue;
     }
 
-    auto newValue = this->Sub96BC10(v4);
+    auto newValue = this->StepValue(v4);
 
     // Clamp to max value
     if (newValue + this->m_valueStep >= maxValue) {
@@ -322,9 +322,19 @@ void CSimpleSlider::SetValueStep(float valueStep) {
     }
 }
 
-float CSimpleSlider::Sub96BC10(float value) {
-    // TODO
-    return value;
+float CSimpleSlider::StepValue(float value) {
+    if (this->m_valueStep == 0.0f) {
+        return value;
+    }
+
+    auto valueOffset = value - this->m_baseValue;
+    auto halfStep = this->m_valueStep / 2.0f;
+
+    if (valueOffset <= 0.0f) {
+        return CMath::fint((valueOffset - halfStep) / this->m_valueStep) * this->m_valueStep + this->m_baseValue;
+    }
+
+    return CMath::fint((valueOffset + halfStep) / this->m_valueStep) * this->m_valueStep + this->m_baseValue;
 }
 
 void CSimpleSlider::UnregisterRegion(CSimpleRegion* region) {
