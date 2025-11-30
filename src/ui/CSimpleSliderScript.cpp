@@ -94,7 +94,17 @@ int32_t CSimpleSlider_Disable(lua_State* L) {
 }
 
 int32_t CSimpleSlider_IsEnabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleSlider::GetObjectType();
+    auto slider = static_cast<CSimpleSlider*>(FrameScript_GetObjectThis(L, type));
+
+    // TODO something like CSimpleFrame::IsEnabled or CSimpleFrame::GetFrameFlag
+    if (!(slider->m_flags & 0x400)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 FrameScript_Method SimpleSliderMethods[NUM_SIMPLE_SLIDER_SCRIPT_METHODS] = {
