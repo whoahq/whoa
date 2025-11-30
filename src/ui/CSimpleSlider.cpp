@@ -133,6 +133,29 @@ void CSimpleSlider::OnLayerHide() {
     this->CSimpleFrame::OnLayerHide();
 }
 
+int32_t CSimpleSlider::OnLayerTrackUpdate(const CMouseEvent& evt) {
+    if (this->m_buttonDown && this->m_thumbTexture) {
+        auto thumbTexture = this->m_thumbTexture;
+
+        float area;
+        float offset;
+
+        if (this->m_orientation == SLIDER_VERTICAL) {
+            area = this->m_rect.maxY - this->m_rect.minY - thumbTexture->GetHeight();
+            offset = this->m_rect.maxY - (thumbTexture->GetHeight() / 2.0f) - evt.y;
+        } else {
+            area = this->m_rect.maxX - this->m_rect.minX - thumbTexture->GetWidth();
+            offset = evt.x - ((thumbTexture->GetWidth() / 2.0f) + this->m_rect.minX);
+        }
+
+        float value = (this->m_range + this->m_baseValue - this->m_baseValue) * (offset / area) + this->m_baseValue;
+
+        this->SetValue(value);
+    }
+
+    return this->CSimpleFrame::OnLayerTrackUpdate(evt);
+}
+
 void CSimpleSlider::OnLayerUpdate(float elapsedSec) {
     this->CSimpleFrame::OnLayerUpdate(elapsedSec);
 

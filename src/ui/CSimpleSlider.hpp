@@ -35,6 +35,7 @@ class CSimpleSlider : public CSimpleFrame {
         virtual void LoadXML(XMLNode* node, CStatus* status);
         virtual void OnLayerHide();
         virtual void OnLayerUpdate(float elapsedSec);
+        virtual int32_t OnLayerTrackUpdate(const CMouseEvent& evt);
 
         // Member functions
         CSimpleSlider(CSimpleFrame* parent)
