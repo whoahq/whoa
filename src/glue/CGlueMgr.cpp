@@ -4,9 +4,10 @@
 #include "client/Util.hpp"
 #include "console/CVar.hpp"
 #include "db/Db.hpp"
+#include "ffx/Effect.hpp"
 #include "glue/CCharacterSelection.hpp"
-#include "glue/Character.hpp"
 #include "glue/CRealmList.hpp"
+#include "glue/Character.hpp"
 #include "glue/GlueScript.hpp"
 #include "glue/Types.hpp"
 #include "gx/Coordinate.hpp"
@@ -59,8 +60,11 @@ bool CGlueMgr::m_authenticated;
 const CharacterSelectionDisplay* CGlueMgr::m_characterInfo;
 int32_t CGlueMgr::m_clientKickReason;
 char CGlueMgr::m_currentScreen[64];
+EffectDeath* CGlueMgr::m_deathEffect;
 int32_t CGlueMgr::m_disconnectPending;
 int32_t CGlueMgr::m_displayingQueueDialog;
+int32_t CGlueMgr::m_ffxActive;
+EffectGlow* CGlueMgr::m_glowEffect;
 CGlueMgr::GLUE_IDLE_STATE CGlueMgr::m_idleState;
 int32_t CGlueMgr::m_initialized;
 int32_t CGlueMgr::m_lastLoginResult;
@@ -442,6 +446,19 @@ void CGlueMgr::Initialize() {
 
     // TODO
     // AccountDataInitializeBasicSystem();
+}
+
+void CGlueMgr::InitializeFFX() {
+    if (CGlueMgr::m_ffxActive) {
+        return;
+    }
+
+    CGlueMgr::m_ffxActive = 1;
+
+    // TODO FFX::Init();
+
+    CGlueMgr::m_deathEffect = STORM_NEW(EffectDeath);
+    CGlueMgr::m_glowEffect = STORM_NEW(EffectGlow);
 }
 
 void CGlueMgr::LoginServerLogin(const char* accountName, const char* password) {
@@ -990,8 +1007,7 @@ void CGlueMgr::Resume() {
 
     FrameScript_SignalEvent(22, nullptr);
 
-    // TODO
-    // CGlueMgr::InitializeFFX();
+    CGlueMgr::InitializeFFX();
 
     // TODO
     // ClientServices::SetMessageHandler(SMSG_CHARACTER_RENAME_RESULT, CGlueMgr::OnCharRenameResult, 0);

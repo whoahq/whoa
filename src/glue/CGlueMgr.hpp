@@ -7,6 +7,8 @@
 
 class CDataStore;
 class CSimpleTop;
+class EffectDeath;
+class EffectGlow;
 struct CharacterSelectionDisplay;
 
 class CGlueMgr {
@@ -40,8 +42,11 @@ class CGlueMgr {
         static const CharacterSelectionDisplay* m_characterInfo;
         static int32_t m_clientKickReason;
         static char m_currentScreen[];
+        static EffectDeath* m_deathEffect;
         static int32_t m_disconnectPending;
         static int32_t m_displayingQueueDialog;
+        static int32_t m_ffxActive;
+        static EffectGlow* m_glowEffect;
         static GLUE_IDLE_STATE m_idleState;
         static int32_t m_initialized;
         static int32_t m_lastLoginResult;
@@ -69,6 +74,7 @@ class CGlueMgr {
         static int32_t HandleDisplaySizeChanged(const CSizeEvent& event);
         static int32_t Idle(const void* a1, void* a2); // TODO a1: const EVENT_DATA_IDLE*
         static void Initialize();
+        static void InitializeFFX();
         static void LoginServerLogin(const char* accountName, const char* password);
         static int32_t NetDisconnectHandler(const void* a1, void* a2);
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);

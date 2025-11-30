@@ -16,6 +16,7 @@ target_link_libraries(glue
         console
         db
         event
+        ffx
         gx
         model
         net
