@@ -103,7 +103,7 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         int32_t GetNumToLen(int32_t offset, int32_t amount, bool a4);
         void GrowText(int32_t size);
         void Insert(uint32_t chr);
-        void Insert(const char* a2, const char* a3, int32_t a4, int32_t a5, int32_t a6);
+        void Insert(const char* utf8string, const char* taintedstring, int32_t dispatchEvent, int32_t isIME, int32_t userInput);
         int32_t IsCurrentFocus();
         void Move(int32_t distance, int32_t highlight);
         void MoveBackward(int32_t highlight);
