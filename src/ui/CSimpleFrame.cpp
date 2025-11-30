@@ -354,6 +354,12 @@ void CSimpleFrame::RunOnCharScript(const char* chr) {
     }
 }
 
+void CSimpleFrame::RunOnEnableScript() {
+    if (this->m_onEnable.luaRef && !this->m_loading) {
+        this->RunScript(this->m_onEnable, 0, nullptr);
+    }
+}
+
 void CSimpleFrame::RunOnEnterScript(int32_t a2) {
     if (this->m_onEnter.luaRef) {
         auto L = FrameScript_GetContext();

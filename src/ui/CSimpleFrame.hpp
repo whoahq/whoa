@@ -139,6 +139,7 @@ class CSimpleFrame : public CScriptRegion {
         void RegisterRegion(CSimpleRegion* region);
         void RemoveFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
         void RunOnCharScript(const char* chr);
+        void RunOnEnableScript();
         void RunOnEnterScript(int32_t a2);
         void RunOnHideScript();
         void RunOnKeyDownScript(const char* key);
