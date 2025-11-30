@@ -23,6 +23,7 @@ class CSimpleSlider : public CSimpleFrame {
         float m_range = 0.0f;
         float m_value = 0.0f;
         float m_valueStep = 0.0f;
+        CSimpleTexture* m_thumbTexture = nullptr;
         ScriptIx m_onValueChanged;
         ScriptIx m_onMinMaxChanged;
 
@@ -30,6 +31,7 @@ class CSimpleSlider : public CSimpleFrame {
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
+        virtual void LoadXML(XMLNode* node, CStatus* status);
 
         // Member functions
         CSimpleSlider(CSimpleFrame* parent)
@@ -44,6 +46,7 @@ class CSimpleSlider : public CSimpleFrame {
         void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
         void SetMinMaxValues(float min, float max);
+        void SetThumbTexture(CSimpleTexture* texture, int32_t drawLayer);
         void SetValue(float value);
         float Sub96BC10(float value);
 };

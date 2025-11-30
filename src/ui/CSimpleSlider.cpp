@@ -1,7 +1,11 @@
 #include "ui/CSimpleSlider.hpp"
 #include "math/Utils.hpp"
 #include "ui/CSimpleSliderScript.hpp"
+#include "ui/CSimpleTexture.hpp"
+#include "ui/LoadXML.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
+#include <common/XML.hpp>
 
 int32_t CSimpleSlider::s_metatable;
 int32_t CSimpleSlider::s_objectType;
@@ -56,6 +60,26 @@ bool CSimpleSlider::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
+void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
+    this->CSimpleFrame::LoadXML(node, status);
+
+    int32_t drawLayer = DRAWLAYER_ARTWORK_OVERLAY;
+
+    auto drawLayerStr = node->GetAttributeByName("drawLayer");
+    if (drawLayerStr && *drawLayerStr) {
+        StringToDrawLayer(drawLayerStr, drawLayer);
+    }
+
+    for (auto child = node->m_child; child; child = child->m_next) {
+        if (!SStrCmpI(child->GetName(), "ThumbTexture")) {
+            auto thumbTexture = LoadXML_Texture(child, this, status);
+            this->SetThumbTexture(thumbTexture, drawLayer);
+        }
+    }
+
+    // TODO
+}
+
 void CSimpleSlider::RunOnMinMaxChangedScript() {
     if (!this->m_onMinMaxChanged.luaRef) {
         return;
@@ -99,6 +123,24 @@ void CSimpleSlider::SetMinMaxValues(float min, float max) {
         // Fit current value within range
         this->SetValue(this->m_value);
     }
+}
+
+void CSimpleSlider::SetThumbTexture(CSimpleTexture* texture, int32_t drawLayer) {
+    if (this->m_thumbTexture == texture) {
+        return;
+    }
+
+    if (this->m_thumbTexture) {
+        delete this->m_thumbTexture;
+    }
+
+    if (texture) {
+        texture->SetFrame(this, drawLayer, 1);
+        texture->ClearAllPoints();
+    }
+
+    this->m_changed = 1;
+    this->m_thumbTexture = texture;
 }
 
 void CSimpleSlider::SetValue(float value) {
