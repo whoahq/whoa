@@ -86,3 +86,24 @@ int32_t StringToFrameStrata(const char* string, FRAME_STRATA& strata) {
 
     return 0;
 }
+
+int32_t StringToOrientation(const char* string, SLIDER_ORIENTATION& orientation) {
+    struct OrientationEntry {
+        SLIDER_ORIENTATION value;
+        const char* string;
+    };
+
+    static OrientationEntry orientationMap[] = {
+        { SLIDER_HORIZONTAL,    "HORIZONTAL"    },
+        { SLIDER_VERTICAL,      "VERTICAL"      },
+    };
+
+    for (auto& entry : orientationMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            orientation = entry.value;
+            return 1;
+        }
+    }
+
+    return 0;
+}
