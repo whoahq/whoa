@@ -1049,10 +1049,10 @@ void CSimpleEditBox::RunOnTabPressedScript() {
     }
 }
 
-void CSimpleEditBox::RunOnTextChangedScript(int32_t changed) {
+void CSimpleEditBox::RunOnTextChangedScript(int32_t userInput) {
     if (this->m_onTextChanged.luaRef) {
         auto L = FrameScript_GetContext();
-        lua_pushboolean(L, changed);
+        lua_pushboolean(L, userInput);
 
         this->RunScript(this->m_onTextChanged, 1, nullptr);
     }
