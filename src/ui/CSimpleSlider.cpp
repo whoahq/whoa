@@ -6,6 +6,7 @@
 #include "util/Lua.hpp"
 #include "util/StringTo.hpp"
 #include <common/XML.hpp>
+#include <tempest/Math.hpp>
 
 int32_t CSimpleSlider::s_metatable;
 int32_t CSimpleSlider::s_objectType;
@@ -78,6 +79,31 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
     }
 
     // TODO
+}
+
+void CSimpleSlider::OnLayerUpdate(float elapsedSec) {
+    this->CSimpleFrame::OnLayerUpdate(elapsedSec);
+
+    if (this->m_changed && this->m_thumbTexture && this->m_rangeSet && this->m_valueSet) {
+        auto valueRange = this->m_range + this->m_baseValue - this->m_baseValue;
+        auto valueOffset = CMath::fequal(valueRange, 0.0f)
+            ? 0.0f
+            : (this->m_value - this->m_baseValue) / valueRange;
+
+        if (this->m_orientation == SLIDER_VERTICAL) {
+            auto rangeY = (this->m_rect.maxY - this->m_rect.minY) / this->m_layoutScale;
+            auto offsetY = -((rangeY - this->m_thumbTexture->GetHeight()) * valueOffset);
+
+            this->m_thumbTexture->SetPoint(FRAMEPOINT_TOP, this, FRAMEPOINT_TOP, 0.0f, offsetY, 1);
+        } else {
+            auto rangeX = (this->m_rect.maxX - this->m_rect.minX) / this->m_layoutScale;
+            auto offsetX = (rangeX - this->m_thumbTexture->GetWidth()) * valueOffset;
+
+            this->m_thumbTexture->SetPoint(FRAMEPOINT_LEFT, this, FRAMEPOINT_LEFT, offsetX, 0.0f, 1);
+        }
+
+        this->m_changed = 0;
+    }
 }
 
 void CSimpleSlider::RunOnMinMaxChangedScript() {
