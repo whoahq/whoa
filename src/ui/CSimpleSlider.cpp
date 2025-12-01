@@ -290,7 +290,7 @@ void CSimpleSlider::SetValue(float value) {
     auto newValue = this->StepValue(v4);
 
     // Clamp to max value
-    if (newValue + this->m_valueStep >= maxValue) {
+    if (newValue + this->m_valueStep > maxValue) {
         newValue = maxValue;
     }
 
