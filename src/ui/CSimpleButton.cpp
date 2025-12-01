@@ -491,28 +491,21 @@ void CSimpleButton::SetFontString(CSimpleFontString* text) {
 
     if (text) {
         text->SetFrame(this, DRAWLAYER_ARTWORK, 1);
-    }
 
-    if (!text->Sub482AC0()) {
-        auto font = this->m_normalFont;
+        if (!text->Sub482AC0()) {
+            auto font = this->m_normalFont;
+            uint32_t styleFlags = font ? font->m_attributes.m_styleFlags : 0x0;
 
-        int32_t styleFlags;
+            float offsetX = 0.0f;
+            float offsetY = 0.0f;
 
-        if (font) {
-            styleFlags = font->m_attributes.m_styleFlags;
-        } else {
-            styleFlags = 0;
-        }
-
-        float offsetX = 0.0f;
-        float offsetY = 0.0f;
-
-        if (styleFlags & 0x1) {
-            text->SetPoint(FRAMEPOINT_LEFT, this, FRAMEPOINT_LEFT, offsetX, offsetY, 1);
-        } else if (styleFlags & 0x4) {
-            text->SetPoint(FRAMEPOINT_RIGHT, this, FRAMEPOINT_RIGHT, offsetX, offsetY, 1);
-        } else {
-            text->SetPoint(FRAMEPOINT_CENTER, this, FRAMEPOINT_CENTER, offsetX, offsetY, 1);
+            if (styleFlags & 0x1) {
+                text->SetPoint(FRAMEPOINT_LEFT, this, FRAMEPOINT_LEFT, offsetX, offsetY, 1);
+            } else if (styleFlags & 0x4) {
+                text->SetPoint(FRAMEPOINT_RIGHT, this, FRAMEPOINT_RIGHT, offsetX, offsetY, 1);
+            } else {
+                text->SetPoint(FRAMEPOINT_CENTER, this, FRAMEPOINT_CENTER, offsetX, offsetY, 1);
+            }
         }
     }
 
