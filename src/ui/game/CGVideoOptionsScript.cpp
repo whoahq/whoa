@@ -287,7 +287,17 @@ int32_t Script_GetGamma(lua_State* L) {
 }
 
 int32_t Script_SetGamma(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        return luaL_error(L, "Usage: SetGamma(value)");
+    }
+
+    char gammaStr[16];
+    SStrPrintf(gammaStr, sizeof(gammaStr), "%f", 1.0 - lua_tonumber(L, 1));
+
+    auto gammaVar = CVar::Lookup("gamma");
+    gammaVar->Set(gammaStr, true, false, false, true);
+
+    return 0;
 }
 
 int32_t Script_GetTerrainMip(lua_State* L) {
