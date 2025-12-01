@@ -309,7 +309,7 @@ void CSimpleSlider::SetValue(float value) {
 }
 
 void CSimpleSlider::SetValueStep(float valueStep) {
-    valueStep = std::min(valueStep, 0.00000011920929f);
+    valueStep = std::max(valueStep, 0.00000011920929f);
 
     if (CMath::fequal(this->m_valueStep, valueStep)) {
         return;
