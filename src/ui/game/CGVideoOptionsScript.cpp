@@ -291,7 +291,11 @@ int32_t Script_SetGamma(lua_State* L) {
 }
 
 int32_t Script_GetTerrainMip(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto shadowLevelVar = CVar::Lookup("shadowLevel");
+
+    lua_pushnumber(L, 1.0 - shadowLevelVar->GetInt());
+
+    return 1;
 }
 
 int32_t Script_SetTerrainMip(lua_State* L) {
