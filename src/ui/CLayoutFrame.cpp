@@ -8,6 +8,8 @@
 #include <common/XML.hpp>
 #include <storm/Error.hpp>
 
+#define FLAG_RESIZE_PENDING 0x4
+
 STORM_EXPLICIT_LIST(CLayoutFrame, resizeLink) LayoutFrame::s_resizePendingList;
 
 float SynthesizeSide(float center, float opposite, float size) {
@@ -44,7 +46,7 @@ void CLayoutFrame::ResizePending() {
         }
 
         if (frame->OnFrameResize() || (frame->m_resizeCounter--, frame->m_resizeCounter == 0)) {
-            frame->m_flags &= ~0x4;
+            frame->m_flags &= ~FLAG_RESIZE_PENDING;
             LayoutFrame::s_resizePendingList.UnlinkNode(frame);
         }
     }
@@ -394,7 +396,7 @@ int32_t CLayoutFrame::IsResizeDependency(CLayoutFrame* dependentFrame) {
 }
 
 uint32_t CLayoutFrame::IsResizePending() {
-    return this->m_flags & 0x4;
+    return this->m_flags & FLAG_RESIZE_PENDING;
 }
 
 float CLayoutFrame::Left() {
@@ -549,7 +551,7 @@ int32_t CLayoutFrame::OnFrameResize() {
         return 0;
     }
 
-    this->m_flags &= ~(0x4 | 0x8);
+    this->m_flags &= ~(FLAG_RESIZE_PENDING | 0x8);
 
     if (
         this->m_flags & 0x1
@@ -632,12 +634,12 @@ void CLayoutFrame::Resize(int32_t force) {
         return;
     }
 
-    if (this->m_flags & 0x4 && (this->m_flags & 0x2 || LayoutFrame::s_resizePendingList.IsLinked(this))) {
+    if (this->m_flags & FLAG_RESIZE_PENDING && (this->m_flags & 0x2 || LayoutFrame::s_resizePendingList.IsLinked(this))) {
         this->m_resizeCounter = 6;
         return;
     }
 
-    this->m_flags |= 0x4;
+    this->m_flags |= FLAG_RESIZE_PENDING;
 
     if (this->m_flags & 0x2) {
         for (auto node = this->m_resizeList.Head(); node; node = this->m_resizeList.Link(node)->Next()) {
@@ -736,7 +738,7 @@ void CLayoutFrame::SetDeferredResize(int32_t enable) {
 
     this->m_flags &= ~0x2;
 
-    if (this->m_flags & 0x4) {
+    if (this->m_flags & FLAG_RESIZE_PENDING) {
         this->Resize(1);
     }
 }
