@@ -681,7 +681,7 @@ void CLayoutFrame::SetAllPoints(CLayoutFrame* relative, int32_t doResize) {
     STORM_VALIDATE_BEGIN;
     STORM_VALIDATE(relative);
     STORM_VALIDATE(relative != this);
-    STORM_VALIDATE_END;
+    STORM_VALIDATE_END_VOID;
 
     if (!relative->CanBeAnchorFor(this)) {
         return;
@@ -771,7 +771,7 @@ void CLayoutFrame::SetPoint(FRAMEPOINT point, CLayoutFrame* relative, FRAMEPOINT
     STORM_VALIDATE_BEGIN;
     STORM_VALIDATE(relative);
     STORM_VALIDATE(relative != this);
-    STORM_VALIDATE_END;
+    STORM_VALIDATE_END_VOID;
 
     if (!relative->CanBeAnchorFor(this)) {
         return;
