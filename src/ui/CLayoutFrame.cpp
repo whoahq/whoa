@@ -625,7 +625,10 @@ void CLayoutFrame::RegisterResize(CLayoutFrame* frame, uint32_t dep) {
 
 void CLayoutFrame::Resize(int32_t force) {
     if (force && !(this->m_flags & 0x8) && this->OnFrameResize()) {
-        LayoutFrame::s_resizePendingList.UnlinkNode(this);
+        if (LayoutFrame::s_resizePendingList.IsLinked(this)) {
+            LayoutFrame::s_resizePendingList.UnlinkNode(this);
+        }
+
         return;
     }
 
