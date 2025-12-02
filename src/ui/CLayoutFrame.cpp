@@ -67,8 +67,6 @@ CLayoutFrame::CLayoutFrame() {
 
 CLayoutFrame::~CLayoutFrame() {
     this->DestroyLayout();
-
-    // TODO
 }
 
 void CLayoutFrame::AddToResizeList() {
