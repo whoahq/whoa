@@ -27,12 +27,12 @@ class CLayoutFrame {
         CFramePoint* m_points[FRAMEPOINT_NUMPOINTS] = {};
         TSList<FRAMENODE, TSGetLink<FRAMENODE>> m_resizeList;
         struct {
-            int32_t left : 1;
-            int32_t top : 1;
-            int32_t right : 1;
-            int32_t bottom : 1;
-            int32_t centerX : 1;
-            int32_t centerY : 1;
+            uint32_t left       : 1;
+            uint32_t top        : 1;
+            uint32_t right      : 1;
+            uint32_t bottom     : 1;
+            uint32_t centerX    : 1;
+            uint32_t centerY    : 1;
         } m_guard;
         uint32_t m_resizeCounter : 8;
         uint32_t m_flags : 16;
