@@ -678,8 +678,10 @@ float CLayoutFrame::Right() {
 }
 
 void CLayoutFrame::SetAllPoints(CLayoutFrame* relative, int32_t doResize) {
-    STORM_ASSERT(relative);
-    STORM_ASSERT(relative != this);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(relative);
+    STORM_VALIDATE(relative != this);
+    STORM_VALIDATE_END;
 
     if (!relative->CanBeAnchorFor(this)) {
         return;
@@ -748,7 +750,9 @@ void CLayoutFrame::SetHeight(float height) {
 }
 
 bool CLayoutFrame::SetLayoutScale(float scale, bool force) {
-    STORM_ASSERT(scale);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(scale);
+    STORM_VALIDATE_END;
 
     if (force || (!AreEqual(this->m_layoutScale, scale, WHOA_EPSILON_1) && scale > 0.00000011920929)) {
         this->m_layoutScale = scale;
@@ -764,8 +768,10 @@ bool CLayoutFrame::SetLayoutScale(float scale, bool force) {
 }
 
 void CLayoutFrame::SetPoint(FRAMEPOINT point, CLayoutFrame* relative, FRAMEPOINT relativePoint, float offsetX, float offsetY, int32_t doResize) {
-    STORM_ASSERT(relative);
-    STORM_ASSERT(relative != this);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(relative);
+    STORM_VALIDATE(relative != this);
+    STORM_VALIDATE_END;
 
     if (!relative->CanBeAnchorFor(this)) {
         return;
