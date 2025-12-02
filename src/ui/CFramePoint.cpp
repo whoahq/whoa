@@ -1,9 +1,12 @@
 #include "ui/CFramePoint.hpp"
 #include "ui/CLayoutFrame.hpp"
+#include <storm/Error.hpp>
 
 const float CFramePoint::UNDEFINED = 3.4028237e38;
 
 CFramePoint::CFramePoint(CLayoutFrame* relative, FRAMEPOINT framePoint, float offsetX, float offsetY) {
+    STORM_ASSERT(relative != nullptr && framePoint != FRAMEPOINT_NUMPOINTS);
+
     this->m_offset = { offsetX, offsetY };
     this->m_framePoint = framePoint;
     this->m_relative = relative;
