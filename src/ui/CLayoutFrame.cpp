@@ -591,7 +591,7 @@ void CLayoutFrame::OnProtectedAttach(CLayoutFrame* frame) {
         frame->SetProtectFlag(0x400);
     }
 
-    if (this->m_flags & 0x300) {
+    if (this->m_flags & (0x100 | 0x200)) {
         frame->SetProtectFlag(0x200);
     }
 }
@@ -821,7 +821,17 @@ void CLayoutFrame::SetPoint(FRAMEPOINT point, CLayoutFrame* relative, FRAMEPOINT
 }
 
 void CLayoutFrame::SetProtectFlag(uint32_t flag) {
-    // TODO
+    if (this->m_flags & (0x100 | 0x800)) {
+        return;
+    }
+
+    this->m_flags &= ~0x200;
+    this->m_flags |= (flag & 0xF7FF | 0x800);
+
+    // TODO this->PropagateProtectFlagToParent(flag);
+    this->Sub489190(flag);
+
+    this->m_flags &= ~0x800;
 }
 
 void CLayoutFrame::SetWidth(float width) {
@@ -874,6 +884,16 @@ int32_t CLayoutFrame::Sub488E40(const FRAMEPOINT* const pointarray, int32_t elem
 
     y = CFramePoint::UNDEFINED;
     return 1;
+}
+
+void CLayoutFrame::Sub489190(uint32_t flag) {
+    for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
+        auto point = this->m_points[i];
+
+        if (point && !(point->m_flags & 0x8)) {
+            point->m_relative->SetProtectFlag(flag);
+        }
+    }
 }
 
 float CLayoutFrame::Top() {

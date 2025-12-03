@@ -86,6 +86,7 @@ class CLayoutFrame {
         void SetProtectFlag(uint32_t flag);
         int32_t Sub488DB0(const FRAMEPOINT* const pointarray, int32_t elements, float& x);
         int32_t Sub488E40(const FRAMEPOINT* const pointarray, int32_t elements, float& y);
+        void Sub489190(uint32_t flag);
         float Top();
         void UnflattenFrame(CLayoutFrame* frame);
         void UnregisterResize(CLayoutFrame* frame, uint32_t dep);
