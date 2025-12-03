@@ -7,14 +7,9 @@ const float CFramePoint::UNDEFINED = 3.4028237e38;
 CFramePoint::CFramePoint(CLayoutFrame* relative, FRAMEPOINT framePoint, float offsetX, float offsetY) {
     STORM_ASSERT(relative != nullptr && framePoint != FRAMEPOINT_NUMPOINTS);
 
-    this->m_offset = { offsetX, offsetY };
-    this->m_framePoint = framePoint;
-    this->m_relative = relative;
+    this->m_flags = 0x0;
 
-    // TODO
-    // - this doesn't appear to be zeroed out
-    // - what is it actually checking?
-    this->m_flags = (this->m_flags & 0x2) >= 1 ? 0x6 : 0;
+    this->SetRelative(relative, framePoint, offsetX, offsetY);
 }
 
 CLayoutFrame* CFramePoint::GetRelative() {
