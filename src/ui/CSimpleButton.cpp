@@ -492,7 +492,7 @@ void CSimpleButton::SetFontString(CSimpleFontString* text) {
     if (text) {
         text->SetFrame(this, DRAWLAYER_ARTWORK, 1);
 
-        if (!text->Sub482AC0()) {
+        if (!text->HasPoints()) {
             auto font = this->m_normalFont;
             uint32_t styleFlags = font ? font->m_attributes.m_styleFlags : 0x0;
 

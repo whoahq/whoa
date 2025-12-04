@@ -71,6 +71,7 @@ class CLayoutFrame {
         void GetFirstPointX(const FRAMEPOINT* const pointarray, int32_t elements, float& x);
         void GetFirstPointY(const FRAMEPOINT* const pointarray, int32_t elements, float& y);
         int32_t GetRect(CRect* rect);
+        int32_t HasPoints();
         int32_t IsResizeDependency(CLayoutFrame* dependentFrame);
         uint32_t IsResizePending();
         float Left();

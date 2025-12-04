@@ -823,19 +823,6 @@ void CSimpleFontString::SetText(const char* text, int32_t a3) {
     this->ClearString();
 }
 
-// Probably belongs on CLayoutFrame
-int32_t CSimpleFontString::Sub482AC0() {
-    for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
-        auto point = this->m_points[i];
-
-        if (point && !(point->m_flags & 0x8)) {
-            return 1;
-        }
-    }
-
-    return 0;
-}
-
 void CSimpleFontString::SetTextLength(uint32_t a2) {
     // TODO
 }
