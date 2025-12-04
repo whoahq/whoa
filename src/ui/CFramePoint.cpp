@@ -1,8 +1,9 @@
 #include "ui/CFramePoint.hpp"
 #include "ui/CLayoutFrame.hpp"
 #include <storm/Error.hpp>
+#include <limits>
 
-const float CFramePoint::UNDEFINED = 3.4028237e38;
+const float CFramePoint::UNDEFINED = std::numeric_limits<float>::infinity();
 
 CFramePoint::CFramePoint(CLayoutFrame* relative, FRAMEPOINT framePoint, float offsetX, float offsetY) {
     STORM_ASSERT(relative != nullptr && framePoint != FRAMEPOINT_NUMPOINTS);
