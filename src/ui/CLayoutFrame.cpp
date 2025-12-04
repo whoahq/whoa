@@ -315,10 +315,7 @@ void CLayoutFrame::GetClampRectInsets(float& a1, float& a2, float& a3, float& a4
 }
 
 void CLayoutFrame::GetFirstPointX(const FRAMEPOINT* const pointarray, int32_t elements, float& x) {
-    // TODO
-    // - what's up with this loop?
-
-    for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
+    for (int32_t retry = 0; retry < 10; retry++) {
         if (this->Sub488DB0(pointarray, elements, x)) {
             break;
         }
@@ -326,10 +323,7 @@ void CLayoutFrame::GetFirstPointX(const FRAMEPOINT* const pointarray, int32_t el
 }
 
 void CLayoutFrame::GetFirstPointY(const FRAMEPOINT* const pointarray, int32_t elements, float& y) {
-    // TODO
-    // - what's up with this loop?
-
-    for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
+    for (int32_t retry = 0; retry < 10; retry++) {
         if (this->Sub488E40(pointarray, elements, y)) {
             break;
         }
