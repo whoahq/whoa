@@ -74,9 +74,9 @@ void CLayoutFrame::AddToResizeList() {
         return;
     }
 
-    CLayoutFrame* dependent = nullptr;
-
     for (auto frame = LayoutFrame::s_resizePendingList.Head(); frame; frame = LayoutFrame::s_resizePendingList.Link(frame)->Next()) {
+        CLayoutFrame* dependent = nullptr;
+
         for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
             auto point = frame->m_points[i];
 
@@ -84,13 +84,17 @@ void CLayoutFrame::AddToResizeList() {
                 dependent = frame;
             }
         }
+
+        if (dependent) {
+            LayoutFrame::s_resizePendingList.LinkNode(this, STORM_LIST_LINK_BEFORE, dependent);
+
+            this->m_resizeCounter = 6;
+
+            return;
+        }
     }
 
-    if (dependent) {
-        LayoutFrame::s_resizePendingList.LinkNode(this, 2, dependent);
-    } else {
-        LayoutFrame::s_resizePendingList.LinkToTail(this);
-    }
+    LayoutFrame::s_resizePendingList.LinkToTail(this);
 
     this->m_resizeCounter = 6;
 }
