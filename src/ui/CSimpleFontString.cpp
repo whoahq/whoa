@@ -702,6 +702,13 @@ int32_t CSimpleFontString::SetFont(const char* fontName, float fontHeight, uint3
     return 1;
 }
 
+void CSimpleFontString::SetHeight(float height) {
+    this->CLayoutFrame::SetHeight(height);
+
+    this->m_cachedWidth = 0.0f;
+    this->m_cachedHeight = 0.0f;
+}
+
 void CSimpleFontString::SetIndentedWordWrap(bool a2) {
     // TODO
 }
@@ -835,6 +842,13 @@ void CSimpleFontString::SetTextLength(uint32_t a2) {
 
 void CSimpleFontString::SetNonWordWrap(int32_t a2) {
     // TODO
+}
+
+void CSimpleFontString::SetWidth(float width) {
+    this->CLayoutFrame::SetWidth(width);
+
+    this->m_cachedWidth = 0.0f;
+    this->m_cachedHeight = 0.0f;
 }
 
 void CSimpleFontString::UpdateString() {

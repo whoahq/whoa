@@ -48,6 +48,8 @@ class CSimpleFontString : public CSimpleRegion, public CSimpleFontable {
         virtual void OnColorChanged(bool a2);
         virtual void OnScreenSizeChanged();
         virtual void Draw(CRenderBatch* batch);
+        virtual void SetWidth(float width);
+        virtual void SetHeight(float height);
         virtual float GetWidth();
         virtual float GetHeight();
         virtual void OnFrameSizeChanged(const CRect& rect);
