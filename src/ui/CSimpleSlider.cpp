@@ -127,6 +127,13 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
     }
 }
 
+void CSimpleSlider::OnFrameSizeChanged(const CRect& rect) {
+    this->CSimpleFrame::OnFrameSizeChanged(rect);
+
+    this->m_changed = 1;
+}
+
+
 void CSimpleSlider::OnLayerHide() {
     this->m_buttonDown = 0;
 
