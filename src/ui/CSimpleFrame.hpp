@@ -159,6 +159,7 @@ class CSimpleFrame : public CScriptRegion {
         bool SetFrameScale(float scale, bool force);
         void SetFrameStrata(FRAME_STRATA strata);
         void SetHitRect();
+        void SetHitRectInsets(float left, float right, float top, float bottom);
         void SetParent(CSimpleFrame* parent);
         void Show();
         int32_t TestHitRect(const C2Vector& pt);

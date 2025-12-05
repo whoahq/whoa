@@ -265,7 +265,11 @@ void CSimpleFrame::LoadXML(XMLNode* node, CStatus* status) {
         }
 
         if (!SStrCmpI(child->GetName(), "HitRectInsets", 0x7FFFFFFFu)) {
-            // TODO
+            float left, right, top, bottom;
+
+            if (LoadXML_Insets(child, left, right, top, bottom, status)) {
+                this->SetHitRectInsets(left, right, top, bottom);
+            }
         }
 
         if (!SStrCmpI(child->GetName(), "Layers", 0x7FFFFFFFu)) {
@@ -1417,6 +1421,18 @@ void CSimpleFrame::SetHitRect() {
     this->m_hitRect.maxX = this->m_rect.maxX - this->m_hitOffset.maxX * this->m_layoutScale;
     this->m_hitRect.minY = this->m_rect.minY + this->m_hitOffset.minY * this->m_layoutScale;
     this->m_hitRect.maxY = this->m_rect.maxY - this->m_hitOffset.maxY * this->m_layoutScale;
+}
+
+void CSimpleFrame::SetHitRectInsets(float left, float right, float top, float bottom) {
+    this->m_hitOffset.minX = left;
+    this->m_hitOffset.maxX = right;
+    this->m_hitOffset.maxY = top;
+    this->m_hitOffset.minY = bottom;
+
+    this->m_hitRect.minX = this->m_rect.minX + (left * this->m_layoutScale);
+    this->m_hitRect.maxX = this->m_rect.maxX - (right * this->m_layoutScale);
+    this->m_hitRect.maxY = this->m_rect.maxY - (top * this->m_layoutScale);
+    this->m_hitRect.minY = this->m_rect.minY + (bottom * this->m_layoutScale);
 }
 
 void CSimpleFrame::SetParent(CSimpleFrame* parent) {
