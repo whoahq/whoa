@@ -427,10 +427,10 @@ int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5,
 
     while (node) {
         // <Include>
-        if (!SStrCmpI(node->GetName(), "Include", 0x7FFFFFFFu)) {
-            const char* v14 = node->GetAttributeByName("file");
+        if (!SStrCmpI(node->GetName(), "Include")) {
+            auto fileAttr = node->GetAttributeByName("file");
 
-            if (v14) {
+            if (fileAttr) {
                 const char* v15 = SStrChrR(v5, 92);
 
                 if (v15) {
@@ -439,21 +439,22 @@ int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5,
                     if (v13 < 260 ) {
                         SStrCopy(v27, v5, 260);
                         v27[v13] = 0;
-                        SStrPack(v27, v14, 260);
+                        SStrPack(v27, fileAttr, 260);
                     }
                 } else {
-                    SStrCopy(v27, v14, 260);
+                    SStrCopy(v27, fileAttr, 260);
                 }
 
                 FrameXML_ProcessFile(v27, a2, md5, &unkStatus);
             } else {
                 unkStatus.Add(STATUS_ERROR, "Element 'Include' without file attribute");
             }
-        // <Script>
-        } else if (!SStrCmpI(node->GetName(), "Script", 0x7FFFFFFFu)) {
-            const char* v16 = node->GetAttributeByName("file");
 
-            if (v16) {
+        // <Script>
+        } else if (!SStrCmpI(node->GetName(), "Script")) {
+            auto fileAttr = node->GetAttributeByName("file");
+
+            if (fileAttr) {
                 const char* v17 = SStrChrR(v5, 92);
 
                 if (v17) {
@@ -462,12 +463,12 @@ int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5,
                     if (v18 < 260) {
                         SStrCopy(v27, filePath, 260);
                         v27[v18] = 0;
-                        SStrPack(v27, v16, 260);
+                        SStrPack(v27, fileAttr, 260);
                     }
 
                     v5 = filePath;
                 } else {
-                    SStrCopy(v27, v16, 260);
+                    SStrCopy(v27, fileAttr, 260);
                 }
 
                 FrameScript_ExecuteFile(v27, a2, md5, &unkStatus);
@@ -479,31 +480,33 @@ int32_t FrameXML_ProcessFile(const char* filePath, const char* a2, MD5_CTX* md5,
                 SStrPrintf(v26, 271, "%s:<Scripts>", v5);
                 FrameScript_Execute(v19, v26, lua_tainted);
             }
-        // <Font>
-        } else if (!SStrCmpI(node->GetName(), "Font", 0x7FFFFFFFu)) {
-            const char* fontName = node->GetAttributeByName("name");
 
-            if (fontName && *fontName) {
-                CSimpleFont* font = CSimpleFont::GetFont(fontName, 1);
+        // <Font>
+        } else if (!SStrCmpI(node->GetName(), "Font")) {
+            auto nameAttr = node->GetAttributeByName("name");
+
+            if (nameAttr && *nameAttr) {
+                CSimpleFont* font = CSimpleFont::GetFont(nameAttr, 1);
                 font->LoadXML(node, status);
             } else {
                 unkStatus.Add(STATUS_WARNING, "Unnamed font node at top level");
             }
+
         // Everything else (frame nodes)
         } else {
-            const char* v22 = node->GetAttributeByName("virtual");
+            auto virtualAttr = node->GetAttributeByName("virtual");
 
-            if (!v22 || SStrCmpI(v22, "true", 0x7FFFFFFFu)) {
-                FrameXML_CreateFrame(node, nullptr, &unkStatus);
-                CLayoutFrame::ResizePending();
-            } else {
-                const char* v23 = node->GetAttributeByName("name");
+            if (virtualAttr && !SStrCmpI(virtualAttr, "true")) {
+                auto nameAttr = node->GetAttributeByName("name");
 
-                if (v23 && *v23) {
-                    FrameXML_StoreHashNode(node, v23, lua_tainted, &unkStatus);
+                if (nameAttr && *nameAttr) {
+                    FrameXML_StoreHashNode(node, nameAttr, lua_tainted, &unkStatus);
                 } else {
                     unkStatus.Add(STATUS_WARNING, "Unnamed virtual node at top level");
                 }
+            } else {
+                FrameXML_CreateFrame(node, nullptr, &unkStatus);
+                CLayoutFrame::ResizePending();
             }
         }
 
