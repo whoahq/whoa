@@ -510,7 +510,7 @@ void CSimpleTop::NotifyFrameMovedOrResized(CSimpleFrame* frame) {
 }
 
 int32_t CSimpleTop::RaiseFrame(CSimpleFrame* frame, int32_t checkOcclusion) {
-    while (frame && frame->m_flags & 0x01) {
+    while (frame && !(frame->m_flags & 0x1)) {
         frame = frame->m_parent;
     }
 
