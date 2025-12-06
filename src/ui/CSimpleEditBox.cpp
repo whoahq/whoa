@@ -502,7 +502,7 @@ void CSimpleEditBox::Insert(uint32_t chr) {
     }
 }
 
-void CSimpleEditBox::Insert(const char* a2, const char* a3, int32_t a4, int32_t a5, int32_t a6) {
+void CSimpleEditBox::Insert(const char* utf8string, const char* taintedstring, int32_t dispatchEvent, int32_t isIME, int32_t userInput) {
     if (
         (this->m_textInfo[this->m_cursorPos] & 0x80000000)
         && this->m_cursorPos > 0
@@ -512,49 +512,49 @@ void CSimpleEditBox::Insert(const char* a2, const char* a3, int32_t a4, int32_t 
     }
 
     if (this->m_highlightLeft != this->m_highlightRight) {
-        this->DeleteHighlight(a6);
+        this->DeleteHighlight(userInput);
     }
 
-    if (!a2) {
-        a2 = "";
+    if (!utf8string) {
+        utf8string = "";
     }
 
-    const char* v10 = a2;
+    const char* v10 = utf8string;
 
-    if (this->m_numeric && !a5 && *v10) {
+    if (this->m_numeric && !isIME && *v10) {
         while (*v10) {
-            int32_t v33;
+            int32_t chars;
 
-            if (SUniSGetUTF8(reinterpret_cast<const uint8_t*>(a2), &v33) - 48 > 9) {
+            if (SUniSGetUTF8(reinterpret_cast<const uint8_t*>(utf8string), &chars) - 48 > 9) {
                 return;
             }
 
-            v10 += v33;
+            v10 += chars;
         }
     }
 
-    int32_t v11 = SStrLen(a2);
+    int32_t amount = SStrLen(utf8string);
 
-    this->GrowText(this->m_textLength + v11);
+    this->GrowText(this->m_textLength + amount);
 
-    char* v14 = this->m_text + this->m_cursorPos;
+    char* insertPos = this->m_text + this->m_cursorPos;
 
     if (this->m_cursorPos < this->m_textLength) {
-        memcpy(v14 + v11, v14, this->m_textLength - this->m_cursorPos);
+        memcpy(insertPos + amount, insertPos, this->m_textLength - this->m_cursorPos);
     }
 
-    memcpy(v14, a2, v11);
+    memcpy(insertPos, utf8string, amount);
 
-    this->m_textLength += v11;
+    this->m_textLength += amount;
     *(this->m_text + this->m_textLength) = 0;
 
     int32_t v31 = this->m_cursorPos;
-    this->m_cursorPos += v11;
+    this->m_cursorPos += amount;
 
     this->UpdateTextInfo();
 
     this->m_dirtyFlags |= (0x1 | 0x4);
-    a6 ? this->m_dirtyFlags &= ~0x8 : this->m_dirtyFlags |= 0x8;
+    userInput ? this->m_dirtyFlags &= ~0x8 : this->m_dirtyFlags |= 0x8;
 
     if (this->m_textLengthMax >= 0 && this->m_textLength > this->m_textLengthMax) {
         // TODO
@@ -564,7 +564,7 @@ void CSimpleEditBox::Insert(const char* a2, const char* a3, int32_t a4, int32_t 
         // TODO
     }
 
-    if (a5) {
+    if (isIME) {
         this->m_highlightLeft = v31;
         this->m_highlightRight = std::min(this->m_textLength, this->m_cursorPos);
         this->m_dirtyFlags |= 2u;
@@ -572,11 +572,11 @@ void CSimpleEditBox::Insert(const char* a2, const char* a3, int32_t a4, int32_t 
 
     // TODO
     // if (!this->m_intC && this->m_textLength > 0) {
-    //     this->m_intC = a3;
+    //     this->m_intC = taintedstring;
     // }
 
-    if (a4) {
-        this->RunOnCharScript(a2);
+    if (dispatchEvent) {
+        this->RunOnCharScript(utf8string);
 
         // TODO
         // - check for spaces and run onSpacePressed script
