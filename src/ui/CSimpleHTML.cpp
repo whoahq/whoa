@@ -83,6 +83,7 @@ void CSimpleHTML::AddText(const char* text, HTML_TEXT_TYPE type, uint32_t justif
 
     string->SetJustifyH(justify);
     // TODO something with style flag 0x1000?
+    string->m_fontableFlags &= ~FLAG_STYLE_UPDATE;
 
     string->SetText(text, 1);
 
