@@ -173,7 +173,7 @@ void CSimpleEditBox::DeleteForward(int32_t a2) {
     }
 }
 
-void CSimpleEditBox::DeleteHighlight(int32_t a2) {
+void CSimpleEditBox::DeleteHighlight(int32_t userInput) {
     // TODO
 }
 
