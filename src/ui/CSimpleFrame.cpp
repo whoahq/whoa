@@ -1456,13 +1456,11 @@ void CSimpleFrame::SetParent(CSimpleFrame* parent) {
         this->SetFrameLevel(this->m_parent->m_level + 1, 1);
         this->UpdateScale(false);
 
-        // TODO
-        // alpha stuff?
-        // v7 = LOBYTE(this->m_parent->simpleframe_unk3) * BYTE1(this->m_parent->simpleframe_unk3) / 255;
-        // if ((_BYTE)v7 != BYTE1(this->simpleframe_unk3)) {
-        //     BYTE1(this->simpleframe_unk3) = v7;
-        //     (this->vfptr + 53)(this);
-        // }
+        uint8_t alpha = (this->m_parent->m_alpha * this->m_parent->alphaBD) / 255;
+        if (this->alphaBD != alpha) {
+            this->alphaBD = alpha;
+            this->UpdateAlpha();
+        }
 
         this->SetBeingScrolled((this->m_parent->m_flags >> 13) & 1, -1);
     } else {
@@ -1470,11 +1468,10 @@ void CSimpleFrame::SetParent(CSimpleFrame* parent) {
         this->SetFrameLevel(0, 1);
         this->UpdateScale(false);
 
-        // TODO
-        // if (BYTE1(this->simpleframe_unk3) != -1) {
-        //     BYTE1(this->simpleframe_unk3) = -1;
-        //     (this->vfptr + 53)(v3);
-        // }
+        if (this->alphaBD != 255) {
+            this->alphaBD = 255;
+            this->UpdateAlpha();
+        }
 
         this->SetBeingScrolled(0, -1);
     }
