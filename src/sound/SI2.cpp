@@ -369,6 +369,13 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
         return 15;
     }
 
+    // Get sound pointer
+
+    // Stack-allocated SESound is used as placeholder if no sound was provided by object. This
+    // needs to be declared here, at function scope, to avoid potential use-after-scope behavior
+    // in CompleteLoad() and Play() below.
+    SESound newSound = {};
+
     SESound* sound;
 
     if (object) {
@@ -376,7 +383,6 @@ int32_t SI2::PlaySoundKit(int32_t id, int32_t a2, SOUNDKITOBJECT* object, SoundK
 
         // TODO
     } else {
-        SESound newSound = {};
         sound = &newSound;
 
         // TODO
