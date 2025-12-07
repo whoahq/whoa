@@ -1,7 +1,7 @@
 #include "ui/CScriptRegion.hpp"
 #include "ui/CScriptObject.hpp"
 #include "ui/CScriptRegionScript.hpp"
-#include "ui/CSimpleTop.hpp"
+#include "ui/simple/CSimpleTop.hpp"
 #include "util/Lua.hpp"
 #include <common/XML.hpp>
 

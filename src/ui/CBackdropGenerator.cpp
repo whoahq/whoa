@@ -1,6 +1,6 @@
 #include "ui/CBackdropGenerator.hpp"
-#include "ui/CSimpleFrame.hpp"
-#include "ui/CSimpleTexture.hpp"
+#include "ui/simple/CSimpleFrame.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include "ui/LoadXML.hpp"
 #include "ui/Util.hpp"
 #include "util/CStatus.hpp"

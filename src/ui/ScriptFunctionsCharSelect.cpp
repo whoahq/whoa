@@ -1,9 +1,9 @@
-#include "ui/ScriptFunctions.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
 #include "object/client/Unit_C.hpp"
-#include "ui/CSimpleModelFFX.hpp"
+#include "ui/ScriptFunctions.hpp"
 #include "ui/Types.hpp"
+#include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>

@@ -1,10 +1,10 @@
 #include "ui/CRenderBatch.hpp"
-#include "ui/CSimpleFontString.hpp"
-#include "ui/CSimpleTexture.hpp"
 #include "gx/Coordinate.hpp"
 #include "gx/Font.hpp"
 #include "gx/Shader.hpp"
 #include "gx/font/CGxStringBatch.hpp"
+#include "ui/simple/CSimpleFontString.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include <cstdlib>
 #include <storm/Error.hpp>
 

@@ -1,7 +1,7 @@
 #include "ui/LoadXML.hpp"
 #include "gx/Coordinate.hpp"
-#include "ui/CSimpleFontString.hpp"
-#include "ui/CSimpleTexture.hpp"
+#include "ui/simple/CSimpleFontString.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include "util/CStatus.hpp"
 #include <common/XML.hpp>
 #include <storm/String.hpp>
