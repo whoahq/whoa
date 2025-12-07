@@ -8,7 +8,7 @@
 #include "glue/Types.hpp"
 #include "model/CM2Shared.hpp"
 #include "net/Connection.hpp"
-#include "ui/CSimpleModelFFX.hpp"
+#include "ui/simple/CSimpleModelFFX.hpp"
 
 int32_t CCharacterSelection::s_characterCount;
 TSGrowableArray<CharacterSelectionDisplay> CCharacterSelection::s_characterList;

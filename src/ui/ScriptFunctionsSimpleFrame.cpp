@@ -1,12 +1,12 @@
-#include "ui/ScriptFunctions.hpp"
-#include "ui/CSimpleFrame.hpp"
 #include "ui/FrameXML.hpp"
+#include "ui/ScriptFunctions.hpp"
 #include "ui/Types.hpp"
+#include "ui/simple/CSimpleFrame.hpp"
+#include "util/CStatus.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
-#include "util/CStatus.hpp"
-#include <cstdint>
 #include <common/XML.hpp>
+#include <cstdint>
 #include <storm/String.hpp>
 
 int32_t Script_GetText(lua_State* L) {

@@ -2,7 +2,7 @@
 #define UI_C_FRAME_STRATA_HPP
 
 #include "ui/CRenderBatch.hpp"
-#include "ui/CSimpleFrame.hpp"
+#include "ui/simple/CSimpleFrame.hpp"
 #include <cstdint>
 #include <storm/Array.hpp>
 #include <storm/List.hpp>

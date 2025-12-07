@@ -1,6 +1,7 @@
 file(GLOB PRIVATE_SOURCES
     "*.cpp"
     "game/*.cpp"
+    "simple/*.cpp"
 )
 
 add_library(ui STATIC

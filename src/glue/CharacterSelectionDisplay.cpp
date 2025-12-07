@@ -1,9 +1,9 @@
 #include "glue/CharacterSelectionDisplay.hpp"
+#include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
-#include "component/CCharacterComponent.hpp"
 #include "object/client/Player_C.hpp"
-#include "ui/CSimpleModelFFX.hpp"
+#include "ui/simple/CSimpleModelFFX.hpp"
 
 void CharacterSelectionDisplay::CreateModelData() {
     auto modelData = Player_C_GetModelName(this->m_info.raceID, this->m_info.sexID);
