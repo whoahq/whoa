@@ -40,6 +40,7 @@ target_link_libraries(client
         console
         db
         event
+        glue
         gx
         model
         net
