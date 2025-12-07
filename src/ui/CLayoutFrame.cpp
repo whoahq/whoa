@@ -291,6 +291,8 @@ void CLayoutFrame::DestroyLayout() {
     }
 
     this->m_resizeList.Clear();
+
+    LayoutFrame::s_resizePendingList.UnlinkNode(this);
 }
 
 void CLayoutFrame::FreePoints() {
