@@ -19,7 +19,6 @@ target_link_libraries(ui
         console
         db
         event
-        glue
         gx
         math
         model
