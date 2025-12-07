@@ -7,6 +7,7 @@
 #include "net/connection/ClientConnection.hpp"
 #include "sound/Interface.hpp"
 #include "ui/ScriptFunctions.hpp"
+#include "ui/ScriptFunctionsShared.hpp"
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/Lua.hpp"
