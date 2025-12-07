@@ -280,7 +280,7 @@ void CLayoutFrame::DestroyLayout() {
         auto frame = node->frame;
 
         for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
-            auto point = this->m_points[i];
+            auto point = frame->m_points[i];
 
             if (point && point->m_relative == this) {
                 point->MarkUnused();
