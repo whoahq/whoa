@@ -1,0 +1,8 @@
+#ifndef GLUE_C_CHARACTER_SELECTION_SCRIPT_HPP
+#define GLUE_C_CHARACTER_SELECTION_SCRIPT_HPP
+
+#define NUM_SCRIPT_FUNCTIONS_CHAR_SELECT 13
+
+void CharSelectRegisterScriptFunctions();
+
+#endif

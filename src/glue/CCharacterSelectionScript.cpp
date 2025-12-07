@@ -1,7 +1,7 @@
+#include "glue/CCharacterSelectionScript.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
 #include "object/client/Unit_C.hpp"
-#include "ui/ScriptFunctions.hpp"
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Lua.hpp"
@@ -259,7 +259,7 @@ int32_t Script_GetSelectBackgroundModel(lua_State* L) {
     return 1;
 }
 
-FrameScript_Method FrameScript::s_ScriptFunctions_CharSelect[NUM_SCRIPT_FUNCTIONS_CHAR_SELECT] = {
+static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_CHAR_SELECT] = {
     { "SetCharSelectModelFrame",    &Script_SetCharSelectModelFrame },
     { "SetCharSelectBackground",    &Script_SetCharSelectBackground },
     { "GetCharacterListUpdate",     &Script_GetCharacterListUpdate },
@@ -274,3 +274,12 @@ FrameScript_Method FrameScript::s_ScriptFunctions_CharSelect[NUM_SCRIPT_FUNCTION
     { "SetCharacterSelectFacing",   &Script_SetCharacterSelectFacing },
     { "GetSelectBackgroundModel",   &Script_GetSelectBackgroundModel }
 };
+
+void CharSelectRegisterScriptFunctions() {
+    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_CHAR_SELECT; ++i) {
+        FrameScript_RegisterFunction(
+            s_ScriptFunctions[i].name,
+            s_ScriptFunctions[i].method
+        );
+    }
+}

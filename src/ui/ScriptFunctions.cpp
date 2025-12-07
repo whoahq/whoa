@@ -13,42 +13,6 @@
 #include "ui/simple/CSimpleSlider.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 
-void CharacterCreateRegisterScriptFunctions() {
-    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_CHAR_CREATE; ++i) {
-        FrameScript_RegisterFunction(
-            FrameScript::s_ScriptFunctions_CharCreate[i].name,
-            FrameScript::s_ScriptFunctions_CharCreate[i].method
-        );
-    }
-}
-
-void CharSelectRegisterScriptFunctions() {
-    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_CHAR_SELECT; ++i) {
-        FrameScript_RegisterFunction(
-            FrameScript::s_ScriptFunctions_CharSelect[i].name,
-            FrameScript::s_ScriptFunctions_CharSelect[i].method
-        );
-    }
-}
-
-void GlueScriptEventsRegisterFunctions() {
-    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_GLUE_SCRIPT_EVENTS; ++i) {
-        FrameScript_RegisterFunction(
-            FrameScript::s_ScriptFunctions_GlueScriptEvents[i].name,
-            FrameScript::s_ScriptFunctions_GlueScriptEvents[i].method
-        );
-    }
-}
-
-void RealmListRegisterScriptFunctions() {
-    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_REALM_LIST; ++i) {
-        FrameScript_RegisterFunction(
-            FrameScript::s_ScriptFunctions_RealmList[i].name,
-            FrameScript::s_ScriptFunctions_RealmList[i].method
-        );
-    }
-}
-
 void RegisterSimpleFrameScriptMethods() {
     for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_SIMPLE_FRAME; ++i) {
         FrameScript_RegisterFunction(

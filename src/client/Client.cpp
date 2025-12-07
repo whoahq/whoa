@@ -9,7 +9,7 @@
 #include "console/Screen.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
-#include "glue/GlueScript.hpp"
+#include "glue/GlueScriptEvents.hpp"
 #include "gx/Screen.hpp"
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"

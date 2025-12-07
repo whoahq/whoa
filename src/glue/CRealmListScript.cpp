@@ -1,9 +1,10 @@
-#include "ui/ScriptFunctions.hpp"
+#include "glue/CRealmListScript.hpp"
 #include "client/ClientServices.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
 #include "util/StringTo.hpp"
+#include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
@@ -341,7 +342,7 @@ int32_t Script_IsInvalidLocale(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }
 
-FrameScript_Method FrameScript::s_ScriptFunctions_RealmList[NUM_SCRIPT_FUNCTIONS_REALM_LIST] = {
+static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_REALM_LIST] = {
     { "RequestRealmList",               &Script_RequestRealmList },
     { "RealmListUpdateRate",            &Script_RealmListUpdateRate },
     { "CancelRealmListQuery",           &Script_CancelRealmListQuery },
@@ -357,3 +358,12 @@ FrameScript_Method FrameScript::s_ScriptFunctions_RealmList[NUM_SCRIPT_FUNCTIONS
     { "IsTournamentRealmCategory",      &Script_IsTournamentRealmCategory },
     { "IsInvalidLocale",                &Script_IsInvalidLocale }
 };
+
+void RealmListRegisterScriptFunctions() {
+    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_REALM_LIST; ++i) {
+        FrameScript_RegisterFunction(
+            s_ScriptFunctions[i].name,
+            s_ScriptFunctions[i].method
+        );
+    }
+}

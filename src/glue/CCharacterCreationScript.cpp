@@ -1,4 +1,5 @@
-#include "ui/ScriptFunctions.hpp"
+#include "glue/CCharacterCreationScript.hpp"
+#include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
@@ -132,7 +133,7 @@ int32_t Script_GetCreateBackgroundModel(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }
 
-FrameScript_Method FrameScript::s_ScriptFunctions_CharCreate[NUM_SCRIPT_FUNCTIONS_CHAR_CREATE] = {
+static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_CHAR_CREATE] = {
     { "SetCharCustomizeFrame",          &Script_SetCharCustomizeFrame },
     { "SetCharCustomizeBackground",     &Script_SetCharCustomizeBackground },
     { "ResetCharCustomize",             &Script_ResetCharCustomize },
@@ -166,3 +167,12 @@ FrameScript_Method FrameScript::s_ScriptFunctions_CharCreate[NUM_SCRIPT_FUNCTION
     { "IsRaceClassRestricted",          &Script_IsRaceClassRestricted },
     { "GetCreateBackgroundModel",       &Script_GetCreateBackgroundModel }
 };
+
+void CharacterCreateRegisterScriptFunctions() {
+    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_CHAR_CREATE; ++i) {
+        FrameScript_RegisterFunction(
+            s_ScriptFunctions[i].name,
+            s_ScriptFunctions[i].method
+        );
+    }
+}

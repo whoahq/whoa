@@ -1,0 +1,8 @@
+#ifndef GLUE_C_CHARACTER_CREATION_SCRIPT_HPP
+#define GLUE_C_CHARACTER_CREATION_SCRIPT_HPP
+
+#define NUM_SCRIPT_FUNCTIONS_CHAR_CREATE 32
+
+void CharacterCreateRegisterScriptFunctions();
+
+#endif
