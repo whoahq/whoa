@@ -263,7 +263,7 @@ void FrameScript_Execute(int32_t function, FrameScript_Object* objectThis, int32
 
             lua_pushstring(L, argName);
             lua_rawget(L, LUA_GLOBALSINDEX);
-            lua_pushvalue(L, v20 + firstArg);
+            lua_pushvalue(L, v20 + i);
             lua_pushstring(L, argName);
             lua_insert(L, -2);
             lua_rawset(L, LUA_GLOBALSINDEX);
