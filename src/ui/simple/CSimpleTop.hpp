@@ -57,7 +57,7 @@ class CSimpleTop : public CLayoutFrame {
         frame_layout m_layout;
         CSimpleSortedArray<FRAMEPRIORITY*> m_eventqueue[NUM_SIMPLE_EVENTS][NUM_FRAME_STRATA];
         int32_t m_checkFocus = 1;
-        EVENT_DATA_MOUSE m_mousePosition;
+        EVENT_DATA_MOUSE m_mousePosition = {};
         int32_t (*m_mouseButtonCallback)(CMouseEvent*) = nullptr;
         int32_t (*m_mousePositionCallback)(CMouseEvent*) = nullptr;
         int32_t (*m_displaySizeCallback)(const CSizeEvent&) = nullptr;
