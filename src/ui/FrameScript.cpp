@@ -833,6 +833,8 @@ void FrameScript_SignalEvent(uint32_t index, const char* format, ...) {
 
     FrameScript_SignalEvent(index, FrameScript::s_context, argCount);
 
+    lua_settop(FrameScript::s_context, -1 - argCount);
+
     // TODO
     // if (lua_taintexpected && !lua_taintedclosure) {
     //     lua_tainted = v18;
