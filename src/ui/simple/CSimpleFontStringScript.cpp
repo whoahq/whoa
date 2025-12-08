@@ -246,6 +246,8 @@ int32_t CSimpleFontString_SetJustifyH(lua_State* L) {
 
     string->SetJustifyH(justifyH);
     string->m_fontableFlags &= ~FLAG_STYLE_UPDATE;
+
+    return 0;
 }
 
 int32_t CSimpleFontString_GetJustifyV(lua_State* L) {
