@@ -2,9 +2,8 @@
 #define GX_FONT_HPP
 
 #include "gx/font/FreeType.hpp"
+#include "gx/font/GxuFont.hpp"
 #include "gx/font/Types.hpp"
-#include "gx/Types.hpp"
-#include <cstdint>
 #include <common/Handle.hpp>
 #include <storm/Hash.hpp>
 
@@ -34,14 +33,11 @@ class TEXTBLOCK : public CHandleObject {
 };
 
 extern CGxShader* g_fontPixelShader[1];
-
 extern CGxShader* g_fontVertexShader[2];
-
-extern STORM_LIST(CGxString) g_freeStrings;
-
-extern STORM_LIST(CGxString) g_strings;
-
-void CalculateYOffset(uint32_t, uint32_t, FT_Face, uint32_t, int32_t*, int32_t*);
+extern uint32_t g_heightPixels;
+extern uint32_t g_widthPixels;
+extern float g_indentPixelWidth;
+extern float g_indentNormWidth;
 
 float GetCharacterWidth(const char*, uint32_t, uint32_t, CGxFont*, float);
 
@@ -52,52 +48,6 @@ float GetIndentPixelWidth(void);
 uint32_t GetScreenPixelHeight(void);
 
 uint32_t GetScreenPixelWidth(void);
-
-QUOTEDCODE GxuDetermineQuotedCode(const char*, int32_t&, CImVector*, uint32_t, uint32_t&);
-
-int32_t GxuFontAddToBatch(CGxStringBatch*, CGxString*);
-
-void GxuFontAddShadow(CGxString* string, const CImVector& color, const C2Vector& offset);
-
-CGxStringBatch* GxuFontCreateBatch(bool, bool);
-
-int32_t GxuFontCreateFont(const char*, float, CGxFont*&, uint32_t);
-
-int32_t GxuFontCreateString(CGxFont*, const char*, float, const C3Vector&, float, float, float, CGxString*&, EGxFontVJusts, EGxFontHJusts, uint32_t, const CImVector&, float, float);
-
-int32_t GxuFontDestroyBatch(CGxStringBatch*);
-
-void GxuFontDestroyFont(CGxFont*& font);
-
-void GxuFontDestroyString(CGxString*&);
-
-uint32_t GxuFontGetFontFlags(CGxFont*);
-
-const char* GxuFontGetFontName(CGxFont*);
-
-uint32_t GxuFontGetMaxCharsWithinWidth(CGxFont*, const char*, float, float, uint32_t, float*, float, float, float, uint32_t);
-
-uint32_t GxuFontGetMaxCharsWithinWidthAndHeight(CGxFont*, const char*, float, float, float, uint32_t, float, float, float, uint32_t);
-
-float GxuFontGetOneToOneHeight(CGxFont*);
-
-void GxuFontGetTextExtent(CGxFont* font, const char* text, uint32_t numBytes, float height, float* extent, float a6, float scale, float a8, uint32_t flags);
-
-float GxuFontGetWrappedTextHeight(CGxFont*, const char*, float, float, const C2Vector&, float, float, uint32_t);
-
-void GxuFontInitialize(void);
-
-void GxuFontRenderBatch(CGxStringBatch*);
-
-int32_t GxuFontSetStringColor(CGxString*, const CImVector&);
-
-void GxuFontSetStringPosition(CGxString* string, const C3Vector& position);
-
-void GxuFontUpdate();
-
-void GxuFontWindowSizeChanged(void);
-
-int32_t IGxuFontGlyphRenderGlyph(FT_Face, uint32_t, uint32_t, uint32_t, GLYPHBITMAPDATA*, int32_t, uint32_t);
 
 void TextBlockAddShadow(HTEXTBLOCK, CImVector, const C2Vector&);
 

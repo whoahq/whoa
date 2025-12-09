@@ -1,9 +1,105 @@
-#include "gx/FontInternal.hpp"
-#include "gx/Font.hpp"
+#include "gx/font/GxuFontInternal.hpp"
 #include "gx/font/CGxFont.hpp"
-#include <cmath>
+#include "gx/font/GxuFont.hpp"
 #include <storm/Error.hpp>
 #include <tempest/Math.hpp>
+#include <cmath>
+
+void CalculateYOffset(uint32_t pixelHeight, uint32_t a2, FT_Face face, uint32_t glyphHeight, int32_t* yOffset, int32_t* yStart) {
+    uint32_t v6 = 0;
+    int32_t v8 = 0;
+
+    if (glyphHeight <= pixelHeight) {
+        uint32_t v9 = face->glyph->bitmap_top;
+
+        if (v9 <= a2) {
+            v8 = a2 - v9;
+        } else {
+            v8 = 0;
+            v6 = v9 - a2;
+        }
+    }
+
+    uint32_t v10 = v8 <= 0 ? 0 : v8;
+    uint32_t v11 = pixelHeight - glyphHeight;
+
+    if (v11 >= v10) {
+        *yOffset = v6;
+        *yStart = v10;
+    } else {
+        *yOffset = pixelHeight - v10 - glyphHeight;
+        *yStart = v11;
+    }
+}
+
+int32_t IGxuFontGlyphRenderGlyph(FT_Face face, uint32_t pixelHeight, uint32_t code, uint32_t baseline, GLYPHBITMAPDATA* dataPtr, int32_t monochrome, uint32_t a7) {
+    STORM_ASSERT(face);
+    STORM_ASSERT(pixelHeight);
+    STORM_ASSERT(dataPtr);
+
+    if (!FT_Get_Char_Index(face, code)) {
+        return 0;
+    }
+
+    if (!FREETYPE_RenderGlyph(code, monochrome != 0, face)) {
+        return 0;
+    }
+
+    auto glyph = face->glyph;
+
+    uint32_t width = glyph->bitmap.width;
+    uint32_t height = std::min(static_cast<uint32_t>(glyph->bitmap.rows), pixelHeight);
+    size_t dataSize = glyph->bitmap.pitch * glyph->bitmap.rows;
+    auto srcData = glyph->bitmap.buffer;
+    uint32_t pitch = glyph->bitmap.pitch;
+
+    int32_t dummyGlyph = 0;
+
+    if (!width || !height || !srcData || !pitch || !dataSize) {
+        width = (pixelHeight + 3) >> 2;
+        height = pixelHeight;
+
+        if (!width) {
+            width = pixelHeight;
+        }
+
+        if (monochrome) {
+            pitch = (width + 7) & 0xFFFFFFF8;
+        } else {
+            pitch = width;
+        }
+
+        dataSize = pixelHeight * pitch;
+        dummyGlyph = 1;
+    }
+
+    void* data = SMemAlloc(dataSize, __FILE__, __LINE__, 0x0);
+
+    if (data) {
+        memset(data, 0, dataSize);
+    }
+
+    if (srcData) {
+        memcpy(data, srcData, dataSize);
+    }
+
+    dataPtr->m_data = data;
+    dataPtr->m_dataSize = dataSize;
+    dataPtr->m_glyphPitch = pitch;
+    dataPtr->m_glyphWidth = width;
+    dataPtr->m_glyphHeight = height;
+    dataPtr->m_glyphCellWidth = width + a7;
+    dataPtr->m_glyphAdvance = (double)(face->glyph->metrics.horiAdvance / 64) + 1.0;
+    dataPtr->m_glyphBearing = (double)face->glyph->metrics.horiBearingX * 0.015625;
+    dataPtr->m_yOffset = 0;
+    dataPtr->m_yStart = 0;
+
+    if (width && height && data && !dummyGlyph) {
+        CalculateYOffset(pixelHeight, baseline, face, height, &dataPtr->m_yOffset, &dataPtr->m_yStart);
+    }
+
+    return 1;
+}
 
 uint32_t InternalGetMaxCharsWithinWidth(CGxFont* face, const char* text, float height, float maxWidth, uint32_t lineBytes, float* extent, uint32_t flags, float a8, float scale, uint32_t* bytesInString, float* widthArray, float* widthArrayGuard) {
     STORM_ASSERT(face);
