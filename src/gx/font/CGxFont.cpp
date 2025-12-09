@@ -1,5 +1,6 @@
 #include "gx/font/CGxFont.hpp"
 #include "gx/font/FontFace.hpp"
+#include "gx/font/GxuFontInternal.hpp"
 #include "gx/Texture.hpp"
 #include <cmath>
 #include <cstring>
