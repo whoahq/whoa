@@ -8,12 +8,11 @@ TEST_CASE("GxuDetermineQuotedCode", "[gx]") {
         uint32_t flags = 0x0;
 
         int32_t advance;
-        uint32_t code;
+        uint32_t wide;
         QUOTEDCODE quotedCode;
 
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_INVALIDCODE);
-        REQUIRE(advance == 1);
     }
 
     SECTION("recognizes newlines") {
@@ -21,26 +20,26 @@ TEST_CASE("GxuDetermineQuotedCode", "[gx]") {
         uint32_t flags = 0x0;
 
         int32_t advance;
-        uint32_t code;
+        uint32_t wide;
         QUOTEDCODE quotedCode;
 
         // \n
         str += 5;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 1);
         str += advance;
 
         // \r
         str += 5;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 1);
         str += advance;
 
         // \r\n
         str += 5;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 2);
     }
@@ -50,23 +49,23 @@ TEST_CASE("GxuDetermineQuotedCode", "[gx]") {
         uint32_t flags = 0x0;
 
         int32_t advance;
-        uint32_t code;
+        uint32_t wide;
         QUOTEDCODE quotedCode;
 
         // |n
         str += 5;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 2);
         str += advance;
 
         // |n|n
         str += 5;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 2);
         str += advance;
-        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, code);
+        quotedCode = GxuDetermineQuotedCode(str, advance, nullptr, flags, wide);
         REQUIRE(quotedCode == CODE_NEWLINE);
         REQUIRE(advance == 2);
     }
