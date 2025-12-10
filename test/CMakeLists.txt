@@ -1,5 +1,11 @@
 if(WHOA_SYSTEM_MAC)
-    file(GLOB PRIVATE_SOURCES "Test.cpp" "stub/Mac.mm" "gx/*.cpp" "util/*.cpp")
+    file(GLOB PRIVATE_SOURCES
+        "Test.cpp"
+        "stub/Mac.mm"
+        "gx/*.cpp"
+        "gx/font/*.cpp"
+        "util/*.cpp"
+    )
 
     set_source_files_properties(${PRIVATE_SOURCES}
         PROPERTIES COMPILE_FLAGS "-x objective-c++"
@@ -20,7 +26,12 @@ if(WHOA_SYSTEM_MAC)
 endif()
 
 if(WHOA_SYSTEM_WIN OR WHOA_SYSTEM_LINUX)
-    file(GLOB PRIVATE_SOURCES "Test.cpp" "gx/*.cpp" "util/*.cpp")
+    file(GLOB PRIVATE_SOURCES
+        "Test.cpp"
+        "gx/*.cpp"
+        "gx/font/*.cpp"
+        "util/*.cpp"
+    )
 
     add_executable(WhoaTest ${PRIVATE_SOURCES})
 
