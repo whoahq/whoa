@@ -15,7 +15,13 @@ extern STORM_LIST(CGxFont) g_fonts;
 extern STORM_LIST(CGxString) g_freeStrings;
 extern STORM_LIST(CGxString) g_strings;
 
-QUOTEDCODE GxuDetermineQuotedCode(const char*, int32_t&, CImVector*, uint32_t, uint32_t&);
+#define FLAG_IGNORE_COLORS      0x100
+#define FLAG_IGNORE_NEWLINES    0x200
+#define FLAG_IGNORE_HYPERLINKS  0x400
+#define FLAG_IGNORE_PIPES       0x800
+#define FLAG_IGNORE_TEXTURES    0x1000
+
+QUOTEDCODE GxuDetermineQuotedCode(const char* text, int32_t& advance, CImVector* color, uint32_t flags, uint32_t& wide);
 
 void GxuFontAddShadow(CGxString* string, const CImVector& color, const C2Vector& offset);
 
