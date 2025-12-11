@@ -930,7 +930,7 @@ const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32
             luaL_error(L, "invalid format (width or precision too long)");
         }
 
-        // Copy subspecifier
+        // Copy subspecifier and specifier (len + 1)
 
         memcpy(&specifier[1], subspecifierStart, subspecifierLen + 1);
 
