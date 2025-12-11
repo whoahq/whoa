@@ -175,7 +175,19 @@ int32_t CSimpleFontString_SetText(lua_State* L) {
 }
 
 int32_t CSimpleFontString_SetFormattedText(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    if (!string->m_font) {
+        return luaL_error(L, "%s:SetFormattedText(): Font not set", string->GetDisplayName());
+    }
+
+    char buffer[4096];
+    auto text = FrameScript_Sprintf(L, 2, buffer, sizeof(buffer));
+
+    string->SetText(text, 1);
+
+    return 0;
 }
 
 int32_t CSimpleFontString_GetTextColor(lua_State* L) {
