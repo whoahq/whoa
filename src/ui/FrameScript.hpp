@@ -97,6 +97,8 @@ void FrameScript_SetPluralRule(PLURAL_RULE rule);
 
 void FrameScript_SignalEvent(uint32_t index, const char* format, ...);
 
+const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32_t bufferLen);
+
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
 
 void ScriptEventsInitialize();

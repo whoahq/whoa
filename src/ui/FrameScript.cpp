@@ -846,6 +846,207 @@ void FrameScript_SignalEvent(uint32_t index, const char* format, ...) {
     va_end(args);
 }
 
+const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32_t bufferLen) {
+    auto write = buffer;
+    auto availableBytes = bufferLen;
+
+    size_t formatLen;
+    auto format = luaL_checklstring(L, idx, &formatLen);
+    auto formatEnd = format + formatLen;
+
+    char specifier[128];
+
+    auto curIdx = idx;
+
+    while (format < formatEnd && availableBytes > 1) {
+        auto ch = *format++;
+
+        // Escaped %
+
+        if (ch == '%' && *format == '%') {
+            *write++ = '%';
+
+            format++;
+            availableBytes--;
+
+            continue;
+        }
+
+        // Non-specifier
+
+        if (ch != '%') {
+            *write++ = ch;
+
+            availableBytes--;
+
+            continue;
+        }
+
+        // Specifier
+
+        ch = *format;
+        specifier[0] = '%';
+
+        // Position specifier
+
+        if (ch >= '0' && ch <= '9' && format[1] == '$') {
+            curIdx = idx + (ch - '0') - 1;
+            format += 2;
+        }
+
+        curIdx++;
+
+        // Subspecifiers
+
+        auto subspecifierStart = format;
+
+        // Flags
+
+        while (*format == '-' || *format == '+' || *format == ' ' || *format == '#' || *format == '0') {
+            format++;
+        }
+
+        // Width
+
+        while (*format >= '0' && *format <= '9') {
+            format++;
+        }
+
+        // Precision
+
+        while (*format == '.' || *format == '-') {
+            format++;
+        }
+
+        while (*format >= '0' && *format <= '9') {
+            format++;
+        }
+
+        // Validate subspecifier
+
+        auto subspecifierLen = format - subspecifierStart;
+
+        if (subspecifierLen > 125) {
+            luaL_error(L, "invalid format (width or precision too long)");
+        }
+
+        // Copy subspecifier
+
+        memcpy(&specifier[1], subspecifierStart, subspecifierLen + 1);
+
+        // Terminate specifier
+
+        specifier[subspecifierLen + 2] = '\0';
+
+        // Evaluate specifier
+
+        ch = *format++;
+
+        switch (ch) {
+            // Floating point / scientific notation
+            case 'E':
+            case 'G':
+            case 'e':
+            case 'f':
+            case 'g': {
+                auto number = luaL_checknumber(L, curIdx);
+                auto written = SStrPrintf(write, availableBytes, specifier, number);
+
+                if (written > 0) {
+                    write += written;
+                    availableBytes -= written;
+                }
+
+                break;
+            }
+
+            // Floating point with decimal conversion
+            case 'F': {
+                // Replace with lowercase f
+                for (char* replace = specifier; *replace; replace++) {
+                    if (*replace == 'F') {
+                        *replace = 'f';
+                    }
+                }
+
+                auto number = luaL_checknumber(L, curIdx);
+                auto written = SStrPrintf(write, availableBytes, specifier, number);
+
+                if (written > 0) {
+                    // TODO lua_convertdecimal(write);
+                    write += written;
+                    availableBytes -= written;
+                }
+
+                break;
+            }
+
+            // Unsigned hex / octal / decimal
+            case 'X':
+            case 'o':
+            case 'u':
+            case 'x': {
+                auto number = static_cast<uint64_t>(luaL_checknumber(L, curIdx));
+                auto written = SStrPrintf(write, availableBytes, specifier, static_cast<uint32_t>(number));
+
+                if (written > 0) {
+                    write += written;
+                    availableBytes -= written;
+                }
+
+                break;
+            }
+
+            // Char
+            case 'c': {
+                *write++ = static_cast<char>(luaL_checknumber(L, curIdx));
+                availableBytes--;
+
+                break;
+            }
+
+            // Signed decimal
+            case 'd':
+            case 'i': {
+                auto number = luaL_checknumber(L, curIdx);
+                auto written = SStrPrintf(write, availableBytes, specifier, static_cast<int32_t>(number));
+
+                if (written > 0) {
+                    // TODO lua_convertdecimal(write);
+                    write += written;
+                    availableBytes -= written;
+                }
+
+                break;
+            }
+
+            // String
+            case 's': {
+                size_t stringLen;
+                auto string = luaL_checklstring(L, curIdx, &stringLen);
+                auto written = SStrPrintf(write, availableBytes, specifier, string);
+
+                if (written > 0) {
+                    write += written;
+                    availableBytes -= written;
+                }
+
+                break;
+            }
+
+            default: {
+                luaL_error(L, "invalid option in `format'");
+            }
+        }
+    }
+
+    // Terminate
+
+    write[0] = '\0';
+
+    return buffer;
+}
+
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event) {
     if (event->pendingSignalCount) {
         auto node = event->unregisterListeners.Head();
