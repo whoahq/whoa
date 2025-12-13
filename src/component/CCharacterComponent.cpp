@@ -544,7 +544,7 @@ void CCharacterComponent::PasteOpaque(void* srcTexture, const BlpPalPixel* srcPa
         auto srcMip = TextureCacheGetMip(srcTexture, curMipLevel);
         auto srcRow = &srcMip[(curSrcPos.y * curSrcWidth) + curSrcPos.x];
 
-        auto dstMip = reinterpret_cast<uint8_t*>(dstMips[curMipLevel + dstMipLevelOfs].mip[0]);
+        auto dstMip = reinterpret_cast<uint8_t*>(dstMips->mip[curMipLevel + dstMipLevelOfs]);
         auto dstRow = &dstMip[(curDstPos.y * curDstWidth) + (curDstPos.x * 4)];
 
         // Calculate the end of the source region
@@ -640,7 +640,7 @@ void CCharacterComponent::PasteTransparent1Bit(void* srcTexture, const BlpPalPix
         auto srcRow = &srcMip[(curSrcPos.y * curSrcWidth) + curSrcPos.x];
         auto srcAlphaRow = &srcMip[(curSrcWidth * curSrcHeight) + ((curSrcPos.y * curSrcWidth) + curSrcPos.x) / 8];
 
-        auto dstMip = reinterpret_cast<uint8_t*>(dstMips[curMipLevel + dstMipLevelOfs].mip[0]);
+        auto dstMip = reinterpret_cast<uint8_t*>(dstMips->mip[curMipLevel + dstMipLevelOfs]);
         auto dstRow = &dstMip[(curDstPos.y * curDstWidth) + (curDstPos.x * 4)];
 
         // Calculate the end of the source region
@@ -714,7 +714,7 @@ void CCharacterComponent::PasteTransparent8Bit(void* srcTexture, const BlpPalPix
         auto srcRow = &srcMip[(curSrcPos.y * curSrcWidth) + curSrcPos.x];
         auto srcAlphaRow = &srcMip[(curSrcWidth * curSrcHeight) + (curSrcPos.y * curSrcWidth) + curSrcPos.x];
 
-        auto dstMip = reinterpret_cast<uint8_t*>(dstMips[curMipLevel + dstMipLevelOfs].mip[0]);
+        auto dstMip = reinterpret_cast<uint8_t*>(dstMips->mip[curMipLevel + dstMipLevelOfs]);
         auto dstRow = &dstMip[(curDstPos.y * curDstWidth) + (curDstPos.x * 4)];
 
         // Calculate the end of the source region
@@ -810,7 +810,7 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
             ? CCharacterComponent::s_textureBufferCompressed
             : CCharacterComponent::s_textureBuffer;
 
-        texels = buffer[mipLevel].mip[0];
+        texels = buffer->mip[mipLevel];
 
         break;
     }
