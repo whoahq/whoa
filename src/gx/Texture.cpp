@@ -11,6 +11,11 @@
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
 
+#define ALIGN_PTR(ptr, align) \
+    ((void*)(((uintptr_t)(ptr) + ((uintptr_t)(align) - 1)) & ~((uintptr_t)(align) - 1)))
+
+#define MIPPED_IMG_ALIGN 16
+
 namespace Texture {
     int32_t s_createBlpAsync; // Invented name
     MipBits* s_mipBits;
@@ -505,19 +510,25 @@ MipBits* MippedImgAllocA(uint32_t fourCC, uint32_t width, uint32_t height, const
     uint32_t levelCount = CalcLevelCount(width, height);
     uint32_t levelDataSize = CalcLevelOffset(levelCount, width, height, fourCC);
 
-    MipBits* images = reinterpret_cast<MipBits*>(SMemAlloc(levelDataSize + sizeof(void*) * levelCount + 16, fileName, lineNumber, 0));
+    // Size must account for pointer array (MipBits::mip[]) + mip data + alignment
+    size_t imageSize = (sizeof(MipBits::mip) * levelCount) + levelDataSize + MIPPED_IMG_ALIGN;
+    auto imageData = static_cast<char*>(SMemAlloc(imageSize, fileName, lineNumber, 0x0));
 
-    uintptr_t v10 = (reinterpret_cast<uintptr_t>(images) + sizeof(void*) * levelCount + 15) & static_cast<uintptr_t>(-sizeof(void*));
-    uintptr_t offset = v10 - reinterpret_cast<uintptr_t>(images);
+    // Image (MipBits) is a dynamically sized array of mip pointers (MipBits::mip[])
+    auto image = reinterpret_cast<MipBits*>(imageData);
 
-    MipBits** ptr = reinterpret_cast<MipBits**>(images);
+    // Mip data starts after mip pointers
+    auto mipBase = imageData + (sizeof(MipBits::mip) * levelCount);
+    auto alignedMipBase = static_cast<char*>(ALIGN_PTR(mipBase, MIPPED_IMG_ALIGN));
 
+    // Populate mip pointers for each mip level
+    uint32_t levelOffset = 0;
     for (int32_t level = 0; level < levelCount; level++) {
-        ptr[level] = images + offset;
-        offset += CalcLevelSize(level, width, height, fourCC);
+        image->mip[level] = reinterpret_cast<C4Pixel*>(alignedMipBase + levelOffset);
+        levelOffset += CalcLevelSize(level, width, height, fourCC);
     }
 
-    return images;
+    return image;
 }
 
 uint32_t MippedImgCalcSize(uint32_t fourCC, uint32_t width, uint32_t height) {
