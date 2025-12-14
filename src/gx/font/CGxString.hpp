@@ -19,7 +19,7 @@ struct VERT {
 class TEXTLINETEXTURE {
     public:
         // Static functions
-        static TEXTLINETEXTURE* NewTextLineTexture(void);
+        static TEXTLINETEXTURE* NewTextLineTexture();
         static void Recycle(TEXTLINETEXTURE* ptr);
 
         // Member variables
@@ -66,20 +66,20 @@ class CGxString : public TSLinkedNode<CGxString> {
         // Member functions
         ~CGxString();
         void AddShadow(const C2Vector& offset, const CImVector& color);
-        uint32_t CalculateVertsNeeded(int32_t);
-        bool CheckGeometry(void);
-        void ClearInstanceData(void);
-        void CreateGeometry(void);
+        uint32_t CalculateVertsNeeded(int32_t line);
+        bool CheckGeometry();
+        void ClearInstanceData();
+        void CreateGeometry();
         void HandleScreenSizeChange();
-        int32_t Initialize(float, const C3Vector&, float, float, CGxFont*, const char*, EGxFontVJusts, EGxFontHJusts, float, uint32_t, const CImVector&, float);
-        void InitializeTextLine(const char*, uint32_t, CImVector&, const C3Vector&, uint32_t*, EMBEDDEDPARSEINFO&);
-        void InitializeViewTranslation(void);
+        int32_t Initialize(float fontHeight, const C3Vector& position, float blockWidth, float blockHeight, CGxFont* face, const char* text, EGxFontVJusts vertJust, EGxFontHJusts horzJust, float spacing, uint32_t flags, const CImVector& color, float scale);
+        void InitializeTextLine(const char* currentText, uint32_t numBytes, CImVector& workingColor, const C3Vector& position, uint32_t* texturePagesUsedFlag, EMBEDDEDPARSEINFO& info);
+        void InitializeViewTranslation();
         void Recycle();
-        void SetColor(const CImVector&);
-        int32_t SetGradient(int32_t, int32_t);
+        void SetColor(const CImVector& color);
+        int32_t SetGradient(int32_t startCharacter, int32_t length);
         void SetStringPosition(const C3Vector& position);
         void Tick();
-        void WriteGeometry(CGxVertexPCT*, int32_t, int32_t, int32_t);
+        void WriteGeometry(CGxVertexPCT* buf, int32_t line, int32_t ofs, int32_t size);
 };
 
 #endif
