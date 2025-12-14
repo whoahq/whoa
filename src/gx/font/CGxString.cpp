@@ -130,7 +130,17 @@ CGxString* CGxString::GetNewString(int32_t linkOnList) {
 }
 
 CGxString::~CGxString() {
-    // TODO
+    for (int32_t i = 0; i < 8; i++) {
+        if (this->m_textLines[i]) {
+            TEXTLINETEXTURE::Recycle(this->m_textLines[i]);
+        }
+    }
+
+    STORM_FREE(this->m_text);
+
+    // TODO hyperlink info
+    // TODO embedded textures
+    // TODO gradient info
 }
 
 void CGxString::AddShadow(const C2Vector& offset, const CImVector& color) {
