@@ -70,6 +70,7 @@ class CGxString : public TSLinkedNode<CGxString> {
         bool CheckGeometry(void);
         void ClearInstanceData(void);
         void CreateGeometry(void);
+        void HandleScreenSizeChange();
         int32_t Initialize(float, const C3Vector&, float, float, CGxFont*, const char*, EGxFontVJusts, EGxFontHJusts, float, uint32_t, const CImVector&, float);
         void InitializeTextLine(const char*, uint32_t, CImVector&, const C3Vector&, uint32_t*, EMBEDDEDPARSEINFO&);
         void InitializeViewTranslation(void);

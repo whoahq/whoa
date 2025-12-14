@@ -338,6 +338,16 @@ void CGxString::CreateGeometry() {
     }
 }
 
+void CGxString::HandleScreenSizeChange() {
+    if (this->m_flags & 0x4) {
+        this->m_requestedFontHeight = GxuFontGetOneToOneHeight(this->m_currentFace);
+    }
+
+    this->m_currentFontHeight = std::max(2.0f / g_heightPixels, this->m_requestedFontHeight);
+
+    this->ClearInstanceData();
+}
+
 int32_t CGxString::Initialize(float fontHeight, const C3Vector& position, float blockWidth, float blockHeight, CGxFont* face, const char* text, EGxFontVJusts vertJust, EGxFontHJusts horzJust, float spacing, uint32_t flags, const CImVector& color, float scale) {
     uint32_t textLen = SStrLen(text) + 1;
     if (textLen > this->m_textLen) {
