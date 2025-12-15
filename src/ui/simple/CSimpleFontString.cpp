@@ -540,7 +540,23 @@ void CSimpleFontString::LoadXML(XMLNode* node, CStatus* status) {
             this->m_fontableFlags &= ~FLAG_COLOR_UPDATE;
 
         } else if (!SStrCmpI(child->GetName(), "Shadow", STORM_MAX_STR)) {
-            // TODO
+            CImVector color = { 0x00, 0x00, 0x00, 0xFF };
+
+            auto colorNode = child->GetChildByName("Color");
+            if (colorNode) {
+                LoadXML_Color(colorNode, color);
+            }
+
+            C2Vector offset = { 0.001f, -0.001f };
+
+            auto offsetNode = child->GetChildByName("Offset");
+            if (offsetNode) {
+                LoadXML_Dimensions(offsetNode, offset.x, offset.y, status);
+            }
+
+            this->AddShadow(color, offset);
+
+            this->m_fontableFlags &= ~FLAG_SHADOW_UPDATE;
         }
     }
 
