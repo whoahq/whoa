@@ -8,9 +8,12 @@
 #include <cstdint>
 
 class CGxFont;
+class CGxShader;
 class CGxString;
 class CGxStringBatch;
 
+extern CGxShader* g_fontPixelShader[1];
+extern CGxShader* g_fontVertexShader[2];
 extern STORM_LIST(CGxFont) g_fonts;
 extern STORM_LIST(CGxString) g_freeStrings;
 extern STORM_LIST(CGxString) g_strings;

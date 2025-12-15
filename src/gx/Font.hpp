@@ -3,37 +3,13 @@
 
 #include "gx/font/FreeType.hpp"
 #include "gx/font/GxuFont.hpp"
-#include "gx/font/Types.hpp"
-#include <common/Handle.hpp>
-#include <storm/Hash.hpp>
-
-#define FONT_OUTLINE 0x1
-#define FONT_MONOCHROME 0x2
-#define FONT_THICKOUTLINE 0x4
+#include "gx/font/TextBlock.hpp"
+#include <cstdint>
 
 class C2Vector;
 class C3Vector;
 class CGxFont;
-class CGxShader;
-class CGxString;
-class CGxStringBatch;
-class CImVector;
-struct GLYPHBITMAPDATA;
 
-class FONTHASHOBJ : public CHandleObject, public TSHashObject<FONTHASHOBJ, HASHKEY_STR> {
-    public:
-        CGxFont* font = nullptr;
-        virtual ~FONTHASHOBJ();
-};
-
-class TEXTBLOCK : public CHandleObject {
-    public:
-        CGxString* string = nullptr;
-        virtual ~TEXTBLOCK();
-};
-
-extern CGxShader* g_fontPixelShader[1];
-extern CGxShader* g_fontVertexShader[2];
 extern uint32_t g_heightPixels;
 extern uint32_t g_widthPixels;
 extern float g_indentPixelWidth;
@@ -43,37 +19,11 @@ float GetCharacterWidth(const char*, uint32_t, uint32_t, CGxFont*, float);
 
 float GetIndentNormWidth();
 
-float GetIndentPixelWidth(void);
+float GetIndentPixelWidth();
 
-uint32_t GetScreenPixelHeight(void);
+uint32_t GetScreenPixelHeight();
 
-uint32_t GetScreenPixelWidth(void);
-
-void TextBlockAddShadow(HTEXTBLOCK, CImVector, const C2Vector&);
-
-HTEXTBLOCK TextBlockCreate(HTEXTFONT fontHandle, const char* text, const CImVector& color, const C3Vector& position, float fontHeight, float blockWidth, float blockHeight, uint32_t flags, float charSpacing, float lineSpacing, float scale);
-
-HTEXTFONT TextBlockGenerateFont(const char*, uint32_t, float);
-
-uint32_t TextBlockGetFontFlags(HTEXTFONT);
-
-const char* TextBlockGetFontName(HTEXTFONT);
-
-CGxFont* TextBlockGetFontPtr(HTEXTFONT);
-
-uint32_t TextBlockGetMaxCharsWithinWidth(HTEXTFONT, const char*, float, float, uint32_t, float*, float, float, float, uint32_t);
-
-uint32_t TextBlockGetMaxCharsWithinWidthAndHeight(HTEXTFONT, const char*, float, float, float, uint32_t, float, float, float, uint32_t);
-
-CGxString* TextBlockGetStringPtr(HTEXTBLOCK);
-
-void TextBlockGetTextExtent(HTEXTFONT, const char*, uint32_t, float, float*, float, float, float, uint32_t);
-
-float TextBlockGetWrappedTextHeight(HTEXTFONT, const char*, float, float, const C2Vector&, float, float, uint32_t);
-
-void TextBlockSetStringPos(HTEXTBLOCK stringHandle, const C3Vector& pos);
-
-void TextBlockUpdateColor(HTEXTBLOCK, const CImVector&);
+uint32_t GetScreenPixelWidth();
 
 float PixelToScreenHeight(int32_t);
 

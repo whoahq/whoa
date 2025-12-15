@@ -12,6 +12,8 @@
 #include <tempest/Math.hpp>
 #include <tempest/Rect.hpp>
 
+CGxShader* g_fontPixelShader[1];
+CGxShader* g_fontVertexShader[2];
 STORM_LIST(CGxFont) g_fonts;
 STORM_LIST(CGxString) g_freeStrings;
 STORM_LIST(CGxString) g_strings;
