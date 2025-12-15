@@ -303,12 +303,13 @@ int32_t GxuFontCreateFont(const char* name, float fontHeight, CGxFont*& face, ui
 }
 
 int32_t GxuFontCreateString(CGxFont* face, const char* text, float fontHeight, const C3Vector& position, float blockWidth, float blockHeight, float spacing, CGxString*& string, EGxFontVJusts vertJustification, EGxFontHJusts horzJustification, uint32_t flags, const CImVector& color, float charSpacing, float scale) {
-    STORM_ASSERT(face);
-    STORM_ASSERT(text);
-    // TODO
-    // STORM_ASSERT(fontHeight || (flags & EGxStringFlags_FixedSize));
-    STORM_ASSERT(vertJustification < GxVJ_Last);
-    STORM_ASSERT(horzJustification < GxHJ_Last);
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(face);
+    STORM_VALIDATE(text);
+    STORM_VALIDATE(fontHeight || (flags & EGxStringFlags_FixedSize));
+    STORM_VALIDATE(vertJustification < GxVJ_Last);
+    STORM_VALIDATE(horzJustification < GxHJ_Last);
+    STORM_VALIDATE_END;
 
     auto newString = CGxString::GetNewString(1);
 
