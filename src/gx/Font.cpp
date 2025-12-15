@@ -202,15 +202,16 @@ void TextBlockAddShadow(HTEXTBLOCK string, CImVector color, const C2Vector& offs
     GxuFontAddShadow(TextBlockGetStringPtr(string), color, offset);
 }
 
-HTEXTBLOCK TextBlockCreate(HTEXTFONT font, const char* text, const CImVector& color, const C3Vector& pos, float fontHeight, float blockWidth, float blockHeight, uint32_t flags, float charSpacing, float lineSpacing, float scale) {
-    STORM_ASSERT(font);
-    STORM_ASSERT(text);
+HTEXTBLOCK TextBlockCreate(HTEXTFONT fontHandle, const char* text, const CImVector& color, const C3Vector& position, float fontHeight, float blockWidth, float blockHeight, uint32_t flags, float charSpacing, float lineSpacing, float scale) {
+    STORM_VALIDATE_BEGIN;
+    STORM_VALIDATE(fontHandle);
+    STORM_VALIDATE(text);
+    STORM_VALIDATE_END;
 
-    auto m = SMemAlloc(sizeof(TEXTBLOCK), __FILE__, __LINE__, 0x0);
-    auto textBlock = new (m) TEXTBLOCK();
+    auto textBlock = STORM_NEW(TEXTBLOCK)();
 
-    C3Vector position = { 0.0f, 0.0f, pos.z };
-    DDCToNDC(pos.x, pos.y, &position.x, &position.y);
+    C3Vector ndcPosition = { 0.0f, 0.0f, position.z };
+    DDCToNDC(position.x, position.y, &ndcPosition.x, &ndcPosition.y);
 
     EGxFontHJusts hjust = GxHJ_Center;
 
@@ -228,28 +229,28 @@ HTEXTBLOCK TextBlockCreate(HTEXTFONT font, const char* text, const CImVector& co
         vjust = GxVJ_Bottom;
     }
 
-    uint32_t v16 = ConvertStringFlags(flags);
+    uint32_t stringFlags = ConvertStringFlags(flags);
 
-    float v15 = DDCToNDCWidth(charSpacing);
-    float v20 = DDCToNDCHeight(lineSpacing);
-    float v21 = DDCToNDCHeight(blockHeight);
-    float v22 = DDCToNDCWidth(blockWidth);
-    float v23 = DDCToNDCHeight(fontHeight);
+    float ndcCharSpacing = DDCToNDCWidth(charSpacing);
+    float ndcLineSpacing = DDCToNDCHeight(lineSpacing);
+    float ndcBlockHeight = DDCToNDCHeight(blockHeight);
+    float ndcBlockWidth = DDCToNDCWidth(blockWidth);
+    float ndcFontHeight = DDCToNDCHeight(fontHeight);
 
     GxuFontCreateString(
-        reinterpret_cast<FONTHASHOBJ*>(font)->font,
+        reinterpret_cast<FONTHASHOBJ*>(fontHandle)->font,
         text,
-        v23,
-        position,
-        v22,
-        v21,
-        v20,
+        ndcFontHeight,
+        ndcPosition,
+        ndcBlockWidth,
+        ndcBlockHeight,
+        ndcLineSpacing,
         textBlock->string,
         vjust,
         hjust,
-        v16,
+        stringFlags,
         color,
-        v15,
+        ndcCharSpacing,
         scale
     );
 

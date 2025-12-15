@@ -51,7 +51,7 @@ uint32_t GetScreenPixelWidth(void);
 
 void TextBlockAddShadow(HTEXTBLOCK, CImVector, const C2Vector&);
 
-HTEXTBLOCK TextBlockCreate(HTEXTFONT, const char*, const CImVector&, const C3Vector&, float, float, float, uint32_t, float, float, float);
+HTEXTBLOCK TextBlockCreate(HTEXTFONT fontHandle, const char* text, const CImVector& color, const C3Vector& position, float fontHeight, float blockWidth, float blockHeight, uint32_t flags, float charSpacing, float lineSpacing, float scale);
 
 HTEXTFONT TextBlockGenerateFont(const char*, uint32_t, float);
 
