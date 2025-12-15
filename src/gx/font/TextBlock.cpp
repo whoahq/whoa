@@ -76,7 +76,7 @@ void TextBlockAddShadow(HTEXTBLOCK string, CImVector color, const C2Vector& offs
     C2Vector ndcOffset;
     DDCToNDC(offset.x, offset.y, &ndcOffset.x, &ndcOffset.y);
 
-    GxuFontAddShadow(TextBlockGetStringPtr(string), color, offset);
+    GxuFontAddShadow(TextBlockGetStringPtr(string), color, ndcOffset);
 }
 
 HTEXTBLOCK TextBlockCreate(HTEXTFONT fontHandle, const char* text, const CImVector& color, const C3Vector& position, float fontHeight, float blockWidth, float blockHeight, uint32_t flags, float charSpacing, float lineSpacing, float scale) {
