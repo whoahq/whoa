@@ -21,6 +21,17 @@ enum QUOTEDCODE {
     NUM_QUOTEDCODES = 0x9
 };
 
+enum EGxStringFlags {
+    EGxStringFlags_DropShadow   = 0x1,
+    EGxStringFlags_NoWrap       = 0x2,
+    EGxStringFlags_FixedSize    = 0x4,
+    EGxStringFlags_FixedColor   = 0x8,
+    EGxStringFlags_FixedSpacing = 0x10,
+    EGxStringFlags_Flag20       = 0x20,
+    EGxStringFlags_NoSpaceWrap  = 0x40,
+    EGxStringFlags_Billboarded  = 0x80,
+};
+
 struct EMBEDDEDPARSEINFO {
     // TODO
 };

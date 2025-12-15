@@ -52,7 +52,7 @@ class CGxString : public TSLinkedNode<CGxString> {
         EGxFontVJusts m_vertJust = GxVJ_Top;
         EGxFontHJusts m_horzJust = GxHJ_Left;
         float m_spacing = 0.0f;
-        uint32_t m_flags = 0;
+        uint32_t m_flags = 0x0;
         uint32_t m_texturePagesUsed = 0;
         int32_t m_textureEvicted = 0;
         int32_t m_lastGradientStart = -1;
