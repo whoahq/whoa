@@ -40,6 +40,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Download Fixtures
+        run: aws s3 cp --endpoint-url ${{ env.AWS_ENDPOINT_URL }} s3://reliquaryhq-whoa/fixture.tgz  test/fixture/
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.STORAGE_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.STORAGE_AWS_SECRET_ACCESS_KEY }}
+          AWS_ENDPOINT_URL: ${{ vars.STORAGE_AWS_ENDPOINT_URL }}
+
+      - name: Unpack Fixtures
+        run: tar -xvzf fixture.tgz
+        working-directory: test/fixture
+
       - name: Prepare
         run: mkdir build
 

@@ -7,3 +7,5 @@
 /cmake-build-*
 /out
 
+/test/fixture/*
+!/test/fixture/README.md
