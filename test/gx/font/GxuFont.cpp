@@ -2,6 +2,28 @@
 #include <cstdint>
 #include "catch.hpp"
 
+TEST_CASE("GxuFontCreateFont", "[gx]") {
+    SECTION("creates a font") {
+        const char* name = "font\\FRIZQT__.TTF";
+        CGxFont* face;
+
+        auto result = GxuFontCreateFont(name, 0.5f, face, 0x0);
+        REQUIRE(result != 0);
+        REQUIRE(face != nullptr);
+
+        GxuFontDestroyFont(face);
+    }
+
+    SECTION("fails to create a font that doesn't exist") {
+        const char* name = "font\\DOESNOTEXIST.TTF";
+        CGxFont* face;
+
+        auto result = GxuFontCreateFont(name, 0.5f, face, 0x0);
+        REQUIRE(result == 0);
+        REQUIRE(face == nullptr);
+    }
+}
+
 TEST_CASE("GxuDetermineQuotedCode", "[gx]") {
     SECTION("does not recognize non-quoted code") {
         const char* str = "test1";
