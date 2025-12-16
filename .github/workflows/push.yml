@@ -67,5 +67,5 @@ jobs:
         working-directory: build
 
       - name: Test
-        run: ./dist/bin/${{ matrix.config.test_path }}
-        working-directory: build
+        run: ../../build/dist/bin/${{ matrix.config.test_path }}
+        working-directory: test/fixture
