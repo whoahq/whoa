@@ -86,7 +86,8 @@ void CSimpleFontString::AddShadow(const CImVector& shadowColor, const C2Vector& 
 
         if (this->m_string) {
             auto shadowColor = this->m_shadowColor;
-            // TODO alpha manipulation
+            auto alpha = (this->m_parent->m_alpha * this->m_parent->alphaBD) / 255;
+            shadowColor.a = (shadowColor.a * alpha) / 255;
 
             auto shadowOffset = this->m_shadowOffset;
             shadowOffset.x *= this->m_layoutScale;
