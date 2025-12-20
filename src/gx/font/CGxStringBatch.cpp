@@ -140,8 +140,9 @@ void BATCHEDRENDERFONTDESC::RenderBatch() {
     }
 
     int32_t maxBatchCapacity = 2048;
+    int32_t batchCapacity = maxBatchCapacity;
 
-    CGxBuf* vertexStream = g_theGxDevicePtr->BufStream(GxPoolTarget_Vertex, 0x18, maxBatchCapacity);
+    CGxBuf* vertexStream = g_theGxDevicePtr->BufStream(GxPoolTarget_Vertex, sizeof(CGxVertexPCT), maxBatchCapacity);
     char* vertexData = g_theGxDevicePtr->BufLock(vertexStream);
     CGxVertexPCT* vertexBuf = reinterpret_cast<CGxVertexPCT*>(vertexData);
 
@@ -149,47 +150,53 @@ void BATCHEDRENDERFONTDESC::RenderBatch() {
         auto& textureCache = this->m_face->m_textureCache[i];
         auto texture = textureCache.m_texture;
 
-        if (texture) {
-            auto gxTex = TextureGetGxTex(reinterpret_cast<CTexture*>(texture), 1, nullptr);
+        if (!texture) {
+            continue;
+        }
 
-            if (gxTex) {
-                GxRsSet(GxRs_Texture0, gxTex);
+        auto gxTex = TextureGetGxTex(reinterpret_cast<CTexture*>(texture), 1, nullptr);
 
-                for (auto string = this->m_strings.Head(); string; string = this->m_strings.Next(string)) {
-                    auto line = string->m_textLines[i];
+        if (!gxTex) {
+            continue;
+        }
 
-                    if (line) {
-                        int32_t vertsNeeded = string->CalculateVertsNeeded(i);
-                        int32_t batchOffset = 0;
-                        int32_t batchCapacity = maxBatchCapacity;
+        GxRsSet(GxRs_Texture0, gxTex);
 
-                        while (vertsNeeded) {
-                            int32_t batchCount = std::min(vertsNeeded, batchCapacity);
+        for (auto string = this->m_strings.Head(); string; string = this->m_strings.Next(string)) {
+            auto line = string->m_textLines[i];
 
-                            string->WriteGeometry(vertexBuf, i, batchOffset, batchCount);
+            if (!line) {
+                continue;
+            }
 
-                            vertsNeeded -= batchCount;
-                            batchOffset += batchCount;
-                            batchCapacity -= batchCount;
-                            vertexBuf += batchCount;
+            int32_t vertsNeeded = string->CalculateVertsNeeded(i);
+            int32_t sliceOffset = 0;
 
-                            if (!batchCapacity) {
-                                vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity);
-                                batchCapacity = maxBatchCapacity;
-                            }
-                        }
+            while (vertsNeeded) {
+                int32_t sliceSize = std::min(vertsNeeded, batchCapacity);
 
-                        if (batchCapacity != maxBatchCapacity) {
-                            vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity - batchCapacity);
-                            batchCapacity = maxBatchCapacity;
-                        }
-                    }
+                string->WriteGeometry(vertexBuf, i, sliceOffset, sliceSize);
+
+                vertsNeeded -= sliceSize;
+                sliceOffset += sliceSize;
+                batchCapacity -= sliceSize;
+                vertexBuf += sliceSize;
+
+                if (!batchCapacity) {
+                    vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity);
+                    batchCapacity = maxBatchCapacity;
                 }
             }
         }
+
+        // Render used portion of buffer and reset
+        if (batchCapacity != maxBatchCapacity) {
+            vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity - batchCapacity);
+            batchCapacity = maxBatchCapacity;
+        }
     }
 
-    g_theGxDevicePtr->BufUnlock(vertexStream, 0);
+    GxBufUnlock(vertexStream, 0);
 }
 
 CGxStringBatch::~CGxStringBatch() {
