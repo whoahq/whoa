@@ -28,7 +28,7 @@ void TEXTLINETEXTURE::Recycle(TEXTLINETEXTURE* ptr) {
     }
 }
 
-void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool a7, bool a8, int32_t ofs, int32_t size) {
+void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool hasShadow, bool a8, int32_t ofs, int32_t size) {
     if (!size || !this->m_vert.Count()) {
         return;
     }
@@ -47,7 +47,7 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
         size = v24;
     }
 
-    if (a7) {
+    if (hasShadow) {
         C3Vector shadowTranslation = {
             viewTranslation.x + floor(ScreenToPixelWidth(0, shadowOffset.x)),
             viewTranslation.y + floor(ScreenToPixelHeight(0, shadowOffset.y)),
