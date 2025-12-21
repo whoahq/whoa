@@ -146,8 +146,8 @@ void BATCHEDRENDERFONTDESC::RenderBatch() {
     char* vertexData = g_theGxDevicePtr->BufLock(vertexStream);
     CGxVertexPCT* vertexBuf = reinterpret_cast<CGxVertexPCT*>(vertexData);
 
-    for (int32_t i = 0; i < 8; i++) {
-        auto& textureCache = this->m_face->m_textureCache[i];
+    for (int32_t lineIndex = 0; lineIndex < 8; lineIndex++) {
+        auto& textureCache = this->m_face->m_textureCache[lineIndex];
         auto texture = textureCache.m_texture;
 
         if (!texture) {
@@ -163,19 +163,19 @@ void BATCHEDRENDERFONTDESC::RenderBatch() {
         GxRsSet(GxRs_Texture0, gxTex);
 
         for (auto string = this->m_strings.Head(); string; string = this->m_strings.Next(string)) {
-            auto line = string->m_textLines[i];
+            auto line = string->m_textLines[lineIndex];
 
             if (!line) {
                 continue;
             }
 
-            int32_t vertsNeeded = string->CalculateVertsNeeded(i);
+            int32_t vertsNeeded = string->CalculateVertsNeeded(lineIndex);
             int32_t sliceOffset = 0;
 
             while (vertsNeeded) {
                 int32_t sliceCount = std::min(vertsNeeded, batchCapacity);
 
-                string->WriteGeometry(vertexBuf, i, sliceOffset, sliceCount);
+                string->WriteGeometry(vertexBuf, lineIndex, sliceOffset, sliceCount);
 
                 vertsNeeded -= sliceCount;
                 sliceOffset += sliceCount;

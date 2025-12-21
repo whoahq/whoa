@@ -27,7 +27,7 @@ class TEXTLINETEXTURE {
         TSGrowableArray<CImVector> m_colors;
 
         // Member functions
-        void WriteGeometry(CGxVertexPCT*, const CImVector&, const C2Vector&, const CImVector&, const C3Vector&, bool hasShadow, bool, int32_t vertexOffset, int32_t vertexCount);
+        void WriteGeometry(CGxVertexPCT* buffer, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool hasShadow, bool a8, int32_t vertexOffset, int32_t vertexCount);
 };
 
 class CGxString : public TSLinkedNode<CGxString> {
@@ -79,7 +79,7 @@ class CGxString : public TSLinkedNode<CGxString> {
         int32_t SetGradient(int32_t startCharacter, int32_t length);
         void SetStringPosition(const C3Vector& position);
         void Tick();
-        void WriteGeometry(CGxVertexPCT* buf, int32_t line, int32_t ofs, int32_t size);
+        void WriteGeometry(CGxVertexPCT* buffer, int32_t lineIndex, int32_t vertexOffset, int32_t vertexCount);
 };
 
 #endif

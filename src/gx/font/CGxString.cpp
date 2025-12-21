@@ -641,20 +641,20 @@ void CGxString::Tick() {
     }
 }
 
-void CGxString::WriteGeometry(CGxVertexPCT* buf, int32_t line, int32_t ofs, int32_t size) {
-    auto textLine = this->m_textLines[line];
+void CGxString::WriteGeometry(CGxVertexPCT* buffer, int32_t lineIndex, int32_t vertexOffset, int32_t vertexCount) {
+    auto textLine = this->m_textLines[lineIndex];
 
     if (textLine) {
         textLine->WriteGeometry(
-            buf,
+            buffer,
             this->m_fontColor,
             this->m_shadowOffset,
             this->m_shadowColor,
             this->m_viewTranslation,
             this->m_flags & EGxStringFlags_DropShadow,
             this->m_flags & EGxStringFlags_Flag20,
-            ofs,
-            size
+            vertexOffset,
+            vertexCount
         );
     }
 }
