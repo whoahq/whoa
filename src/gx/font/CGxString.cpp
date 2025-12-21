@@ -28,8 +28,8 @@ void TEXTLINETEXTURE::Recycle(TEXTLINETEXTURE* ptr) {
     }
 }
 
-void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool hasShadow, bool a8, int32_t ofs, int32_t size) {
-    if (!size || !this->m_vert.Count()) {
+void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buffer, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool hasShadow, bool a8, int32_t vertexOffset, int32_t vertexCount) {
+    if (!vertexCount || !this->m_vert.Count()) {
         return;
     }
 
@@ -37,14 +37,14 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
         ? this->m_colors.Count()
         : 0;
 
-    if (ofs >= this->m_vert.Count()) {
+    if (vertexOffset >= this->m_vert.Count()) {
         return;
     }
 
-    uint32_t v24 = this->m_vert.Count() - ofs;
+    uint32_t v24 = this->m_vert.Count() - vertexOffset;
 
-    if (size >= v24) {
-        size = v24;
+    if (vertexCount >= v24) {
+        vertexCount = v24;
     }
 
     if (hasShadow) {
@@ -54,19 +54,19 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
             viewTranslation.z
         };
 
-        auto color = colorCount ? this->m_colors[ofs] : fontColor;
+        auto color = colorCount ? this->m_colors[vertexOffset] : fontColor;
 
-        for (int32_t i = 0; i < size; i++) {
-            auto& vert = this->m_vert[i + ofs];
+        for (int32_t i = 0; i < vertexCount; i++) {
+            auto& vertex = this->m_vert[vertexOffset + i];
 
             C3Vector p = {
-                vert.vc.x + shadowTranslation.x,
-                vert.vc.y + shadowTranslation.y,
-                vert.vc.z + shadowTranslation.z
+                vertex.vc.x + shadowTranslation.x,
+                vertex.vc.y + shadowTranslation.y,
+                vertex.vc.z + shadowTranslation.z
             };
 
-            buf->p = p;
-            buf->tc[0] = vert.tc;
+            buffer->p = p;
+            buffer->tc[0] = vertex.tc;
 
             auto formattedShadowColor = shadowColor;
             if (a8 && colorCount) {
@@ -75,9 +75,9 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
                 );
             }
             GxFormatColor(formattedShadowColor);
-            buf->c = formattedShadowColor;
+            buffer->c = formattedShadowColor;
 
-            buf++;
+            buffer++;
         }
     }
 
@@ -85,10 +85,10 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
     //     // TODO
     // }
 
-    for (int32_t i = 0; i < size; i++) {
-        auto& vert = this->m_vert[i + ofs];
+    for (int32_t i = 0; i < vertexCount; i++) {
+        auto& vertex = this->m_vert[vertexOffset + i];
 
-        auto color = colorCount ? this->m_colors[i + ofs] : fontColor;
+        auto color = colorCount ? this->m_colors[vertexOffset + i] : fontColor;
         GxFormatColor(color);
 
         // if (BATCHEDRENDERFONTDESC::s_billboarded) {
@@ -97,17 +97,17 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buf, const CImVector& fontColo
         // }
 
         C3Vector p = {
-            vert.vc.x + viewTranslation.x,
-            vert.vc.y + viewTranslation.y,
-            vert.vc.z + viewTranslation.z
+            vertex.vc.x + viewTranslation.x,
+            vertex.vc.y + viewTranslation.y,
+            vertex.vc.z + viewTranslation.z
         };
 
-        buf->p = p;
-        buf->tc[0] = vert.tc;
+        buffer->p = p;
+        buffer->tc[0] = vertex.tc;
 
-        buf->c = color;
+        buffer->c = color;
 
-        buf++;
+        buffer++;
     }
 }
 
