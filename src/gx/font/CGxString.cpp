@@ -37,77 +37,88 @@ void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buffer, const CImVector& fontC
         ? this->m_colors.Count()
         : 0;
 
-    if (vertexOffset >= this->m_vert.Count()) {
-        return;
-    }
-
-    uint32_t v24 = this->m_vert.Count() - vertexOffset;
-
-    if (vertexCount >= v24) {
-        vertexCount = v24;
-    }
+    // Drop shadows
 
     if (hasShadow) {
-        C3Vector shadowTranslation = {
-            viewTranslation.x + floor(ScreenToPixelWidth(0, shadowOffset.x)),
-            viewTranslation.y + floor(ScreenToPixelHeight(0, shadowOffset.y)),
-            viewTranslation.z
-        };
+        if (vertexOffset < this->m_vert.Count()) {
+            int32_t availableVertexCount = this->m_vert.Count() - vertexOffset;
+            int32_t shadowVertexCount = vertexCount >= availableVertexCount ? availableVertexCount : vertexCount;
 
-        auto color = colorCount ? this->m_colors[vertexOffset] : fontColor;
+            C3Vector shadowTranslation = {
+                viewTranslation.x + floor(ScreenToPixelWidth(0, shadowOffset.x)),
+                viewTranslation.y + floor(ScreenToPixelHeight(0, shadowOffset.y)),
+                viewTranslation.z
+            };
 
-        for (int32_t i = 0; i < vertexCount; i++) {
+            auto color = colorCount ? this->m_colors[vertexOffset] : fontColor;
+
+            for (int32_t i = 0; i < shadowVertexCount; i++) {
+                auto& vertex = this->m_vert[vertexOffset + i];
+
+                C3Vector p = {
+                    vertex.vc.x + shadowTranslation.x,
+                    vertex.vc.y + shadowTranslation.y,
+                    vertex.vc.z + shadowTranslation.z
+                };
+
+                buffer->p = p;
+                buffer->tc[0] = vertex.tc;
+
+                auto formattedShadowColor = shadowColor;
+                if (a8 && colorCount) {
+                    formattedShadowColor.a = static_cast<uint8_t>(
+                        (static_cast<float>(formattedShadowColor.a) * static_cast<float>(color.a)) / 65536.0f
+                    );
+                }
+                GxFormatColor(formattedShadowColor);
+                buffer->c = formattedShadowColor;
+
+                buffer++;
+            }
+
+            vertexCount -= shadowVertexCount;
+            if (vertexOffset + shadowVertexCount >= this->m_vert.Count()) {
+                vertexOffset = 0;
+            }
+        } else {
+            vertexOffset -= this->m_vert.Count();
+        }
+    }
+
+    // Characters
+
+    if (vertexCount && vertexOffset < this->m_vert.Count()) {
+        int32_t availableVertexCount = this->m_vert.Count() - vertexOffset;
+        int32_t characterVertexCount = vertexCount >= availableVertexCount ? availableVertexCount : vertexCount;
+
+        // if (BATCHEDRENDERFONTDESC::s_billboarded) {
+        //     // TODO
+        // }
+
+        for (int32_t i = 0; i < characterVertexCount; i++) {
             auto& vertex = this->m_vert[vertexOffset + i];
 
+            auto color = colorCount ? this->m_colors[vertexOffset + i] : fontColor;
+            GxFormatColor(color);
+
+            // if (BATCHEDRENDERFONTDESC::s_billboarded) {
+            //     // TODO
+            //     continue;
+            // }
+
             C3Vector p = {
-                vertex.vc.x + shadowTranslation.x,
-                vertex.vc.y + shadowTranslation.y,
-                vertex.vc.z + shadowTranslation.z
+                vertex.vc.x + viewTranslation.x,
+                vertex.vc.y + viewTranslation.y,
+                vertex.vc.z + viewTranslation.z
             };
 
             buffer->p = p;
             buffer->tc[0] = vertex.tc;
 
-            auto formattedShadowColor = shadowColor;
-            if (a8 && colorCount) {
-                formattedShadowColor.a = static_cast<uint8_t>(
-                    (static_cast<float>(formattedShadowColor.a) * static_cast<float>(color.a)) / 65536.0f
-                );
-            }
-            GxFormatColor(formattedShadowColor);
-            buffer->c = formattedShadowColor;
+            buffer->c = color;
 
             buffer++;
         }
-    }
-
-    // if (BATCHEDRENDERFONTDESC::s_billboarded) {
-    //     // TODO
-    // }
-
-    for (int32_t i = 0; i < vertexCount; i++) {
-        auto& vertex = this->m_vert[vertexOffset + i];
-
-        auto color = colorCount ? this->m_colors[vertexOffset + i] : fontColor;
-        GxFormatColor(color);
-
-        // if (BATCHEDRENDERFONTDESC::s_billboarded) {
-        //     // TODO
-        //     continue;
-        // }
-
-        C3Vector p = {
-            vertex.vc.x + viewTranslation.x,
-            vertex.vc.y + viewTranslation.y,
-            vertex.vc.z + viewTranslation.z
-        };
-
-        buffer->p = p;
-        buffer->tc[0] = vertex.tc;
-
-        buffer->c = color;
-
-        buffer++;
     }
 }
 
