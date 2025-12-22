@@ -1,5 +1,7 @@
 file(GLOB PRIVATE_SOURCES
     "*.cpp"
+    "mpq/*.cpp"
+    "mpq/*.c"
 )
 
 if(WHOA_SYSTEM_MAC)
@@ -19,6 +21,7 @@ add_library(util STATIC
 target_include_directories(util
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
+        ${CMAKE_SOURCE_DIR}/src/util/mpq
         ${ZLIB_INCLUDE_DIRS}
         ${BZIP2_INCLUDE_DIRS}
 )

@@ -1,6 +1,5 @@
 #include "util/Mpq.hpp"
-#include <bzlib.h>
-#include <zlib.h>
+#include "util/mpq/Decompress.hpp"
 #include <algorithm>
 #include <cctype>
 #include <cstring>
@@ -17,9 +16,6 @@ namespace {
     constexpr uint32_t MPQ_FILE_COMPRESSED = 0x00000200;
     constexpr uint32_t MPQ_FILE_ENCRYPTED = 0x00010000;
     constexpr uint32_t MPQ_FILE_SINGLE_UNIT = 0x01000000;
-
-    constexpr uint8_t MPQ_COMP_ZLIB = 0x02;
-    constexpr uint8_t MPQ_COMP_BZIP2 = 0x08;
 
 #pragma pack(push, 1)
     struct MpqUserDataHeader {
@@ -144,62 +140,6 @@ namespace {
         if (locale == "zhCN") return 0x0804;
         if (locale == "zhTW") return 0x0404;
         return 0;
-    }
-
-    bool DecompressZlib(const uint8_t* in, size_t inSize, uint8_t* out, size_t outSize) {
-        uLongf destLen = static_cast<uLongf>(outSize);
-        int result = uncompress(out, &destLen, in, static_cast<uLongf>(inSize));
-        return result == Z_OK && destLen == outSize;
-    }
-
-    bool DecompressBzip2(const uint8_t* in, size_t inSize, uint8_t* out, size_t outSize) {
-        unsigned int destLen = static_cast<unsigned int>(outSize);
-        int result = BZ2_bzBuffToBuffDecompress(
-            reinterpret_cast<char*>(out),
-            &destLen,
-            const_cast<char*>(reinterpret_cast<const char*>(in)),
-            static_cast<unsigned int>(inSize),
-            0,
-            0
-        );
-        return result == BZ_OK && destLen == outSize;
-    }
-
-    bool DecompressBlock(const uint8_t* in, size_t inSize, uint8_t* out, size_t outSize) {
-        if (inSize == outSize) {
-            std::memcpy(out, in, outSize);
-            return true;
-        }
-
-        if (inSize == 0) {
-            return false;
-        }
-
-        uint8_t type = in[0];
-        const uint8_t* payload = in + 1;
-        size_t payloadSize = inSize - 1;
-
-        if (type == 0) {
-            if (payloadSize != outSize) {
-                return false;
-            }
-            std::memcpy(out, payload, outSize);
-            return true;
-        }
-
-        if ((type & (type - 1)) != 0) {
-            return false;
-        }
-
-        if (type == MPQ_COMP_ZLIB) {
-            return DecompressZlib(payload, payloadSize, out, outSize);
-        }
-
-        if (type == MPQ_COMP_BZIP2) {
-            return DecompressBzip2(payload, payloadSize, out, outSize);
-        }
-
-        return false;
     }
 
     struct MpqArchive {
@@ -345,7 +285,7 @@ namespace {
                 }
 
                 if (block->flags & MPQ_FILE_COMPRESSED) {
-                    if (!DecompressBlock(raw.data(), raw.size(), buffer.data(), buffer.size())) {
+                    if (!MpqCompression::DecompressBlock(raw.data(), raw.size(), buffer.data(), buffer.size())) {
                         return false;
                     }
                 } else {
@@ -390,7 +330,7 @@ namespace {
                     }
 
                     uint8_t* outPtr = buffer.data() + i * sectorSize;
-                    if (!DecompressBlock(raw.data(), raw.size(), outPtr, outSize)) {
+                    if (!MpqCompression::DecompressBlock(raw.data(), raw.size(), outPtr, outSize)) {
                         if (raw.size() == outSize) {
                             std::memcpy(outPtr, raw.data(), outSize);
                         } else {
