@@ -19,6 +19,8 @@ add_library(util STATIC
 target_include_directories(util
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
+        ${ZLIB_INCLUDE_DIRS}
+        ${BZIP2_INCLUDE_DIRS}
 )
 
 target_link_libraries(util
@@ -28,6 +30,8 @@ target_link_libraries(util
         common
         storm
         tempest
+        ${ZLIB_LIBRARIES}
+        ${BZIP2_LIBRARIES}
 )
 
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)

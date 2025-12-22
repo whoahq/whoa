@@ -26,6 +26,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 include(lib/system/cmake/system.cmake)
 
+find_package(ZLIB REQUIRED)
+find_package(BZip2 REQUIRED)
+
 # Some templates abuse offsetof
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")

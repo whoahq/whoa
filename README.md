@@ -22,7 +22,7 @@ Assuming all went well, you should see a `dist/bin` directory appear in the `bui
 
 ## Running
 
-Whoa doesn't currently support reading from MPQ archives. Instead, it assumes you are launching the Whoa executable from the root of a fully extracted MPQ archive set for World of Warcraft 3.3.5a (build 12340). You can obtain a valid set of MPQ archives to extract by installing World of Warcraft 3.3.5a from legally purchased original install media. Whoa does not provide any copy of game data.
+Whoa can read MPQ archives directly, so launch it from the root of a World of Warcraft 3.3.5a (build 12340) install (the `Data` directory contains MPQs). Fully extracted MPQ data also works. You can obtain a valid set of MPQ archives by installing World of Warcraft 3.3.5a from legally purchased original install media. Whoa does not provide any copy of game data.
 
 Assuming all goes well, you should be greeted by the login screen, complete with its flying dragon animation loop.
 

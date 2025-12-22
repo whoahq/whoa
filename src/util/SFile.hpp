@@ -1,10 +1,9 @@
 #ifndef UTIL_S_FILE_HPP
 #define UTIL_S_FILE_HPP
 
+#include <cstddef>
 #include <cstdint>
-#include <cstdlib>
 #include <fstream>
-#include <iostream>
 
 class SArchive;
 struct SOVERLAPPED;
@@ -27,6 +26,8 @@ class SFile {
         // Member variables
         const char* m_filename;
         std::ifstream* m_stream; // TODO Proper implementation
+        uint8_t* m_buffer;
+        size_t m_offset;
         std::streamsize m_size; // TODO Proper implementation
 };
 

@@ -49,6 +49,8 @@ CGxTex* TextureAllocGxTex(EGxTexTarget, uint32_t, uint32_t, uint32_t, EGxTexForm
 
 MipBits* TextureAllocMippedImg(PIXEL_FORMAT pixelFormat, uint32_t width, uint32_t height);
 
+bool MippedImgSet(MipBits* image, uint32_t fourCC, uint32_t width, uint32_t height);
+
 HTEXTURE TextureCacheGetTexture(char*, char*, CGxTexFlags);
 
 HTEXTURE TextureCacheGetTexture(const CImVector&);

@@ -29,8 +29,67 @@ int32_t CBLPFile::Lock2(const char* fileName, PIXEL_FORMAT format, uint32_t mipL
 
     switch (this->m_header.colorEncoding) {
         case COLOR_PAL:
-            // TODO
-            return 0;
+            if (format != PIXEL_ARGB8888) {
+                return 0;
+            }
+
+            {
+                uint32_t width = this->m_header.width >> mipLevel;
+                uint32_t height = this->m_header.height >> mipLevel;
+
+                if (!width) {
+                    width = 1;
+                }
+
+                if (!height) {
+                    height = 1;
+                }
+
+                uint32_t pixelCount = width * height;
+                auto indices = reinterpret_cast<uint8_t*>(mipData);
+                const uint8_t* alpha = nullptr;
+
+                if (this->m_header.alphaSize) {
+                    alpha = indices + pixelCount;
+                }
+
+                const BlpPalPixel* palette = this->m_header.extended.palette;
+                auto out = reinterpret_cast<uint32_t*>(data);
+
+                for (uint32_t i = 0; i < pixelCount; ++i) {
+                    const auto& pal = palette[indices[i]];
+                    uint8_t a = 0xFF;
+
+                    switch (this->m_header.alphaSize) {
+                        case 1: {
+                            uint8_t byte = alpha[i >> 3];
+                            a = ((byte >> (i & 7)) & 0x1) ? 0xFF : 0x00;
+                            break;
+                        }
+
+                        case 4: {
+                            uint8_t byte = alpha[i >> 1];
+                            uint8_t nibble = (i & 1) ? (byte >> 4) : (byte & 0x0F);
+                            a = static_cast<uint8_t>((nibble << 4) | nibble);
+                            break;
+                        }
+
+                        case 8:
+                            a = alpha[i];
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    out[i] = (static_cast<uint32_t>(a) << 24)
+                        | (static_cast<uint32_t>(static_cast<uint8_t>(pal.r)) << 16)
+                        | (static_cast<uint32_t>(static_cast<uint8_t>(pal.g)) << 8)
+                        | static_cast<uint32_t>(static_cast<uint8_t>(pal.b));
+                }
+            }
+
+            return 1;
 
         case COLOR_DXT:
             switch (format) {
@@ -96,8 +155,9 @@ int32_t CBLPFile::LockChain2(const char* fileName, PIXEL_FORMAT format, MipBits*
             v14 = 1;
         }
 
-        // TODO
-        // MippedImgSet(format, v14, v13, mipLevel);
+        if (!MippedImgSet(images, format, v14, v13)) {
+            return 0;
+        }
     } else {
         uint32_t v9 = this->m_header.height >> mipLevel;
 
