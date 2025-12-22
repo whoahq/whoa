@@ -173,23 +173,26 @@ void BATCHEDRENDERFONTDESC::RenderBatch() {
             int32_t sliceOffset = 0;
 
             while (vertsNeeded) {
+                // Clamp slice vertex count to remaining batch capacity
                 int32_t sliceCount = std::min(vertsNeeded, batchCapacity);
 
+                // Write string vertices within slice to buffer
                 string->WriteGeometry(vertexBuf, lineIndex, sliceOffset, sliceCount);
 
                 vertsNeeded -= sliceCount;
-                sliceOffset += sliceCount;
                 batchCapacity -= sliceCount;
+                sliceOffset += sliceCount;
                 vertexBuf += sliceCount;
 
-                if (!batchCapacity) {
+                // Render full buffer and reset capacity
+                if (batchCapacity == 0) {
                     vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity);
                     batchCapacity = maxBatchCapacity;
                 }
             }
         }
 
-        // Render used portion of buffer and reset
+        // Render used portion of buffer and reset capacity
         if (batchCapacity != maxBatchCapacity) {
             vertexBuf = this->UnlockVertexPtrAndRender(vertexStream, maxBatchCapacity - batchCapacity);
             batchCapacity = maxBatchCapacity;
