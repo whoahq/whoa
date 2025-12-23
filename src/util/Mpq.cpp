@@ -449,7 +449,7 @@ namespace {
         }
 
         void AddPatchSeries(const std::string& prefix) {
-            for (int i = 9; i >= 1; --i) {
+            for (int32_t i = 9; i >= 1; --i) {
                 std::string name = prefix + std::to_string(i) + ".MPQ";
                 AddIfExists(name);
             }
