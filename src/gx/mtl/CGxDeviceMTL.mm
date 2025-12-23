@@ -10,6 +10,40 @@
 #import <Metal/Metal.h>
 #import <QuartzCore/CAMetalLayer.h>
 
+namespace {
+    struct DebugVertex {
+        float position[2];
+        float color[4];
+    };
+
+    const DebugVertex kDebugTriangle[] = {
+        { { -0.6f, -0.6f }, { 1.0f, 0.2f, 0.2f, 1.0f } },
+        { {  0.0f,  0.6f }, { 0.2f, 1.0f, 0.2f, 1.0f } },
+        { {  0.6f, -0.6f }, { 0.2f, 0.2f, 1.0f, 1.0f } }
+    };
+
+    const char kDebugShaderSource[] =
+        "#include <metal_stdlib>\n"
+        "using namespace metal;\n"
+        "struct VertexIn {\n"
+        "    packed_float2 position;\n"
+        "    packed_float4 color;\n"
+        "};\n"
+        "struct VertexOut {\n"
+        "    float4 position [[position]];\n"
+        "    float4 color;\n"
+        "};\n"
+        "vertex VertexOut vs_main(uint vid [[vertex_id]], const device VertexIn* v [[buffer(0)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = float4(v[vid].position, 0.0, 1.0);\n"
+        "    out.color = v[vid].color;\n"
+        "    return out;\n"
+        "}\n"
+        "fragment float4 ps_main(VertexOut in [[stage_in]]) {\n"
+        "    return in.color;\n"
+        "}\n";
+}
+
 CGxDeviceMTL::CGxDeviceMTL() : CGxDevice() {
     this->m_api = GxApi_Metal;
     this->m_caps.m_colorFormat = GxCF_rgba;
@@ -151,6 +185,63 @@ int32_t CGxDeviceMTL::DeviceSetFormat(const CGxFormat& format) {
     return 1;
 }
 
+void CGxDeviceMTL::EnsureDebugPipeline() {
+    if (this->m_pipeline || !this->m_device || !this->m_layer) {
+        return;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto layer = (CAMetalLayer*)this->m_layer;
+
+    NSString* source = [[NSString alloc] initWithUTF8String:kDebugShaderSource];
+    NSError* error = nil;
+    id<MTLLibrary> library = [device newLibraryWithSource:source options:nil error:&error];
+    [source release];
+
+    if (!library) {
+        return;
+    }
+
+    id<MTLFunction> vs = [library newFunctionWithName:@"vs_main"];
+    id<MTLFunction> ps = [library newFunctionWithName:@"ps_main"];
+    if (!vs || !ps) {
+        if (vs) {
+            [vs release];
+        }
+        if (ps) {
+            [ps release];
+        }
+        [library release];
+        return;
+    }
+
+    MTLRenderPipelineDescriptor* desc = [MTLRenderPipelineDescriptor new];
+    desc.vertexFunction = vs;
+    desc.fragmentFunction = ps;
+    desc.colorAttachments[0].pixelFormat = layer.pixelFormat;
+
+    id<MTLRenderPipelineState> pipeline = [device newRenderPipelineStateWithDescriptor:desc error:&error];
+    [desc release];
+    [vs release];
+    [ps release];
+    [library release];
+
+    if (!pipeline) {
+        return;
+    }
+
+    id<MTLBuffer> buffer = [device newBufferWithBytes:kDebugTriangle
+                                              length:sizeof(kDebugTriangle)
+                                             options:MTLResourceStorageModeShared];
+    if (!buffer) {
+        return;
+    }
+
+    this->m_pipeline = pipeline;
+    this->m_vertexBuffer = buffer;
+    this->m_vertexCount = static_cast<uint32_t>(sizeof(kDebugTriangle) / sizeof(kDebugTriangle[0]));
+}
+
 void* CGxDeviceMTL::DeviceWindow() {
     return &this->m_window;
 }
@@ -204,6 +295,8 @@ void CGxDeviceMTL::ScenePresent() {
 
     System_Autorelease::ScopedPool autorelease;
 
+    this->EnsureDebugPipeline();
+
     id<CAMetalDrawable> drawable = [layer nextDrawable];
     if (!drawable) {
         return;
@@ -216,17 +309,22 @@ void CGxDeviceMTL::ScenePresent() {
 
     auto pass = [MTLRenderPassDescriptor renderPassDescriptor];
     pass.colorAttachments[0].texture = drawable.texture;
-    pass.colorAttachments[0].loadAction = (this->m_clearMask & 0x1) ? MTLLoadActionClear : MTLLoadActionLoad;
+    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
     pass.colorAttachments[0].storeAction = MTLStoreActionStore;
     pass.colorAttachments[0].clearColor = MTLClearColorMake(
-        r / 255.0f,
-        g / 255.0f,
-        b / 255.0f,
-        a / 255.0f
+        (this->m_clearMask & 0x1) ? r / 255.0f : 0.0f,
+        (this->m_clearMask & 0x1) ? g / 255.0f : 0.0f,
+        (this->m_clearMask & 0x1) ? b / 255.0f : 0.0f,
+        (this->m_clearMask & 0x1) ? a / 255.0f : 1.0f
     );
 
     id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
     id<MTLRenderCommandEncoder> encoder = [commandBuffer renderCommandEncoderWithDescriptor: pass];
+    if (encoder && this->m_pipeline && this->m_vertexBuffer) {
+        [encoder setRenderPipelineState:(id<MTLRenderPipelineState>)this->m_pipeline];
+        [encoder setVertexBuffer:(id<MTLBuffer>)this->m_vertexBuffer offset:0 atIndex:0];
+        [encoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:this->m_vertexCount];
+    }
     [encoder endEncoding];
 
     [commandBuffer presentDrawable: drawable];

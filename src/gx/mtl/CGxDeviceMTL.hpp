@@ -39,9 +39,13 @@ class CGxDeviceMTL : public CGxDevice {
 
     private:
         void ISetCaps(const CGxFormat& format);
+        void EnsureDebugPipeline();
         void* m_device = nullptr;
         void* m_commandQueue = nullptr;
         void* m_layer = nullptr;
+        void* m_pipeline = nullptr;
+        void* m_vertexBuffer = nullptr;
+        uint32_t m_vertexCount = 0;
         uint32_t m_clearMask = 0;
         uint32_t m_clearColor = 0;
 };
