@@ -29,6 +29,33 @@ include(lib/system/cmake/system.cmake)
 find_package(ZLIB REQUIRED)
 find_package(BZip2 REQUIRED)
 
+include(ExternalProject)
+
+set(STORMLIB_SOURCE_DIR ${CMAKE_SOURCE_DIR}/lib/stormlib)
+set(STORMLIB_BINARY_DIR ${CMAKE_BINARY_DIR}/stormlib)
+set(STORMLIB_LIBRARY ${STORMLIB_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}storm${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+ExternalProject_Add(stormlib_external
+    SOURCE_DIR ${STORMLIB_SOURCE_DIR}
+    BINARY_DIR ${STORMLIB_BINARY_DIR}
+    BUILD_BYPRODUCTS ${STORMLIB_LIBRARY}
+    INSTALL_COMMAND ""
+    CMAKE_ARGS
+        -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+        -DSTORM_BUILD_TESTS=OFF
+        -DSTORM_SKIP_INSTALL=ON
+        -DBUILD_SHARED_LIBS=OFF
+        -DSTORM_USE_BUNDLED_LIBRARIES=OFF
+        -DCMAKE_OSX_DEPLOYMENT_TARGET=${CMAKE_OSX_DEPLOYMENT_TARGET}
+)
+
+add_library(stormlib STATIC IMPORTED)
+set_target_properties(stormlib PROPERTIES
+    IMPORTED_LOCATION ${STORMLIB_LIBRARY}
+    INTERFACE_INCLUDE_DIRECTORIES ${STORMLIB_SOURCE_DIR}/src
+)
+add_dependencies(stormlib stormlib_external)
+
 # Some templates abuse offsetof
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")

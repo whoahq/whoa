@@ -1,21 +1,22 @@
 #include "util/Mpq.hpp"
-#include "util/mpq/Decompress.hpp"
+#include <StormLib.h>
 #include <algorithm>
 #include <cctype>
 #include <cstring>
 #include <fstream>
+#include <limits>
 #include <string>
 #include <vector>
 #include <sys/stat.h>
 
 namespace {
-    constexpr uint32_t ID_MPQ = 0x1A51504D;
-    constexpr uint32_t ID_MPQ_USERDATA = 0x1B51504D;
+    constexpr uint32_t kMpqHeaderId = 0x1A51504D;
+    constexpr uint32_t kMpqUserDataId = 0x1B51504D;
 
-    constexpr uint32_t MPQ_FILE_IMPLODE = 0x00000100;
-    constexpr uint32_t MPQ_FILE_COMPRESSED = 0x00000200;
-    constexpr uint32_t MPQ_FILE_ENCRYPTED = 0x00010000;
-    constexpr uint32_t MPQ_FILE_SINGLE_UNIT = 0x01000000;
+    constexpr uint32_t kMpqFileImplode = 0x00000100;
+    constexpr uint32_t kMpqFileCompressed = 0x00000200;
+    constexpr uint32_t kMpqFileEncrypted = 0x00010000;
+    constexpr uint32_t kMpqFileSingleUnit = 0x01000000;
 
 #pragma pack(push, 1)
     struct MpqUserDataHeader {
@@ -142,6 +143,38 @@ namespace {
         return 0;
     }
 
+    bool DecompressBlock(const uint8_t* in, size_t inSize, uint8_t* out, size_t outSize) {
+        if (inSize == outSize) {
+            std::memcpy(out, in, outSize);
+            return true;
+        }
+
+        if (inSize == 0) {
+            return false;
+        }
+
+        if (inSize > static_cast<size_t>(std::numeric_limits<int>::max()) ||
+            outSize > static_cast<size_t>(std::numeric_limits<int>::max())) {
+            return false;
+        }
+
+        uint8_t type = in[0];
+        if (type == 0) {
+            if (inSize - 1 != outSize) {
+                return false;
+            }
+            std::memcpy(out, in + 1, outSize);
+            return true;
+        }
+
+        int outLen = static_cast<int>(outSize);
+        if (!SCompDecompress(out, &outLen, const_cast<uint8_t*>(in), static_cast<int>(inSize))) {
+            return false;
+        }
+
+        return static_cast<size_t>(outLen) == outSize;
+    }
+
     struct MpqArchive {
         std::ifstream stream;
         uint64_t baseOffset = 0;
@@ -165,7 +198,7 @@ namespace {
                 return false;
             }
 
-            if (userHeader.id == ID_MPQ_USERDATA) {
+            if (userHeader.id == kMpqUserDataId) {
                 baseOffset = userHeader.headerOffset;
             } else {
                 baseOffset = 0;
@@ -177,7 +210,7 @@ namespace {
                 return false;
             }
 
-            if (header.id != ID_MPQ || header.headerSize < 32) {
+            if (header.id != kMpqHeaderId || header.headerSize < 32) {
                 return false;
             }
 
@@ -263,11 +296,11 @@ namespace {
                 return false;
             }
 
-            if (block->flags & MPQ_FILE_ENCRYPTED) {
+            if (block->flags & kMpqFileEncrypted) {
                 return false;
             }
 
-            if (block->flags & MPQ_FILE_IMPLODE) {
+            if (block->flags & kMpqFileImplode) {
                 return false;
             }
 
@@ -276,7 +309,7 @@ namespace {
 
             std::vector<uint8_t> buffer(fileSize);
 
-            if (block->flags & MPQ_FILE_SINGLE_UNIT) {
+            if (block->flags & kMpqFileSingleUnit) {
                 std::vector<uint8_t> raw(block->compressedSize);
                 stream.seekg(static_cast<std::streamoff>(filePos), std::ios::beg);
                 stream.read(reinterpret_cast<char*>(raw.data()), raw.size());
@@ -284,8 +317,8 @@ namespace {
                     return false;
                 }
 
-                if (block->flags & MPQ_FILE_COMPRESSED) {
-                    if (!MpqCompression::DecompressBlock(raw.data(), raw.size(), buffer.data(), buffer.size())) {
+                if (block->flags & kMpqFileCompressed) {
+                    if (!DecompressBlock(raw.data(), raw.size(), buffer.data(), buffer.size())) {
                         return false;
                     }
                 } else {
@@ -294,7 +327,7 @@ namespace {
                     }
                     std::memcpy(buffer.data(), raw.data(), buffer.size());
                 }
-            } else if ((block->flags & MPQ_FILE_COMPRESSED) == 0) {
+            } else if ((block->flags & kMpqFileCompressed) == 0) {
                 stream.seekg(static_cast<std::streamoff>(filePos), std::ios::beg);
                 stream.read(reinterpret_cast<char*>(buffer.data()), buffer.size());
                 if (!stream.good()) {
@@ -330,7 +363,7 @@ namespace {
                     }
 
                     uint8_t* outPtr = buffer.data() + i * sectorSize;
-                    if (!MpqCompression::DecompressBlock(raw.data(), raw.size(), outPtr, outSize)) {
+                    if (!DecompressBlock(raw.data(), raw.size(), outPtr, outSize)) {
                         if (raw.size() == outSize) {
                             std::memcpy(outPtr, raw.data(), outSize);
                         } else {
