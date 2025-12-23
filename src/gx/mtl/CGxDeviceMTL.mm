@@ -1,9 +1,16 @@
 #include "gx/mtl/CGxDeviceMTL.hpp"
 #include "app/mac/View.h"
+#include "gx/Buffer.hpp"
+#include "gx/CGxBatch.hpp"
 #include "gx/Window.hpp"
+#include "gx/texture/CGxTex.hpp"
+#include "math/Utils.hpp"
 #include "util/Autorelease.hpp"
 #include <storm/Memory.hpp>
+#include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #import <AppKit/AppKit.h>
@@ -11,36 +18,339 @@
 #import <QuartzCore/CAMetalLayer.h>
 
 namespace {
-    struct DebugVertex {
-        float position[2];
-        float color[4];
-    };
+    MTLPrimitiveType MtlPrimitiveType(EGxPrim prim) {
+        switch (prim) {
+            case GxPrim_Points:
+                return MTLPrimitiveTypePoint;
+            case GxPrim_Lines:
+                return MTLPrimitiveTypeLine;
+            case GxPrim_LineStrip:
+                return MTLPrimitiveTypeLineStrip;
+            case GxPrim_Triangles:
+                return MTLPrimitiveTypeTriangle;
+            case GxPrim_TriangleStrip:
+                return MTLPrimitiveTypeTriangleStrip;
+            case GxPrim_TriangleFan:
+                return MTLPrimitiveTypeTriangle;
+            default:
+                return MTLPrimitiveTypeTriangle;
+        }
+    }
 
-    const DebugVertex kDebugTriangle[] = {
-        { { -0.6f, -0.6f }, { 1.0f, 0.2f, 0.2f, 1.0f } },
-        { {  0.0f,  0.6f }, { 0.2f, 1.0f, 0.2f, 1.0f } },
-        { {  0.6f, -0.6f }, { 0.2f, 0.2f, 1.0f, 1.0f } }
-    };
+    bool GxTexIsCompressed(EGxTexFormat format) {
+        return format == GxTex_Dxt1 || format == GxTex_Dxt3 || format == GxTex_Dxt5;
+    }
 
-    const char kDebugShaderSource[] =
+    MTLPixelFormat MtlPixelFormatForGx(EGxTexFormat format) {
+        switch (format) {
+            case GxTex_Abgr8888:
+                return MTLPixelFormatRGBA8Unorm;
+            case GxTex_Argb8888:
+                return MTLPixelFormatBGRA8Unorm;
+            case GxTex_Argb4444:
+                return MTLPixelFormatABGR4Unorm;
+            case GxTex_Argb1555:
+                return MTLPixelFormatBGR5A1Unorm;
+            case GxTex_Rgb565:
+                return MTLPixelFormatB5G6R5Unorm;
+            case GxTex_Dxt1:
+                return MTLPixelFormatBC1_RGBA;
+            case GxTex_Dxt3:
+                return MTLPixelFormatBC2_RGBA;
+            case GxTex_Dxt5:
+                return MTLPixelFormatBC3_RGBA;
+            case GxTex_Uv88:
+                return MTLPixelFormatRG8Unorm;
+            case GxTex_Gr1616F:
+                return MTLPixelFormatRG16Float;
+            case GxTex_R32F:
+                return MTLPixelFormatR32Float;
+            default:
+                return MTLPixelFormatInvalid;
+        }
+    }
+
+    MTLBlendFactor MtlBlendFactorForSrc(EGxBlend blend) {
+        switch (blend) {
+            case GxBlend_Alpha:
+            case GxBlend_Add:
+            case GxBlend_SrcAlphaOpaque:
+                return MTLBlendFactorSourceAlpha;
+            case GxBlend_Mod:
+            case GxBlend_Mod2x:
+            case GxBlend_ModAdd:
+                return MTLBlendFactorDestinationColor;
+            case GxBlend_InvSrcAlphaAdd:
+            case GxBlend_InvSrcAlphaOpaque:
+                return MTLBlendFactorOneMinusSourceAlpha;
+            case GxBlend_NoAlphaAdd:
+            case GxBlend_Opaque:
+            case GxBlend_AlphaKey:
+                return MTLBlendFactorOne;
+            case GxBlend_ConstantAlpha:
+                return MTLBlendFactorBlendAlpha;
+            default:
+                return MTLBlendFactorOne;
+        }
+    }
+
+    MTLBlendFactor MtlBlendFactorForDst(EGxBlend blend) {
+        switch (blend) {
+            case GxBlend_Alpha:
+                return MTLBlendFactorOneMinusSourceAlpha;
+            case GxBlend_Add:
+            case GxBlend_ModAdd:
+            case GxBlend_InvSrcAlphaAdd:
+            case GxBlend_NoAlphaAdd:
+            case GxBlend_ConstantAlpha:
+                return MTLBlendFactorOne;
+            case GxBlend_Mod:
+                return MTLBlendFactorZero;
+            case GxBlend_Mod2x:
+                return MTLBlendFactorSourceColor;
+            case GxBlend_InvSrcAlphaOpaque:
+            case GxBlend_SrcAlphaOpaque:
+            case GxBlend_Opaque:
+            case GxBlend_AlphaKey:
+                return MTLBlendFactorZero;
+            default:
+                return MTLBlendFactorZero;
+        }
+    }
+
+    void ApplyViewport(CGxDeviceMTL* device, id<MTLRenderCommandEncoder> encoder, id<MTLTexture> texture) {
+        const double width = texture.width;
+        const double height = texture.height;
+        double x = (device->m_viewport.x.l * width) + 0.5;
+        double y = ((1.0 - device->m_viewport.y.h) * height) + 0.5;
+        double w = (device->m_viewport.x.h * width) - x + 0.5;
+        double h = ((1.0 - device->m_viewport.y.l) * height) - y + 0.5;
+
+        if (w < 0.0) {
+            w = 0.0;
+        }
+        if (h < 0.0) {
+            h = 0.0;
+        }
+
+        MTLViewport viewport = { x, y, w, h, device->m_viewport.z.l, device->m_viewport.z.h };
+        [encoder setViewport:viewport];
+
+        NSUInteger sx = x < 0.0 ? 0 : static_cast<NSUInteger>(x);
+        NSUInteger sy = y < 0.0 ? 0 : static_cast<NSUInteger>(y);
+        NSUInteger sw = static_cast<NSUInteger>(w);
+        NSUInteger sh = static_cast<NSUInteger>(h);
+
+        if (sx > texture.width) {
+            sx = texture.width;
+        }
+        if (sy > texture.height) {
+            sy = texture.height;
+        }
+        if (sx + sw > texture.width) {
+            sw = texture.width - sx;
+        }
+        if (sy + sh > texture.height) {
+            sh = texture.height - sy;
+        }
+
+        MTLScissorRect scissor = { sx, sy, sw, sh };
+        [encoder setScissorRect:scissor];
+
+        device->intF6C = 0;
+    }
+
+    const char kMetalShaderSource[] =
         "#include <metal_stdlib>\n"
         "using namespace metal;\n"
-        "struct VertexIn {\n"
-        "    packed_float2 position;\n"
-        "    packed_float4 color;\n"
+        "struct VertexColorIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 color [[attribute(1)]];\n"
+        "};\n"
+        "struct VertexTexIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float2 texcoord [[attribute(1)]];\n"
+        "};\n"
+        "struct VertexTex2In {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float2 texcoord [[attribute(1)]];\n"
+        "    float2 texcoord1 [[attribute(2)]];\n"
+        "};\n"
+        "struct VertexColorTexIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 color [[attribute(1)]];\n"
+        "    float2 texcoord [[attribute(2)]];\n"
+        "};\n"
+        "struct VertexColorTex2In {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 color [[attribute(1)]];\n"
+        "    float2 texcoord [[attribute(2)]];\n"
+        "    float2 texcoord1 [[attribute(3)]];\n"
+        "};\n"
+        "struct VertexSolidIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "};\n"
+        "struct VertexSkinIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 weights [[attribute(1)]];\n"
+        "    uchar4 indices [[attribute(2)]];\n"
+        "};\n"
+        "struct VertexSkinTexIn {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 weights [[attribute(1)]];\n"
+        "    uchar4 indices [[attribute(2)]];\n"
+        "    float2 texcoord [[attribute(3)]];\n"
+        "};\n"
+        "struct VertexSkinTex2In {\n"
+        "    float3 position [[attribute(0)]];\n"
+        "    float4 weights [[attribute(1)]];\n"
+        "    uchar4 indices [[attribute(2)]];\n"
+        "    float2 texcoord [[attribute(3)]];\n"
+        "    float2 texcoord1 [[attribute(4)]];\n"
         "};\n"
         "struct VertexOut {\n"
         "    float4 position [[position]];\n"
         "    float4 color;\n"
+        "    float2 texcoord;\n"
+        "    float2 texcoord1;\n"
         "};\n"
-        "vertex VertexOut vs_main(uint vid [[vertex_id]], const device VertexIn* v [[buffer(0)]]) {\n"
+        "struct PSConstants {\n"
+        "    float alphaRef;\n"
+        "    float4 color;\n"
+        "};\n"
+        "struct VSConstants {\n"
+        "    float4x4 mvp;\n"
+        "};\n"
+        "vertex VertexOut vs_color(VertexColorIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = float4(v[vid].position, 0.0, 1.0);\n"
-        "    out.color = v[vid].color;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = in.color;\n"
+        "    out.texcoord = float2(0.0, 0.0);\n"
+        "    out.texcoord1 = float2(0.0, 0.0);\n"
         "    return out;\n"
         "}\n"
-        "fragment float4 ps_main(VertexOut in [[stage_in]]) {\n"
-        "    return in.color;\n"
+        "vertex VertexOut vs_tex(VertexTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord;\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_tex2(VertexTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord1;\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_color_tex(VertexColorTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = in.color;\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord;\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_color_tex2(VertexColorTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = in.color;\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord1;\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_solid(VertexSolidIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
+        "    VertexOut out;\n"
+        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = float2(0.0, 0.0);\n"
+        "    out.texcoord1 = float2(0.0, 0.0);\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_skin(VertexSkinIn in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
+        "    VertexOut out;\n"
+        "    float4 pos = float4(in.position, 1.0);\n"
+        "    float4 w = in.weights;\n"
+        "    uint4 idx = uint4(in.indices);\n"
+        "    float3 skinned = float3(0.0);\n"
+        "    for (uint i = 0; i < 4; ++i) {\n"
+        "        uint base = 31 + idx[i] * 3;\n"
+        "        float4 c0 = vc[base + 0];\n"
+        "        float4 c1 = vc[base + 1];\n"
+        "        float4 c2 = vc[base + 2];\n"
+        "        float3 p;\n"
+        "        p.x = dot(pos, c0);\n"
+        "        p.y = dot(pos, c1);\n"
+        "        p.z = dot(pos, c2);\n"
+        "        skinned += p * w[i];\n"
+        "    }\n"
+        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = float2(0.0, 0.0);\n"
+        "    out.texcoord1 = float2(0.0, 0.0);\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_skin_tex(VertexSkinTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
+        "    VertexOut out;\n"
+        "    float4 pos = float4(in.position, 1.0);\n"
+        "    float4 w = in.weights;\n"
+        "    uint4 idx = uint4(in.indices);\n"
+        "    float3 skinned = float3(0.0);\n"
+        "    for (uint i = 0; i < 4; ++i) {\n"
+        "        uint base = 31 + idx[i] * 3;\n"
+        "        float4 c0 = vc[base + 0];\n"
+        "        float4 c1 = vc[base + 1];\n"
+        "        float4 c2 = vc[base + 2];\n"
+        "        float3 p;\n"
+        "        p.x = dot(pos, c0);\n"
+        "        p.y = dot(pos, c1);\n"
+        "        p.z = dot(pos, c2);\n"
+        "        skinned += p * w[i];\n"
+        "    }\n"
+        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord;\n"
+        "    return out;\n"
+        "}\n"
+        "vertex VertexOut vs_skin_tex2(VertexSkinTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
+        "    VertexOut out;\n"
+        "    float4 pos = float4(in.position, 1.0);\n"
+        "    float4 w = in.weights;\n"
+        "    uint4 idx = uint4(in.indices);\n"
+        "    float3 skinned = float3(0.0);\n"
+        "    for (uint i = 0; i < 4; ++i) {\n"
+        "        uint base = 31 + idx[i] * 3;\n"
+        "        float4 c0 = vc[base + 0];\n"
+        "        float4 c1 = vc[base + 1];\n"
+        "        float4 c2 = vc[base + 2];\n"
+        "        float3 p;\n"
+        "        p.x = dot(pos, c0);\n"
+        "        p.y = dot(pos, c1);\n"
+        "        p.z = dot(pos, c2);\n"
+        "        skinned += p * w[i];\n"
+        "    }\n"
+        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
+        "    out.texcoord = in.texcoord;\n"
+        "    out.texcoord1 = in.texcoord1;\n"
+        "    return out;\n"
+        "}\n"
+        "fragment float4 ps_main(VertexOut in [[stage_in]], constant PSConstants& ps [[buffer(0)]]) {\n"
+        "    float4 color = in.color * ps.color;\n"
+        "    if (ps.alphaRef > 0.0 && color.a < ps.alphaRef) {\n"
+        "        discard_fragment();\n"
+        "    }\n"
+        "    return color;\n"
+        "}\n"
+        "fragment float4 ps_tex(VertexOut in [[stage_in]], texture2d<float> tex0 [[texture(0)]], sampler samp0 [[sampler(0)]], texture2d<float> tex1 [[texture(1)]], sampler samp1 [[sampler(1)]], constant PSConstants& ps [[buffer(0)]]) {\n"
+        "    float4 color = tex0.sample(samp0, in.texcoord) * tex1.sample(samp1, in.texcoord1) * in.color * ps.color;\n"
+        "    if (ps.alphaRef > 0.0 && color.a < ps.alphaRef) {\n"
+        "        discard_fragment();\n"
+        "    }\n"
+        "    return color;\n"
         "}\n";
 }
 
@@ -53,7 +363,23 @@ CGxDeviceMTL::CGxDeviceMTL() : CGxDevice() {
 }
 
 void CGxDeviceMTL::ITexMarkAsUpdated(CGxTex* texId) {
-    CGxDevice::ITexMarkAsUpdated(texId);
+    if (texId->m_needsFlagUpdate && texId->m_apiSpecificData2) {
+        auto sampler = (id<MTLSamplerState>)texId->m_apiSpecificData2;
+        [sampler release];
+        texId->m_apiSpecificData2 = nullptr;
+    }
+
+    if (texId->m_needsUpdate) {
+        if (texId->m_needsCreation || !texId->m_apiSpecificData) {
+            this->ITexCreate(texId);
+        }
+
+        if (!texId->m_needsCreation && texId->m_apiSpecificData && texId->m_userFunc) {
+            this->ITexUpload(texId);
+        }
+
+        CGxDevice::ITexMarkAsUpdated(texId);
+    }
 }
 
 void CGxDeviceMTL::IRsSendToHw(EGxRenderState which) {
@@ -163,6 +489,9 @@ void CGxDeviceMTL::ISetCaps(const CGxFormat& format) {
     this->m_caps.m_texFmt[GxTex_Dxt3] = 1;
     this->m_caps.m_texFmt[GxTex_Dxt5] = 1;
 
+    this->m_caps.m_shaderTargets[GxSh_Vertex] = GxShVS_arbvp1;
+    this->m_caps.m_shaderTargets[GxSh_Pixel] = GxShPS_arbfp1;
+
     this->m_caps.m_texFilterAnisotropic = 1;
     this->m_caps.m_maxTexAnisotropy = 16;
 
@@ -185,15 +514,14 @@ int32_t CGxDeviceMTL::DeviceSetFormat(const CGxFormat& format) {
     return 1;
 }
 
-void CGxDeviceMTL::EnsureDebugPipeline() {
-    if (this->m_pipeline || !this->m_device || !this->m_layer) {
+void CGxDeviceMTL::EnsureLibrary() {
+    if (this->m_shaderLibrary || !this->m_device) {
         return;
     }
 
     auto device = (id<MTLDevice>)this->m_device;
-    auto layer = (CAMetalLayer*)this->m_layer;
 
-    NSString* source = [[NSString alloc] initWithUTF8String:kDebugShaderSource];
+    NSString* source = [[NSString alloc] initWithUTF8String:kMetalShaderSource];
     NSError* error = nil;
     id<MTLLibrary> library = [device newLibraryWithSource:source options:nil error:&error];
     [source release];
@@ -202,8 +530,128 @@ void CGxDeviceMTL::EnsureDebugPipeline() {
         return;
     }
 
-    id<MTLFunction> vs = [library newFunctionWithName:@"vs_main"];
-    id<MTLFunction> ps = [library newFunctionWithName:@"ps_main"];
+    this->m_shaderLibrary = library;
+}
+
+void* CGxDeviceMTL::GetPipeline(EGxVertexBufferFormat format, bool useColor, bool useSkin, bool useTex, int32_t blendMode) {
+    if (format >= GxVertexBufferFormats_Last || !this->m_device || !this->m_layer) {
+        return nullptr;
+    }
+
+    if (blendMode < 0 || blendMode >= GxBlends_Last) {
+        blendMode = GxBlend_Opaque;
+    }
+
+    this->EnsureLibrary();
+    if (!this->m_shaderLibrary) {
+        return nullptr;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto layer = (CAMetalLayer*)this->m_layer;
+    auto library = (id<MTLLibrary>)this->m_shaderLibrary;
+
+    NSString* vsName = nil;
+    NSString* psName = nil;
+
+    bool hasPosition = false;
+    bool hasColor = false;
+    bool hasBlendWeight = false;
+    bool hasBlendIndices = false;
+    bool hasTex0 = false;
+    bool hasTex1 = false;
+    uint32_t posOffset = 0;
+    uint32_t colorOffset = 0;
+    uint32_t blendWeightOffset = 0;
+    uint32_t blendIndexOffset = 0;
+    uint32_t tex0Offset = 0;
+    uint32_t tex1Offset = 0;
+
+    auto& bufDesc = Buffer::s_vertexBufDesc[format];
+
+    for (uint32_t i = 0; i < bufDesc.attribCount; ++i) {
+        const auto& attrib = bufDesc.attribs[i];
+
+        if (attrib.attrib == GxVA_Position) {
+            posOffset = attrib.offset;
+            hasPosition = true;
+        } else if (attrib.attrib == GxVA_BlendWeight) {
+            blendWeightOffset = attrib.offset;
+            hasBlendWeight = true;
+        } else if (attrib.attrib == GxVA_BlendIndices) {
+            blendIndexOffset = attrib.offset;
+            hasBlendIndices = true;
+        } else if (attrib.attrib == GxVA_Color0) {
+            colorOffset = attrib.offset;
+            hasColor = true;
+        } else if (attrib.attrib == GxVA_TexCoord0) {
+            tex0Offset = attrib.offset;
+            hasTex0 = true;
+        } else if (attrib.attrib == GxVA_TexCoord1) {
+            tex1Offset = attrib.offset;
+            hasTex1 = true;
+        }
+    }
+
+    bool useTexPipeline = useTex && hasTex0;
+    bool useTex2Pipeline = useTexPipeline && hasTex1;
+
+    void* (*pipelineTable)[GxBlends_Last] = nullptr;
+    if (useSkin) {
+        if (useTex2Pipeline) {
+            pipelineTable = this->m_pipelineSkinTex2;
+        } else if (useTexPipeline) {
+            pipelineTable = this->m_pipelineSkinTex;
+        } else {
+            pipelineTable = this->m_pipelineSkin;
+        }
+    } else if (useColor) {
+        if (useTex2Pipeline) {
+            pipelineTable = this->m_pipelineColorTex2;
+        } else if (useTexPipeline) {
+            pipelineTable = this->m_pipelineColorTex;
+        } else {
+            pipelineTable = this->m_pipelineColor;
+        }
+    } else {
+        if (useTex2Pipeline) {
+            pipelineTable = this->m_pipelineSolidTex2;
+        } else if (useTexPipeline) {
+            pipelineTable = this->m_pipelineSolidTex;
+        } else {
+            pipelineTable = this->m_pipelineSolid;
+        }
+    }
+
+    if (pipelineTable[format][blendMode]) {
+        return pipelineTable[format][blendMode];
+    }
+
+    if (useSkin) {
+        if (useTex2Pipeline) {
+            vsName = @"vs_skin_tex2";
+        } else {
+            vsName = useTexPipeline ? @"vs_skin_tex" : @"vs_skin";
+        }
+    } else if (useColor) {
+        if (useTex2Pipeline) {
+            vsName = @"vs_color_tex2";
+        } else {
+            vsName = useTexPipeline ? @"vs_color_tex" : @"vs_color";
+        }
+    } else {
+        if (useTex2Pipeline) {
+            vsName = @"vs_tex2";
+        } else {
+            vsName = useTexPipeline ? @"vs_tex" : @"vs_solid";
+        }
+    }
+
+    psName = useTexPipeline ? @"ps_tex" : @"ps_main";
+
+    id<MTLFunction> vs = [library newFunctionWithName:vsName];
+    id<MTLFunction> ps = [library newFunctionWithName:psName];
+
     if (!vs || !ps) {
         if (vs) {
             [vs release];
@@ -211,35 +659,176 @@ void CGxDeviceMTL::EnsureDebugPipeline() {
         if (ps) {
             [ps release];
         }
-        [library release];
-        return;
+        return nullptr;
     }
 
-    MTLRenderPipelineDescriptor* desc = [MTLRenderPipelineDescriptor new];
+    auto desc = [MTLRenderPipelineDescriptor new];
     desc.vertexFunction = vs;
     desc.fragmentFunction = ps;
     desc.colorAttachments[0].pixelFormat = layer.pixelFormat;
+    desc.depthAttachmentPixelFormat = MTLPixelFormatDepth32Float;
 
+    auto vdesc = [MTLVertexDescriptor vertexDescriptor];
+
+    if (!hasPosition || (useColor && !hasColor) || (useSkin && (!hasBlendWeight || !hasBlendIndices)) || (useTexPipeline && !hasTex0) || (useTex2Pipeline && !hasTex1)) {
+        [desc release];
+        [vs release];
+        [ps release];
+        return nullptr;
+    }
+
+    vdesc.attributes[0].format = MTLVertexFormatFloat3;
+    vdesc.attributes[0].offset = posOffset;
+    vdesc.attributes[0].bufferIndex = 0;
+
+    if (useSkin) {
+        vdesc.attributes[1].format = MTLVertexFormatUChar4Normalized;
+        vdesc.attributes[1].offset = blendWeightOffset;
+        vdesc.attributes[1].bufferIndex = 0;
+        vdesc.attributes[2].format = MTLVertexFormatUChar4;
+        vdesc.attributes[2].offset = blendIndexOffset;
+        vdesc.attributes[2].bufferIndex = 0;
+        if (useTexPipeline) {
+            vdesc.attributes[3].format = MTLVertexFormatFloat2;
+            vdesc.attributes[3].offset = tex0Offset;
+            vdesc.attributes[3].bufferIndex = 0;
+            if (useTex2Pipeline) {
+                vdesc.attributes[4].format = MTLVertexFormatFloat2;
+                vdesc.attributes[4].offset = tex1Offset;
+                vdesc.attributes[4].bufferIndex = 0;
+            }
+        }
+    } else if (useColor) {
+        vdesc.attributes[1].format = MTLVertexFormatUChar4Normalized;
+        vdesc.attributes[1].offset = colorOffset;
+        vdesc.attributes[1].bufferIndex = 0;
+        if (useTexPipeline) {
+            vdesc.attributes[2].format = MTLVertexFormatFloat2;
+            vdesc.attributes[2].offset = tex0Offset;
+            vdesc.attributes[2].bufferIndex = 0;
+            if (useTex2Pipeline) {
+                vdesc.attributes[3].format = MTLVertexFormatFloat2;
+                vdesc.attributes[3].offset = tex1Offset;
+                vdesc.attributes[3].bufferIndex = 0;
+            }
+        }
+    } else if (useTexPipeline) {
+        vdesc.attributes[1].format = MTLVertexFormatFloat2;
+        vdesc.attributes[1].offset = tex0Offset;
+        vdesc.attributes[1].bufferIndex = 0;
+        if (useTex2Pipeline) {
+            vdesc.attributes[2].format = MTLVertexFormatFloat2;
+            vdesc.attributes[2].offset = tex1Offset;
+            vdesc.attributes[2].bufferIndex = 0;
+        }
+    }
+
+    vdesc.layouts[0].stride = bufDesc.size;
+    vdesc.layouts[0].stepFunction = MTLVertexStepFunctionPerVertex;
+    vdesc.layouts[0].stepRate = 1;
+
+    desc.vertexDescriptor = vdesc;
+
+    bool enableBlend = blendMode > GxBlend_AlphaKey;
+    desc.colorAttachments[0].blendingEnabled = enableBlend ? YES : NO;
+    if (enableBlend) {
+        desc.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+        desc.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+        desc.colorAttachments[0].sourceRGBBlendFactor = MtlBlendFactorForSrc(static_cast<EGxBlend>(blendMode));
+        desc.colorAttachments[0].destinationRGBBlendFactor = MtlBlendFactorForDst(static_cast<EGxBlend>(blendMode));
+        desc.colorAttachments[0].sourceAlphaBlendFactor = desc.colorAttachments[0].sourceRGBBlendFactor;
+        desc.colorAttachments[0].destinationAlphaBlendFactor = desc.colorAttachments[0].destinationRGBBlendFactor;
+    }
+
+    NSError* error = nil;
     id<MTLRenderPipelineState> pipeline = [device newRenderPipelineStateWithDescriptor:desc error:&error];
     [desc release];
     [vs release];
     [ps release];
-    [library release];
 
     if (!pipeline) {
+        return nullptr;
+    }
+
+    pipelineTable[format][blendMode] = pipeline;
+    return pipeline;
+}
+
+void* CGxDeviceMTL::GetPoolBuffer(CGxPool* pool) {
+    if (!pool || !this->m_device) {
+        return nullptr;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto buffer = (id<MTLBuffer>)pool->m_apiSpecific;
+
+    if (!pool->m_mem) {
+        pool->m_mem = SMemAlloc(pool->m_size, __FILE__, __LINE__, 0x0);
+    }
+
+    if (!buffer || buffer.length < static_cast<NSUInteger>(pool->m_size)) {
+        if (buffer) {
+            [buffer release];
+        }
+
+        buffer = [device newBufferWithBytesNoCopy:pool->m_mem
+                                           length:pool->m_size
+                                          options:MTLResourceStorageModeShared
+                                      deallocator:nil];
+        pool->m_apiSpecific = buffer;
+    }
+
+    return buffer;
+}
+
+void CGxDeviceMTL::BeginFrame() {
+    if (this->m_frameEncoder || !this->m_device || !this->m_commandQueue || !this->m_layer) {
         return;
     }
 
-    id<MTLBuffer> buffer = [device newBufferWithBytes:kDebugTriangle
-                                              length:sizeof(kDebugTriangle)
-                                             options:MTLResourceStorageModeShared];
-    if (!buffer) {
+    auto commandQueue = (id<MTLCommandQueue>)this->m_commandQueue;
+    auto layer = (CAMetalLayer*)this->m_layer;
+
+    id<CAMetalDrawable> drawable = [layer nextDrawable];
+    if (!drawable) {
         return;
     }
 
-    this->m_pipeline = pipeline;
-    this->m_vertexBuffer = buffer;
-    this->m_vertexCount = static_cast<uint32_t>(sizeof(kDebugTriangle) / sizeof(kDebugTriangle[0]));
+    const bool clearRequested = (this->m_clearMask & 0x1) != 0;
+    const uint8_t r = (this->m_clearColor >> 16) & 0xFF;
+    const uint8_t g = (this->m_clearColor >> 8) & 0xFF;
+    const uint8_t b = this->m_clearColor & 0xFF;
+    const uint8_t a = (this->m_clearColor >> 24) & 0xFF;
+
+    auto pass = [MTLRenderPassDescriptor renderPassDescriptor];
+    pass.colorAttachments[0].texture = drawable.texture;
+    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
+    pass.colorAttachments[0].storeAction = MTLStoreActionStore;
+    pass.colorAttachments[0].clearColor = MTLClearColorMake(
+        clearRequested ? r / 255.0f : 0.0f,
+        clearRequested ? g / 255.0f : 0.0f,
+        clearRequested ? b / 255.0f : 0.0f,
+        clearRequested ? a / 255.0f : 1.0f
+    );
+
+    this->EnsureDepthTexture(drawable.texture.width, drawable.texture.height);
+    if (this->m_depthTexture) {
+        auto depthTex = (id<MTLTexture>)this->m_depthTexture;
+        pass.depthAttachment.texture = depthTex;
+        pass.depthAttachment.loadAction = (this->m_clearMask & 0x2) ? MTLLoadActionClear : MTLLoadActionLoad;
+        pass.depthAttachment.storeAction = MTLStoreActionStore;
+        pass.depthAttachment.clearDepth = 1.0;
+    }
+
+    id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
+    id<MTLRenderCommandEncoder> encoder = [commandBuffer renderCommandEncoderWithDescriptor:pass];
+
+    ApplyViewport(this, encoder, drawable.texture);
+
+    this->m_frameCommandBuffer = commandBuffer;
+    this->m_frameEncoder = encoder;
+    this->m_frameDrawable = drawable;
+    this->m_frameHasDraw = 0;
 }
 
 void* CGxDeviceMTL::DeviceWindow() {
@@ -285,55 +874,235 @@ void CGxDeviceMTL::ScenePresent() {
         return;
     }
 
-    auto device = (id<MTLDevice>)this->m_device;
-    auto commandQueue = (id<MTLCommandQueue>)this->m_commandQueue;
-    auto layer = (CAMetalLayer*)this->m_layer;
-
-    if (!device || !commandQueue || !layer) {
-        return;
-    }
-
     System_Autorelease::ScopedPool autorelease;
 
-    this->EnsureDebugPipeline();
+    if (!this->m_frameEncoder) {
+        this->BeginFrame();
+    }
 
-    id<CAMetalDrawable> drawable = [layer nextDrawable];
-    if (!drawable) {
+    if (!this->m_frameEncoder || !this->m_frameCommandBuffer || !this->m_frameDrawable) {
         return;
     }
 
-    const uint8_t r = (this->m_clearColor >> 16) & 0xFF;
-    const uint8_t g = (this->m_clearColor >> 8) & 0xFF;
-    const uint8_t b = this->m_clearColor & 0xFF;
-    const uint8_t a = (this->m_clearColor >> 24) & 0xFF;
-
-    auto pass = [MTLRenderPassDescriptor renderPassDescriptor];
-    pass.colorAttachments[0].texture = drawable.texture;
-    pass.colorAttachments[0].loadAction = MTLLoadActionClear;
-    pass.colorAttachments[0].storeAction = MTLStoreActionStore;
-    pass.colorAttachments[0].clearColor = MTLClearColorMake(
-        (this->m_clearMask & 0x1) ? r / 255.0f : 0.0f,
-        (this->m_clearMask & 0x1) ? g / 255.0f : 0.0f,
-        (this->m_clearMask & 0x1) ? b / 255.0f : 0.0f,
-        (this->m_clearMask & 0x1) ? a / 255.0f : 1.0f
-    );
-
-    id<MTLCommandBuffer> commandBuffer = [commandQueue commandBuffer];
-    id<MTLRenderCommandEncoder> encoder = [commandBuffer renderCommandEncoderWithDescriptor: pass];
-    if (encoder && this->m_pipeline && this->m_vertexBuffer) {
-        [encoder setRenderPipelineState:(id<MTLRenderPipelineState>)this->m_pipeline];
-        [encoder setVertexBuffer:(id<MTLBuffer>)this->m_vertexBuffer offset:0 atIndex:0];
-        [encoder drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:this->m_vertexCount];
+    auto encoder = (id<MTLRenderCommandEncoder>)this->m_frameEncoder;
+    if (this->intF6C) {
+        auto drawable = (id<CAMetalDrawable>)this->m_frameDrawable;
+        ApplyViewport(this, encoder, drawable.texture);
     }
-    [encoder endEncoding];
+    auto commandBuffer = (id<MTLCommandBuffer>)this->m_frameCommandBuffer;
+    auto drawable = (id<CAMetalDrawable>)this->m_frameDrawable;
 
-    [commandBuffer presentDrawable: drawable];
+    [encoder endEncoding];
+    [commandBuffer presentDrawable:drawable];
     [commandBuffer commit];
+
+    this->m_frameCommandBuffer = nullptr;
+    this->m_frameEncoder = nullptr;
+    this->m_frameDrawable = nullptr;
 }
 
 void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
-    (void)batch;
-    (void)indexed;
+    if (!this->m_context || !batch) {
+        return;
+    }
+
+    this->BeginFrame();
+
+    if (!this->m_frameEncoder) {
+        return;
+    }
+
+    auto encoder = (id<MTLRenderCommandEncoder>)this->m_frameEncoder;
+
+    auto vertexBuf = this->m_primVertexFormatBuf[GxVA_Position];
+    if (!vertexBuf) {
+        return;
+    }
+
+    bool useColor = (this->m_primVertexMask & GxPrim_Color0) != 0;
+    bool useSkin = this->m_primVertexFormat == GxVBF_PBNT2;
+    bool useTex = false;
+    if (this->m_primVertexFormat < GxVertexBufferFormats_Last) {
+        const auto& bufDesc = Buffer::s_vertexBufDesc[this->m_primVertexFormat];
+        for (uint32_t i = 0; i < bufDesc.attribCount; ++i) {
+            if (bufDesc.attribs[i].attrib == GxVA_TexCoord0) {
+                useTex = true;
+                break;
+            }
+        }
+    }
+    int32_t blendMode = static_cast<int32_t>(this->m_appRenderStates[GxRs_BlendingMode].m_value);
+    auto pipeline = (id<MTLRenderPipelineState>)this->GetPipeline(this->m_primVertexFormat, useColor, useSkin, useTex, blendMode);
+    if (!pipeline && useColor) {
+        useColor = false;
+        pipeline = (id<MTLRenderPipelineState>)this->GetPipeline(this->m_primVertexFormat, false, useSkin, useTex, blendMode);
+    }
+
+    if (!pipeline) {
+        return;
+    }
+
+    auto mtlVertexBuf = (id<MTLBuffer>)this->GetPoolBuffer(vertexBuf->m_pool);
+    if (!mtlVertexBuf) {
+        return;
+    }
+
+    C44Matrix mvp;
+    bool useShaderMvp = false;
+
+    // TODO: Restore shader constant usage once verified.
+    // For now, we debug log if a vertex shader is present to analyze the constants.
+    if (!useSkin) {
+        auto vsState = static_cast<CGxShader*>(static_cast<void*>(this->m_appRenderStates[GxRs_VertexShader].m_value));
+        if (vsState) {
+            static bool s_logConstants = std::getenv("WHOA_GX_MTL_LOG_CONSTANTS") != nullptr;
+            if (s_logConstants) {
+                 const auto& c = CGxDevice::s_shadowConstants[1].constants;
+                 fprintf(stderr, "VS Consts: [0] %f %f %f %f\n", c[0].x, c[0].y, c[0].z, c[0].w);
+                 fprintf(stderr, "           [1] %f %f %f %f\n", c[1].x, c[1].y, c[1].z, c[1].w);
+                 fprintf(stderr, "           [2] %f %f %f %f\n", c[2].x, c[2].y, c[2].z, c[2].w);
+                 fprintf(stderr, "           [3] %f %f %f %f\n", c[3].x, c[3].y, c[3].z, c[3].w);
+            }
+        }
+    }
+
+    if (!useShaderMvp) {
+        if (useSkin) {
+            mvp = this->m_projNative;
+        } else {
+            const auto& world = this->m_xforms[GxXform_World].TopConst();
+            const auto& view = this->m_xforms[GxXform_View].TopConst();
+            mvp = (world * view) * this->m_projNative;
+        }
+    }
+
+    [encoder setRenderPipelineState:pipeline];
+    if (blendMode == GxBlend_ConstantAlpha) {
+        float alphaRef = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_AlphaRef].m_value)) / 255.0f;
+        [encoder setBlendColorRed:1.0 green:1.0 blue:1.0 alpha:alphaRef];
+    }
+
+    int32_t depthTest = static_cast<int32_t>(this->m_appRenderStates[GxRs_DepthTest].m_value);
+    uint32_t depthFunc = static_cast<uint32_t>(this->m_appRenderStates[GxRs_DepthFunc].m_value);
+    int32_t depthWrite = static_cast<int32_t>(this->m_appRenderStates[GxRs_DepthWrite].m_value);
+
+    bool depthTestEnabled = this->MasterEnable(GxMasterEnable_DepthTest) && depthTest;
+    bool depthWriteEnabled = this->MasterEnable(GxMasterEnable_DepthWrite) && depthWrite;
+    auto depthState = (id<MTLDepthStencilState>)this->GetDepthState(depthTestEnabled, depthWriteEnabled, depthFunc);
+    if (depthState) {
+        [encoder setDepthStencilState:depthState];
+    }
+
+    int32_t cullMode = static_cast<int32_t>(this->m_appRenderStates[GxRs_Culling].m_value);
+    if (cullMode == 0) {
+        [encoder setCullMode:MTLCullModeNone];
+    } else {
+        [encoder setCullMode:MTLCullModeBack];
+        [encoder setFrontFacingWinding:(cullMode == 1) ? MTLWindingClockwise : MTLWindingCounterClockwise];
+    }
+
+    [encoder setVertexBuffer:mtlVertexBuf offset:vertexBuf->m_index atIndex:0];
+    [encoder setVertexBytes:&mvp length:sizeof(mvp) atIndex:1];
+    if (useSkin) {
+        [encoder setVertexBytes:CGxDevice::s_shadowConstants[1].constants
+                         length:sizeof(CGxDevice::s_shadowConstants[1].constants)
+                        atIndex:2];
+    }
+    if (useTex) {
+        auto texState = static_cast<CGxTex*>(static_cast<void*>(this->m_appRenderStates[GxRs_Texture0].m_value));
+        auto texture = (id<MTLTexture>)this->GetTexture(texState);
+        if (!texture) {
+            this->EnsureFallbackTexture();
+            texture = (id<MTLTexture>)this->m_fallbackTexture;
+        }
+        auto sampler = (id<MTLSamplerState>)this->GetSampler(texState);
+        if (!sampler) {
+            sampler = (id<MTLSamplerState>)this->m_fallbackSampler;
+        }
+        [encoder setFragmentTexture:texture atIndex:0];
+        [encoder setFragmentSamplerState:sampler atIndex:0];
+
+        auto texState1 = static_cast<CGxTex*>(static_cast<void*>(this->m_appRenderStates[GxRs_Texture1].m_value));
+        auto texture1 = (id<MTLTexture>)this->GetTexture(texState1);
+        if (!texture1) {
+            this->EnsureFallbackTexture();
+            texture1 = (id<MTLTexture>)this->m_fallbackTexture;
+        }
+        auto sampler1 = (id<MTLSamplerState>)this->GetSampler(texState1);
+        if (!sampler1) {
+            sampler1 = (id<MTLSamplerState>)this->m_fallbackSampler;
+        }
+        [encoder setFragmentTexture:texture1 atIndex:1];
+        [encoder setFragmentSamplerState:sampler1 atIndex:1];
+    }
+
+    struct MtlPSConstants {
+        float alphaRef;
+        float pad[3];
+        float color[4];
+    } psConsts;
+
+    psConsts.alphaRef = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_AlphaRef].m_value)) / 255.0f;
+    psConsts.pad[0] = psConsts.pad[1] = psConsts.pad[2] = 0.0f;
+
+    // Default to white
+    psConsts.color[0] = 1.0f; psConsts.color[1] = 1.0f; psConsts.color[2] = 1.0f; psConsts.color[3] = 1.0f;
+
+    // Apply pixel shader constants if a pixel shader is active AND Lighting is DISABLED.
+    // UI rendering typically disables lighting and uses c[0] for color modulation.
+    // World rendering enables lighting and uses c[0] for lighting parameters (which we don't support yet in this simple backend),
+    // so we default to white for world objects to avoid blown-out colors.
+    auto psState = static_cast<CGxShader*>(static_cast<void*>(this->m_appRenderStates[GxRs_PixelShader].m_value));
+    int32_t lighting = static_cast<int32_t>(this->m_appRenderStates[GxRs_Lighting].m_value);
+
+    if (psState) {
+        static bool s_logConstants = std::getenv("WHOA_GX_MTL_LOG_CONSTANTS") != nullptr;
+        if (s_logConstants) {
+             const auto& c = CGxDevice::s_shadowConstants[0].constants;
+             fprintf(stderr, "PS Consts (Light=%d, Blend=%d): [0] %f %f %f %f\n", lighting, blendMode, c[0].x, c[0].y, c[0].z, c[0].w);
+        }
+
+        if (lighting == 0) {
+            const auto& c = CGxDevice::s_shadowConstants[0].constants[0];
+            // Sanity check: Only apply if values are within a reasonable range for color/alpha.
+            // This filters out uninitialized constants (often FLT_MAX) or non-color data.
+            if (std::abs(c.x) <= 10.0f && std::abs(c.y) <= 10.0f && std::abs(c.z) <= 10.0f && std::abs(c.w) <= 10.0f) {
+                psConsts.color[0] = c.x;
+                psConsts.color[1] = c.y;
+                psConsts.color[2] = c.z;
+                psConsts.color[3] = c.w;
+            }
+        }
+    }
+
+    [encoder setFragmentBytes:&psConsts length:sizeof(psConsts) atIndex:0];
+
+    auto primitive = MtlPrimitiveType(batch->m_primType);
+
+    if (indexed) {
+        auto indexBuf = this->m_primIndexBuf;
+        if (!indexBuf || indexBuf->m_itemSize != 2) {
+            return;
+        }
+
+        auto mtlIndexBuf = (id<MTLBuffer>)this->GetPoolBuffer(indexBuf->m_pool);
+        if (!mtlIndexBuf) {
+            return;
+        }
+
+        const NSUInteger indexOffset = indexBuf->m_index + (batch->m_start * indexBuf->m_itemSize);
+        [encoder drawIndexedPrimitives:primitive
+                            indexCount:batch->m_count
+                             indexType:MTLIndexTypeUInt16
+                           indexBuffer:mtlIndexBuf
+                     indexBufferOffset:indexOffset];
+    } else {
+        [encoder drawPrimitives:primitive
+                    vertexStart:batch->m_start
+                    vertexCount:batch->m_count];
+    }
+
+    this->m_frameHasDraw = 1;
 }
 
 void CGxDeviceMTL::PoolSizeSet(CGxPool* pool, uint32_t size) {
@@ -343,6 +1112,12 @@ void CGxDeviceMTL::PoolSizeSet(CGxPool* pool, uint32_t size) {
 
     pool->m_size = static_cast<int32_t>(size);
     pool->unk1C = 0;
+
+    if (pool->m_apiSpecific) {
+        auto buffer = (id<MTLBuffer>)pool->m_apiSpecific;
+        [buffer release];
+        pool->m_apiSpecific = nullptr;
+    }
 
     if (pool->m_mem) {
         SMemFree(pool->m_mem, __FILE__, __LINE__, 0x0);
@@ -399,6 +1174,16 @@ void CGxDeviceMTL::BufData(CGxBuf* buf, const void* data, size_t size, uintptr_t
 }
 
 void CGxDeviceMTL::TexDestroy(CGxTex* texId) {
+    if (texId && texId->m_apiSpecificData) {
+        auto texture = (id<MTLTexture>)texId->m_apiSpecificData;
+        [texture release];
+        texId->m_apiSpecificData = nullptr;
+    }
+    if (texId && texId->m_apiSpecificData2) {
+        auto sampler = (id<MTLSamplerState>)texId->m_apiSpecificData2;
+        [sampler release];
+        texId->m_apiSpecificData2 = nullptr;
+    }
     CGxDevice::TexDestroy(texId);
 }
 
@@ -413,6 +1198,315 @@ void CGxDeviceMTL::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const 
 
 int32_t CGxDeviceMTL::StereoEnabled() {
     return 0;
+}
+
+void CGxDeviceMTL::XformSetProjection(const C44Matrix& matrix) {
+    CGxDevice::XformSetProjection(matrix);
+
+    C44Matrix projNative = matrix;
+
+    if (NotEqual(projNative.c3, 1.0f, WHOA_EPSILON_1) && NotEqual(projNative.c3, 0.0f, WHOA_EPSILON_1)) {
+        projNative = projNative * (1.0f / projNative.c3);
+    }
+
+    if (projNative.d3 == 0.0f) {
+        auto v5 = -(projNative.d2 / (projNative.c2 + 1.0f));
+        auto v6 = -(projNative.d2 / (projNative.c2 - 1.0f));
+        projNative.c2 = v6 / (v6 - v5);
+        projNative.d2 = v6 * v5 / (v5 - v6);
+    } else {
+        auto v8 = 1.0f / projNative.c2;
+        auto v9 = (-1.0f - projNative.d2) * v8;
+        auto v10 = v8 * (1.0f - projNative.d2);
+        projNative.c2 = 1.0f / (v10 - v9);
+        projNative.d2 = v9 / (v9 - v10);
+    }
+
+    if (!this->MasterEnable(GxMasterEnable_NormalProjection) && projNative.d3 != 1.0f) {
+        C44Matrix shrink = {
+            0.2f, 0.0f, 0.0f, 0.0f,
+            0.0f, 0.2f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.2f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+
+        projNative = projNative * shrink;
+    }
+
+    this->m_xforms[GxXform_Projection].m_dirty = 1;
+    this->m_projNative = projNative;
+}
+
+void CGxDeviceMTL::EnsureDepthTexture(uint32_t width, uint32_t height) {
+    if (!this->m_device || (this->m_depthTexture && this->m_depthWidth == width && this->m_depthHeight == height)) {
+        return;
+    }
+
+    if (this->m_depthTexture) {
+        auto depthTex = (id<MTLTexture>)this->m_depthTexture;
+        [depthTex release];
+        this->m_depthTexture = nullptr;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatDepth32Float width:width height:height mipmapped:NO];
+    desc.usage = MTLTextureUsageRenderTarget;
+    desc.storageMode = MTLStorageModePrivate;
+
+    id<MTLTexture> depthTex = [device newTextureWithDescriptor:desc];
+    this->m_depthTexture = depthTex;
+    this->m_depthWidth = width;
+    this->m_depthHeight = height;
+}
+
+void* CGxDeviceMTL::GetDepthState(bool depthTest, bool depthWrite, uint32_t depthFunc) {
+    uint32_t funcIndex = std::min<uint32_t>(depthFunc, 3u);
+    auto& cached = this->m_depthStates[depthTest ? 1 : 0][depthWrite ? 1 : 0][funcIndex];
+    if (cached) {
+        return cached;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    if (!device) {
+        return nullptr;
+    }
+
+    auto desc = [MTLDepthStencilDescriptor new];
+    if (!depthTest) {
+        desc.depthCompareFunction = MTLCompareFunctionAlways;
+    } else {
+        switch (funcIndex) {
+            case 0:
+                desc.depthCompareFunction = MTLCompareFunctionLessEqual;
+                break;
+            case 1:
+                desc.depthCompareFunction = MTLCompareFunctionEqual;
+                break;
+            case 2:
+                desc.depthCompareFunction = MTLCompareFunctionGreaterEqual;
+                break;
+            case 3:
+                desc.depthCompareFunction = MTLCompareFunctionLess;
+                break;
+            default:
+                desc.depthCompareFunction = MTLCompareFunctionAlways;
+                break;
+        }
+    }
+
+    desc.depthWriteEnabled = depthWrite ? YES : NO;
+
+    id<MTLDepthStencilState> state = [device newDepthStencilStateWithDescriptor:desc];
+    [desc release];
+
+    cached = state;
+    return state;
+}
+
+void CGxDeviceMTL::ITexCreate(CGxTex* texId) {
+    if (!texId || !this->m_device) {
+        return;
+    }
+
+    EGxTexFormat format = texId->m_dataFormat != GxTex_Unknown ? texId->m_dataFormat : texId->m_format;
+    auto pixelFormat = MtlPixelFormatForGx(format);
+    if (pixelFormat == MTLPixelFormatInvalid) {
+        return;
+    }
+
+    uint32_t width = 0;
+    uint32_t height = 0;
+    uint32_t baseMip = 0;
+    uint32_t mipCount = 0;
+    this->ITexWHDStartEnd(texId, width, height, baseMip, mipCount);
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:pixelFormat width:width height:height mipmapped:(mipCount - baseMip) > 1];
+    desc.usage = MTLTextureUsageShaderRead;
+    desc.storageMode = MTLStorageModeShared;
+
+    id<MTLTexture> texture = [device newTextureWithDescriptor:desc];
+    texId->m_apiSpecificData = texture;
+    texId->m_needsCreation = 0;
+}
+
+void CGxDeviceMTL::ITexUpload(CGxTex* texId) {
+    auto texture = (id<MTLTexture>)texId->m_apiSpecificData;
+    if (!texture) {
+        return;
+    }
+
+    uint32_t texelStrideInBytes = 0;
+    const void* texels = nullptr;
+
+    texId->m_userFunc(
+        GxTex_Lock,
+        texId->m_width,
+        texId->m_height,
+        0,
+        0,
+        texId->m_userArg,
+        texelStrideInBytes,
+        texels
+    );
+
+    uint32_t width = 0;
+    uint32_t height = 0;
+    uint32_t baseMip = 0;
+    uint32_t mipCount = 0;
+    this->ITexWHDStartEnd(texId, width, height, baseMip, mipCount);
+
+    EGxTexFormat format = texId->m_dataFormat != GxTex_Unknown ? texId->m_dataFormat : texId->m_format;
+    const bool compressed = GxTexIsCompressed(format);
+
+    for (uint32_t mipLevel = baseMip; mipLevel < mipCount; ++mipLevel) {
+        texels = nullptr;
+        texId->m_userFunc(
+            GxTex_Latch,
+            std::max(texId->m_width >> mipLevel, 1u),
+            std::max(texId->m_height >> mipLevel, 1u),
+            0,
+            mipLevel,
+            texId->m_userArg,
+            texelStrideInBytes,
+            texels
+        );
+
+        if (!texels) {
+            continue;
+        }
+
+        uint32_t mipWidth = std::max(texId->m_width >> mipLevel, 1u);
+        uint32_t mipHeight = std::max(texId->m_height >> mipLevel, 1u);
+        MTLRegion region = MTLRegionMake2D(0, 0, mipWidth, mipHeight);
+
+        if (compressed) {
+            uint32_t blockSize = CGxDevice::s_texFormatBytesPerBlock[format];
+            uint32_t blocksWide = std::max(1u, (mipWidth + 3) / 4);
+            uint32_t bytesPerRow = blocksWide * blockSize;
+            [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:bytesPerRow];
+        } else {
+            [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:texelStrideInBytes];
+        }
+    }
+
+    texId->m_userFunc(
+        GxTex_Unlock,
+        texId->m_width,
+        texId->m_height,
+        0,
+        0,
+        texId->m_userArg,
+        texelStrideInBytes,
+        texels
+    );
+}
+
+void* CGxDeviceMTL::GetTexture(CGxTex* texId) {
+    if (!texId) {
+        return nullptr;
+    }
+
+    if (texId->m_needsCreation || texId->m_needsUpdate || !texId->m_apiSpecificData) {
+        texId->m_needsUpdate = 1;
+        this->ITexMarkAsUpdated(texId);
+    }
+
+    return texId->m_apiSpecificData;
+}
+
+void* CGxDeviceMTL::GetSampler(CGxTex* texId) {
+    if (!texId) {
+        this->EnsureFallbackTexture();
+        return this->m_fallbackSampler;
+    }
+
+    if (!texId->m_apiSpecificData2 || texId->m_needsFlagUpdate) {
+        auto device = (id<MTLDevice>)this->m_device;
+        if (!device) {
+            return nullptr;
+        }
+
+        if (texId->m_apiSpecificData2) {
+            auto sampler = (id<MTLSamplerState>)texId->m_apiSpecificData2;
+            [sampler release];
+            texId->m_apiSpecificData2 = nullptr;
+        }
+
+        auto desc = [MTLSamplerDescriptor new];
+        desc.sAddressMode = texId->m_flags.m_wrapU ? MTLSamplerAddressModeRepeat : MTLSamplerAddressModeClampToEdge;
+        desc.tAddressMode = texId->m_flags.m_wrapV ? MTLSamplerAddressModeRepeat : MTLSamplerAddressModeClampToEdge;
+
+        switch (texId->m_flags.m_filter) {
+            case GxTex_Nearest:
+                desc.minFilter = MTLSamplerMinMagFilterNearest;
+                desc.magFilter = MTLSamplerMinMagFilterNearest;
+                desc.mipFilter = MTLSamplerMipFilterNotMipmapped;
+                break;
+            case GxTex_NearestMipNearest:
+                desc.minFilter = MTLSamplerMinMagFilterNearest;
+                desc.magFilter = MTLSamplerMinMagFilterNearest;
+                desc.mipFilter = MTLSamplerMipFilterNearest;
+                break;
+            case GxTex_LinearMipNearest:
+                desc.minFilter = MTLSamplerMinMagFilterLinear;
+                desc.magFilter = MTLSamplerMinMagFilterLinear;
+                desc.mipFilter = MTLSamplerMipFilterNearest;
+                break;
+            case GxTex_LinearMipLinear:
+                desc.minFilter = MTLSamplerMinMagFilterLinear;
+                desc.magFilter = MTLSamplerMinMagFilterLinear;
+                desc.mipFilter = MTLSamplerMipFilterLinear;
+                break;
+            case GxTex_Anisotropic:
+                desc.minFilter = MTLSamplerMinMagFilterLinear;
+                desc.magFilter = MTLSamplerMinMagFilterLinear;
+                desc.mipFilter = MTLSamplerMipFilterLinear;
+                desc.maxAnisotropy = std::max<uint32_t>(texId->m_flags.m_maxAnisotropy, 1);
+                break;
+            default:
+                desc.minFilter = MTLSamplerMinMagFilterLinear;
+                desc.magFilter = MTLSamplerMinMagFilterLinear;
+                desc.mipFilter = MTLSamplerMipFilterNotMipmapped;
+                break;
+        }
+
+        id<MTLSamplerState> sampler = [device newSamplerStateWithDescriptor:desc];
+        [desc release];
+
+        texId->m_apiSpecificData2 = sampler;
+        texId->m_needsFlagUpdate = 0;
+    }
+
+    return texId->m_apiSpecificData2;
+}
+
+void CGxDeviceMTL::EnsureFallbackTexture() {
+    if (this->m_fallbackTexture || !this->m_device) {
+        return;
+    }
+
+    auto device = (id<MTLDevice>)this->m_device;
+    auto desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:1 height:1 mipmapped:NO];
+    desc.usage = MTLTextureUsageShaderRead;
+    desc.storageMode = MTLStorageModeShared;
+
+    id<MTLTexture> texture = [device newTextureWithDescriptor:desc];
+    uint32_t pixel = 0xFFFFFFFF;
+    MTLRegion region = MTLRegionMake2D(0, 0, 1, 1);
+    [texture replaceRegion:region mipmapLevel:0 withBytes:&pixel bytesPerRow:4];
+
+    auto samplerDesc = [MTLSamplerDescriptor new];
+    samplerDesc.sAddressMode = MTLSamplerAddressModeClampToEdge;
+    samplerDesc.tAddressMode = MTLSamplerAddressModeClampToEdge;
+    samplerDesc.minFilter = MTLSamplerMinMagFilterLinear;
+    samplerDesc.magFilter = MTLSamplerMinMagFilterLinear;
+    samplerDesc.mipFilter = MTLSamplerMipFilterNotMipmapped;
+    id<MTLSamplerState> sampler = [device newSamplerStateWithDescriptor:samplerDesc];
+    [samplerDesc release];
+
+    this->m_fallbackTexture = texture;
+    this->m_fallbackSampler = sampler;
 }
 
 void CGxDeviceMTL::Resize(uint32_t width, uint32_t height) {

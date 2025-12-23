@@ -32,6 +32,7 @@ class CGxDeviceMTL : public CGxDevice {
         void IShaderCreate(CGxShader*) override;
         void ShaderCreate(CGxShader*[], EGxShTarget, const char*, const char*, int32_t) override;
         int32_t StereoEnabled(void) override;
+        void XformSetProjection(const C44Matrix& matrix) override;
 
         // Member functions
         CGxDeviceMTL();
@@ -39,15 +40,42 @@ class CGxDeviceMTL : public CGxDevice {
 
     private:
         void ISetCaps(const CGxFormat& format);
-        void EnsureDebugPipeline();
+        void EnsureLibrary();
+        void BeginFrame();
+        void* GetPipeline(EGxVertexBufferFormat format, bool useColor, bool useSkin, bool useTex, int32_t blendMode);
+        void* GetPoolBuffer(CGxPool* pool);
+        void ITexCreate(CGxTex* texId);
+        void ITexUpload(CGxTex* texId);
+        void* GetTexture(CGxTex* texId);
+        void* GetSampler(CGxTex* texId);
+        void EnsureFallbackTexture();
+        void EnsureDepthTexture(uint32_t width, uint32_t height);
+        void* GetDepthState(bool depthTest, bool depthWrite, uint32_t depthFunc);
         void* m_device = nullptr;
         void* m_commandQueue = nullptr;
         void* m_layer = nullptr;
-        void* m_pipeline = nullptr;
-        void* m_vertexBuffer = nullptr;
-        uint32_t m_vertexCount = 0;
+        void* m_shaderLibrary = nullptr;
+        void* m_pipelineColor[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSolid[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSkin[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineColorTex[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSolidTex[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSkinTex[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineColorTex2[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSolidTex2[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_pipelineSkinTex2[GxVertexBufferFormats_Last][GxBlends_Last] = {};
+        void* m_frameCommandBuffer = nullptr;
+        void* m_frameEncoder = nullptr;
+        void* m_frameDrawable = nullptr;
+        uint32_t m_frameHasDraw = 0;
         uint32_t m_clearMask = 0;
         uint32_t m_clearColor = 0;
+        void* m_fallbackTexture = nullptr;
+        void* m_fallbackSampler = nullptr;
+        void* m_depthTexture = nullptr;
+        uint32_t m_depthWidth = 0;
+        uint32_t m_depthHeight = 0;
+        void* m_depthStates[2][2][4] = {};
 };
 
 #endif

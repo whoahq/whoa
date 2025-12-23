@@ -11,6 +11,7 @@
 #include "glue/CGlueMgr.hpp"
 #include "glue/GlueScriptEvents.hpp"
 #include "gx/Screen.hpp"
+#include "gx/Shader.hpp"
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
 #include "net/Poll.hpp"
@@ -235,6 +236,7 @@ int32_t InitializeEngineCallback(const void* a1, void* a2) {
 
     auto m2Flags = M2RegisterCVars();
     M2Initialize(m2Flags, 0);
+    CShaderEffect::InitShaderSystem((M2GetCacheFlags() & 0x8) != 0, 0);
 
     // v4 = *(_DWORD *)(dword_B2FA00 + 48);
     // sub_4B61C0(dword_AB6128[v4]);
