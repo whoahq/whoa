@@ -24,9 +24,9 @@ Assuming all went well, you should see a `dist/bin` directory appear in the `bui
 
 Whoa doesn't currently support reading from MPQ archives. Instead, it assumes you are launching the Whoa executable from the root of a fully extracted MPQ archive set for World of Warcraft 3.3.5a (build 12340). You can obtain a valid set of MPQ archives to extract by installing World of Warcraft 3.3.5a from legally purchased original install media. Whoa does not provide any copy of game data.
 
-Assuming all goes well, you should be greeted by the login screen, complete with its flying dragon animation loop.
+Assuming all goes well, you should be greeted by the login screen, complete with its flying dragon animation loop and background music. The options panels can be interacted with, although some options currently do nothing. Game credits can be viewed. You may log in to a server and interact with the character select screen.
 
-Whoa is very much a work-in-progress: it does not fully connect to a realm server, does not play back sound or music, and does not support customizing settings. These things will be supported over time.
+Whoa is very much a work-in-progress: in its current state, it doesn't support entering the game world, doesn't permit character creation or deletion, and doesn't persist game settings to disk. These things will be supported over time.
 
 ![Whoa in action](./docs/img/login.png)
 
