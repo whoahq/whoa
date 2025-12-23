@@ -128,6 +128,28 @@ int32_t LoadXML_Dimensions(XMLNode* node, float& x, float& y, CStatus* status) {
     }
 }
 
+int32_t LoadXML_Gradient(XMLNode* node, ORIENTATION& orientation, CImVector& minColor, CImVector& maxColor, CStatus* status) {
+    orientation = ORIENTATION_HORIZONTAL;
+
+    // Orientation
+    auto orientationAttr = node->GetAttributeByName("orientation");
+    if (orientationAttr && *orientationAttr) {
+        if (!StringToOrientation(orientationAttr, orientation)) {
+            status->Add(STATUS_WARNING, "Unknown orientation %s in element %s", orientationAttr, node->GetName());
+        }
+    }
+
+    for (auto child = node->m_child; child; child = child->m_next) {
+        if (!SStrCmpI(child->GetName(), "MinColor")) {
+            LoadXML_Color(child, minColor);
+        } else if (!SStrCmpI(child->GetName(), "MaxColor")) {
+            LoadXML_Color(child, maxColor);
+        }
+    }
+
+    return 1;
+}
+
 int32_t LoadXML_Insets(XMLNode* node, float& left, float& right, float& top, float& bottom, CStatus* status) {
     left = 0.0f;
     right = 0.0f;
