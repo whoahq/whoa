@@ -349,11 +349,18 @@ void CSimpleTexture::LoadXML(XMLNode* node, CStatus* status) {
                     wrapV = 1;
                 }
             }
+
         } else if (!SStrCmpI(child->GetName(), "Color", INT_MAX)) {
             LoadXML_Color(child, color);
             this->SetTexture(color);
+
         } else if (!SStrCmpI(child->GetName(), "Gradient", INT_MAX)) {
-            // TODO
+            ORIENTATION orientation;
+            CImVector minColor = {};
+            CImVector maxColor = {};
+            LoadXML_Gradient(child, orientation, minColor, maxColor, status);
+
+            this->SetVertexGradient(orientation, minColor, maxColor);
         }
     }
 
