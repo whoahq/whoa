@@ -32,6 +32,8 @@ if(WHOA_SYSTEM_MAC)
             "-framework AppKit"
             "-framework Carbon"
             "-framework IOKit"
+            "-framework Metal"
+            "-framework QuartzCore"
     )
 
     install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/mac/MainMenu.nib DESTINATION "bin")

@@ -6,6 +6,7 @@
 #include "gx/Adapter.hpp"
 #include "gx/Device.hpp"
 #include <storm/Array.hpp>
+#include <cstdlib>
 #include <cstring>
 
 static CGxDevice* s_device;
@@ -415,6 +416,13 @@ void ConsoleDeviceInitialize(const char* title) {
     api = GxApi_D3d9;
 #elif defined(WHOA_SYSTEM_MAC)
     api = GxApi_GLL;
+#endif
+
+#if defined(WHOA_SYSTEM_MAC)
+    const char* apiOverride = getenv("WHOA_GX_API");
+    if (apiOverride && !strcmp(apiOverride, "metal")) {
+        api = GxApi_Metal;
+    }
 #endif
 
     s_device = GxDevCreate(api, OsWindowProc, format);
