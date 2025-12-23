@@ -143,6 +143,40 @@ void CSimpleRegion::SetVertexColor(const CImVector& color) {
     this->OnColorChanged(b1);
 }
 
+void CSimpleRegion::SetVertexGradient(ORIENTATION orientation, const CImVector& minColor, const CImVector& maxColor) {
+    bool b1 = false;
+
+    if (this->m_colorCount != 4) {
+        this->m_alphaCount = 4;
+        this->m_colorCount = 4;
+        b1 = true;
+    }
+
+    if (orientation == ORIENTATION_VERTICAL) {
+        this->m_alpha[1] = minColor.a;
+        this->m_color[1] = minColor;
+        this->m_alpha[3] = minColor.a;
+        this->m_color[3] = minColor;
+
+        this->m_alpha[0] = maxColor.a;
+        this->m_color[0] = maxColor;
+        this->m_alpha[2] = maxColor.a;
+        this->m_color[2] = maxColor;
+    } else {
+        this->m_alpha[0] = minColor.a;
+        this->m_color[0] = minColor;
+        this->m_alpha[1] = minColor.a;
+        this->m_color[1] = minColor;
+
+        this->m_alpha[2] = maxColor.a;
+        this->m_color[2] = maxColor;
+        this->m_alpha[3] = maxColor.a;
+        this->m_color[3] = maxColor;
+    }
+
+    this->OnColorChanged(b1);
+}
+
 void CSimpleRegion::SetFrame(CSimpleFrame* frame, uint32_t drawlayer, int32_t show) {
     if (this->m_parent == frame) {
         if (this->m_drawlayer == drawlayer) {

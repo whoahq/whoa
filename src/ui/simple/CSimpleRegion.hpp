@@ -34,6 +34,7 @@ class CSimpleRegion : public CScriptRegion {
         bool IsShown();
         void OnRegionChanged();
         void SetVertexColor(const CImVector& color);
+        void SetVertexGradient(ORIENTATION orientation, const CImVector& minColor, const CImVector& maxColor);
         void SetFrame(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
         void Show();
         void ShowThis();
