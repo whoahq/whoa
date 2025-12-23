@@ -16,8 +16,12 @@ struct VERT {
     C2Vector tc;
 };
 
-class TEXTLINETEXTURE {
+class TEXTLINETEXTURE : public TSLinkedNode<TEXTLINETEXTURE> {
     public:
+        // Static variables
+        static STORM_LIST(TEXTLINETEXTURE) s_freeTextLineTextures;
+        static uint32_t s_recycledBytes;
+
         // Static functions
         static TEXTLINETEXTURE* NewTextLineTexture();
         static void Recycle(TEXTLINETEXTURE* ptr);

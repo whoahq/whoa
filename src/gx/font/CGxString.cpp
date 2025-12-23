@@ -12,20 +12,37 @@
 #include <cmath>
 #include <new>
 
-TEXTLINETEXTURE* TEXTLINETEXTURE::NewTextLineTexture() {
-    // TODO
-    // Allocate off of TEXTLINETEXTURE::s_freeTextLineTextures
+STORM_LIST(TEXTLINETEXTURE) TEXTLINETEXTURE::s_freeTextLineTextures;
+uint32_t TEXTLINETEXTURE::s_recycledBytes;
 
-    auto m = SMemAlloc(sizeof(TEXTLINETEXTURE), __FILE__, __LINE__, 0x0);
-    return new (m) TEXTLINETEXTURE();
+TEXTLINETEXTURE* TEXTLINETEXTURE::NewTextLineTexture() {
+    auto line = TEXTLINETEXTURE::s_freeTextLineTextures.Head();
+
+    if (!line) {
+        return STORM_NEW(TEXTLINETEXTURE);
+    }
+
+    // TODO Likely TSBaseArray::Bytes()
+    TEXTLINETEXTURE::s_recycledBytes -= (sizeof(VERT) * line->m_vert.m_alloc) + (sizeof(CImVector) * line->m_colors.m_alloc);
+
+    line->Unlink();
+
+    return line;
 }
 
-void TEXTLINETEXTURE::Recycle(TEXTLINETEXTURE* ptr) {
-    // TODO if (TEXTLINETEXTURE::s_recycledBytes <= 0x80000)
-
-    if (ptr) {
-        delete ptr;
+void TEXTLINETEXTURE::Recycle(TEXTLINETEXTURE* line) {
+    if (TEXTLINETEXTURE::s_recycledBytes > 0x80000) {
+        delete line;
+        return;
     }
+
+    line->m_vert.SetCount(0);
+    line->m_colors.SetCount(0);
+
+    // TODO Likely TSBaseArray::Bytes()
+    TEXTLINETEXTURE::s_recycledBytes += (sizeof(VERT) * line->m_vert.m_alloc) + (sizeof(CImVector) * line->m_colors.m_alloc);
+
+    TEXTLINETEXTURE::s_freeTextLineTextures.LinkToTail(line);
 }
 
 void TEXTLINETEXTURE::WriteGeometry(CGxVertexPCT* buffer, const CImVector& fontColor, const C2Vector& shadowOffset, const CImVector& shadowColor, const C3Vector& viewTranslation, bool hasShadow, bool a8, int32_t vertexOffset, int32_t vertexCount) {
