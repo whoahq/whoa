@@ -24,7 +24,7 @@ class CSimpleSlider : public CSimpleFrame {
         float m_value = 0.0f;
         float m_valueStep = 0.0f;
         CSimpleTexture* m_thumbTexture = nullptr;
-        SLIDER_ORIENTATION m_orientation = SLIDER_VERTICAL;
+        ORIENTATION m_orientation = ORIENTATION_VERTICAL;
         ScriptIx m_onValueChanged;
         ScriptIx m_onMinMaxChanged;
 
@@ -54,7 +54,7 @@ class CSimpleSlider : public CSimpleFrame {
         void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
         void SetMinMaxValues(float min, float max);
-        void SetOrientation(SLIDER_ORIENTATION orientation);
+        void SetOrientation(ORIENTATION orientation);
         void SetThumbTexture(CSimpleTexture* texture, int32_t drawLayer);
         void SetValue(float value);
         void SetValueStep(float valueStep);

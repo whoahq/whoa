@@ -88,9 +88,9 @@ enum PLURAL_RULE {
     PLURAL_RULE_2   = 2
 };
 
-enum SLIDER_ORIENTATION {
-    SLIDER_HORIZONTAL       = 0,
-    SLIDER_VERTICAL         = 1,
+enum ORIENTATION {
+    ORIENTATION_HORIZONTAL  = 0,
+    ORIENTATION_VERTICAL    = 1,
 };
 
 enum TextureImageMode {

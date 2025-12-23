@@ -111,7 +111,7 @@ void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
 
     auto orientationStr = node->GetAttributeByName("orientation");
     if (orientationStr && *orientationStr) {
-        SLIDER_ORIENTATION orientation;
+        ORIENTATION orientation;
 
         if (StringToOrientation(orientationStr, orientation)) {
             this->SetOrientation(orientation);
@@ -163,7 +163,7 @@ int32_t CSimpleSlider::OnLayerTrackUpdate(const CMouseEvent& evt) {
         float area;
         float offset;
 
-        if (this->m_orientation == SLIDER_VERTICAL) {
+        if (this->m_orientation == ORIENTATION_VERTICAL) {
             area = this->m_rect.maxY - this->m_rect.minY - thumbTexture->GetHeight();
             offset = this->m_rect.maxY - (thumbTexture->GetHeight() / 2.0f) - evt.y;
         } else {
@@ -188,7 +188,7 @@ void CSimpleSlider::OnLayerUpdate(float elapsedSec) {
             ? 0.0f
             : (this->m_value - this->m_baseValue) / valueRange;
 
-        if (this->m_orientation == SLIDER_VERTICAL) {
+        if (this->m_orientation == ORIENTATION_VERTICAL) {
             auto rangeY = (this->m_rect.maxY - this->m_rect.minY) / this->m_layoutScale;
             auto offsetY = -((rangeY - this->m_thumbTexture->GetHeight()) * valueOffset);
 
@@ -249,7 +249,7 @@ void CSimpleSlider::SetMinMaxValues(float min, float max) {
     }
 }
 
-void CSimpleSlider::SetOrientation(SLIDER_ORIENTATION orientation) {
+void CSimpleSlider::SetOrientation(ORIENTATION orientation) {
     this->m_orientation = orientation;
 
     if (this->m_thumbTexture) {
