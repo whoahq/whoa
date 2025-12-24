@@ -210,63 +210,89 @@ namespace {
         "};\n"
         "struct VertexOut {\n"
         "    float4 position [[position]];\n"
+        "    float pointSize [[point_size]];\n"
         "    float4 color;\n"
         "    float2 texcoord;\n"
         "    float2 texcoord1;\n"
+        "    float viewZ;\n"
         "};\n"
         "struct PSConstants {\n"
         "    float alphaRef;\n"
+        "    float fogStart;\n"
+        "    float fogEnd;\n"
+        "    float fogEnabled;\n"
         "    float4 color;\n"
+        "    float4 fogColor;\n"
         "};\n"
         "struct VSConstants {\n"
         "    float4x4 mvp;\n"
+        "    float pointSize;\n"
+        "    float pad[3];\n"
         "};\n"
         "vertex VertexOut vs_color(VertexColorIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = in.color;\n"
         "    out.texcoord = float2(0.0, 0.0);\n"
         "    out.texcoord1 = float2(0.0, 0.0);\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_tex(VertexTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_tex2(VertexTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord1;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_color_tex(VertexColorTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = in.color;\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_color_tex2(VertexColorTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = in.color;\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord1;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_solid(VertexSolidIn in [[stage_in]], constant VSConstants& c [[buffer(1)]]) {\n"
         "    VertexOut out;\n"
-        "    out.position = c.mvp * float4(in.position, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(in.position, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = float2(0.0, 0.0);\n"
         "    out.texcoord1 = float2(0.0, 0.0);\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_skin(VertexSkinIn in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
@@ -286,10 +312,13 @@ namespace {
         "        p.z = dot(pos, c2);\n"
         "        skinned += p * w[i];\n"
         "    }\n"
-        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(skinned, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = float2(0.0, 0.0);\n"
         "    out.texcoord1 = float2(0.0, 0.0);\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_skin_tex(VertexSkinTexIn in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
@@ -309,10 +338,13 @@ namespace {
         "        p.z = dot(pos, c2);\n"
         "        skinned += p * w[i];\n"
         "    }\n"
-        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(skinned, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
         "}\n"
         "vertex VertexOut vs_skin_tex2(VertexSkinTex2In in [[stage_in]], constant VSConstants& c [[buffer(1)]], constant float4* vc [[buffer(2)]]) {\n"
@@ -332,25 +364,42 @@ namespace {
         "        p.z = dot(pos, c2);\n"
         "        skinned += p * w[i];\n"
         "    }\n"
-        "    out.position = c.mvp * float4(skinned, 1.0);\n"
+        "    float4 pos4 = c.mvp * float4(skinned, 1.0);\n"
+        "    out.position = pos4;\n"
         "    out.color = float4(1.0, 1.0, 1.0, 1.0);\n"
         "    out.texcoord = in.texcoord;\n"
         "    out.texcoord1 = in.texcoord1;\n"
+        "    out.viewZ = pos4.w;\n"
+        "    out.pointSize = c.pointSize;\n"
         "    return out;\n"
+        "}\n"
+        "float4 applyFog(float4 color, float viewZ, constant PSConstants& ps) {\n"
+        "    if (ps.fogEnabled > 0.0 && ps.fogEnd > ps.fogStart) {\n"
+        "        float fogFactor = saturate((ps.fogEnd - viewZ) / (ps.fogEnd - ps.fogStart));\n"
+        "        color.rgb = mix(ps.fogColor.rgb, color.rgb, fogFactor);\n"
+        "    }\n"
+        "    return color;\n"
         "}\n"
         "fragment float4 ps_main(VertexOut in [[stage_in]], constant PSConstants& ps [[buffer(0)]]) {\n"
         "    float4 color = in.color * ps.color;\n"
         "    if (ps.alphaRef > 0.0 && color.a < ps.alphaRef) {\n"
         "        discard_fragment();\n"
         "    }\n"
-        "    return color;\n"
+        "    return applyFog(color, in.viewZ, ps);\n"
+        "}\n"
+        "fragment float4 ps_tex1(VertexOut in [[stage_in]], texture2d<float> tex0 [[texture(0)]], sampler samp0 [[sampler(0)]], constant PSConstants& ps [[buffer(0)]]) {\n"
+        "    float4 color = tex0.sample(samp0, in.texcoord) * in.color * ps.color;\n"
+        "    if (ps.alphaRef > 0.0 && color.a < ps.alphaRef) {\n"
+        "        discard_fragment();\n"
+        "    }\n"
+        "    return applyFog(color, in.viewZ, ps);\n"
         "}\n"
         "fragment float4 ps_tex(VertexOut in [[stage_in]], texture2d<float> tex0 [[texture(0)]], sampler samp0 [[sampler(0)]], texture2d<float> tex1 [[texture(1)]], sampler samp1 [[sampler(1)]], constant PSConstants& ps [[buffer(0)]]) {\n"
         "    float4 color = tex0.sample(samp0, in.texcoord) * tex1.sample(samp1, in.texcoord1) * in.color * ps.color;\n"
         "    if (ps.alphaRef > 0.0 && color.a < ps.alphaRef) {\n"
         "        discard_fragment();\n"
         "    }\n"
-        "    return color;\n"
+        "    return applyFog(color, in.viewZ, ps);\n"
         "}\n";
 }
 
@@ -383,7 +432,98 @@ void CGxDeviceMTL::ITexMarkAsUpdated(CGxTex* texId) {
 }
 
 void CGxDeviceMTL::IRsSendToHw(EGxRenderState which) {
-    (void)which;
+    auto* state = &this->m_appRenderStates[which];
+    
+    switch (which) {
+        // Texture states - mark textures as needing update
+        case GxRs_Texture0:
+        case GxRs_Texture1:
+        case GxRs_Texture2:
+        case GxRs_Texture3:
+        case GxRs_Texture4:
+        case GxRs_Texture5:
+        case GxRs_Texture6:
+        case GxRs_Texture7:
+        case GxRs_Texture8:
+        case GxRs_Texture9:
+        case GxRs_Texture10:
+        case GxRs_Texture11:
+        case GxRs_Texture12:
+        case GxRs_Texture13:
+        case GxRs_Texture14:
+        case GxRs_Texture15: {
+            CGxTex* texture = static_cast<CGxTex*>(static_cast<void*>(state->m_value));
+            if (texture) {
+                this->ITexMarkAsUpdated(texture);
+            }
+            break;
+        }
+        
+        // States handled at draw time - no immediate GPU action needed
+        case GxRs_BlendingMode:
+        case GxRs_AlphaRef:
+        case GxRs_DepthTest:
+        case GxRs_DepthFunc:
+        case GxRs_DepthWrite:
+        case GxRs_Culling:
+        case GxRs_Fog:
+        case GxRs_FogStart:
+        case GxRs_FogEnd:
+        case GxRs_FogColor:
+        case GxRs_Lighting:
+        case GxRs_VertexShader:
+        case GxRs_PixelShader:
+        case GxRs_ColorWrite:
+        case GxRs_ScissorTest:
+            // Metal applies these during Draw() call
+            break;
+            
+        // States not yet implemented
+        case GxRs_PolygonOffset:
+        case GxRs_MatDiffuse:
+        case GxRs_MatEmissive:
+        case GxRs_MatSpecular:
+        case GxRs_MatSpecularExp:
+        case GxRs_NormalizeNormals:
+        case GxRs_ClipPlaneMask:
+        case GxRs_Multisample:
+        case GxRs_ColorOp0:
+        case GxRs_ColorOp1:
+        case GxRs_ColorOp2:
+        case GxRs_ColorOp3:
+        case GxRs_ColorOp4:
+        case GxRs_ColorOp5:
+        case GxRs_ColorOp6:
+        case GxRs_ColorOp7:
+        case GxRs_AlphaOp0:
+        case GxRs_AlphaOp1:
+        case GxRs_AlphaOp2:
+        case GxRs_AlphaOp3:
+        case GxRs_AlphaOp4:
+        case GxRs_AlphaOp5:
+        case GxRs_AlphaOp6:
+        case GxRs_AlphaOp7:
+        case GxRs_TexGen0:
+        case GxRs_TexGen1:
+        case GxRs_TexGen2:
+        case GxRs_TexGen3:
+        case GxRs_TexGen4:
+        case GxRs_TexGen5:
+        case GxRs_TexGen6:
+        case GxRs_TexGen7:
+        case GxRs_PointScale:
+        case GxRs_PointScaleAttenuation:
+        case GxRs_PointScaleMin:
+        case GxRs_PointScaleMax:
+        case GxRs_PointSprite:
+        case GxRs_ColorMaterial:
+            // Not implemented in Metal backend
+            break;
+            
+        default:
+            // Unknown state
+            break;
+    }
 }
 
 int32_t CGxDeviceMTL::DeviceCreate(int32_t (*windowProc)(void* window, uint32_t message, uintptr_t wparam, intptr_t lparam), const CGxFormat& format) {
@@ -647,7 +787,17 @@ void* CGxDeviceMTL::GetPipeline(EGxVertexBufferFormat format, bool useColor, boo
         }
     }
 
-    psName = useTexPipeline ? @"ps_tex" : @"ps_main";
+    // Select pixel shader based on texture usage:
+    // - ps_main: no textures
+    // - ps_tex1: single texture (tex0 only)
+    // - ps_tex: two textures (tex0 * tex1)
+    if (useTex2Pipeline) {
+        psName = @"ps_tex";
+    } else if (useTexPipeline) {
+        psName = @"ps_tex1";
+    } else {
+        psName = @"ps_main";
+    }
 
     id<MTLFunction> vs = [library newFunctionWithName:vsName];
     id<MTLFunction> ps = [library newFunctionWithName:psName];
@@ -739,6 +889,10 @@ void* CGxDeviceMTL::GetPipeline(EGxVertexBufferFormat format, bool useColor, boo
         desc.colorAttachments[0].sourceAlphaBlendFactor = desc.colorAttachments[0].sourceRGBBlendFactor;
         desc.colorAttachments[0].destinationAlphaBlendFactor = desc.colorAttachments[0].destinationRGBBlendFactor;
     }
+    
+    // ColorWrite is applied via writeMask; for now set all channels enabled.
+    // A full implementation would need separate pipelines per write mask value.
+    desc.colorAttachments[0].writeMask = MTLColorWriteMaskAll;
 
     NSError* error = nil;
     id<MTLRenderPipelineState> pipeline = [device newRenderPipelineStateWithDescriptor:desc error:&error];
@@ -919,9 +1073,20 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
         return;
     }
 
+    // Check ColorWrite - skip rendering if completely disabled
+    int32_t colorWrite = static_cast<int32_t>(this->m_appRenderStates[GxRs_ColorWrite].m_value);
+    bool colorWriteEnabled = this->MasterEnable(GxMasterEnable_ColorWrite);
+    if (!colorWriteEnabled || colorWrite == 0) {
+        return; // No color channels will be written
+    }
+
     bool useColor = (this->m_primVertexMask & GxPrim_Color0) != 0;
     bool useSkin = this->m_primVertexFormat == GxVBF_PBNT2;
     bool useTex = false;
+    
+    // Check for texture coordinates in two ways:
+    // 1. Standard vertex buffer format - check buffer descriptor
+    // 2. Custom vertex format (m_primVertexFormat == Last) - check m_primVertexMask
     if (this->m_primVertexFormat < GxVertexBufferFormats_Last) {
         const auto& bufDesc = Buffer::s_vertexBufDesc[this->m_primVertexFormat];
         for (uint32_t i = 0; i < bufDesc.attribCount; ++i) {
@@ -931,6 +1096,21 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
             }
         }
     }
+    // Also check the primitive vertex mask for TexCoord0 bit (covers custom formats)
+    if (!useTex && (this->m_primVertexMask & (1 << GxVA_TexCoord0))) {
+        useTex = true;
+    }
+    
+    // Debug logging - enable with WHOA_GX_MTL_LOG_DRAW=1
+    static bool s_logDraw = std::getenv("WHOA_GX_MTL_LOG_DRAW") != nullptr;
+    static int s_drawCount = 0;
+    if (s_logDraw && s_drawCount < 500) {
+        auto texState = static_cast<CGxTex*>(static_cast<void*>(this->m_appRenderStates[GxRs_Texture0].m_value));
+        int32_t blendModeDbg = static_cast<int32_t>(this->m_appRenderStates[GxRs_BlendingMode].m_value);
+        fprintf(stderr, "[MTL Draw #%d] fmt=%d mask=0x%x useTex=%d useColor=%d blend=%d tex0=%p count=%d\n",
+                s_drawCount++, this->m_primVertexFormat, this->m_primVertexMask, useTex, useColor, blendModeDbg, texState, batch->m_count);
+    }
+    
     int32_t blendMode = static_cast<int32_t>(this->m_appRenderStates[GxRs_BlendingMode].m_value);
     auto pipeline = (id<MTLRenderPipelineState>)this->GetPipeline(this->m_primVertexFormat, useColor, useSkin, useTex, blendMode);
     if (!pipeline && useColor) {
@@ -947,11 +1127,16 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
         return;
     }
 
-    C44Matrix mvp;
+    // VSConstants struct matches the Metal shader's VSConstants
+    struct MtlVSConstants {
+        C44Matrix mvp;
+        float pointSize;
+        float pad[3];
+    } vsConsts;
+    vsConsts.pointSize = 1.0f;  // Default point size
     bool useShaderMvp = false;
 
-    // TODO: Restore shader constant usage once verified.
-    // For now, we debug log if a vertex shader is present to analyze the constants.
+    // Restore shader constant usage for standard UI formats.
     if (!useSkin) {
         auto vsState = static_cast<CGxShader*>(static_cast<void*>(this->m_appRenderStates[GxRs_VertexShader].m_value));
         if (vsState) {
@@ -963,16 +1148,29 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
                  fprintf(stderr, "           [2] %f %f %f %f\n", c[2].x, c[2].y, c[2].z, c[2].w);
                  fprintf(stderr, "           [3] %f %f %f %f\n", c[3].x, c[3].y, c[3].z, c[3].w);
             }
+
+            // NOTE: VS constant MVP from c[0-3] is disabled - it causes rendering issues.
+            // The game may store MVP in constants for some shaders, but the format varies.
+            // For now, we rely on the transform stack (world * view * proj).
         }
     }
 
     if (!useShaderMvp) {
         if (useSkin) {
-            mvp = this->m_projNative;
+            vsConsts.mvp = this->m_projNative;
         } else {
             const auto& world = this->m_xforms[GxXform_World].TopConst();
             const auto& view = this->m_xforms[GxXform_View].TopConst();
-            mvp = (world * view) * this->m_projNative;
+            vsConsts.mvp = (world * view) * this->m_projNative;
+        }
+    }
+    
+    // Get point size from render state if point sprites are enabled
+    int32_t pointSprite = static_cast<int32_t>(this->m_appRenderStates[GxRs_PointSprite].m_value);
+    if (pointSprite) {
+        float pointScale = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_PointScale].m_value));
+        if (pointScale > 0.0f) {
+            vsConsts.pointSize = pointScale;
         }
     }
 
@@ -992,17 +1190,39 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
     if (depthState) {
         [encoder setDepthStencilState:depthState];
     }
+    
+    // Polygon offset (depth bias) for decals and overlapping geometry
+    int32_t polygonOffset = static_cast<int32_t>(this->m_appRenderStates[GxRs_PolygonOffset].m_value);
+    if (polygonOffset != 0) {
+        // Apply depth bias to push geometry slightly back, avoiding z-fighting
+        float slopeScale = static_cast<float>(polygonOffset) * 2.0f;
+        float units = static_cast<float>(polygonOffset);
+        [encoder setDepthBias:units slopeScale:slopeScale clamp:0.0f];
+    } else {
+        [encoder setDepthBias:0.0f slopeScale:0.0f clamp:0.0f];
+    }
 
     int32_t cullMode = static_cast<int32_t>(this->m_appRenderStates[GxRs_Culling].m_value);
     if (cullMode == 0) {
         [encoder setCullMode:MTLCullModeNone];
     } else {
         [encoder setCullMode:MTLCullModeBack];
-        [encoder setFrontFacingWinding:(cullMode == 1) ? MTLWindingClockwise : MTLWindingCounterClockwise];
+        // Swap winding: OpenGL uses opposite convention from what we originally had
+        [encoder setFrontFacingWinding:(cullMode == 1) ? MTLWindingCounterClockwise : MTLWindingClockwise];
     }
+    
+    // Scissor test: when disabled, use full framebuffer; when enabled, use viewport scissor
+    int32_t scissorTest = static_cast<int32_t>(this->m_appRenderStates[GxRs_ScissorTest].m_value);
+    if (!scissorTest) {
+        auto layer = (CAMetalLayer*)this->m_layer;
+        CGSize size = layer.drawableSize;
+        MTLScissorRect fullRect = { 0, 0, static_cast<NSUInteger>(size.width), static_cast<NSUInteger>(size.height) };
+        [encoder setScissorRect:fullRect];
+    }
+    // When scissor test is enabled, the scissor rect is set by IStateSyncScissorRect via BeginFrame
 
     [encoder setVertexBuffer:mtlVertexBuf offset:vertexBuf->m_index atIndex:0];
-    [encoder setVertexBytes:&mvp length:sizeof(mvp) atIndex:1];
+    [encoder setVertexBytes:&vsConsts length:sizeof(vsConsts) atIndex:1];
     if (useSkin) {
         [encoder setVertexBytes:CGxDevice::s_shadowConstants[1].constants
                          length:sizeof(CGxDevice::s_shadowConstants[1].constants)
@@ -1019,6 +1239,14 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
         if (!sampler) {
             sampler = (id<MTLSamplerState>)this->m_fallbackSampler;
         }
+        
+        // Debug tex binding
+        if (s_logDraw && s_drawCount <= 10) {
+            EGxTexFormat gxfmt = texState ? texState->m_format : GxTex_Unknown;
+            fprintf(stderr, "  [Tex0] ptr=%p mtlTex=%p dim=%lux%lu gxfmt=%d pixelFmt=%lu\n",
+                    texState, texture, texture.width, texture.height, gxfmt, (unsigned long)texture.pixelFormat);
+        }
+        
         [encoder setFragmentTexture:texture atIndex:0];
         [encoder setFragmentSamplerState:sampler atIndex:0];
 
@@ -1038,14 +1266,29 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
 
     struct MtlPSConstants {
         float alphaRef;
-        float pad[3];
+        float fogStart;
+        float fogEnd;
+        float fogEnabled;
         float color[4];
+        float fogColor[4];
     } psConsts;
 
     psConsts.alphaRef = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_AlphaRef].m_value)) / 255.0f;
-    psConsts.pad[0] = psConsts.pad[1] = psConsts.pad[2] = 0.0f;
+    
+    // Read fog render states
+    int32_t fogEnabled = static_cast<int32_t>(this->m_appRenderStates[GxRs_Fog].m_value);
+    psConsts.fogEnabled = fogEnabled ? 1.0f : 0.0f;
+    psConsts.fogStart = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_FogStart].m_value));
+    psConsts.fogEnd = static_cast<float>(static_cast<int32_t>(this->m_appRenderStates[GxRs_FogEnd].m_value));
+    
+    // Fog color is stored as CImVector (packed ARGB)
+    uint32_t fogColorPacked = static_cast<uint32_t>(this->m_appRenderStates[GxRs_FogColor].m_value);
+    psConsts.fogColor[0] = static_cast<float>((fogColorPacked >> 16) & 0xFF) / 255.0f;  // R
+    psConsts.fogColor[1] = static_cast<float>((fogColorPacked >> 8) & 0xFF) / 255.0f;   // G
+    psConsts.fogColor[2] = static_cast<float>((fogColorPacked >> 0) & 0xFF) / 255.0f;   // B
+    psConsts.fogColor[3] = static_cast<float>((fogColorPacked >> 24) & 0xFF) / 255.0f;  // A
 
-    // Default to white
+    // Default color to white
     psConsts.color[0] = 1.0f; psConsts.color[1] = 1.0f; psConsts.color[2] = 1.0f; psConsts.color[3] = 1.0f;
 
     // Apply pixel shader constants if a pixel shader is active AND Lighting is DISABLED.
@@ -1064,15 +1307,25 @@ void CGxDeviceMTL::Draw(CGxBatch* batch, int32_t indexed) {
 
         if (lighting == 0) {
             const auto& c = CGxDevice::s_shadowConstants[0].constants[0];
-            // Sanity check: Only apply if values are within a reasonable range for color/alpha.
-            // This filters out uninitialized constants (often FLT_MAX) or non-color data.
-            if (std::abs(c.x) <= 10.0f && std::abs(c.y) <= 10.0f && std::abs(c.z) <= 10.0f && std::abs(c.w) <= 10.0f) {
+            // Apply shader constants if they appear initialized (not FLT_MAX from ShaderConstantsClear).
+            // Zero values are valid - they mean "don't modulate" or intentional transparency.
+            // Color values are typically in 0-1 range, using 2.0f threshold for HDR margin.
+            if (std::abs(c.x) <= 2.0f && std::abs(c.y) <= 2.0f && std::abs(c.z) <= 2.0f && std::abs(c.w) <= 2.0f) {
                 psConsts.color[0] = c.x;
                 psConsts.color[1] = c.y;
                 psConsts.color[2] = c.z;
                 psConsts.color[3] = c.w;
             }
         }
+    }
+
+    // Debug PS constants color
+    if (s_logDraw && s_drawCount <= 10) {
+        int32_t depthTest = static_cast<int32_t>(this->m_appRenderStates[GxRs_DepthTest].m_value);
+        int32_t depthWrite = static_cast<int32_t>(this->m_appRenderStates[GxRs_DepthWrite].m_value);
+        fprintf(stderr, "  [PSConsts] color=(%.2f, %.2f, %.2f, %.2f) alphaRef=%.3f lighting=%d depthTest=%d depthWrite=%d\n",
+                psConsts.color[0], psConsts.color[1], psConsts.color[2], psConsts.color[3],
+                psConsts.alphaRef, lighting, depthTest, depthWrite);
     }
 
     [encoder setFragmentBytes:&psConsts length:sizeof(psConsts) atIndex:0];
@@ -1321,7 +1574,16 @@ void CGxDeviceMTL::ITexCreate(CGxTex* texId) {
     this->ITexWHDStartEnd(texId, width, height, baseMip, mipCount);
 
     auto device = (id<MTLDevice>)this->m_device;
-    auto desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:pixelFormat width:width height:height mipmapped:(mipCount - baseMip) > 1];
+    MTLTextureDescriptor* desc = nil;
+    
+    if (texId->m_target == GxTex_CubeMap) {
+        // Create cubemap texture (6 faces)
+        desc = [MTLTextureDescriptor textureCubeDescriptorWithPixelFormat:pixelFormat size:width mipmapped:(mipCount - baseMip) > 1];
+    } else {
+        // Create 2D texture
+        desc = [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:pixelFormat width:width height:height mipmapped:(mipCount - baseMip) > 1];
+    }
+    
     desc.usage = MTLTextureUsageShaderRead;
     desc.storageMode = MTLStorageModeShared;
 
@@ -1358,35 +1620,48 @@ void CGxDeviceMTL::ITexUpload(CGxTex* texId) {
 
     EGxTexFormat format = texId->m_dataFormat != GxTex_Unknown ? texId->m_dataFormat : texId->m_format;
     const bool compressed = GxTexIsCompressed(format);
+    
+    // Cubemaps have 6 faces, regular textures have 1
+    int32_t numFaces = texId->m_target == GxTex_CubeMap ? 6 : 1;
 
-    for (uint32_t mipLevel = baseMip; mipLevel < mipCount; ++mipLevel) {
-        texels = nullptr;
-        texId->m_userFunc(
-            GxTex_Latch,
-            std::max(texId->m_width >> mipLevel, 1u),
-            std::max(texId->m_height >> mipLevel, 1u),
-            0,
-            mipLevel,
-            texId->m_userArg,
-            texelStrideInBytes,
-            texels
-        );
+    for (int32_t face = 0; face < numFaces; ++face) {
+        for (uint32_t mipLevel = baseMip; mipLevel < mipCount; ++mipLevel) {
+            texels = nullptr;
+            texId->m_userFunc(
+                GxTex_Latch,
+                std::max(texId->m_width >> mipLevel, 1u),
+                std::max(texId->m_height >> mipLevel, 1u),
+                face,
+                mipLevel,
+                texId->m_userArg,
+                texelStrideInBytes,
+                texels
+            );
 
-        if (!texels) {
-            continue;
-        }
+            if (!texels) {
+                continue;
+            }
 
-        uint32_t mipWidth = std::max(texId->m_width >> mipLevel, 1u);
-        uint32_t mipHeight = std::max(texId->m_height >> mipLevel, 1u);
-        MTLRegion region = MTLRegionMake2D(0, 0, mipWidth, mipHeight);
+            uint32_t mipWidth = std::max(texId->m_width >> mipLevel, 1u);
+            uint32_t mipHeight = std::max(texId->m_height >> mipLevel, 1u);
+            MTLRegion region = MTLRegionMake2D(0, 0, mipWidth, mipHeight);
 
-        if (compressed) {
-            uint32_t blockSize = CGxDevice::s_texFormatBytesPerBlock[format];
-            uint32_t blocksWide = std::max(1u, (mipWidth + 3) / 4);
-            uint32_t bytesPerRow = blocksWide * blockSize;
-            [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:bytesPerRow];
-        } else {
-            [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:texelStrideInBytes];
+            if (compressed) {
+                uint32_t blockSize = CGxDevice::s_texFormatBytesPerBlock[format];
+                uint32_t blocksWide = std::max(1u, (mipWidth + 3) / 4);
+                uint32_t bytesPerRow = blocksWide * blockSize;
+                if (texId->m_target == GxTex_CubeMap) {
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip slice:face withBytes:texels bytesPerRow:bytesPerRow bytesPerImage:0];
+                } else {
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:bytesPerRow];
+                }
+            } else {
+                if (texId->m_target == GxTex_CubeMap) {
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip slice:face withBytes:texels bytesPerRow:texelStrideInBytes bytesPerImage:0];
+                } else {
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:texelStrideInBytes];
+                }
+            }
         }
     }
 
