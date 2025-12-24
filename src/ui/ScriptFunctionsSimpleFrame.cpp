@@ -83,9 +83,7 @@ int32_t Script_CreateFrame(lua_State* L) {
     }
 
     // Build an XMLNode simulating the arguments to CreateFrame()
-    XMLNode frameNode;
-
-    frameNode.Init(nullptr, v21);
+    XMLNode frameNode(nullptr, v21);
 
     if (v3) {
         frameNode.SetAttribute("name", v3);
