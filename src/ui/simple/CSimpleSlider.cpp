@@ -61,7 +61,7 @@ bool CSimpleSlider::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleSlider::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleSlider::LoadXML(const XMLNode* node, CStatus* status) {
     this->CSimpleFrame::LoadXML(node, status);
 
     // Thumb

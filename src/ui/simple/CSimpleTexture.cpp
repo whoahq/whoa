@@ -153,7 +153,7 @@ bool CSimpleTexture::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleTexture::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleTexture::LoadXML(const XMLNode* node, CStatus* status) {
     const char* inheritsAttr = node->GetAttributeByName("inherits");
 
     if (inheritsAttr && *inheritsAttr) {
@@ -438,7 +438,7 @@ void CSimpleTexture::OnFrameSizeChanged(const CRect& rect) {
     }
 }
 
-void CSimpleTexture::PostLoadXML(XMLNode* node, CStatus* status) {
+void CSimpleTexture::PostLoadXML(const XMLNode* node, CStatus* status) {
     if (this->m_parent) {
         for (int32_t i = 0; i < FRAMEPOINT_NUMPOINTS; i++) {
             if (this->m_points[i] && !(this->m_points[i]->m_flags & 0x8)) {

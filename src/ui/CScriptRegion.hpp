@@ -40,12 +40,12 @@ class CScriptRegion : public CScriptObject, public CLayoutFrame {
         virtual void AddAnimRotation(CScriptRegion*, FRAMEPOINT, const C2Vector&, float) {};
         virtual void AddAnimScale(CScriptRegion*, FRAMEPOINT, const C2Vector&, const C2Vector&) {};
         virtual void AddAnimAlpha(CScriptRegion*, int16_t) {};
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual CLayoutFrame* GetLayoutParent();
         virtual CLayoutFrame* GetLayoutFrameByName(const char* name);
 
         // Member functions
-        void LoadXML_Animations(XMLNode* node, CStatus* status);
+        void LoadXML_Animations(const XMLNode* node, CStatus* status);
         bool ProtectedFunctionsAllowed();
         void SetParent(CSimpleFrame* parent);
 };

@@ -438,8 +438,8 @@ float CLayoutFrame::Left() {
     return left;
 }
 
-void CLayoutFrame::LoadXML(XMLNode* node, CStatus* status) {
-    XMLNode* size = node->GetChildByName("Size");
+void CLayoutFrame::LoadXML(const XMLNode* node, CStatus* status) {
+    auto size = node->GetChildByName("Size");
     float width;
     float height;
 
@@ -533,7 +533,7 @@ void CLayoutFrame::LoadXML(XMLNode* node, CStatus* status) {
                 }
             }
 
-            XMLNode* offsetNode = anchorNode->GetChildByName("Offset");
+            auto offsetNode = anchorNode->GetChildByName("Offset");
 
             float offsetX = 0.0f;
             float offsetY = 0.0f;

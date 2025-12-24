@@ -119,7 +119,7 @@ bool CSimpleHTML::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleHTML::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleHTML::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleFrame::LoadXML(node, status);
 
     const char* fontAttr = node->GetAttributeByName("font");
@@ -163,7 +163,7 @@ void CSimpleHTML::LoadXML(XMLNode* node, CStatus* status) {
     // TODO hyperlinkFormat
 }
 
-void CSimpleHTML::ParseBODY(XMLNode* node, CStatus* status) {
+void CSimpleHTML::ParseBODY(const XMLNode* node, CStatus* status) {
     for (auto child = node->m_child; child; child = child->m_next) {
         if (!SStrCmpI(child->GetName(), "H1", STORM_MAX_STR)) {
             this->ParseP(child, HTML_TEXT_HEADER1, status);
@@ -194,11 +194,11 @@ void CSimpleHTML::ParseBODY(XMLNode* node, CStatus* status) {
     }
 }
 
-void CSimpleHTML::ParseIMG(XMLNode* node, CStatus* status) {
+void CSimpleHTML::ParseIMG(const XMLNode* node, CStatus* status) {
     // TODO
 }
 
-void CSimpleHTML::ParseP(XMLNode* node, HTML_TEXT_TYPE type, CStatus* status) {
+void CSimpleHTML::ParseP(const XMLNode* node, HTML_TEXT_TYPE type, CStatus* status) {
     uint32_t justify = 1;
     auto justifyAttr = node->GetAttributeByName("align");
     if (justifyAttr && *justifyAttr) {

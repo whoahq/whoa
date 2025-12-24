@@ -99,7 +99,7 @@ char* CScriptObject::GetName() {
     return this->m_name.m_str;
 }
 
-void CScriptObject::PreLoadXML(XMLNode* node, CStatus* status) {
+void CScriptObject::PreLoadXML(const XMLNode* node, CStatus* status) {
     const char* name = node->GetAttributeByName("name");
 
     if (name && *name) {

@@ -48,7 +48,7 @@ int32_t CSimpleCheckbox::GetChecked() {
     return this->m_checked;
 }
 
-void CSimpleCheckbox::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleCheckbox::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleButton::LoadXML(node, status);
 
     auto checkedAttr = node->GetAttributeByName("checked");

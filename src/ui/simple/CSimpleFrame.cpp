@@ -89,7 +89,7 @@ void CSimpleFrame::EnableDrawLayer(uint32_t drawlayer) {
     this->NotifyDrawLayerChanged(drawlayer);
 }
 
-void CSimpleFrame::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleFrame::LoadXML(const XMLNode* node, CStatus* status) {
     const char* inherits = node->GetAttributeByName("inherits");
 
     const char** v68 = &inherits;
@@ -288,7 +288,7 @@ void CSimpleFrame::LoadXML(XMLNode* node, CStatus* status) {
     }
 }
 
-void CSimpleFrame::PostLoadXML(XMLNode* node, CStatus* status) {
+void CSimpleFrame::PostLoadXML(const XMLNode* node, CStatus* status) {
     this->m_loading = 0;
 
     if (this->m_visible) {
@@ -708,11 +708,11 @@ int32_t CSimpleFrame::HideThis() {
     return 1;
 }
 
-void CSimpleFrame::LoadXML_Attributes(XMLNode* node, CStatus* status) {
+void CSimpleFrame::LoadXML_Attributes(const XMLNode* node, CStatus* status) {
     // TODO
 }
 
-void CSimpleFrame::LoadXML_Backdrop(XMLNode* node, CStatus* status) {
+void CSimpleFrame::LoadXML_Backdrop(const XMLNode* node, CStatus* status) {
     auto m = SMemAlloc(sizeof(CBackdropGenerator), __FILE__, __LINE__, 0x0);
     auto backdrop = new (m) CBackdropGenerator();
 
@@ -720,7 +720,7 @@ void CSimpleFrame::LoadXML_Backdrop(XMLNode* node, CStatus* status) {
     this->SetBackdrop(backdrop);
 }
 
-void CSimpleFrame::LoadXML_Layers(XMLNode* node, CStatus* status) {
+void CSimpleFrame::LoadXML_Layers(const XMLNode* node, CStatus* status) {
     if (!node->m_child) {
         return;
     }
@@ -776,7 +776,7 @@ void CSimpleFrame::LoadXML_Layers(XMLNode* node, CStatus* status) {
     }
 }
 
-void CSimpleFrame::LoadXML_Scripts(XMLNode* root, CStatus* status) {
+void CSimpleFrame::LoadXML_Scripts(const XMLNode* root, CStatus* status) {
     lua_State* L = FrameScript_GetContext();
 
     const char* scriptName;
@@ -1210,7 +1210,7 @@ void CSimpleFrame::ParentFrame(CSimpleFrame* frame) {
     node->frame = frame;
 }
 
-void CSimpleFrame::PostLoadXML_Frames(XMLNode *node, CStatus* status) {
+void CSimpleFrame::PostLoadXML_Frames(const XMLNode* node, CStatus* status) {
     // Call this function with all inherited nodes
 
     const char* inheritNames = node->GetAttributeByName("inherits");
@@ -1265,7 +1265,7 @@ void CSimpleFrame::PostLoadXML_Frames(XMLNode *node, CStatus* status) {
 
     // Create child frames
 
-    XMLNode* framesNode = node->GetChildByName("Frames");
+    auto framesNode = node->GetChildByName("Frames");
 
     if (framesNode) {
         XMLNode* frameNode;

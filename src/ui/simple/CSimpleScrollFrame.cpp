@@ -240,10 +240,10 @@ bool CSimpleScrollFrame::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleScrollFrame::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleScrollFrame::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleFrame::LoadXML(node, status);
 
-    XMLNode* scrollChildNode = node->GetChildByName("ScrollChild");
+    auto scrollChildNode = node->GetChildByName("ScrollChild");
 
     if (scrollChildNode) {
         XMLNode* childNode = scrollChildNode->m_child;

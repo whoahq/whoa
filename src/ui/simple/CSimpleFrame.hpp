@@ -88,7 +88,7 @@ class CSimpleFrame : public CScriptRegion {
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual void PreOnAnimUpdate();
         virtual void OnLayerShow();
         virtual void OnLayerHide();
@@ -106,7 +106,7 @@ class CSimpleFrame : public CScriptRegion {
         virtual int32_t OnLayerKeyUp(const CKeyEvent& evt);
         virtual int32_t OnLayerMouseDown(const CMouseEvent& evt, const char* btn);
         virtual int32_t OnLayerMouseUp(const CMouseEvent& evt, const char* btn);
-        virtual void PostLoadXML(XMLNode* node, CStatus* status);
+        virtual void PostLoadXML(const XMLNode* node, CStatus* status);
         virtual void UnregisterRegion(CSimpleRegion* region);
         virtual int32_t GetBoundsRect(CRect& bounds);
         virtual void PreLoadXML(XMLNode* node, CStatus* status);
@@ -127,13 +127,13 @@ class CSimpleFrame : public CScriptRegion {
         void EnableEvent(CSimpleEventType eventType, int32_t priority);
         int32_t GetHitRect(CRect& rect);
         void Hide();
-        void LoadXML_Attributes(XMLNode* node, CStatus* status);
-        void LoadXML_Backdrop(XMLNode* node, CStatus* status);
-        void LoadXML_Layers(XMLNode* node, CStatus* status);
-        void LoadXML_Scripts(XMLNode* node, CStatus* status);
+        void LoadXML_Attributes(const XMLNode* node, CStatus* status);
+        void LoadXML_Backdrop(const XMLNode* node, CStatus* status);
+        void LoadXML_Layers(const XMLNode* node, CStatus* status);
+        void LoadXML_Scripts(const XMLNode* node, CStatus* status);
         void NotifyDrawLayerChanged(uint32_t drawlayer);
         void NotifyScrollParent();
-        void PostLoadXML_Frames(XMLNode* node, CStatus* status);
+        void PostLoadXML_Frames(const XMLNode* node, CStatus* status);
         void Raise();
         void RegisterForEvents(int32_t a2);
         void RegisterRegion(CSimpleRegion* region);

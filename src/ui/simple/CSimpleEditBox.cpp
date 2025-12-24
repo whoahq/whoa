@@ -594,7 +594,7 @@ int32_t CSimpleEditBox::IsCurrentFocus() {
     return this == CSimpleEditBox::s_currentFocus;
 }
 
-void CSimpleEditBox::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleEditBox::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleFrame::LoadXML(node, status);
 
     const char* fontAttr = node->GetAttributeByName("font");

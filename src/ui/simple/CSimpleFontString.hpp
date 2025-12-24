@@ -44,7 +44,7 @@ class CSimpleFontString : public CSimpleRegion, public CSimpleFontable {
         virtual ~CSimpleFontString();
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual void OnColorChanged(bool a2);
         virtual void OnScreenSizeChanged();
         virtual void Draw(CRenderBatch* batch);
@@ -70,7 +70,7 @@ class CSimpleFontString : public CSimpleRegion, public CSimpleFontable {
         float GetStringWidth();
         const char* GetText();
         float GetTextWidth(const char* text, uint32_t textBytes);
-        void PostLoadXML(XMLNode* node, CStatus* status);
+        void PostLoadXML(const XMLNode* node, CStatus* status);
         void RefreshEmbeddedTextures();
         void RemoveShadow();
         int32_t SetFont(const char* fontName, float fontHeight, uint32_t fontFlags, bool force);

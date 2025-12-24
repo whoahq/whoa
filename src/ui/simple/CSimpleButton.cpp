@@ -128,7 +128,7 @@ bool CSimpleButton::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleButton::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleButton::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleFrame::LoadXML(node, status);
 
     CSimpleFontString* buttonText = nullptr;

@@ -46,7 +46,7 @@ class CSimpleModel : public CSimpleFrame {
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual void OnLayerUpdate(float elapsedSec);
         virtual void OnFrameRender(CRenderBatch*, uint32_t);
         virtual void UpdateModel();
