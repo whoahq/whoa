@@ -6,7 +6,7 @@
 #include <common/XML.hpp>
 #include <storm/String.hpp>
 
-int32_t LoadXML_Color(XMLNode* node, CImVector& color) {
+int32_t LoadXML_Color(const XMLNode* node, CImVector& color) {
     float r = 0.0f;
     float g = 0.0f;
     float b = 0.0f;
@@ -61,7 +61,7 @@ int32_t LoadXML_Color(XMLNode* node, CImVector& color) {
     return 1;
 }
 
-int32_t LoadXML_Dimensions(XMLNode* node, float& x, float& y, CStatus* status) {
+int32_t LoadXML_Dimensions(const XMLNode* node, float& x, float& y, CStatus* status) {
     const char* xAttr = node->GetAttributeByName("x");
 
     if (xAttr && *xAttr) {
@@ -128,7 +128,7 @@ int32_t LoadXML_Dimensions(XMLNode* node, float& x, float& y, CStatus* status) {
     }
 }
 
-int32_t LoadXML_Gradient(XMLNode* node, ORIENTATION& orientation, CImVector& minColor, CImVector& maxColor, CStatus* status) {
+int32_t LoadXML_Gradient(const XMLNode* node, ORIENTATION& orientation, CImVector& minColor, CImVector& maxColor, CStatus* status) {
     orientation = ORIENTATION_HORIZONTAL;
 
     // Orientation
@@ -150,7 +150,7 @@ int32_t LoadXML_Gradient(XMLNode* node, ORIENTATION& orientation, CImVector& min
     return 1;
 }
 
-int32_t LoadXML_Insets(XMLNode* node, float& left, float& right, float& top, float& bottom, CStatus* status) {
+int32_t LoadXML_Insets(const XMLNode* node, float& left, float& right, float& top, float& bottom, CStatus* status) {
     left = 0.0f;
     right = 0.0f;
     top = 0.0f;
@@ -265,7 +265,7 @@ int32_t LoadXML_Insets(XMLNode* node, float& left, float& right, float& top, flo
     return 0;
 }
 
-CSimpleFontString* LoadXML_String(XMLNode* node, CSimpleFrame* frame, CStatus* status) {
+CSimpleFontString* LoadXML_String(const XMLNode* node, CSimpleFrame* frame, CStatus* status) {
     // TODO
     // auto m = CDataAllocator::GetData(CSimpleFontString::s_allocator, 0, a__avcsimplefon, -2);
 
@@ -279,7 +279,7 @@ CSimpleFontString* LoadXML_String(XMLNode* node, CSimpleFrame* frame, CStatus* s
     return fontString;
 }
 
-CSimpleTexture* LoadXML_Texture(XMLNode* node, CSimpleFrame* frame, CStatus* status) {
+CSimpleTexture* LoadXML_Texture(const XMLNode* node, CSimpleFrame* frame, CStatus* status) {
     // TODO
     // auto m = (CSimpleTexture *)CDataAllocator::GetData((int)CSimpleTexture::s_allocator, 0, a__avcsimpletex, -2);
 
@@ -293,7 +293,7 @@ CSimpleTexture* LoadXML_Texture(XMLNode* node, CSimpleFrame* frame, CStatus* sta
     return texture;
 }
 
-int32_t LoadXML_Value(XMLNode* node, float& value, CStatus* status) {
+int32_t LoadXML_Value(const XMLNode* node, float& value, CStatus* status) {
     value = 0.0;
 
     const char* v4 = node->GetAttributeByName("val");

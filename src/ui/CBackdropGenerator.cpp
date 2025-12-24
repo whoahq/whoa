@@ -86,7 +86,7 @@ void CBackdropGenerator::Generate(const CRect* rect) {
     this->SetBorderVertexColor(this->m_borderColor);
 }
 
-void CBackdropGenerator::LoadXML(XMLNode* node, CStatus* status) {
+void CBackdropGenerator::LoadXML(const XMLNode* node, CStatus* status) {
     const char* bgFileAttr = node->GetAttributeByName("bgFile");
     const char* edgeFileAttr = node->GetAttributeByName("edgeFile");
     const char* tileAttr = node->GetAttributeByName("tile");

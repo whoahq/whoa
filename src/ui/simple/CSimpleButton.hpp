@@ -48,7 +48,7 @@ class CSimpleButton : public CSimpleFrame {
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual void OnLayerHide();
         virtual void OnLayerCursorEnter(int32_t a2);
         virtual void OnLayerCursorExit(int32_t a2, int32_t a3);

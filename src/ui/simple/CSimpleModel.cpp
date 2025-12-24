@@ -172,7 +172,7 @@ bool CSimpleModel::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
-void CSimpleModel::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleModel::LoadXML(const XMLNode* node, CStatus* status) {
     CSimpleFrame::LoadXML(node, status);
 
     const char* fileAttr = node->GetAttributeByName("file");

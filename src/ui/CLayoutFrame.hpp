@@ -44,7 +44,7 @@ class CLayoutFrame {
 
         // Virtual member functions
         virtual ~CLayoutFrame();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual CLayoutFrame* GetLayoutParent();
         virtual bool SetLayoutScale(float scale, bool force);
         virtual void SetWidth(float width);

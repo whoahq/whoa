@@ -35,16 +35,16 @@ class CSimpleHTML : public CSimpleHyperlinkedFrame, CSimpleFontedFrame {
         // Virtual member functions
         virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual void FontUpdated(CSimpleFontedFrameFont* font, int32_t a3);
 
         // Member functions
         CSimpleHTML(CSimpleFrame* parent);
         void AddText(const char* text, HTML_TEXT_TYPE type, uint32_t justify);
         void ClearContent();
-        void ParseBODY(XMLNode* node, CStatus* status);
-        void ParseIMG(XMLNode* node, CStatus* status);
-        void ParseP(XMLNode* node, HTML_TEXT_TYPE type, CStatus* status);
+        void ParseBODY(const XMLNode* node, CStatus* status);
+        void ParseIMG(const XMLNode* node, CStatus* status);
+        void ParseP(const XMLNode* node, HTML_TEXT_TYPE type, CStatus* status);
         bool SetText(const char* text, CStatus* status);
 };
 

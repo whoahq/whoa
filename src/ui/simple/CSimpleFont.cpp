@@ -86,7 +86,7 @@ bool CSimpleFont::IsA(int32_t type) {
     return type == CSimpleFont::s_objectType;
 }
 
-void CSimpleFont::LoadXML(XMLNode* node, CStatus* status) {
+void CSimpleFont::LoadXML(const XMLNode* node, CStatus* status) {
     const char* inheritsAttr = node->GetAttributeByName("inherits");
     if (inheritsAttr && *inheritsAttr) {
         auto font = CSimpleFont::GetFont(inheritsAttr, 0);
@@ -111,7 +111,7 @@ void CSimpleFont::LoadXML(XMLNode* node, CStatus* status) {
         } else {
             float fontHeight = 0.0f;
 
-            XMLNode* fontHeightNode = node->GetChildByName("FontHeight");
+            auto fontHeightNode = node->GetChildByName("FontHeight");
             if (fontHeightNode) {
                 LoadXML_Value(fontHeightNode, fontHeight, status);
             }

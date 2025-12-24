@@ -42,7 +42,7 @@ class CSimpleTexture : public CSimpleRegion {
         virtual ~CSimpleTexture();
         virtual int32_t GetScriptMetaTable();
         virtual bool IsA(int32_t type);
-        virtual void LoadXML(XMLNode* node, CStatus* status);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
         virtual float GetWidth();
         virtual float GetHeight();
         virtual void Draw(CRenderBatch* batch);
@@ -51,7 +51,7 @@ class CSimpleTexture : public CSimpleRegion {
         // Member functions
         CSimpleTexture(CSimpleFrame* frame, uint32_t drawlayer, int32_t show);
         void GetTexCoord(C2Vector* texCoord);
-        void PostLoadXML(XMLNode* node, CStatus* status);
+        void PostLoadXML(const XMLNode* node, CStatus* status);
         void SetAlpha(float alpha);
         void SetBlendMode(EGxBlend blend);
         void SetPosition(const CRect& rect, C3Vector* position);

@@ -47,7 +47,7 @@ class CSimpleFont : public FrameScript_Object, public CSimpleFontable {
 
         // Member functions
         CSimpleFont();
-        void LoadXML(XMLNode* node, CStatus* status);
+        void LoadXML(const XMLNode* node, CStatus* status);
         void UpdateObjects();
 };
 

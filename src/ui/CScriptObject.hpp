@@ -32,7 +32,7 @@ class CScriptObject : public FrameScript_Object {
 
         // Member functions
         void CreateName(const char* source, char* dest, uint32_t destsize);
-        void PreLoadXML(XMLNode* node, CStatus* status);
+        void PreLoadXML(const XMLNode* node, CStatus* status);
         void SetName(const char* name);
 };
 
