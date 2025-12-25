@@ -1237,7 +1237,18 @@ int32_t CM2Model::InitializeLoaded() {
         }
     }
 
-    // TODO texture transforms
+    if (this->m_shared->m_data->textureTransforms.Count()) {
+        buffer = ALIGN_BUFFER(buffer, start, M2ModelTextureTransform);
+        this->m_textureTransforms = reinterpret_cast<M2ModelTextureTransform*>(buffer);
+        buffer += sizeof(M2ModelTextureTransform) * this->m_shared->m_data->textureTransforms.Count();
+
+        for (int32_t i = 0; i < this->m_shared->m_data->textureWeights.Count(); i++) {
+            new (&this->m_textureTransforms[i]) M2ModelTextureTransform();
+        }
+
+        // TODO use A16 allocator
+        this->m_textureMatrices = static_cast<C44Matrix*>(SMemAlloc(sizeof(C44Matrix) * this->m_shared->m_data->textureTransforms.Count(), __FILE__, __LINE__, 0x0));
+    }
 
     if (this->m_shared->m_data->attachments.Count()) {
         buffer = ALIGN_BUFFER(buffer, start, M2ModelAttachment);

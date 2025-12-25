@@ -19,6 +19,7 @@ struct M2ModelBoneSeq;
 struct M2ModelCamera;
 struct M2ModelColor;
 struct M2ModelLight;
+struct M2ModelTextureTransform;
 struct M2ModelTextureWeight;
 struct M2SequenceFallback;
 struct M2TrackBase;
@@ -105,6 +106,7 @@ class CM2Model {
         uint32_t* m_skinSections = nullptr;
         HTEXTURE* m_textures = nullptr;
         M2ModelTextureWeight* m_textureWeights = nullptr;
+        M2ModelTextureTransform* m_textureTransforms = nullptr;
         C44Matrix* m_textureMatrices = nullptr;
         C44Matrix matrixB4;
         C44Matrix matrixF4;

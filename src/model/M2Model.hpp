@@ -76,6 +76,9 @@ struct M2ModelLight {
 };
 
 struct M2ModelTextureTransform {
+    M2ModelTrack<C3Vector> translationTrack;
+    M2ModelTrack<C4Quaternion> rotationTrack;
+    M2ModelTrack<C3Vector> scaleTrack;
 };
 
 struct M2ModelTextureWeight {
