@@ -20,7 +20,6 @@ namespace Texture {
     int32_t s_createBlpAsync; // Invented name
     MipBits* s_mipBits;
     int32_t s_mipBitsValid;
-    size_t s_mipBitsSize;
     TSHashTable<CTexture, HASHKEY_TEXTUREFILE> s_textureCache;
 
     EGxTexFormat s_pixelFormatToGxTexFormat[10] = {
@@ -381,28 +380,6 @@ MipBits* TextureAllocMippedImg(PIXEL_FORMAT pixelFormat, uint32_t width, uint32_
     return nullptr;
 }
 
-bool MippedImgSet(MipBits* image, uint32_t fourCC, uint32_t width, uint32_t height) {
-    uint32_t levelCount = CalcLevelCount(width, height);
-    uint32_t levelDataSize = CalcLevelOffset(levelCount, width, height, fourCC);
-    size_t imageSize = (sizeof(MipBits::mip) * levelCount) + levelDataSize + MIPPED_IMG_ALIGN;
-
-    if (Texture::s_mipBitsSize && imageSize > Texture::s_mipBitsSize) {
-        return false;
-    }
-
-    auto imageData = reinterpret_cast<char*>(image);
-    auto mipBase = imageData + (sizeof(MipBits::mip) * levelCount);
-    auto alignedMipBase = static_cast<char*>(ALIGN_PTR(mipBase, MIPPED_IMG_ALIGN));
-
-    uint32_t levelOffset = 0;
-    for (int32_t level = 0; level < levelCount; level++) {
-        image->mip[level] = reinterpret_cast<C4Pixel*>(alignedMipBase + levelOffset);
-        levelOffset += CalcLevelSize(level, width, height, fourCC);
-    }
-
-    return true;
-}
-
 void GxTexUpdate(CGxTex* texId, int32_t minX, int32_t minY, int32_t maxX, int32_t maxY, int32_t immediate) {
     CiRect rect = { minY, minX, maxY, maxX };
     GxTexUpdate(texId, rect, immediate);
@@ -668,11 +645,6 @@ int32_t PumpBlpTextureAsync(CTexture* texture, void* buf) {
     int32_t alphaSize = image.m_header.alphaSize;
 
     GetTextureFormats(&pixFormat, &gxTexFormat, preferredFormat, alphaSize);
-
-    if (image.m_header.colorEncoding == COLOR_PAL) {
-        pixFormat = PIXEL_ARGB8888;
-        gxTexFormat = GxTex_Argb8888;
-    }
 
     int32_t mipLevel = texture->bestMip;
 
@@ -1151,7 +1123,6 @@ void TextureIncreasePriority(CTexture* texture) {
 void TextureInitialize() {
     uint32_t v0 = MippedImgCalcSize(2, 1024, 1024);
     Texture::s_mipBits = reinterpret_cast<MipBits*>(SMemAlloc(v0, __FILE__, __LINE__, 0));
-    Texture::s_mipBitsSize = v0;
 
     // TODO
     // - rest of function
