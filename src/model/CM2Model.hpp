@@ -157,6 +157,7 @@ class CM2Model {
         void AnimateMT(const C44Matrix* view, const C3Vector& a3, const C3Vector& a4, float a5, float a6);
         void AnimateMTSimple(const C44Matrix* view, const C3Vector& a3, const C3Vector& a4, float a5, float a6);
         void AnimateST();
+        void AnimateTextureTransformsMT();
         void AttachToParent(CM2Model* parent, uint32_t id, const C3Vector* position, int32_t a5);
         void AttachToScene(CM2Scene* scene);
         void CancelDeferredSequences(uint32_t boneIndex, bool a3);

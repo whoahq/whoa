@@ -431,7 +431,9 @@ void CM2Model::AnimateMT(const C44Matrix* view, const C3Vector& a3, const C3Vect
         }
     }
 
-    // TODO
+    if (this->m_shared->m_data->textureTransforms.count) {
+        this->AnimateTextureTransformsMT();
+    }
 
     for (int32_t i = 0; i < this->m_shared->m_data->lights.Count(); i++) {
         auto& light = this->m_shared->m_data->lights[i];
@@ -683,6 +685,61 @@ void CM2Model::AnimateST() {
 
     if (this->float198 == 1.0f) {
         this->uint90 = 1;
+    }
+}
+
+void CM2Model::AnimateTextureTransformsMT() {
+    for (int32_t i = 0; i < this->m_shared->m_data->textureTransforms.Count(); i++) {
+        static C3Vector center = { 0.5f, 0.5f, 0.0f };
+
+        auto& textureTransform = this->m_shared->m_data->textureTransforms[i];
+        auto& modelTextureTransform = this->m_textureTransforms[i];
+        auto& textureMatrix = this->m_textureMatrices[i];
+
+        textureMatrix.Identity();
+
+        // Rotation
+
+        auto& rotationTrack = textureTransform.rotationTrack;
+        auto& modelRotationTrack = modelTextureTransform.rotationTrack;
+
+        if (rotationTrack.sequenceTimes.Count() > 0) {
+            C4Quaternion defaultValue = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+            M2AnimateTrack(this, this->m_bones, rotationTrack, modelRotationTrack, defaultValue);
+
+            textureMatrix.Translate(center);
+            textureMatrix.Rotate(modelRotationTrack.currentValue);
+            textureMatrix.Translate(-center);
+        }
+
+        // Scale
+
+        auto& scaleTrack = textureTransform.scaleTrack;
+        auto& modelScaleTrack = modelTextureTransform.scaleTrack;
+
+        if (scaleTrack.sequenceTimes.Count() > 0) {
+            C3Vector defaultValue = { 1.0f, 1.0f, 1.0f };
+
+            M2AnimateTrack(this, this->m_bones, scaleTrack, modelScaleTrack, defaultValue);
+
+            textureMatrix.Translate(center);
+            textureMatrix.Scale(modelScaleTrack.currentValue);
+            textureMatrix.Translate(-center);
+        }
+
+        // Translation
+
+        auto& translationTrack = textureTransform.translationTrack;
+        auto& modelTranslationTrack = modelTextureTransform.translationTrack;
+
+        if (translationTrack.sequenceTimes.Count() > 0) {
+            C3Vector defaultValue = { 0.0f, 0.0f, 0.0f };
+
+            M2AnimateTrack(this, this->m_bones, translationTrack, modelTranslationTrack, defaultValue);
+
+            textureMatrix.Translate(modelTranslationTrack.currentValue);
+        }
     }
 }
 
