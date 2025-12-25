@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <vector>
 
 #import <AppKit/AppKit.h>
 #import <Metal/Metal.h>
@@ -42,13 +43,19 @@ namespace {
     }
 
     MTLPixelFormat MtlPixelFormatForGx(EGxTexFormat format) {
+        // Note: GxTex format names describe the packed 32-bit value layout (MSB to LSB).
+        // On little-endian, this means the byte order in memory is reversed.
+        // Metal pixel formats describe byte order in memory.
+        // GxTex_Argb8888: packed as 0xAARRGGBB, bytes in memory: BB GG RR AA -> use BGRA
+        // GxTex_Abgr8888: packed as 0xAABBGGRR, bytes in memory: RR GG BB AA -> use RGBA
         switch (format) {
             case GxTex_Abgr8888:
                 return MTLPixelFormatRGBA8Unorm;
             case GxTex_Argb8888:
                 return MTLPixelFormatBGRA8Unorm;
             case GxTex_Argb4444:
-                return MTLPixelFormatABGR4Unorm;
+                // Convert ARGB4444 to RGBA8 during upload for simpler handling
+                return MTLPixelFormatRGBA8Unorm;
             case GxTex_Argb1555:
                 return MTLPixelFormatBGR5A1Unorm;
             case GxTex_Rgb565:
@@ -1656,10 +1663,42 @@ void CGxDeviceMTL::ITexUpload(CGxTex* texId) {
                     [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:bytesPerRow];
                 }
             } else {
+                const void* uploadTexels = texels;
+                std::vector<uint32_t> convertedData;  // RGBA8 is 32-bit per pixel
+                
+                // Handle Argb4444 format conversion to RGBA8
+                // Game packs as: A[15:12] R[11:8] G[7:4] B[3:0] (each 4 bits)
+                // We expand to RGBA8: R[7:0] G[7:0] B[7:0] A[7:0] (each 8 bits)
+                if (format == GxTex_Argb4444) {
+                    uint32_t pixelCount = mipWidth * mipHeight;
+                    convertedData.resize(pixelCount);
+                    const uint16_t* srcData = static_cast<const uint16_t*>(texels);
+                    
+                    for (uint32_t i = 0; i < pixelCount; ++i) {
+                        uint16_t pixel = srcData[i];
+                        // Extract 4-bit nibbles from game's ARGB format
+                        uint8_t a4 = (pixel >> 12) & 0xF;
+                        uint8_t r4 = (pixel >> 8) & 0xF;
+                        uint8_t g4 = (pixel >> 4) & 0xF;
+                        uint8_t b4 = pixel & 0xF;
+                        
+                        // Expand 4-bit to 8-bit (multiply by 17 = 0x11 to scale 0-15 to 0-255)
+                        uint8_t r8 = r4 * 17;
+                        uint8_t g8 = g4 * 17;
+                        uint8_t b8 = b4 * 17;
+                        uint8_t a8 = a4 * 17;
+                        
+                        // Pack as RGBA8 (little-endian: ABGR in memory)
+                        convertedData[i] = (a8 << 24) | (b8 << 16) | (g8 << 8) | r8;
+                    }
+                    uploadTexels = convertedData.data();
+                    texelStrideInBytes = mipWidth * 4;  // 4 bytes per pixel for RGBA8
+                }
+                
                 if (texId->m_target == GxTex_CubeMap) {
-                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip slice:face withBytes:texels bytesPerRow:texelStrideInBytes bytesPerImage:0];
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip slice:face withBytes:uploadTexels bytesPerRow:texelStrideInBytes bytesPerImage:0];
                 } else {
-                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:texels bytesPerRow:texelStrideInBytes];
+                    [texture replaceRegion:region mipmapLevel:mipLevel - baseMip withBytes:uploadTexels bytesPerRow:texelStrideInBytes];
                 }
             }
         }
