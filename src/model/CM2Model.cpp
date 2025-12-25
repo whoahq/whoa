@@ -991,10 +991,9 @@ void CM2Model::FreeInternalResources() {
         this->m_textureWeights = nullptr;
     }
 
-    // TODO
-    // if (this->m_textureTransforms) {
-    //     this->m_textureTransforms = nullptr;
-    // }
+    if (this->m_textureTransforms) {
+        this->m_textureTransforms = nullptr;
+    }
 
     if (this->m_attachments) {
         this->m_attachments = nullptr;
