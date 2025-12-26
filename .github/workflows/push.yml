@@ -8,12 +8,12 @@ on:
 jobs:
   build:
     name: ${{ matrix.build.os_name }} (${{ matrix.build.compiler_name }})
-    runs-on: ${{ matrix.config.os }}
+    runs-on: ${{ matrix.build.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
+        build:
           - os_name: Ubuntu Latest
             compiler_name: GCC
             os: ubuntu-latest
@@ -58,17 +58,17 @@ jobs:
         run: mkdir build
 
       - name: Configure
-        run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Build
-        run: cmake --build . --config ${{ matrix.config.build_type }}
+        run: cmake --build . --config ${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Install
-        run: cmake --install . --config ${{ matrix.config.build_type }}
+        run: cmake --install . --config ${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Test
-        run: ../../build/dist/bin/${{ matrix.config.test_path }}
+        run: ../../build/dist/bin/${{ matrix.build.test_path }}
         working-directory: test/fixture
