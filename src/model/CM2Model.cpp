@@ -1298,7 +1298,7 @@ int32_t CM2Model::InitializeLoaded() {
         this->m_textureTransforms = reinterpret_cast<M2ModelTextureTransform*>(buffer);
         buffer += sizeof(M2ModelTextureTransform) * this->m_shared->m_data->textureTransforms.Count();
 
-        for (int32_t i = 0; i < this->m_shared->m_data->textureWeights.Count(); i++) {
+        for (int32_t i = 0; i < this->m_shared->m_data->textureTransforms.Count(); i++) {
             new (&this->m_textureTransforms[i]) M2ModelTextureTransform();
         }
 
