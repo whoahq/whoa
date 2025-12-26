@@ -1237,7 +1237,6 @@ int32_t CM2Model::InitializeLoaded() {
         }
     }
 
-
     if (this->m_shared->skinProfile->skinSections.Count()) {
         buffer = ALIGN_BUFFER(buffer, start, uint32_t);
         this->m_skinSections = reinterpret_cast<uint32_t*>(buffer);
