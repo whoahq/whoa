@@ -7,28 +7,31 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: ${{ matrix.build.os_name }} (${{ matrix.build.compiler_name }})
     runs-on: ${{ matrix.config.os }}
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - name: Ubuntu Latest (GCC)
+          - os_name: Ubuntu Latest
+            compiler_name: GCC
             os: ubuntu-latest
             build_type: Release
             test_path: WhoaTest
             cc: gcc
             cxx: g++
 
-          - name: macOS Latest (Clang)
+          - os_name: macOS Latest
+            compiler_name: Clang
             os: macos-latest
             build_type: Release
             test_path: WhoaTest
             cc: clang
             cxx: clang++
 
-          - name: Windows Latest (MSVC)
+          - os_name: Windows Latest
+            compiler_name: MSVC
             os: windows-latest
             build_type: Release
             test_path: WhoaTest
