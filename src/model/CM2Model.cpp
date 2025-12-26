@@ -950,7 +950,7 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
                 // Perform binary search for key containing sequence time
 
                 int32_t lowKey = 0;
-                int32_t highKey = numKeys;
+                int32_t highKey = numKeys - 1;
 
                 while (lowKey < highKey) {
                     int32_t midKey = (lowKey + highKey) / 2;
