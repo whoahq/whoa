@@ -40,6 +40,10 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install Dependencies (Ubuntu)
+        run: sudo apt install -y lcov
+        if: matrix.build.os_name == 'Ubuntu Latest'
+
       - name: Download Fixtures
         run: aws s3 cp --endpoint-url ${{ env.AWS_ENDPOINT_URL }} s3://reliquaryhq-whoa/fixture.tgz  test/fixture/
         env:
