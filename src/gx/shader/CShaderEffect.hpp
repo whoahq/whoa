@@ -44,10 +44,10 @@ class CShaderEffect : public TSHashObject<CShaderEffect, HASHKEY_STRI> {
         static void SetFogParams(float fogStart, float fogEnd, float fogRate, const CImVector& fogColor);
         static void SetLocalLighting(CM2Lighting* lighting, int32_t lightEnabled, const C3Vector* a3);
         static void SetShaders(uint32_t vertexPermute, uint32_t pixelPermute);
-        static void SetTexMtx(const C44Matrix& matrix, uint32_t a2);
-        static void SetTexMtx_Identity(uint32_t a1);
-        static void SetTexMtx_SphereMap(uint32_t a1);
-        static void UpdateProjMatrix(void);
+        static void SetTexMtx(const C44Matrix& matrix, uint32_t tcIndex);
+        static void SetTexMtx_Identity(uint32_t tcIndex);
+        static void SetTexMtx_SphereMap(uint32_t tcIndex);
+        static void UpdateProjMatrix();
 
         // Member variables
         CGxShader* m_vertexShaders[90];
@@ -55,7 +55,7 @@ class CShaderEffect : public TSHashObject<CShaderEffect, HASHKEY_STRI> {
 
         // Member functions
         void InitEffect(const char* vsName, const char* psName);
-        void SetCurrent(void);
+        void SetCurrent();
 };
 
 #endif

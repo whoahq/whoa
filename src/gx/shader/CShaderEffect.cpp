@@ -176,20 +176,6 @@ void CShaderEffect::SetShaders(uint32_t vertexPermute, uint32_t pixelPermute) {
     }
 }
 
-void CShaderEffect::SetTexMtx_Identity(uint32_t a1) {
-    if (CShaderEffect::s_enableShaders) {
-        float matrix[] = {
-            1.0f, 0.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 0.0f
-        };
-
-        GxShaderConstantsSet(GxSh_Vertex, 2 * a1 + 6, matrix, 2);
-    } else {
-        // TODO
-        // - non-shader code path
-    }
-}
-
 void CShaderEffect::SetTexMtx(const C44Matrix& matrix, uint32_t tcIndex) {
     if (CShaderEffect::s_enableShaders) {
         float constants[] = {
@@ -205,18 +191,34 @@ void CShaderEffect::SetTexMtx(const C44Matrix& matrix, uint32_t tcIndex) {
     // TODO non-shader path
 }
 
-void CShaderEffect::SetTexMtx_SphereMap(uint32_t a1) {
+void CShaderEffect::SetTexMtx_Identity(uint32_t tcIndex) {
     if (CShaderEffect::s_enableShaders) {
-        float matrix[] = {
+        float constants[] = {
             1.0f, 0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.0f
         };
 
-        GxShaderConstantsSet(GxSh_Vertex, 2 * a1 + 6, matrix, 2);
-    } else {
-        // TODO
-        // - non-shader code path
+        GxShaderConstantsSet(GxSh_Vertex, 2 * tcIndex + 6, constants, 2);
+
+        return;
     }
+
+    // TODO non-shader path
+}
+
+void CShaderEffect::SetTexMtx_SphereMap(uint32_t tcIndex) {
+    if (CShaderEffect::s_enableShaders) {
+        float constants[] = {
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f
+        };
+
+        GxShaderConstantsSet(GxSh_Vertex, 2 * tcIndex + 6, constants, 2);
+
+        return;
+    }
+
+    // TODO non-shader path
 }
 
 void CShaderEffect::UpdateProjMatrix() {
