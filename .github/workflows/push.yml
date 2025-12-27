@@ -7,34 +7,34 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.build.os_name }} (${{ matrix.build.compiler_name }})
+    name: ${{ matrix.build.system_name }} / ${{ matrix.build.build_type }} / ${{ matrix.build.compiler_name }}
     runs-on: ${{ matrix.build.os }}
 
     strategy:
       fail-fast: false
       matrix:
         build:
-          - os_name: Ubuntu Latest
-            compiler_name: GCC
-            os: ubuntu-latest
+          - system_name: Linux
             build_type: Release
+            compiler_name: GCC
             test_path: WhoaTest
+            os: ubuntu-latest
             cc: gcc
             cxx: g++
 
-          - os_name: macOS Latest
-            compiler_name: Clang
-            os: macos-latest
+          - system_name: macOS
             build_type: Release
+            compiler_name: Clang
             test_path: WhoaTest
+            os: macos-latest
             cc: clang
             cxx: clang++
 
-          - os_name: Windows Latest
-            compiler_name: MSVC
-            os: windows-latest
+          - system_name: Windows
             build_type: Release
+            compiler_name: MSVC
             test_path: WhoaTest
+            os: windows-latest
             cc: cl
             cxx: cl
 
