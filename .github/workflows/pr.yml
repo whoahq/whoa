@@ -4,38 +4,45 @@ on: [pull_request]
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.build.system_name }} / ${{ matrix.build.build_type }} / ${{ matrix.build.compiler_name }}
+    runs-on: ${{ matrix.build.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - name: Ubuntu Latest (GCC)
-            os: ubuntu-latest
-            build_type: Release
+        build:
+          - system_name: Linux
+            build_type: Debug
+            compiler_name: GCC
             test_path: WhoaTest
+            os: ubuntu-latest
             cc: gcc
             cxx: g++
 
-          - name: macOS Latest (Clang)
-            os: macos-latest
-            build_type: Release
+          - system_name: macOS
+            build_type: Debug
+            compiler_name: Clang
             test_path: WhoaTest
+            os: macos-latest
             cc: clang
             cxx: clang++
 
-          - name: Windows Latest (MSVC)
-            os: windows-latest
-            build_type: Release
+          - system_name: Windows
+            build_type: Debug
+            compiler_name: MSVC
             test_path: WhoaTest
+            os: windows-latest
             cc: cl
             cxx: cl
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
+
+      - name: Install Dependencies (${{ matrix.build.os }})
+        run: sudo apt install -y lcov
+        if: matrix.build.os == 'ubuntu-latest'
 
       - name: Download Fixtures
         run: aws s3 cp --endpoint-url ${{ env.AWS_ENDPOINT_URL }} s3://reliquaryhq-whoa/fixture.tgz  test/fixture/
@@ -52,17 +59,17 @@ jobs:
         run: mkdir build
 
       - name: Configure
-        run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        run: cmake .. -DCMAKE_BUILD_TYPE=${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Build
-        run: cmake --build . --config ${{ matrix.config.build_type }}
+        run: cmake --build . --config ${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Install
-        run: cmake --install . --config ${{ matrix.config.build_type }}
+        run: cmake --install . --config ${{ matrix.build.build_type }}
         working-directory: build
 
       - name: Test
-        run: ../../build/dist/bin/${{ matrix.config.test_path }}
+        run: ../../build/dist/bin/${{ matrix.build.test_path }}
         working-directory: test/fixture
