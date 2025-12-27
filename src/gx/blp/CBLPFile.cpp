@@ -96,6 +96,7 @@ int32_t CBLPFile::LockChain2(const char* fileName, PIXEL_FORMAT format, MipBits*
             v14 = 1;
         }
 
+
         // TODO
         // MippedImgSet(format, v14, v13, mipLevel);
     } else {

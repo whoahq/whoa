@@ -1,15 +1,25 @@
 #include "util/SFile.hpp"
+#include <algorithm>
 #include <cstring>
 #include <limits>
 #include <storm/Memory.hpp>
 #include <storm/String.hpp>
+#include "util/Mpq.hpp"
 
 // TODO Proper implementation
 int32_t SFile::Close(SFile* file) {
     delete file->m_filename;
 
-    file->m_stream->close();
-    delete file->m_stream;
+    if (file->m_stream) {
+        file->m_stream->close();
+        delete file->m_stream;
+        file->m_stream = nullptr;
+    }
+
+    if (file->m_buffer) {
+        delete[] file->m_buffer;
+        file->m_buffer = nullptr;
+    }
 
     delete file;
 
@@ -18,6 +28,10 @@ int32_t SFile::Close(SFile* file) {
 
 // TODO Proper implementation
 int32_t SFile::FileExists(const char* filename) {
+    if (Mpq::FileExists(filename)) {
+        return 1;
+    }
+
     auto pathLen = SStrLen(filename);
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
@@ -49,43 +63,36 @@ int32_t SFile::IsStreamingTrial() {
 
 // TODO Proper implementation
 int32_t SFile::Load(SArchive* archive, const char* filename, void** buffer, size_t* bytes, size_t extraBytes, uint32_t flags, SOVERLAPPED* overlapped) {
-    auto pathLen = SStrLen(filename);
-    char path[STORM_MAX_PATH];
-    SStrCopy(path, filename, sizeof(path));
+    SFile* file = nullptr;
 
-    for (int32_t i = 0; i < pathLen; ++i) {
-        if (path[i] == '\\') {
-            path[i] = '/';
-        }
-    }
-
-    std::ifstream file (path, std::ios::in | std::ios::binary | std::ios::ate);
-    size_t size;
-    char* data;
-
-    if (file.is_open()) {
-        size = static_cast<size_t>(file.tellg());
-
-        if (bytes) {
-            *bytes = size;
-        }
-
-        data = new char[size + extraBytes];
-
-        file.seekg(0, std::ios::beg);
-        file.read(data, size);
-        file.close();
-
-        if (extraBytes) {
-            memset(data + size, 0, extraBytes);
-        }
-
-        *buffer = data;
-
-        return 1;
-    } else {
+    if (!SFile::OpenEx(archive, filename, flags, &file) || !file) {
         return 0;
     }
+
+    size_t size = static_cast<size_t>(SFile::GetFileSize(file, nullptr));
+
+    if (bytes) {
+        *bytes = size;
+    }
+
+    char* data = new char[size + extraBytes];
+    size_t bytesRead = 0;
+
+    int32_t result = SFile::Read(file, data, size, &bytesRead, nullptr, nullptr);
+    SFile::Close(file);
+
+    if (!result) {
+        delete[] data;
+        return 0;
+    }
+
+    if (extraBytes) {
+        memset(data + size, 0, extraBytes);
+    }
+
+    *buffer = data;
+
+    return 1;
 }
 
 int32_t SFile::Open(const char* filename, SFile** file) {
@@ -94,6 +101,25 @@ int32_t SFile::Open(const char* filename, SFile** file) {
 
 // TODO Proper implementation
 int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, SFile** file) {
+    if (!archive) {
+        uint8_t* data = nullptr;
+        size_t size = 0;
+
+        if (Mpq::ReadFile(filename, &data, &size)) {
+            SFile* fileptr = new SFile;
+
+            fileptr->m_filename = strdup(filename);
+            fileptr->m_stream = nullptr;
+            fileptr->m_buffer = data;
+            fileptr->m_offset = 0;
+            fileptr->m_size = static_cast<std::streamsize>(size);
+
+            *file = fileptr;
+
+            return 1;
+        }
+    }
+
     auto pathLen = SStrLen(filename);
     char path[STORM_MAX_PATH];
     SStrCopy(path, filename, sizeof(path));
@@ -107,6 +133,8 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
     SFile* fileptr = new SFile;
 
     fileptr->m_filename = strdup(filename);
+    fileptr->m_buffer = nullptr;
+    fileptr->m_offset = 0;
 
     std::ifstream* stream = new std::ifstream(path, std::ios::in | std::ios::binary | std::ios::ate);
 
@@ -133,7 +161,20 @@ int32_t SFile::OpenEx(SArchive* archive, const char* filename, uint32_t flags, S
 
 // TODO Proper implementation
 int32_t SFile::Read(SFile* file, void* buffer, size_t bytestoread, size_t* bytesread, SOVERLAPPED* overlapped, TASYNCPARAMBLOCK* asyncparam) {
-    file->m_stream->read((char*)buffer, bytestoread);
+    if (file->m_buffer) {
+        size_t available = static_cast<size_t>(file->m_size) - file->m_offset;
+        size_t toRead = std::min(bytestoread, available);
+        std::memcpy(buffer, file->m_buffer + file->m_offset, toRead);
+        file->m_offset += toRead;
+
+        if (bytesread) {
+            *bytesread = toRead;
+        }
+
+        return 1;
+    }
+
+    file->m_stream->read(static_cast<char*>(buffer), bytestoread);
 
     if (bytesread) {
         *bytesread = file->m_stream->gcount();
