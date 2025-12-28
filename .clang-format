@@ -30,6 +30,7 @@ IncludeCategories:
 IndentAccessModifiers: true
 IndentGotoLabels: false
 IndentWidth: 4
+InsertNewlineAtEOF: true
 MaxEmptyLinesToKeep: 1
 ObjCBlockIndentWidth: 4
 ObjCSpaceAfterProperty: false
