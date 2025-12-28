@@ -1,17 +1,26 @@
 root = true
 
-[src/**/*]
+[*]
 charset = utf-8
 end_of_line = lf
-indent_size = 4
 indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[test/**/*]
-charset = utf-8
-end_of_line = lf
+[*.md]
+trim_trailing_whitespace = false
+
+[src/**/*]
 indent_size = 4
-indent_style = space
-insert_final_newline = true
-trim_trailing_whitespace = true
+
+[test/**/*]
+indent_size = 4
+
+# Ignore vendor
+[vendor/**/*]
+charset = unset
+end_of_line = unset
+indent_size = unset
+indent_style = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
