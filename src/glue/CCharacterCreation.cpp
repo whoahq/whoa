@@ -134,7 +134,7 @@ void CCharacterCreation::ResetCharCustomizeInfo() {
         model->DetachAllChildrenById(0);
     }
 
-    ComponentData data;
+    ComponentData data = {};
     CCharacterCreation::GetRandomRaceAndSex(&data);
     CCharacterCreation::CalcClasses(data.raceID);
 
