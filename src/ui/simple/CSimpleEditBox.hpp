@@ -31,6 +31,7 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         static int32_t GetObjectType();
         static void RegisterScriptMethods(lua_State* L);
         static void SetKeyboardFocus(CSimpleEditBox* editBox);
+        static void ClearKeyboardFocus(CSimpleEditBox* editBox, bool dispatchEvent);
 
         // Member variables
         int32_t m_autoFocus : 1;
