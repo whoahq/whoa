@@ -990,6 +990,12 @@ int32_t CSimpleEditBox::OnLayerMouseUp(const CMouseEvent& evt, const char* btn) 
     return eaten;
 }
 
+void CSimpleEditBox::OnLayerHide() {
+    CSimpleFrame::OnLayerHide();
+    
+    CSimpleEditBox::ClearKeyboardFocus(this, true);
+}
+
 void CSimpleEditBox::OnLayerUpdate(float elapsedSec) {
     CSimpleFrame::OnLayerUpdate(elapsedSec);
 
