@@ -25,6 +25,7 @@ class CCharacterCreation {
         static void Dress();
         static int32_t GetRandomClassID();
         static void GetRandomRaceAndSex(ComponentData* data);
+        static bool IsClassValid(int32_t classID);
         static void ResetCharCustomizeInfo();
         static void SetSelectedClass(int32_t classID);
 };

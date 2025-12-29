@@ -109,6 +109,18 @@ void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
     data->sexID = UNITSEX_MALE;
 }
 
+bool CCharacterCreation::IsClassValid(int32_t classID) {
+    for (int32_t i = 0; i < CCharacterCreation::s_classes.Count(); i++) {
+        auto classRec = CCharacterCreation::s_classes[i];
+
+        if (classRec->m_ID == classID) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void CCharacterCreation::ResetCharCustomizeInfo() {
     if (!CCharacterCreation::s_charCustomizeFrame) {
         return;
@@ -139,5 +151,27 @@ void CCharacterCreation::ResetCharCustomizeInfo() {
 }
 
 void CCharacterCreation::SetSelectedClass(int32_t classID) {
-    // TODO
+    if (!CCharacterCreation::IsClassValid(classID)) {
+        return;
+    }
+
+    CCharacterCreation::s_selectedClassID = classID;
+
+    ComponentData data = {};
+    data.raceID = CCharacterCreation::s_character->m_data.raceID;
+    data.sexID = CCharacterCreation::s_character->m_data.sexID;
+    data.classID = classID;
+    data.skinColorID = CCharacterCreation::s_character->m_data.skinColorID;
+    data.hairStyleID = CCharacterCreation::s_character->m_data.hairStyleID;
+    data.hairColorID = CCharacterCreation::s_character->m_data.hairColorID;
+    data.facialHairStyleID = CCharacterCreation::s_character->m_data.facialHairStyleID;
+    data.faceID = CCharacterCreation::s_character->m_data.faceID;
+
+    // TODO CCharacterComponent::ValidateComponentData(&data, 0);
+
+    CCharacterCreation::CreateComponent(&data, false);
+
+    CCharacterCreation::Dress();
+
+    CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
 }
