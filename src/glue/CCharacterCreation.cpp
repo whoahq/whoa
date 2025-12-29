@@ -8,12 +8,36 @@
 
 CCharacterComponent* CCharacterCreation::s_character;
 CSimpleModelFFX* CCharacterCreation::s_charCustomizeFrame;
+TSFixedArray<const ChrClassesRec*> CCharacterCreation::s_classes;
 int32_t CCharacterCreation::s_existingCharacterIndex;
 int32_t CCharacterCreation::s_raceIndex;
 int32_t CCharacterCreation::s_selectedClassID;
 
 void CCharacterCreation::CalcClasses(int32_t raceID) {
-    // TODO
+    uint32_t classCount = 0;
+
+    for (int32_t i = 0; i < g_charBaseInfoDB.GetNumRecords(); i++) {
+        auto infoRec = g_charBaseInfoDB.GetRecord(i);
+
+        if (infoRec->m_raceID == raceID) {
+            classCount++;
+        }
+    }
+
+    CCharacterCreation::s_classes.SetCount(classCount);
+
+    uint32_t classIndex = 0;
+
+    for (int32_t i = 0; i < g_charBaseInfoDB.GetNumRecords(); i++) {
+        auto infoRec = g_charBaseInfoDB.GetRecord(i);
+
+        if (infoRec->m_raceID != raceID) {
+            continue;
+        }
+
+        auto classRec = g_chrClassesDB.GetRecord(infoRec->m_classID);
+        CCharacterCreation::s_classes[classIndex++] = classRec;
+    }
 }
 
 void CCharacterCreation::CreateComponent(ComponentData* data, bool randomize) {

@@ -1,8 +1,10 @@
 #ifndef GLUE_C_CHARACTER_CREATION_HPP
 #define GLUE_C_CHARACTER_CREATION_HPP
 
+#include <storm/Array.hpp>
 #include <cstdint>
 
+class ChrClassesRec;
 class CCharacterComponent;
 class CSimpleModelFFX;
 struct ComponentData;
@@ -12,6 +14,7 @@ class CCharacterCreation {
         // Static variables
         static CCharacterComponent* s_character;
         static CSimpleModelFFX* s_charCustomizeFrame;
+        static TSFixedArray<const ChrClassesRec*> s_classes;
         static int32_t s_existingCharacterIndex;
         static int32_t s_raceIndex;
         static int32_t s_selectedClassID;
