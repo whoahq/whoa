@@ -196,7 +196,12 @@ int32_t CSimpleEditBox_SetFocus(lua_State* L) {
 }
 
 int32_t CSimpleEditBox_ClearFocus(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleEditBox::GetObjectType();
+    auto editBox = static_cast<CSimpleEditBox*>(FrameScript_GetObjectThis(L, type));
+
+    CSimpleEditBox::ClearKeyboardFocus(editBox, true);
+
+    return 0;
 }
 
 int32_t CSimpleEditBox_HasFocus(lua_State* L) {
