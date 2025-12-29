@@ -1,12 +1,26 @@
 #include "glue/CCharacterCreationScript.hpp"
+#include "glue/CCharacterCreation.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
+#include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
 int32_t Script_SetCharCustomizeFrame(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Usage: SetCharCustomizeFrame(\"frameName\")");
+        return 0;
+    }
+
+    auto type = CSimpleModel::GetObjectType();
+    auto frame = static_cast<CSimpleModelFFX*>(CScriptObject::GetScriptObjectByName(lua_tostring(L, 1), type));
+
+    if (frame) {
+        CCharacterCreation::s_charCustomizeFrame = frame;
+    }
+
+    return 0;
 }
 
 int32_t Script_SetCharCustomizeBackground(lua_State* L) {
