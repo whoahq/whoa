@@ -79,6 +79,30 @@ void CSimpleEditBox::SetKeyboardFocus(CSimpleEditBox* editBox) {
     editBox->m_dirtyFlags |= 0x4;
 }
 
+void CSimpleEditBox::ClearKeyboardFocus(CSimpleEditBox* editBox, bool dispatchEvent) {
+    if (CSimpleEditBox::s_currentFocus != editBox) {
+        return;
+    }
+
+    CSimpleEditBox::s_currentFocus = nullptr;
+
+    // TODO
+    // if (editBox->m_password) {
+    //     OsInputEnableSecureMode(0);
+    // }
+
+    // TODO
+    // if (!(editBox->simpleeditbox_dword4 & 0xC)) {
+    //     CSimpleEditBox::s_currentFocus->Sub963390();
+    // }
+
+    if (dispatchEvent) {
+        editBox->RunOnEditFocusLostScript();
+    }
+
+    editBox->m_dirtyFlags |= 0x4;
+}
+
 CSimpleEditBox::CSimpleEditBox(CSimpleFrame* parent) : CSimpleFrame(parent) {
     this->m_autoFocus = 1;
     this->m_multiline = 0;
