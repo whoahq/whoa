@@ -1,7 +1,11 @@
 #include "glue/CCharacterCreationScript.hpp"
+#include "component/CCharacterComponent.hpp"
+#include "db/Db.hpp"
 #include "glue/CCharacterCreation.hpp"
+#include "object/client/Unit_C.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
+#include "ui/game/CGLookingForGroup.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
@@ -70,7 +74,39 @@ int32_t Script_GetSelectedSex(lua_State* L) {
 }
 
 int32_t Script_GetSelectedClass(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto classRec = g_chrClassesDB.GetRecord(CCharacterCreation::s_selectedClassID);
+
+    if (!classRec) {
+        return 0;
+    }
+
+    auto displayName = CGUnit_C::GetDisplayClassNameFromRecord(
+        classRec,
+        static_cast<UNIT_SEX>(CCharacterCreation::s_character->m_data.sexID),
+        nullptr
+    );
+
+    lua_pushstring(L, displayName);
+    lua_pushstring(L, classRec->m_filename);
+
+    int32_t classIndex = 0;
+
+    for (auto i = 0; i < g_chrClassesDB.GetNumRecords(); i++) {
+        auto rec = g_chrClassesDB.GetRecordByIndex(i);
+        if (rec->m_ID == CCharacterCreation::s_selectedClassID) {
+            classIndex = i;
+        }
+    }
+
+    lua_pushnumber(L, classIndex + 1);
+
+    auto classRoles = CGLookingForGroup::GetClassRoles(CCharacterCreation::s_selectedClassID);
+
+    lua_pushboolean(L, classRoles & CLASS_ROLE_TANK);
+    lua_pushboolean(L, classRoles & CLASS_ROLE_HEALER);
+    lua_pushboolean(L, classRoles & CLASS_ROLE_DAMAGE);
+
+    return 6;
 }
 
 int32_t Script_SetSelectedRace(lua_State* L) {
