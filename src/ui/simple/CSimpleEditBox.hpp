@@ -91,6 +91,7 @@ class CSimpleEditBox : public CSimpleFrame, CSimpleFontedFrame {
         virtual int32_t OnLayerKeyDown(const CKeyEvent& evt);
         virtual int32_t OnLayerMouseDown(const CMouseEvent& evt, const char* btn);
         virtual int32_t OnLayerMouseUp(const CMouseEvent& evt, const char* btn);
+        virtual void OnLayerHide();
         virtual void FontUpdated(CSimpleFontedFrameFont* font, int32_t a3);
 
         // Member functions
