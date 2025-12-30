@@ -150,7 +150,30 @@ int32_t Script_GetAvailableRaces(lua_State* L) {
 }
 
 int32_t Script_GetAvailableClasses(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    for (int32_t i = 0; i < g_chrClassesDB.GetNumRecords(); i++) {
+        auto classRec = g_chrClassesDB.GetRecordByIndex(i);
+
+        auto displayName = CGUnit_C::GetDisplayClassNameFromRecord(
+            classRec,
+            static_cast<UNIT_SEX>(CCharacterCreation::s_character->m_data.sexID),
+            nullptr
+        );
+
+        int32_t accountExpansion = ClientServices::Connection()->m_accountExpansion;
+        int32_t requiredExpansion = classRec->m_requiredExpansion;
+
+        if (displayName) {
+            lua_pushstring(L, displayName);
+            lua_pushstring(L, classRec->m_filename);
+            lua_pushnumber(L, accountExpansion >= requiredExpansion);
+        } else {
+            lua_pushnil(L);
+            lua_pushnil(L);
+            lua_pushnil(L);
+        }
+    }
+
+    return g_chrClassesDB.GetNumRecords() * 3;
 }
 
 int32_t Script_GetClassesForRace(lua_State* L) {
