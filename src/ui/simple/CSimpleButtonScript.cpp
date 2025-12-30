@@ -43,6 +43,27 @@ int32_t CSimpleButton_SetStateTexture(lua_State* L, CSimpleButtonState state, co
     return 0;
 }
 
+int32_t CSimpleButton_GetStateTexture(lua_State* L, CSimpleButtonState state) {
+    auto type = CSimpleButton::GetObjectType();
+    auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
+
+    auto texture = button->m_textures[state];
+
+    if (!texture) {
+        lua_pushnil(L);
+
+        return 1;
+    }
+
+    if (!texture->lua_registered) {
+        texture->RegisterScriptObject(nullptr);
+    }
+
+    lua_rawgeti(L, LUA_REGISTRYINDEX, texture->lua_objectRef);
+
+    return 1;
+}
+
 int32_t CSimpleButton_Enable(lua_State* L) {
     auto type = CSimpleButton::GetObjectType();
     auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
@@ -234,7 +255,7 @@ int32_t CSimpleButton_SetNormalTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetNormalTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    return CSimpleButton_GetStateTexture(L, BUTTONSTATE_NORMAL);
 }
 
 int32_t CSimpleButton_SetPushedTexture(lua_State* L) {
