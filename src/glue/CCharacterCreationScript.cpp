@@ -276,7 +276,42 @@ int32_t Script_IsRaceClassRestricted(lua_State* L) {
 }
 
 int32_t Script_GetCreateBackgroundModel(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (SFile::IsStreamingTrial()) {
+        lua_pushstring(L, "CharacterSelect");
+
+        return 1;
+    }
+
+    if (CCharacterCreation::s_selectedClassID == 6) {
+        auto classRec = g_chrClassesDB.GetRecord(6);
+
+        if (classRec) {
+            lua_pushstring(L, classRec->m_filename);
+
+            return 1;
+        }
+    } else {
+        auto raceID = CCharacterCreation::s_character->m_data.raceID;
+
+        if (raceID == 7) {
+            raceID = 3;
+        } else if (raceID == 8) {
+            raceID = 2;
+        }
+
+        auto raceRec = g_chrRacesDB.GetRecord(raceID);
+
+        if (raceRec) {
+            lua_pushstring(L, raceRec->m_clientFileString);
+
+            return 1;
+        }
+    }
+
+    // Race or class background not found
+    lua_pushstring(L, "");
+
+    return 1;
 }
 
 static FrameScript_Method s_ScriptFunctions[NUM_SCRIPT_FUNCTIONS_CHAR_CREATE] = {
