@@ -72,7 +72,9 @@ int32_t Script_GetSelectedRace(lua_State* L) {
 }
 
 int32_t Script_GetSelectedSex(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, g_glueFrameScriptGenders[CCharacterCreation::s_character->m_data.sexID]);
+
+    return 1;
 }
 
 int32_t Script_GetSelectedClass(lua_State* L) {
