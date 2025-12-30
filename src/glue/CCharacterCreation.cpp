@@ -86,7 +86,7 @@ void CCharacterCreation::CreateComponent(ComponentData* data, bool randomize) {
 
     // TODO track previous variations
 
-    // TODO set facing
+    CCharacterCreation::SetFacing(CCharacterCreation::s_charFacing);
 
     CCharacterCreation::Dress();
 
