@@ -2,6 +2,7 @@
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 
@@ -211,7 +212,21 @@ int32_t CSimpleTexture_SetRotation(lua_State* L) {
 }
 
 int32_t CSimpleTexture_SetDesaturated(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleTexture::GetObjectType();
+    auto texture = static_cast<CSimpleTexture*>(FrameScript_GetObjectThis(L, type));
+
+    auto desaturated = StringToBOOL(L, 2, 1);
+    auto shader = CSimpleTexture::GetImageModePixelShader(desaturated ? ImageMode_Desaturate : ImageMode_UI);
+
+    if (shader) {
+        texture->SetShader(shader);
+
+        lua_pushnumber(L, 1);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleTexture_IsDesaturated(lua_State* L) {
