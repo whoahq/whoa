@@ -59,7 +59,57 @@ int32_t Script_GetNameForRace(lua_State* L) {
 }
 
 int32_t Script_GetFactionForRace(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: GetFactionForRace(index)");
+        return 0;
+    }
+
+    auto raceIndex = static_cast<int32_t>(lua_tonumber(L, 1)) - 1;
+    auto raceID = raceIndex >= CCharacterCreation::s_races.Count() ? 0 : CCharacterCreation::s_races[raceIndex];
+    auto raceRec = g_chrRacesDB.GetRecord(raceID);
+
+    if (!raceRec) {
+        lua_pushnil(L);
+        lua_pushnil(L);
+
+        return 2;
+    }
+
+    auto factionTemplateRec = g_factionTemplateDB.GetRecord(raceRec->m_factionID);
+
+    if (!factionTemplateRec) {
+        lua_pushnil(L);
+        lua_pushnil(L);
+
+        return 2;
+    }
+
+    FactionGroupRec* matchingGroup = nullptr;
+
+    for (auto group = 0; group < g_factionGroupDB.GetNumRecords(); group++) {
+        auto factionGroupRec = g_factionGroupDB.GetRecordByIndex(group);
+
+        if (!factionGroupRec || !factionGroupRec->m_maskID) {
+            continue;
+        }
+
+        bool templateMatch = (1 << factionGroupRec->m_maskID) & factionTemplateRec->m_factionGroup;
+
+        if (templateMatch) {
+            matchingGroup = factionGroupRec;
+            break;
+        }
+    }
+
+    if (matchingGroup) {
+        lua_pushstring(L, matchingGroup->m_name);
+        lua_pushstring(L, matchingGroup->m_internalName);
+    } else {
+        lua_pushnil(L);
+        lua_pushnil(L);
+    }
+
+    return 2;
 }
 
 int32_t Script_GetAvailableRaces(lua_State* L) {
