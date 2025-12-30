@@ -15,3 +15,18 @@ void ComponentData::GetPreferences(CharacterPreferences* preferences) {
     preferences->facialHairStyleID = this->facialHairStyleID;
     preferences->hairStyleID = this->hairStyleID;
 }
+
+void ComponentData::SetPreferences(CharacterPreferences* preferences) {
+    if (!preferences) {
+        return;
+    }
+
+    this->raceID = preferences->raceID;
+    this->sexID = preferences->sexID;
+    this->classID = preferences->classID;
+    this->hairColorID = preferences->hairColorID;
+    this->skinColorID = preferences->skinColorID;
+    this->faceID = preferences->faceID;
+    this->facialHairStyleID = preferences->facialHairStyleID;
+    this->hairStyleID = preferences->hairStyleID;
+}

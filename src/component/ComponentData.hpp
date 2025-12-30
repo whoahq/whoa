@@ -43,6 +43,7 @@ struct ComponentData {
     };
 
     void GetPreferences(CharacterPreferences* preferences);
+    void SetPreferences(CharacterPreferences* preferences);
 };
 
 #endif
