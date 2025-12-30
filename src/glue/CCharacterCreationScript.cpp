@@ -314,7 +314,30 @@ int32_t Script_PaidChange_GetName(lua_State* L) {
 }
 
 int32_t Script_IsRaceClassValid(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1) || !lua_isnumber(L, 2)) {
+        luaL_error(L, "Usage: IsRaceClassValid(raceIndex, classIndex)");
+        return 0;
+    }
+
+    int32_t raceIndex = lua_tointeger(L, 1) - 1;
+    int32_t classIndex = lua_tointeger(L, 2) - 1;
+
+    auto classRec = g_chrClassesDB.GetRecordByIndex(classIndex);
+
+    if (!classRec) {
+        return 0;
+    }
+
+    auto raceID = raceIndex >= CCharacterCreation::s_races.Count() ? 0 : CCharacterCreation::s_races[raceIndex];
+    auto classID = classRec->m_ID;
+
+    if (CCharacterCreation::IsRaceClassValid(raceID, classID)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_IsRaceClassRestricted(lua_State* L) {
