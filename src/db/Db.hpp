@@ -14,6 +14,7 @@
 #include "db/rec/ChrRacesRec.hpp"
 #include "db/rec/CreatureDisplayInfoRec.hpp"
 #include "db/rec/CreatureModelDataRec.hpp"
+#include "db/rec/FactionTemplateRec.hpp"
 #include "db/rec/ItemDisplayInfoRec.hpp"
 #include "db/rec/ItemVisualsRec.hpp"
 #include "db/rec/MapRec.hpp"
@@ -32,6 +33,7 @@ extern WowClientDB<ChrClassesRec> g_chrClassesDB;
 extern WowClientDB<ChrRacesRec> g_chrRacesDB;
 extern WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
 extern WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
+extern WowClientDB<FactionTemplateRec> g_factionTemplateDB;
 extern WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 extern WowClientDB<ItemVisualsRec> g_itemVisualsDB;
 extern WowClientDB<MapRec> g_mapDB;
