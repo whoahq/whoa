@@ -194,7 +194,16 @@ void CCharacterCreation::ResetCharCustomizeInfo() {
 
     CCharacterCreation::s_raceIndex = -1;
 
-    // TODO race and name gen stuff
+    for (int32_t i = 0; i < CCharacterCreation::s_races.Count(); i++) {
+        auto raceID = CCharacterCreation::s_races[i];
+
+        if (CCharacterCreation::s_character->m_data.raceID == raceID) {
+            CCharacterCreation::s_raceIndex = i;
+            break;
+        }
+    }
+
+    // TODO name gen stuff
 
     CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
 }
