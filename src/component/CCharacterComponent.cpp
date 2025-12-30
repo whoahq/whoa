@@ -1048,21 +1048,6 @@ void CCharacterComponent::GeosRenderPrep() {
     this->m_flags &= ~0x4;
 }
 
-void CCharacterComponent::GetPreferences(CharacterPreferences* preferences) {
-    if (!preferences) {
-        return;
-    }
-
-    preferences->raceID = this->m_data.raceID;
-    preferences->sexID = this->m_data.sexID;
-    preferences->classID = this->m_data.classID;
-    preferences->hairColorID = this->m_data.hairColorID;
-    preferences->skinColorID = this->m_data.skinColorID;
-    preferences->faceID = this->m_data.faceID;
-    preferences->facialHairStyleID = this->m_data.facialHairStyleID;
-    preferences->hairStyleID = this->m_data.hairStyleID;
-}
-
 CharSectionsRec* CCharacterComponent::GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found) {
     return ComponentGetSectionsRecord(
         CCharacterComponent::s_chrVarArray,

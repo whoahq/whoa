@@ -1,4 +1,5 @@
 #include "component/Util.hpp"
+#include "component/ComponentData.hpp"
 #include "component/Types.hpp"
 #include "db/Db.hpp"
 #include "object/Types.hpp"
