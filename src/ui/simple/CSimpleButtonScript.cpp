@@ -263,7 +263,7 @@ int32_t CSimpleButton_SetPushedTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetPushedTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    return CSimpleButton_GetStateTexture(L, BUTTONSTATE_PUSHED);
 }
 
 int32_t CSimpleButton_SetDisabledTexture(lua_State* L) {
