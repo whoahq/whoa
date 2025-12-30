@@ -8,9 +8,11 @@
 
 CCharacterComponent* CCharacterCreation::s_character;
 CSimpleModelFFX* CCharacterCreation::s_charCustomizeFrame;
+float CCharacterCreation::s_charFacing;
 TSFixedArray<const ChrClassesRec*> CCharacterCreation::s_classes;
 int32_t CCharacterCreation::s_existingCharacterIndex;
 int32_t CCharacterCreation::s_raceIndex;
+TSGrowableArray<int32_t> CCharacterCreation::s_races;
 int32_t CCharacterCreation::s_selectedClassID;
 
 void CCharacterCreation::CalcClasses(int32_t raceID) {
@@ -107,6 +109,53 @@ void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
     // TODO
     data->raceID = 1;
     data->sexID = UNITSEX_MALE;
+}
+
+void CCharacterCreation::Initialize() {
+    CCharacterCreation::s_charFacing = 0.0f;
+    CCharacterCreation::s_charCustomizeFrame = nullptr;
+    CCharacterCreation::s_existingCharacterIndex = -1;
+
+    CCharacterCreation::s_races.SetCount(0);
+
+    // TODO enum or define for faction sides
+    for (int32_t side = 0; side < 2; side++) {
+        for (int32_t race = 0; race < g_chrRacesDB.GetNumRecords(); race++) {
+            auto raceRec = g_chrRacesDB.GetRecordByIndex(race);
+
+            // TODO NPCOnly?
+            if (raceRec->m_flags & 0x1) {
+                continue;
+            }
+
+            auto factionTemplateRec = g_factionTemplateDB.GetRecord(raceRec->m_factionID);
+
+            for (int32_t group = 0; group < g_factionGroupDB.GetNumRecords(); group++) {
+                auto factionGroupRec = g_factionGroupDB.GetRecordByIndex(group);
+
+                if (!factionGroupRec || !factionGroupRec->m_maskID) {
+                    continue;
+                }
+
+                bool templateMatch = (1 << factionGroupRec->m_maskID) & factionTemplateRec->m_factionGroup;
+
+                if (!templateMatch) {
+                    continue;
+                }
+
+                bool sideMatch =
+                       (side == 0 && !SStrCmpI(factionGroupRec->m_internalName, "Alliance"))
+                    || (side == 1 && !SStrCmpI(factionGroupRec->m_internalName, "Horde"));
+
+                if (!sideMatch) {
+                    continue;
+                }
+
+                // Race is playable and part of a faction aligned to either Alliance or Horde
+                *CCharacterCreation::s_races.New() = raceRec->m_ID;
+            }
+        }
+    }
 }
 
 bool CCharacterCreation::IsClassValid(int32_t classID) {

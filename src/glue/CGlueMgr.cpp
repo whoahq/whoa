@@ -5,6 +5,7 @@
 #include "console/CVar.hpp"
 #include "db/Db.hpp"
 #include "ffx/Effect.hpp"
+#include "glue/CCharacterCreation.hpp"
 #include "glue/CCharacterCreationScript.hpp"
 #include "glue/CCharacterSelection.hpp"
 #include "glue/CCharacterSelectionScript.hpp"
@@ -952,6 +953,8 @@ void CGlueMgr::Resume() {
     // FrameScript::s_scriptFunctionsLoaded = 1;
 
     FrameScript_CreateEvents(g_glueScriptEvents, NUM_GLUESCRIPTEVENTS);
+
+    CCharacterCreation::Initialize();
 
     OsCreateDirectory("Logs", 0);
 
