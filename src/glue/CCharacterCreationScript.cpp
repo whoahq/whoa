@@ -230,7 +230,9 @@ int32_t Script_UpdateCustomizationBackground(lua_State* L) {
 }
 
 int32_t Script_UpdateCustomizationScene(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CCharacterCreation::s_character->RenderPrep(0);
+
+    return 0;
 }
 
 int32_t Script_CycleCharCustomization(lua_State* L) {
