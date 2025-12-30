@@ -29,6 +29,7 @@ class CCharacterCreation {
         static void GetRandomRaceAndSex(ComponentData* data);
         static void Initialize();
         static bool IsClassValid(int32_t classID);
+        static bool IsRaceClassValid(int32_t raceID, int32_t classID);
         static void ResetCharCustomizeInfo();
         static void SetCharCustomizeModel(const char* filename);
         static void SetFacing(float orientation);

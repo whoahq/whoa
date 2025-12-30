@@ -171,6 +171,18 @@ bool CCharacterCreation::IsClassValid(int32_t classID) {
     return false;
 }
 
+bool CCharacterCreation::IsRaceClassValid(int32_t raceID, int32_t classID) {
+    for (int32_t i = 0; i < g_charBaseInfoDB.GetNumRecords(); i++) {
+        auto infoRec = g_charBaseInfoDB.GetRecordByIndex(i);
+
+        if (infoRec->m_raceID == raceID && infoRec->m_classID == classID) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void CCharacterCreation::ResetCharCustomizeInfo() {
     if (!CCharacterCreation::s_charCustomizeFrame) {
         return;
