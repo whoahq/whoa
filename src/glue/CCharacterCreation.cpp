@@ -19,7 +19,7 @@ void CCharacterCreation::CalcClasses(int32_t raceID) {
     uint32_t classCount = 0;
 
     for (int32_t i = 0; i < g_charBaseInfoDB.GetNumRecords(); i++) {
-        auto infoRec = g_charBaseInfoDB.GetRecord(i);
+        auto infoRec = g_charBaseInfoDB.GetRecordByIndex(i);
 
         if (infoRec->m_raceID == raceID) {
             classCount++;
@@ -31,7 +31,7 @@ void CCharacterCreation::CalcClasses(int32_t raceID) {
     uint32_t classIndex = 0;
 
     for (int32_t i = 0; i < g_charBaseInfoDB.GetNumRecords(); i++) {
-        auto infoRec = g_charBaseInfoDB.GetRecord(i);
+        auto infoRec = g_charBaseInfoDB.GetRecordByIndex(i);
 
         if (infoRec->m_raceID != raceID) {
             continue;
