@@ -3,6 +3,7 @@
 #include "component/Types.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueLoading.hpp"
+#include "model/CM2Shared.hpp"
 #include "object/client/Player_C.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 
@@ -206,6 +207,36 @@ void CCharacterCreation::ResetCharCustomizeInfo() {
     // TODO name gen stuff
 
     CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
+}
+
+void CCharacterCreation::SetCharCustomizeModel(const char* filename) {
+    if (!CCharacterCreation::s_charCustomizeFrame || !filename || !*filename) {
+        return;
+    }
+
+    auto existingModel = CCharacterCreation::s_charCustomizeFrame->m_model;
+
+    if (existingModel && !SStrCmpI(existingModel->m_shared->m_filePath, filename)) {
+        return;
+    }
+
+    CCharacterCreation::s_charCustomizeFrame->SetModel(filename);
+    auto customizeModel = CCharacterCreation::s_charCustomizeFrame->m_model;
+
+    // TODO inlined?
+    if (customizeModel) {
+        // TODO lighting stuff
+        customizeModel->IsDrawable(1, 1);
+    }
+
+    // TODO inlined?
+    if (customizeModel) {
+        auto characterModel = CCharacterCreation::s_character->m_data.model;
+
+        if (characterModel) {
+            characterModel->AttachToParent(customizeModel, 0, nullptr, 0);
+        }
+    }
 }
 
 void CCharacterCreation::SetSelectedClass(int32_t classID) {

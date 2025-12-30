@@ -30,6 +30,7 @@ class CCharacterCreation {
         static void Initialize();
         static bool IsClassValid(int32_t classID);
         static void ResetCharCustomizeInfo();
+        static void SetCharCustomizeModel(const char* filename);
         static void SetSelectedClass(int32_t classID);
 };
 
