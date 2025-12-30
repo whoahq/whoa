@@ -271,7 +271,7 @@ int32_t CSimpleButton_SetDisabledTexture(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetDisabledTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    return CSimpleButton_GetStateTexture(L, BUTTONSTATE_DISABLED);
 }
 
 int32_t CSimpleButton_SetHighlightTexture(lua_State* L) {
