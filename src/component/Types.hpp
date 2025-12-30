@@ -91,6 +91,17 @@ enum ITEM_SLOT {
     NUM_ITEM_SLOT
 };
 
+struct CharacterPreferences {
+    int32_t raceID;
+    int32_t sexID;
+    int32_t classID;
+    int32_t hairColorID;
+    int32_t skinColorID;
+    int32_t faceID;
+    int32_t facialHairStyleID;
+    int32_t hairStyleID;
+};
+
 struct ComponentData {
     int32_t raceID = 0;
     int32_t sexID = 0;
