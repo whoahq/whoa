@@ -996,6 +996,14 @@ void CSimpleEditBox::OnLayerHide() {
     CSimpleEditBox::ClearKeyboardFocus(this, true);
 }
 
+void CSimpleEditBox::OnLayerShow() {
+    CSimpleFrame::OnLayerShow();
+
+    if (!CSimpleEditBox::s_currentFocus && this->m_autoFocus) {
+        CSimpleEditBox::SetKeyboardFocus(this);
+    }
+}
+
 void CSimpleEditBox::OnLayerUpdate(float elapsedSec) {
     CSimpleFrame::OnLayerUpdate(elapsedSec);
 
