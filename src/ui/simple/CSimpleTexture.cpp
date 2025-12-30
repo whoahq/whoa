@@ -479,6 +479,15 @@ void CSimpleTexture::SetPosition(const CRect& rect, C3Vector* position) {
     position[3] = { rect.maxX, rect.minY, this->m_layoutDepth };
 }
 
+void CSimpleTexture::SetShader(CGxShader* shader) {
+    if (this->m_shader == shader) {
+        return;
+    }
+
+    this->m_shader = shader;
+    this->OnRegionChanged();
+}
+
 void CSimpleTexture::SetTexCoord(const CRect& texRect) {
     this->m_texCoord[0] = { texRect.minX, texRect.minY };
     this->m_texCoord[1] = { texRect.minX, texRect.maxY };

@@ -55,6 +55,7 @@ class CSimpleTexture : public CSimpleRegion {
         void SetAlpha(float alpha);
         void SetBlendMode(EGxBlend blend);
         void SetPosition(const CRect& rect, C3Vector* position);
+        void SetShader(CGxShader* shader);
         void SetTexCoord(const CRect& texRect);
         void SetTexCoord(const C2Vector* texCoord);
         int32_t SetTexture(const char* fileName, bool wrapU, bool wrapV, EGxTexFilter filter, TextureImageMode mode);
