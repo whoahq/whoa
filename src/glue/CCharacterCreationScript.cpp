@@ -40,7 +40,22 @@ int32_t Script_ResetCharCustomize(lua_State* L) {
 }
 
 int32_t Script_GetNameForRace(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto raceRec = g_chrRacesDB.GetRecord(CCharacterCreation::s_character->m_data.raceID);
+    auto displayName = CGUnit_C::GetDisplayRaceNameFromRecord(
+        raceRec,
+        static_cast<UNIT_SEX>(CCharacterCreation::s_character->m_data.sexID),
+        nullptr
+    );
+
+    if (raceRec && displayName) {
+        lua_pushstring(L, displayName);
+        lua_pushstring(L, raceRec->m_clientFileString);
+    } else {
+        lua_pushnil(L);
+        lua_pushnil(L);
+    }
+
+    return 2;
 }
 
 int32_t Script_GetFactionForRace(lua_State* L) {
