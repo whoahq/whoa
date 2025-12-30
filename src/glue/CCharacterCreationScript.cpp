@@ -1,7 +1,9 @@
 #include "glue/CCharacterCreationScript.hpp"
+#include "client/ClientServices.hpp"
 #include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterCreation.hpp"
+#include "net/Connection.hpp"
 #include "object/client/Unit_C.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
@@ -46,7 +48,30 @@ int32_t Script_GetFactionForRace(lua_State* L) {
 }
 
 int32_t Script_GetAvailableRaces(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    for (int32_t i = 0; i < CCharacterCreation::s_races.Count(); i++) {
+        auto raceID = CCharacterCreation::s_races[i];
+        auto raceRec = g_chrRacesDB.GetRecord(raceID);
+
+        auto displayName = CGUnit_C::GetDisplayRaceNameFromRecord(
+            raceRec,
+            static_cast<UNIT_SEX>(CCharacterCreation::s_character->m_data.sexID),
+            nullptr
+        );
+        lua_pushstring(L, displayName);
+
+        auto clientFileString = raceRec ? raceRec->m_clientFileString : nullptr;
+        lua_pushstring(L, clientFileString);
+
+        if (raceRec) {
+            int32_t accountExpansion = ClientServices::Connection()->m_accountExpansion;
+            int32_t requiredExpansion = raceRec->m_requiredExpansion;
+            lua_pushnumber(L, accountExpansion >= requiredExpansion);
+        } else {
+            lua_pushnumber(L, 0);
+        }
+    }
+
+    return CCharacterCreation::s_races.Count() * 3;
 }
 
 int32_t Script_GetAvailableClasses(lua_State* L) {
