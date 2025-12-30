@@ -267,7 +267,9 @@ int32_t Script_RandomizeCharCustomization(lua_State* L) {
 }
 
 int32_t Script_GetCharacterCreateFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CCharacterCreation::s_charFacing * 57.29578);
+
+    return 1;
 }
 
 int32_t Script_SetCharacterCreateFacing(lua_State* L) {
