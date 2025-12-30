@@ -13,6 +13,7 @@ WowClientDB<ChrClassesRec> g_chrClassesDB;
 WowClientDB<ChrRacesRec> g_chrRacesDB;
 WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
 WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
+WowClientDB<FactionGroupRec> g_factionGroupDB;
 WowClientDB<FactionTemplateRec> g_factionTemplateDB;
 WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 WowClientDB<ItemVisualsRec> g_itemVisualsDB;
@@ -37,6 +38,7 @@ void StaticDBLoadAll(void (*loadFn)(WowClientDB_Base*, const char*, int32_t)) {
     loadFn(&g_chrRacesDB, __FILE__, __LINE__);
     loadFn(&g_creatureDisplayInfoDB, __FILE__, __LINE__);
     loadFn(&g_creatureModelDataDB, __FILE__, __LINE__);
+    loadFn(&g_factionGroupDB, __FILE__, __LINE__);
     loadFn(&g_factionTemplateDB, __FILE__, __LINE__);
     loadFn(&g_itemDisplayInfoDB, __FILE__, __LINE__);
     loadFn(&g_itemVisualsDB, __FILE__, __LINE__);
