@@ -66,7 +66,9 @@ int32_t Script_GetFacialHairCustomization(lua_State* L) {
 }
 
 int32_t Script_GetSelectedRace(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CCharacterCreation::s_raceIndex + 1);
+
+    return 1;
 }
 
 int32_t Script_GetSelectedSex(lua_State* L) {
