@@ -1160,9 +1160,7 @@ int32_t CSimpleFrame::OnLayerMouseUp(const CMouseEvent& evt, const char* btn) {
 
 void CSimpleFrame::OnLayerShow() {
     this->RunOnShowScript();
-
-    // TODO
-    // this->sub48FEA0();
+    this->NotifyScrollParent();
 }
 
 int32_t CSimpleFrame::OnLayerTrackUpdate(const CMouseEvent& evt) {
