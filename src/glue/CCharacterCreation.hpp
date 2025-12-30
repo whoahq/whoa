@@ -31,6 +31,7 @@ class CCharacterCreation {
         static bool IsClassValid(int32_t classID);
         static void ResetCharCustomizeInfo();
         static void SetCharCustomizeModel(const char* filename);
+        static void SetFacing(float orientation);
         static void SetSelectedClass(int32_t classID);
 };
 

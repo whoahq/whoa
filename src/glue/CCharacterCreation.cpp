@@ -239,6 +239,17 @@ void CCharacterCreation::SetCharCustomizeModel(const char* filename) {
     }
 }
 
+void CCharacterCreation::SetFacing(float orientation) {
+    CCharacterCreation::s_charFacing = orientation;
+
+    auto characterModel = CCharacterCreation::s_character->m_data.model;
+
+    if (characterModel) {
+        C3Vector position = { 0.0f, 0.0f, 0.0f };
+        characterModel->SetWorldTransform(position, orientation, 1.0f);
+    }
+}
+
 void CCharacterCreation::SetSelectedClass(int32_t classID) {
     if (!CCharacterCreation::IsClassValid(classID)) {
         return;

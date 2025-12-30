@@ -273,7 +273,16 @@ int32_t Script_GetCharacterCreateFacing(lua_State* L) {
 }
 
 int32_t Script_SetCharacterCreateFacing(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetCharacterCreateFacing(degrees)");
+        return 0;
+    }
+
+    auto orientation = lua_tonumber(L, 1) * 0.017453292;
+
+    CCharacterCreation::SetFacing(orientation);
+
+    return 1;
 }
 
 int32_t Script_GetRandomName(lua_State* L) {
