@@ -1,4 +1,5 @@
 #include "glue/CCharacterCreation.hpp"
+#include "glue/CCharacterSelection.hpp"
 #include "component/CCharacterComponent.hpp"
 #include "component/Types.hpp"
 #include "db/Db.hpp"
@@ -10,6 +11,7 @@
 CCharacterComponent* CCharacterCreation::s_character;
 CSimpleModelFFX* CCharacterCreation::s_charCustomizeFrame;
 float CCharacterCreation::s_charFacing;
+CharacterPreferences* CCharacterCreation::s_charPreferences[22][2];
 TSFixedArray<const ChrClassesRec*> CCharacterCreation::s_classes;
 int32_t CCharacterCreation::s_existingCharacterIndex;
 int32_t CCharacterCreation::s_raceIndex;
@@ -262,6 +264,20 @@ void CCharacterCreation::SetFacing(float orientation) {
     }
 }
 
+void CCharacterCreation::SavePreferences() {
+    auto raceID = CCharacterCreation::s_races.m_data[CCharacterCreation::s_raceIndex];
+    auto sexID = CCharacterCreation::s_character->m_data.sexID;
+
+    auto preferences = CCharacterCreation::s_charPreferences[raceID][sexID];
+
+    if (!preferences) {
+        preferences = STORM_NEW(CharacterPreferences);
+        CCharacterCreation::s_charPreferences[raceID][sexID] = preferences;
+    }
+
+    CCharacterCreation::s_character->GetPreferences(preferences);
+}
+
 void CCharacterCreation::SetSelectedClass(int32_t classID) {
     if (!CCharacterCreation::IsClassValid(classID)) {
         return;
@@ -286,4 +302,83 @@ void CCharacterCreation::SetSelectedClass(int32_t classID) {
     CCharacterCreation::Dress();
 
     CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
+}
+
+void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
+    if (raceIndex >= CCharacterCreation::s_races.Count() || raceIndex == CCharacterCreation::s_raceIndex) {
+        return;
+    }
+
+    auto selectedRaceID = CCharacterCreation::s_races[raceIndex];
+    auto selectedSexID = CCharacterCreation::s_character->m_data.sexID;
+
+    CCharacterCreation::SavePreferences();
+
+    CCharacterCreation::s_raceIndex = raceIndex;
+
+    ComponentData data = {};
+
+    auto existingCharacter = CCharacterCreation::s_existingCharacterIndex >= 0
+        ? CCharacterSelection::GetCharacterDisplay(CCharacterCreation::s_existingCharacterIndex)
+        : nullptr;
+
+    bool useExistingCharacter = existingCharacter
+        && existingCharacter->m_info.raceID == selectedRaceID
+        && existingCharacter->m_info.customizeFlags & 0x110000;
+
+    bool usePreferences = !useExistingCharacter &&
+        CCharacterCreation::s_charPreferences[selectedRaceID][selectedSexID];
+
+    if (useExistingCharacter) {
+        data.raceID = existingCharacter->m_info.raceID;
+        data.sexID = existingCharacter->m_info.sexID;
+        data.classID = existingCharacter->m_info.classID;
+        data.skinColorID = existingCharacter->m_info.skinColorID;
+        data.hairStyleID = existingCharacter->m_info.hairStyleID;
+        data.hairColorID = existingCharacter->m_info.hairColorID;
+        data.facialHairStyleID = existingCharacter->m_info.facialHairStyleID;
+        data.faceID = existingCharacter->m_info.faceID;
+
+        CCharacterCreation::CreateComponent(&data, false);
+
+        CCharacterCreation::SetSelectedSex(existingCharacter->m_info.sexID);
+    } else if (usePreferences) {
+        auto preferences = CCharacterCreation::s_charPreferences[selectedRaceID][selectedSexID];
+        data.SetPreferences(preferences);
+
+        CCharacterCreation::CalcClasses(data.raceID);
+
+        if (!CCharacterCreation::IsRaceClassValid(data.raceID, CCharacterCreation::s_selectedClassID)) {
+            CCharacterCreation::s_selectedClassID = CCharacterCreation::GetRandomClassID();
+        }
+
+        data.classID = CCharacterCreation::s_selectedClassID;
+
+        // TODO CCharacterComponent::ValidateComponentData(&data, 0);
+
+        CCharacterCreation::CreateComponent(&data, false);
+    } else {
+        data.raceID = selectedRaceID;
+        data.sexID = selectedSexID;
+
+        CCharacterCreation::CalcClasses(data.raceID);
+
+        if (!CCharacterCreation::IsRaceClassValid(data.raceID, CCharacterCreation::s_selectedClassID)) {
+            CCharacterCreation::SetSelectedClass(CCharacterCreation::GetRandomClassID());
+        }
+
+        data.classID = CCharacterCreation::s_selectedClassID;
+
+        CCharacterCreation::CreateComponent(&data, true);
+    }
+
+    // TODO name gen stuff
+
+    CCharacterCreation::Dress();
+
+    CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
+}
+
+void CCharacterCreation::SetSelectedSex(int32_t sexID) {
+    // TODO
 }

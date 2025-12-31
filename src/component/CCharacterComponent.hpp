@@ -88,6 +88,7 @@ class CCharacterComponent {
         void CreateBaseTexture();
         void* CreateTexture(const ItemDisplayInfoRec* displayRec, int32_t section);
         void GeosRenderPrep();
+        void GetPreferences(CharacterPreferences* preferences);
         CharSectionsRec* GetSectionsRecord(COMPONENT_VARIATIONS sectionIndex, int32_t variationIndex, int32_t colorIndex, bool* found);
         int32_t Init(ComponentData* data, const char* a3);
         int32_t ItemsLoaded(int32_t a2);

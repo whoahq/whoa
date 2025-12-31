@@ -237,7 +237,15 @@ int32_t Script_GetSelectedClass(lua_State* L) {
 }
 
 int32_t Script_SetSelectedRace(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetSelectedRace(index)");
+        return 0;
+    }
+
+    auto raceIndex = lua_tointeger(L, 1);
+    CCharacterCreation::SetSelectedRace(raceIndex - 1);
+
+    return 0;
 }
 
 int32_t Script_SetSelectedSex(lua_State* L) {
