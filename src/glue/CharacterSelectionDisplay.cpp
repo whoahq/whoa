@@ -5,6 +5,17 @@
 #include "object/client/Player_C.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 
+CharacterSelectionDisplay::~CharacterSelectionDisplay() {
+    if (this->m_petModel) {
+        this->m_petModel->Release();
+    }
+
+    if (this->m_component) {
+        CCharacterComponent::FreeComponent(this->m_component);
+        this->m_component = nullptr;
+    }
+}
+
 void CharacterSelectionDisplay::CreateModelData() {
     auto modelData = Player_C_GetModelName(this->m_info.raceID, this->m_info.sexID);
 

@@ -15,6 +15,7 @@ class CharacterSelectionDisplay {
         // TODO
 
         // Member functions
+        ~CharacterSelectionDisplay();
         void CreateModelData();
 };
 
