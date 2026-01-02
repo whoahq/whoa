@@ -286,6 +286,11 @@ HTEXTURE CCharacterComponent::CreateTexture(const char* fileName, CStatus* statu
     return TextureCreate(fileName, texFlags, status, 0);
 }
 
+void CCharacterComponent::FreeComponent(CCharacterComponent* component) {
+    component->~CCharacterComponent();
+    ObjectFree(*s_componentHeap, component->m_memHandle);
+}
+
 GEOCOMPONENTLINKS CCharacterComponent::GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2) {
     switch (sheatheType) {
     case SHEATHE_1:
@@ -821,6 +826,29 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
         break;
     }
     }
+}
+
+CCharacterComponent::~CCharacterComponent() {
+    // TODO destroy base texture
+
+    if (this->m_data.model) {
+        this->m_data.model->Release();
+        this->m_data.model = nullptr;
+    }
+
+    for (auto& texture : this->m_texture) {
+        TextureCacheDestroyTexture(texture);
+        texture = nullptr;
+    }
+
+    for (auto& itemDisplay : this->m_itemDisplays) {
+        for (auto& texture : itemDisplay.texture) {
+            TextureCacheDestroyTexture(texture);
+            texture = nullptr;
+        }
+    }
+
+    // TODO
 }
 
 void CCharacterComponent::AddItem(ITEM_SLOT itemSlot, int32_t displayID, int32_t a4) {

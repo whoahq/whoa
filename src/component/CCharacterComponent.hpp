@@ -54,6 +54,7 @@ class CCharacterComponent {
         static void ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
         static void ComponentOpenFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
         static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
+        static void FreeComponent(CCharacterComponent* component);
         static GEOCOMPONENTLINKS GetSheatheLink(SHEATHE_TYPE sheatheType, bool a2);
         static void Initialize();
         static void Initialize(EGxTexFormat textureFormat, uint32_t textureLevel, int32_t thread, int32_t compress);
@@ -81,6 +82,7 @@ class CCharacterComponent {
         int32_t m_items[NUM_ITEM_SLOT] = {};
 
         // Member functions
+        ~CCharacterComponent();
         void AddItem(ITEM_SLOT itemSlot, int32_t displayID, int32_t a4);
         void AddItem(ITEM_SLOT itemSlot, const ItemDisplayInfoRec* displayRec, int32_t a4);
         void AddItemBySlot(INVENTORY_SLOTS invSlot, int32_t displayID, int32_t a4);
