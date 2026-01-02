@@ -61,7 +61,7 @@ void CCharacterCreation::CreateComponent(ComponentData* data, bool randomize) {
             model->DetachFromParent();
         }
 
-        // TODO CCharacterComponent::FreeComponent(existingComponent);
+        CCharacterComponent::FreeComponent(existingComponent);
     }
 
     CCharacterCreation::s_character = CCharacterComponent::AllocComponent();
