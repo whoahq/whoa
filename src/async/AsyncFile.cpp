@@ -6,6 +6,10 @@
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
 
+void DefaultAsyncObjectCleanupCallback(CAsyncObject* object) {
+    AsyncFileReadDestroyObject(object);
+}
+
 CAsyncObject* AsyncFileReadAllocObject() {
     AsyncFileRead::s_queueLock.Enter();
 
@@ -35,6 +39,33 @@ CAsyncObject* AsyncFileReadAllocObject() {
     object->priority = 126;
 
     return object;
+}
+
+int32_t AsyncFileReadCancel(CAsyncObject* object, void (*cleanupCallback)(CAsyncObject* object)) {
+    AsyncFileRead::s_queueLock.Enter();
+
+    if (object->isCurrent) {
+        object->userArg = object;
+
+        if (!cleanupCallback) {
+            cleanupCallback = &DefaultAsyncObjectCleanupCallback;
+        }
+
+        object->userFailedCallback = reinterpret_cast<ASYNC_CALLBACK>(cleanupCallback);
+        object->userPostloadCallback = reinterpret_cast<ASYNC_CALLBACK>(cleanupCallback);
+
+        AsyncFileRead::s_queueLock.Leave();
+
+        return false;
+    }
+
+    SFile::Close(object->file);
+
+    AsyncFileRead::s_asyncFileReadFreeList.LinkToHead(object);
+
+    AsyncFileRead::s_queueLock.Leave();
+
+    return true;
 }
 
 void AsyncFileReadDestroyObject(CAsyncObject* object) {

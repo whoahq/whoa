@@ -5,6 +5,8 @@
 
 CAsyncObject* AsyncFileReadAllocObject();
 
+int32_t AsyncFileReadCancel(CAsyncObject* object, void (*cleanupCallback)(CAsyncObject* object));
+
 void AsyncFileReadDestroyObject(CAsyncObject* object);
 
 void AsyncFileReadInitialize(uint32_t threadSleep, uint32_t handlerTimeout);

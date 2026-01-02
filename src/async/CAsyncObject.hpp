@@ -6,6 +6,8 @@
 class SFile;
 class CAsyncQueue;
 
+typedef void (*ASYNC_CALLBACK)(void*);
+
 class CAsyncObject {
     public:
         // Member variables
@@ -13,8 +15,8 @@ class CAsyncObject {
         void* buffer;
         uint32_t size;
         void* userArg;
-        void (*userPostloadCallback)(void*);
-        void (*userFailedCallback)(void*);
+        ASYNC_CALLBACK userPostloadCallback;
+        ASYNC_CALLBACK userFailedCallback;
         CAsyncQueue* queue;
         void* ptr1C;
         uint8_t priority;
