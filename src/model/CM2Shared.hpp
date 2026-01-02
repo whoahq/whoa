@@ -21,6 +21,7 @@ class SFile;
 class CM2Shared {
     public:
         // Static functions
+        static void LoadCanceledCallback(CAsyncObject* object);
         static void LoadFailedCallback(void* param);
         static void LoadSucceededCallback(void* param);
         static void SkinProfileLoadedCallback(void* param);
@@ -65,6 +66,7 @@ class CM2Shared {
             , m_flag20(0)
             , m_flag40(0)
             {};
+        ~CM2Shared();
         void AddRef();
         int32_t CallbackWhenLoaded(CM2Model* model);
         CShaderEffect* CreateSimpleEffect(uint32_t textureCount, uint16_t shader, uint16_t textureCoordComboIndex);

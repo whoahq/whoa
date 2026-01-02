@@ -12,6 +12,12 @@
 #include "util/SFile.hpp"
 #include <cstring>
 
+void CM2Shared::LoadCanceledCallback(CAsyncObject* object) {
+    AsyncFileReadDestroyObject(object);
+
+    // TODO free buffer?
+}
+
 void CM2Shared::LoadFailedCallback(void* arg) {
     CM2Shared* shared = static_cast<CM2Shared*>(arg);
 
@@ -50,6 +56,40 @@ void CM2Shared::SkinProfileLoadedCallback(void* arg) {
 
     AsyncFileReadDestroyObject(shared->asyncObject);
     shared->asyncObject = nullptr;
+}
+
+CM2Shared::~CM2Shared() {
+    // TODO this->CancelAllDeferredSequences();
+
+    bool cancelPending = false;
+
+    if (this->asyncObject) {
+        if (!AsyncFileReadCancel(this->asyncObject, &CM2Shared::LoadCanceledCallback)) {
+            cancelPending = true;
+        }
+    }
+
+    // TODO
+
+    if (this->textures) {
+        for (int32_t i = 0; i < this->m_data->textures.Count(); i++) {
+            auto texture = this->textures[i];
+
+            if (texture) {
+                HandleClose(texture);
+            }
+        }
+
+        STORM_FREE(this->textures);
+    }
+
+    // TODO
+
+    if (this->m_skinSections) {
+        STORM_FREE(this->m_skinSections);
+    }
+
+    // TODO
 }
 
 void CM2Shared::AddRef() {
