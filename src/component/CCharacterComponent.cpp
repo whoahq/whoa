@@ -829,7 +829,14 @@ void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, u
 }
 
 CCharacterComponent::~CCharacterComponent() {
-    // TODO destroy base texture
+    // TODO
+
+    if (this->m_baseTexture) {
+        // TODO GxTexSetCannotUpdate
+
+        HandleClose(this->m_baseTexture);
+        this->m_baseTexture = nullptr;
+    }
 
     if (this->m_data.model) {
         this->m_data.model->Release();
