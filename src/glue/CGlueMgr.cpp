@@ -1140,6 +1140,10 @@ void CGlueMgr::Suspend() {
 
     // TODO
 
+    CCharacterSelection::Shutdown();
+
+    // TODO
+
     if (CGlueMgr::m_simpleTop) {
         delete CGlueMgr::m_simpleTop;
         CGlueMgr::m_simpleTop = nullptr;

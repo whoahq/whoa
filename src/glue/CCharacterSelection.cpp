@@ -195,6 +195,14 @@ void CCharacterSelection::ShowCharacter() {
     CGlueLoading::StartLoad(character->m_component, 0);
 }
 
+void CCharacterSelection::Shutdown() {
+    // TODO
+
+    CCharacterSelection::s_characterList.Clear();
+
+    // TODO
+}
+
 void CCharacterSelection::UpdateCharacterList() {
     // TODO
 

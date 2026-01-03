@@ -38,6 +38,7 @@ class CCharacterSelection {
         static void SetBackgroundModel(const char* modelPath);
         static void SetFacing(float facing);
         static void ShowCharacter();
+        static void Shutdown();
         static void UpdateCharacterList();
 };
 
