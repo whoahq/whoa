@@ -10,7 +10,7 @@ enum EVENTID {
     EVENT_ID_0                  = 0,
     EVENT_ID_CHAR               = 1,
     EVENT_ID_FOCUS              = 2,
-    EVENT_ID_3                  = 3,
+    EVENT_ID_CLOSE              = 3,
     EVENT_ID_DESTROY            = 4,
     EVENT_ID_5                  = 5,
     EVENT_ID_IDLE               = 6,
