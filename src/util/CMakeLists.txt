@@ -19,6 +19,8 @@ add_library(util STATIC
 target_include_directories(util
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
+        ${ZLIB_INCLUDE_DIRS}
+        ${BZIP2_INCLUDE_DIRS}
 )
 
 target_link_libraries(util
@@ -27,8 +29,15 @@ target_link_libraries(util
         lua-5.1
         common
         storm
+        stormlib
         tempest
+        ${ZLIB_LIBRARIES}
+        ${BZIP2_LIBRARIES}
 )
+
+if(TARGET stormlib_external)
+    add_dependencies(util stormlib_external)
+endif()
 
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     target_link_libraries(util
