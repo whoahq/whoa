@@ -1065,6 +1065,18 @@ void CGlueMgr::SetScreen(const char* screen) {
     FrameScript_SignalEvent(0, "%s", screen);
 }
 
+void CGlueMgr::Shutdown() {
+    // TODO
+
+    CGlueMgr::Suspend();
+
+    CGlueMgr::m_initialized = 0;
+
+    EventUnregister(EVENT_ID_IDLE, &CGlueMgr::Idle);
+
+    // TODO
+}
+
 void CGlueMgr::StatusDialogClick() {
     if (!SStrCmpI(CGlueMgr::m_currentScreen, "patchdownload", STORM_MAX_STR)) {
         CGlueMgr::SetScreen("login");
