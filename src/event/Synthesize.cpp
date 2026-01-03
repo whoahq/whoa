@@ -5,6 +5,18 @@
 
 void SynthesizeDestroy(EvtContext* context) {
     // TODO
+
+    IEvtQueueDispatch(context, EVENT_ID_CLOSE, nullptr);
+
+    context->m_critsect.Enter();
+    context->m_schedState = EvtContext::SCHEDSTATE_DESTROYED;
+    context->m_critsect.Leave();
+
+    IEvtQueueDispatchAll(context);
+
+    IEvtQueueDispatch(context, EVENT_ID_DESTROY, nullptr);
+
+    // TODO
     exit(0);
 }
 
