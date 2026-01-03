@@ -20,6 +20,8 @@ void CommonMain();
 
 void StormInitialize();
 
+void WowClientDestroy();
+
 void WowClientInit();
 
 #endif

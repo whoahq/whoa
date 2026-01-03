@@ -175,6 +175,10 @@ void ClientPostClose(int32_t a1) {
 int32_t DestroyEngineCallback(const void* a1, void* a2) {
     // TODO
 
+    WowClientDestroy();
+
+    // TODO
+
     return 1;
 }
 
@@ -493,6 +497,14 @@ void StormInitialize() {
     // SFile::Initialize();
 
     Blizzard::Debug::SetAssertHandler(BlizzardAssertCallback);
+}
+
+void WowClientDestroy() {
+    // TODO
+
+    CGlueMgr::Shutdown();
+
+    // TODO
 }
 
 void WowClientInit() {
