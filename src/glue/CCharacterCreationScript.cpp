@@ -242,8 +242,9 @@ int32_t Script_SetSelectedRace(lua_State* L) {
         return 0;
     }
 
-    auto raceIndex = lua_tointeger(L, 1);
-    CCharacterCreation::SetSelectedRace(raceIndex - 1);
+    auto raceIndex = lua_tonumber(L, 1) - 1;
+
+    CCharacterCreation::SetSelectedRace(raceIndex);
 
     return 0;
 }
