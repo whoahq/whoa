@@ -114,6 +114,10 @@ void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
     data->sexID = UNITSEX_MALE;
 }
 
+int32_t CCharacterCreation::GetSelectedRaceID() {
+    return CCharacterCreation::s_races[CCharacterCreation::s_raceIndex];
+}
+
 void CCharacterCreation::Initialize() {
     CCharacterCreation::s_charFacing = 0.0f;
     CCharacterCreation::s_charCustomizeFrame = nullptr;
@@ -382,5 +386,64 @@ void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
 }
 
 void CCharacterCreation::SetSelectedSex(int32_t sexID) {
-    // TODO
+    if (sexID >= UNITSEX_LAST) {
+        return;
+    }
+
+    auto currentRaceID = CCharacterCreation::s_character->m_data.raceID;
+    auto currentSexID = CCharacterCreation::s_character->m_data.sexID;
+    auto currentClassID = CCharacterCreation::s_selectedClassID;
+
+    if (sexID == currentSexID) {
+        return;
+    }
+
+    CCharacterCreation::SavePreferences();
+
+    ComponentData data = {};
+    data.raceID = currentRaceID;
+    data.sexID = sexID;
+    data.classID = currentClassID;
+
+    auto existingCharacter = CCharacterCreation::s_existingCharacterIndex >= 0
+        ? CCharacterSelection::GetCharacterDisplay(CCharacterCreation::s_existingCharacterIndex)
+        : nullptr;
+
+    auto preferences = CCharacterCreation::s_charPreferences[CCharacterCreation::GetSelectedRaceID()][sexID];
+
+    bool useExistingCharacter = existingCharacter
+        && existingCharacter->m_info.sexID == sexID
+        && existingCharacter->m_info.customizeFlags & 0x1;
+
+    bool usePreferences = !useExistingCharacter && preferences;
+
+    if (useExistingCharacter) {
+        data.raceID = existingCharacter->m_info.raceID;
+        data.sexID = existingCharacter->m_info.sexID;
+        data.classID = existingCharacter->m_info.classID;
+        data.skinColorID = existingCharacter->m_info.skinColorID;
+        data.hairStyleID = existingCharacter->m_info.hairStyleID;
+        data.hairColorID = existingCharacter->m_info.hairColorID;
+        data.facialHairStyleID = existingCharacter->m_info.facialHairStyleID;
+        data.faceID = existingCharacter->m_info.faceID;
+
+        CCharacterCreation::CreateComponent(&data, false);
+    } else if (usePreferences) {
+        data.SetPreferences(preferences);
+        data.classID = currentClassID;
+
+        // TODO CCharacterComponent::ValidateComponentData(&data, 0);
+
+        CCharacterCreation::CreateComponent(&data, false);
+    } else {
+        data.raceID = currentRaceID;
+        data.sexID = sexID;
+        data.classID = currentClassID;
+
+        CCharacterCreation::CreateComponent(&data, true);
+    }
+
+    // TODO name gen stuff
+
+    CGlueLoading::StartLoad(CCharacterCreation::s_character, true);
 }

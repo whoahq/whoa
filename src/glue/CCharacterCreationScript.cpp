@@ -249,7 +249,20 @@ int32_t Script_SetSelectedRace(lua_State* L) {
 }
 
 int32_t Script_SetSelectedSex(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetSelectedSex(index)");
+        return 0;
+    }
+
+    auto sexIndex = lua_tointeger(L, 1);
+
+    for (int32_t sexID = 0; sexID < UNITSEX_LAST; sexID++) {
+        if (sexIndex == g_glueFrameScriptGenders[sexID]) {
+            CCharacterCreation::SetSelectedSex(sexID);
+        }
+    }
+
+    return 0;
 }
 
 int32_t Script_SetSelectedClass(lua_State* L) {

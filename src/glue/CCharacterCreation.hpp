@@ -30,6 +30,7 @@ class CCharacterCreation {
         static void Dress();
         static int32_t GetRandomClassID();
         static void GetRandomRaceAndSex(ComponentData* data);
+        static int32_t GetSelectedRaceID();
         static void Initialize();
         static bool IsClassValid(int32_t classID);
         static bool IsRaceClassValid(int32_t raceID, int32_t classID);
