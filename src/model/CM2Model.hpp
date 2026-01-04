@@ -165,6 +165,7 @@ class CM2Model {
         void DetachFromParent();
         void DetachFromScene();
         void FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint32_t& currentKey, uint32_t& nextKey, float& ratio);
+        void FreeExternalResources();
         void FreeInternalResources();
         C44Matrix GetAttachmentWorldTransform(uint32_t id);
         CAaBox& GetBoundingBox(CAaBox& bounds);

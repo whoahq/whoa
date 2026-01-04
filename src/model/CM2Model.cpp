@@ -95,8 +95,7 @@ CM2Model::~CM2Model() {
     this->DetachFromScene();
 
     if (this->m_shared) {
-        // TODO
-
+        this->FreeExternalResources();
         this->FreeInternalResources();
 
         this->m_shared->Release();
@@ -1021,6 +1020,26 @@ void CM2Model::FindKey(M2ModelBoneSeq* sequence, const M2TrackBase& track, uint3
 
         ratio = static_cast<float>(sequenceTime - currentKeyTime) / static_cast<float>(nextKeyTime - currentKeyTime);
     }
+}
+
+void CM2Model::FreeExternalResources() {
+    if (!this->m_loaded) {
+        return;
+    }
+
+    // TODO
+
+    if (this->m_textures) {
+        for (int32_t i = 0; i < this->m_shared->m_data->textures.Count(); i++) {
+            auto texture = this->m_textures[i];
+
+            if (texture) {
+                HandleClose(texture);
+            }
+        }
+    }
+
+    // TODO
 }
 
 void CM2Model::FreeInternalResources() {
