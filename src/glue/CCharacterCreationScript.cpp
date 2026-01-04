@@ -266,7 +266,18 @@ int32_t Script_SetSelectedSex(lua_State* L) {
 }
 
 int32_t Script_SetSelectedClass(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isnumber(L, 1)) {
+        luaL_error(L, "Usage: SetSelectedClass(index)");
+        return 0;
+    }
+
+    int32_t classIndex = lua_tonumber(L, 1) - 1;
+
+    auto classRec = g_chrClassesDB.GetRecordByIndex(classIndex);
+
+    CCharacterCreation::SetSelectedClass(classRec ? classRec->GetID() : 0);
+
+    return 0;
 }
 
 int32_t Script_UpdateCustomizationBackground(lua_State* L) {
