@@ -119,6 +119,8 @@ void CCharacterCreation::Initialize() {
     CCharacterCreation::s_charCustomizeFrame = nullptr;
     CCharacterCreation::s_existingCharacterIndex = -1;
 
+    memset(CCharacterCreation::s_charPreferences, 0, sizeof(CCharacterCreation::s_charPreferences));
+
     CCharacterCreation::s_races.SetCount(0);
 
     // TODO enum or define for faction sides
