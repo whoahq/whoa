@@ -315,8 +315,8 @@ void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
         return;
     }
 
-    auto selectedRaceID = CCharacterCreation::s_races[raceIndex];
-    auto selectedSexID = CCharacterCreation::s_character->m_data.sexID;
+    auto raceID = CCharacterCreation::s_races[raceIndex];
+    auto currentSexID = CCharacterCreation::s_character->m_data.sexID;
 
     CCharacterCreation::SavePreferences();
 
@@ -328,12 +328,13 @@ void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
         ? CCharacterSelection::GetCharacterDisplay(CCharacterCreation::s_existingCharacterIndex)
         : nullptr;
 
+    auto preferences = CCharacterCreation::s_charPreferences[raceID][currentSexID];
+
     bool useExistingCharacter = existingCharacter
-        && existingCharacter->m_info.raceID == selectedRaceID
+        && existingCharacter->m_info.raceID == raceID
         && existingCharacter->m_info.customizeFlags & 0x110000;
 
-    bool usePreferences = !useExistingCharacter &&
-        CCharacterCreation::s_charPreferences[selectedRaceID][selectedSexID];
+    bool usePreferences = !useExistingCharacter && preferences;
 
     if (useExistingCharacter) {
         data.raceID = existingCharacter->m_info.raceID;
@@ -349,7 +350,6 @@ void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
 
         CCharacterCreation::SetSelectedSex(existingCharacter->m_info.sexID);
     } else if (usePreferences) {
-        auto preferences = CCharacterCreation::s_charPreferences[selectedRaceID][selectedSexID];
         data.SetPreferences(preferences);
 
         CCharacterCreation::CalcClasses(data.raceID);
@@ -364,8 +364,8 @@ void CCharacterCreation::SetSelectedRace(int32_t raceIndex) {
 
         CCharacterCreation::CreateComponent(&data, false);
     } else {
-        data.raceID = selectedRaceID;
-        data.sexID = selectedSexID;
+        data.raceID = raceID;
+        data.sexID = currentSexID;
 
         CCharacterCreation::CalcClasses(data.raceID);
 
