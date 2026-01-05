@@ -108,8 +108,28 @@ void CCharacterCreation::Dress() {
 }
 
 int32_t CCharacterCreation::GetRandomClassID() {
-    // TODO
-    return 1;
+    int32_t classIDs[10] = { 0 };
+    int32_t c = 0;
+
+    if (!CCharacterCreation::s_classes.Count()) {
+        return 0;
+    }
+
+    for (int32_t i = 0; i < CCharacterCreation::s_classes.Count(); i++) {
+        auto classRec = CCharacterCreation::s_classes[i];
+
+        if (classRec->m_requiredExpansion <= ClientServices::Connection()->m_accountExpansion) {
+            classIDs[c++] = classRec->m_ID;
+        }
+    }
+
+    if (!c) {
+        return 0;
+    }
+
+    auto classIndex = CRandom::dice(c, g_rndSeed);
+
+    return classIDs[classIndex];
 }
 
 void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
