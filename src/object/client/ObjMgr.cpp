@@ -1,4 +1,4 @@
-#include "client/ObjMgr.hpp"
+#include "object/client/ObjMgr.hpp"
 
 uint32_t ClntObjMgrGetMapID() {
     // TODO

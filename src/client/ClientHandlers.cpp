@@ -1,7 +1,7 @@
 #include "client/ClientHandlers.hpp"
-#include "client/ObjMgr.hpp"
 #include "console/Console.hpp"
 #include "db/Db.hpp"
+#include "object/Client.hpp"
 #include "world/World.hpp"
 #include <common/DataStore.hpp>
 #include <tempest/Vector.hpp>
