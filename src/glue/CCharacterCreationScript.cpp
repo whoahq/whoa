@@ -195,7 +195,17 @@ int32_t Script_GetHairCustomization(lua_State* L) {
 }
 
 int32_t Script_GetFacialHairCustomization(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto raceIndex = CCharacterCreation::s_raceIndex;
+    auto raceID = raceIndex >= CCharacterCreation::s_races.Count() ? 0 : CCharacterCreation::s_races[raceIndex];
+    auto raceRec = g_chrRacesDB.GetRecord(raceID);
+
+    if (raceRec) {
+        lua_pushstring(L, raceRec->m_facialHairCustomization[CCharacterCreation::s_character->m_data.sexID]);
+    } else {
+        lua_pushstring(L, "NORMAL");
+    }
+
+    return 1;
 }
 
 int32_t Script_GetSelectedRace(lua_State* L) {
