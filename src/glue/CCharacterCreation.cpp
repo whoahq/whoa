@@ -1,12 +1,16 @@
 #include "glue/CCharacterCreation.hpp"
 #include "glue/CCharacterSelection.hpp"
+#include "client/ClientServices.hpp"
 #include "component/CCharacterComponent.hpp"
 #include "component/Types.hpp"
 #include "db/Db.hpp"
 #include "glue/CGlueLoading.hpp"
 #include "model/CM2Shared.hpp"
+#include "net/Connection.hpp"
 #include "object/client/Player_C.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
+#include "util/Random.hpp"
+#include <tempest/Random.hpp>
 
 CCharacterComponent* CCharacterCreation::s_character;
 CSimpleModelFFX* CCharacterCreation::s_charCustomizeFrame;
@@ -109,9 +113,18 @@ int32_t CCharacterCreation::GetRandomClassID() {
 }
 
 void CCharacterCreation::GetRandomRaceAndSex(ComponentData* data) {
-    // TODO
-    data->raceID = 1;
-    data->sexID = UNITSEX_MALE;
+    data->sexID = CRandom::dice(2, g_rndSeed);
+
+    ChrRacesRec* raceRec;
+
+    do {
+        auto raceIndex = CRandom::dice(CCharacterCreation::s_races.Count(), g_rndSeed);
+        auto raceID = CCharacterCreation::s_races[raceIndex];
+
+        data->raceID = raceID;
+
+        raceRec = g_chrRacesDB.GetRecord(raceID);
+    } while (raceRec->m_requiredExpansion > ClientServices::Connection()->m_accountExpansion);
 }
 
 int32_t CCharacterCreation::GetSelectedRaceID() {
