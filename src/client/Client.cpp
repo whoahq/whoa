@@ -17,9 +17,11 @@
 #include "sound/Interface.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
+#include "util/Random.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
+#include <common/Time.hpp>
 #include <storm/Error.hpp>
 
 CVar* Client::g_accountNameVar;
@@ -449,8 +451,8 @@ int32_t InitializeGlobal() {
 
     // OsIMEInitialize();
 
-    // uint32_t v13 = OsGetAsyncTimeMs();
-    // g_rndSeed.SetSeed(v13);
+    uint32_t seed = OsGetAsyncTimeMs();
+    g_rndSeed.SetSeed(seed);
 
     Client::g_clientEventContext = EventCreateContextEx(
         1,
