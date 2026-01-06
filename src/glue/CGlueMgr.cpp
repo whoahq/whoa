@@ -404,6 +404,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
         break;
     }
 
+    case IDLE_DELETE_CHARACTER: {
+        CGlueMgr::PollDeleteCharacter(msg, complete, result);
+        break;
+    }
+
     case IDLE_ENTER_WORLD: {
         CGlueMgr::PollEnterWorld();
         break;
@@ -767,6 +772,34 @@ void CGlueMgr::PollCharacterList(const char* msg, int32_t complete, int32_t resu
         FrameScript_SignalEvent(34, nullptr);
         CGlueMgr::m_accountMsgAvailable = 0;
     }
+}
+
+void CGlueMgr::PollDeleteCharacter(const char* msg, int32_t complete, int32_t result) {
+    FrameScript_SignalEvent(UPDATE_STATUS_DIALOG, "%s", msg);
+
+    if (CGlueMgr::HandleBattlenetDisconnect()) {
+        CGlueMgr::SetIdleState(IDLE_NONE);
+    }
+
+    if (!complete) {
+        return;
+    }
+
+    // Error
+
+    if (result == 0) {
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
+
+        CGlueMgr::SetIdleState(IDLE_NONE);
+
+        return;
+    }
+
+    // Success
+
+    FrameScript_SignalEvent(SELECT_FIRST_CHARACTER, nullptr);
+
+    CGlueMgr::GetCharacterList();
 }
 
 void CGlueMgr::PollEnterWorld() {
