@@ -42,4 +42,6 @@ int32_t ComponentValidateBase(st_race* varArray, int32_t raceId, int32_t sexId, 
 
 int32_t CountFacialFeatures(uint32_t varArrayLength, uint32_t** featuresListPtr);
 
+COMPONENT_SELECTION GetSelectionFromContext(COMPONENT_CONTEXT context, int32_t classID);
+
 #endif

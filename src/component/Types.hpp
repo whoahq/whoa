@@ -11,6 +11,14 @@ enum COMP_HAND_SLOT {
     HAND_LEFT               = 1,
 };
 
+enum COMPONENT_CONTEXT {
+    CONTEXT_CHAR_CREATE     = 0,
+    CONTEXT_1               = 1,
+    CONTEXT_2               = 2,
+    CONTEXT_3               = 3,
+    NUM_COMPONENT_CONTEXT
+};
+
 enum COMPONENT_GEOSET {
     GEOSET_HEAD             = 0,
     GEOSET_BEARD            = 1,
@@ -46,6 +54,17 @@ enum COMPONENT_SECTIONS {
     SECTION_HEAD_UPPER      = 8,
     SECTION_HEAD_LOWER      = 9,
     NUM_COMPONENT_SECTIONS
+};
+
+enum COMPONENT_SELECTION {
+    SELECTION_0             = 0,
+    SELECTION_1             = 1,
+    SELECTION_2             = 2,
+    SELECTION_3             = 3,
+    SELECTION_4             = 4,
+    SELECTION_5             = 5,
+    SELECTION_6             = 6,
+    NUM_COMPONENT_SELECTION
 };
 
 enum COMPONENT_VARIATIONS {

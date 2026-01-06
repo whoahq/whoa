@@ -231,3 +231,19 @@ int32_t CountFacialFeatures(uint32_t varArrayLength, uint32_t** featuresListPtr)
 
     return 1;
 }
+
+COMPONENT_SELECTION GetSelectionFromContext(COMPONENT_CONTEXT context, int32_t classID) {
+    switch (context) {
+        case CONTEXT_1:
+            return classID == 6 ? SELECTION_3 : SELECTION_2;
+
+        case CONTEXT_2:
+            return SELECTION_4;
+
+        case CONTEXT_3:
+            return classID == 6 ? SELECTION_6 : SELECTION_5;
+
+        default:
+            return classID == 6 ? SELECTION_1 : SELECTION_0;
+    }
+}
