@@ -104,6 +104,10 @@ void ClientConnection::GetRealmList() {
     }
 }
 
+void ClientConnection::HandleCharacterDelete(uint8_t result) {
+    this->Complete(result == 71, result);
+}
+
 int32_t ClientConnection::HandleConnect() {
     this->Complete(1, 5);
 
