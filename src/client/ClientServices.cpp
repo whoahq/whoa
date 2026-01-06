@@ -232,13 +232,8 @@ const REALM_INFO* ClientServices::GetSelectedRealm() {
 
 void ClientServices::Initialize() {
     if (!g_clientConnection) {
-        auto adapterMem = SMemAlloc(sizeof(ClientRealmResponseAdapter), __FILE__, __LINE__, 0x0);
-        auto clientRealmResponse = new (adapterMem) ClientRealmResponseAdapter();
-        ClientServices::s_clientRealmResponse = clientRealmResponse;
-
-        auto connectionMem = SMemAlloc(sizeof(ClientConnection), __FILE__, __LINE__, 0x0);
-        auto clientConnection = new (connectionMem) ClientConnection(ClientServices::s_clientRealmResponse);
-        g_clientConnection = clientConnection;
+        ClientServices::s_clientRealmResponse = STORM_NEW(ClientRealmResponseAdapter);
+        g_clientConnection = STORM_NEW(ClientConnection)(ClientServices::s_clientRealmResponse);
     }
 
     ClientServices::s_currentConnection = g_clientConnection;

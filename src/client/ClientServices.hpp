@@ -9,6 +9,8 @@ class CVar;
 class Login;
 class RealmResponse;
 
+extern ClientConnection* g_clientConnection;
+
 class ClientServices : public LoginResponse {
     public:
         // Static variables
