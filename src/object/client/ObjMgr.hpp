@@ -6,8 +6,12 @@
 
 uint32_t ClntObjMgrGetMapID();
 
+void ClntObjMgrInitializeStd(uint32_t mapID);
+
 void ClntObjMgrPop();
 
 void ClntObjMgrPush(ClntObjMgr* mgr);
+
+void ClntObjMgrSetHandlers();
 
 #endif

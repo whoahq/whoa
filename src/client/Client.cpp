@@ -14,6 +14,7 @@
 #include "gx/Texture.hpp"
 #include "model/Model2.hpp"
 #include "net/Poll.hpp"
+#include "object/Client.hpp"
 #include "sound/Interface.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
@@ -77,6 +78,10 @@ int32_t ClientIdle(const void* data, void* param) {
 }
 
 void ClientInitializeGame(uint32_t mapId, C3Vector position) {
+    // TODO
+
+    ClntObjMgrInitializeStd(mapId);
+
     // TODO
 
     EventRegister(EVENT_ID_IDLE, ClientIdle);
