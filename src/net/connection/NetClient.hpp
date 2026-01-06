@@ -10,6 +10,7 @@
 #include <cstdint>
 
 class CDataStore;
+class ClntObjMgr;
 class NetClient;
 class WowConnection;
 
@@ -80,6 +81,7 @@ class NetClient : public WowConnectionResponse {
         void SetDelete();
         void SetLoginData(LoginData* loginData);
         void SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, void* param);
+        void SetObjMgr(ClntObjMgr* objMgr);
 
     private:
         // Static variables
@@ -105,6 +107,7 @@ class NetClient : public WowConnectionResponse {
         uint32_t m_bytesReceived = 0;
         uint32_t m_connectedTimestamp = 0;
         SCritSect m_pingLock;
+        ClntObjMgr* m_objMgr = nullptr;
 };
 
 #endif

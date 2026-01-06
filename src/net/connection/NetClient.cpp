@@ -381,6 +381,10 @@ void NetClient::SetMessageHandler(NETMESSAGE msgId, MESSAGE_HANDLER handler, voi
     this->m_handlerParams[msgId] = param;
 }
 
+void NetClient::SetObjMgr(ClntObjMgr* objMgr) {
+    this->m_objMgr = objMgr;
+}
+
 void NetClient::WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr) {
     if (conn == this->m_redirectConnection) {
         // TODO
