@@ -1,6 +1,7 @@
 #include "net/connection/ClientConnection.hpp"
-#include "net/Login.hpp"
 #include "client/ClientServices.hpp"
+#include "common/datastore/CDataStore.hpp"
+#include "net/Login.hpp"
 #include "ui/FrameScript.hpp"
 
 void ClientConnection::AccountLogin(const char* name, const char* password, int32_t region, WOW_LOCALE locale) {
@@ -155,4 +156,20 @@ int32_t ClientConnection::PollStatus(WOWCS_OPS& op, const char** msg, int32_t& r
     *msg = "";
 
     return this->m_statusComplete;
+}
+
+void ClientConnection::RequestCharacterDelete(uint64_t guid) {
+    this->Initiate(COP_DELETE_CHARACTER, 70, nullptr);
+
+    if (this->IsConnected()) {
+        CDataStore netMsg;
+        netMsg.Put(static_cast<uint32_t>(CMSG_CHAR_DELETE));
+        netMsg.Put(guid);
+        netMsg.Finalize();
+
+        this->Send(&netMsg);
+    }
+    else {
+        this->Cancel(4);
+    }
 }

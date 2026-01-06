@@ -140,6 +140,17 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
     ClientServices::Connection()->Connect();
 }
 
+void CGlueMgr::DeleteCharacter(uint64_t guid) {
+    if (guid) {
+        CGlueMgr::SetIdleState(IDLE_DELETE_CHARACTER);
+
+        auto text = FrameScript_GetText(ClientServices::GetErrorToken(70), -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "CANCEL", text);
+
+        ClientServices::CharacterDelete(guid);
+    }
+}
+
 void CGlueMgr::EnterWorld() {
     if (!ClientServices::GetSelectedRealm()) {
         return;
@@ -1106,7 +1117,7 @@ void CGlueMgr::StatusDialogClick() {
 
         case IDLE_REALM_LIST:
         case IDLE_5:
-        case IDLE_6:
+        case IDLE_DELETE_CHARACTER:
         case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
             CGlueMgr::SetIdleState(IDLE_NONE);
