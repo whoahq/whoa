@@ -16,6 +16,15 @@ uint32_t ClntObjMgrGetMapID() {
     return s_curMgr->m_mapID;
 }
 
+void ClntObjMgrPop() {
+    if (!s_savMgr) {
+        return;
+    }
+
+    s_curMgr = s_savMgr;
+    s_savMgr = nullptr;
+}
+
 void ClntObjMgrPush(ClntObjMgr* mgr) {
     if (s_savMgr || mgr == s_curMgr) {
         return;

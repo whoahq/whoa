@@ -6,6 +6,8 @@
 
 uint32_t ClntObjMgrGetMapID();
 
+void ClntObjMgrPop();
+
 void ClntObjMgrPush(ClntObjMgr* mgr);
 
 #endif
