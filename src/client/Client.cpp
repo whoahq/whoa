@@ -94,8 +94,12 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
     ClientServices::SetMessageHandler(SMSG_TRANSFER_PENDING, TransferPendingHandler, nullptr);
     ClientServices::SetMessageHandler(SMSG_TRANSFER_ABORTED, TransferAbortedHandler, nullptr);
     ClientServices::SetMessageHandler(SMSG_LOGIN_VERIFY_WORLD, LoginVerifyWorldHandler, nullptr);
-
     ClientServices::SetMessageHandler(SMSG_KICK_REASON, CGlueMgr::OnKickReasonMsg, nullptr);
+
+    // TODO
+
+    auto mapRec = g_mapDB.GetRecord(mapId);
+    CWorld::LoadMap(mapRec->m_directory, position, mapId);
 
     // TODO
 }
