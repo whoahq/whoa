@@ -86,6 +86,12 @@ int32_t CGlueMgr::m_showedDisconnect;
 CSimpleTop* CGlueMgr::m_simpleTop;
 int32_t CGlueMgr::m_suspended;
 
+#if defined(WHOA_SYSTEM_WIN)
+static thread_local uint64_t s_loginGUID;
+#else
+static uint64_t s_loginGUID;
+#endif
+
 struct URLERROR {
     int32_t error;
     char url[32];
@@ -779,8 +785,7 @@ void CGlueMgr::PollEnterWorld() {
 
         SI2::StopGlueMusic(3.0f);
 
-        // TODO TLS shenanigans with guid
-        ClientServices::Connection()->CharacterLogin(CGlueMgr::m_characterInfo->m_info.guid, 0);
+        ClientServices::Connection()->CharacterLogin(s_loginGUID, 0);
 
         return;
     }
@@ -788,7 +793,8 @@ void CGlueMgr::PollEnterWorld() {
     uint32_t mapId = CGlueMgr::m_characterInfo->m_info.mapID;
     C3Vector position = CGlueMgr::m_characterInfo->m_info.position;
 
-    // TODO TLS shenanigans with guid
+    s_loginGUID = CGlueMgr::m_characterInfo->m_info.guid;
+
     // TODO first login logic (play intro M2?)
 
     CGlueMgr::Suspend();
