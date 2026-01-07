@@ -50,7 +50,7 @@ class NETEVENTQUEUE {
 
 class NetClient : public WowConnectionResponse {
     public:
-        // Virtual member functions
+        // Public virtual member functions
         virtual void WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg);
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr);
         virtual void WCCantConnect(WowConnection* conn, uint32_t timeStamp, NETCONNADDR* addr);
@@ -61,7 +61,7 @@ class NetClient : public WowConnectionResponse {
         virtual int32_t HandleDisconnect();
         virtual int32_t HandleCantConnect();
 
-        // Member functions
+        // Public member functions
         void AddRef();
         void AuthChallengeHandler(WowConnection* conn, CDataStore* msg);
         void Connect(const char* addrStr);
@@ -84,10 +84,10 @@ class NetClient : public WowConnectionResponse {
         void SetObjMgr(ClntObjMgr* objMgr);
 
     private:
-        // Static variables
+        // Private static variables
         static int32_t s_clientCount;
 
-        // Member variables
+        // Private member variables
         LoginData m_loginData;
         NETSTATE m_netState = NS_UNINITIALIZED;
         bool m_suspended = false;
@@ -108,6 +108,10 @@ class NetClient : public WowConnectionResponse {
         uint32_t m_connectedTimestamp = 0;
         SCritSect m_pingLock;
         ClntObjMgr* m_objMgr = nullptr;
+
+        // Private member functions
+        void PopObjMgr();
+        void PushObjMgr();
 };
 
 #endif

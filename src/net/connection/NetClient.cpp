@@ -1,14 +1,15 @@
 #include "net/connection/NetClient.hpp"
-#include "net/connection/WowConnection.hpp"
 #include "glue/CGlueMgr.hpp"
-#include <cstdlib>
-#include <cstring>
-#include <new>
+#include "net/connection/WowConnection.hpp"
+#include "object/Client.hpp"
 #include <common/DataStore.hpp>
 #include <common/Prop.hpp>
 #include <common/Time.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
+#include <cstdlib>
+#include <cstring>
+#include <new>
 
 HPROPCONTEXT s_propContext;
 
@@ -245,29 +246,29 @@ int32_t NetClient::HandleCantConnect() {
 }
 
 int32_t NetClient::HandleConnect() {
-    // TODO push obj mgr
+    this->PushObjMgr();
 
     this->m_netState = NS_CONNECTED;
 
-    // TODO pop obj mgr
+    this->PopObjMgr();
 
     return 1;
 }
 
 int32_t NetClient::HandleData(uint32_t timeReceived, void* data, int32_t size) {
-    // TODO push obj mgr
+    this->PushObjMgr();
 
     CDataStore msg = CDataStore(static_cast<uint8_t*>(data), size);
 
     this->ProcessMessage(timeReceived, &msg, 0);
 
-    // TODO pop obj mgr
+    this->PopObjMgr();
 
     return 1;
 }
 
 int32_t NetClient::HandleDisconnect() {
-    // TODO push obj mgr
+    this->PushObjMgr();
 
     this->m_netState = NS_INITIALIZED;
 
@@ -275,7 +276,7 @@ int32_t NetClient::HandleDisconnect() {
 
     CGlueMgr::NetDisconnectHandler(this, nullptr);
 
-    // TODO pop obj mgr
+    this->PopObjMgr();
 
     return 1;
 }
@@ -321,6 +322,10 @@ void NetClient::PongHandler(WowConnection* conn, CDataStore* msg) {
     // TODO
 }
 
+void NetClient::PopObjMgr() {
+    ClntObjMgrPop();
+}
+
 void NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_t a4) {
     // TODO s_stats.messagesReceived++
 
@@ -340,6 +345,12 @@ void NetClient::ProcessMessage(uint32_t timeReceived, CDataStore* msg, int32_t a
         timeReceived,
         msg
     );
+}
+
+void NetClient::PushObjMgr() {
+    if (this->m_objMgr) {
+        ClntObjMgrPush(this->m_objMgr);
+    }
 }
 
 void NetClient::Send(CDataStore* msg) {
