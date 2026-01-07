@@ -4,6 +4,8 @@
 #include "object/client/ClntObjMgr.hpp"
 #include <cstdint>
 
+ClntObjMgr* ClntObjMgrGetCurrent();
+
 uint32_t ClntObjMgrGetMapID();
 
 void ClntObjMgrInitializeStd(uint32_t mapID);

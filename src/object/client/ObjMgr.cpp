@@ -11,6 +11,10 @@ static ClntObjMgr* s_curMgr;
 
 static ClntObjMgr* s_savMgr;
 
+ClntObjMgr* ClntObjMgrGetCurrent() {
+    return s_curMgr;
+}
+
 uint32_t ClntObjMgrGetMapID() {
     if (!s_curMgr) {
         return 0;
