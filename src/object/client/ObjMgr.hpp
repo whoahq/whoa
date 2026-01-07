@@ -4,6 +4,8 @@
 #include "object/client/ClntObjMgr.hpp"
 #include <cstdint>
 
+uint64_t ClntObjMgrGetActivePlayer();
+
 ClntObjMgr* ClntObjMgrGetCurrent();
 
 uint32_t ClntObjMgrGetMapID();

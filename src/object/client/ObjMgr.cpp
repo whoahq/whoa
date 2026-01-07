@@ -11,6 +11,14 @@ static ClntObjMgr* s_curMgr;
 
 static ClntObjMgr* s_savMgr;
 
+uint64_t ClntObjMgrGetActivePlayer() {
+    if (!s_curMgr) {
+        return 0;
+    }
+
+    return s_curMgr->m_activePlayer;
+}
+
 ClntObjMgr* ClntObjMgrGetCurrent() {
     return s_curMgr;
 }
