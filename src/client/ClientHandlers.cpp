@@ -15,6 +15,10 @@ static const char* s_newMapname;
 void LoadNewWorld(const void* eventData, void* param) {
     // TODO
 
+    ClntObjMgrInitializeStd(s_newZoneID);
+
+    // TODO
+
     CWorld::LoadMap(s_newMapname, s_newPosition, s_newZoneID);
 
     // TODO
