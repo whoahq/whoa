@@ -10,6 +10,7 @@
 #include "object/client/CGObject_C.hpp"
 #include "object/client/CGPlayer_C.hpp"
 #include "object/client/CGUnit_C.hpp"
+#include "object/client/MessageHandlers.hpp"
 #include "util/Unimplemented.hpp"
 #include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
@@ -133,5 +134,7 @@ void ClntObjMgrPush(ClntObjMgr* mgr) {
 }
 
 void ClntObjMgrSetHandlers() {
-    // TODO
+    s_curMgr->m_net->SetMessageHandler(SMSG_UPDATE_OBJECT, &ObjectUpdateHandler, nullptr);
+    s_curMgr->m_net->SetMessageHandler(SMSG_COMPRESSED_UPDATE_OBJECT, &ObjectCompressedUpdateHandler, nullptr);
+    s_curMgr->m_net->SetMessageHandler(SMSG_DESTROY_OBJECT, &OnObjectDestroy, nullptr);
 }
