@@ -1,5 +1,6 @@
 add_subdirectory(freetype-2.0.9)
 add_subdirectory(lua-5.1.3)
+add_subdirectory(zlib-1.2.2)
 
 # FMOD
 
