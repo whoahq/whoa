@@ -4,7 +4,7 @@
 #include "db/Db.hpp"
 #include "glue/CCharacterCreation.hpp"
 #include "net/Connection.hpp"
-#include "object/client/Unit_C.hpp"
+#include "object/client/CGUnit_C.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
 #include "ui/game/CGLookingForGroup.hpp"

@@ -1,7 +1,7 @@
 #include "glue/CCharacterSelectionScript.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
-#include "object/client/Unit_C.hpp"
+#include "object/client/CGUnit_C.hpp"
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Lua.hpp"

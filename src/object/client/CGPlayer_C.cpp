@@ -1,4 +1,4 @@
-#include "object/client/Player_C.hpp"
+#include "object/client/CGPlayer_C.hpp"
 #include "db/Db.hpp"
 #include "object/Types.hpp"
 #include <storm/Error.hpp>

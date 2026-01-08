@@ -2,7 +2,7 @@
 #include "component/CCharacterComponent.hpp"
 #include "db/Db.hpp"
 #include "glue/CCharacterSelection.hpp"
-#include "object/client/Player_C.hpp"
+#include "object/client/CGPlayer_C.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 
 CharacterSelectionDisplay::~CharacterSelectionDisplay() {

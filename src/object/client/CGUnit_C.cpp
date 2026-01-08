@@ -1,4 +1,4 @@
-#include "object/client/Unit_C.hpp"
+#include "object/client/CGUnit_C.hpp"
 #include "db/Db.hpp"
 
 const char* CGUnit_C::GetDisplayClassNameFromRecord(const ChrClassesRec* classRec, UNIT_SEX sex, UNIT_SEX* displaySex) {

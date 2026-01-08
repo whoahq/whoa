@@ -7,7 +7,7 @@
 #include "glue/CGlueLoading.hpp"
 #include "model/CM2Shared.hpp"
 #include "net/Connection.hpp"
-#include "object/client/Player_C.hpp"
+#include "object/client/CGPlayer_C.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "util/Random.hpp"
 #include <tempest/Random.hpp>
