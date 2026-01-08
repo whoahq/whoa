@@ -80,6 +80,7 @@ int32_t ClientIdle(const void* data, void* param) {
 void ClientInitializeGame(uint32_t mapId, C3Vector position) {
     // TODO
 
+    ClntObjMgrInitializeShared();
     ClntObjMgrInitializeStd(mapId);
 
     // TODO

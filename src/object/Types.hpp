@@ -38,6 +38,31 @@ enum INVENTORY_SLOTS {
     NUM_BAG_SLOTS       = INVSLOT_BAGLAST - INVSLOT_BAGFIRST + 1,
 };
 
+enum OBJECT_TYPE {
+    TYPE_OBJECT         = 0x1,
+    TYPE_ITEM           = 0x2,
+    TYPE_CONTAINER      = 0x4,
+    TYPE_UNIT           = 0x8,
+    TYPE_PLAYER         = 0x10,
+    TYPE_GAMEOBJECT     = 0x20,
+    TYPE_DYNAMICOBJECT  = 0x40,
+    TYPE_CORPSE         = 0x80,
+    // TODO
+};
+
+enum OBJECT_TYPE_ID {
+    ID_OBJECT           = 0,
+    ID_ITEM             = 1,
+    ID_CONTAINER        = 2,
+    ID_UNIT             = 3,
+    ID_PLAYER           = 4,
+    ID_GAMEOBJECT       = 5,
+    ID_DYNAMICOBJECT    = 6,
+    ID_CORPSE           = 7,
+    NUM_CLIENT_OBJECT_TYPES,
+    // TODO
+};
+
 enum SHEATHE_TYPE {
     SHEATHE_0           = 0,
     SHEATHE_1           = 1,

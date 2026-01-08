@@ -10,6 +10,8 @@ ClntObjMgr* ClntObjMgrGetCurrent();
 
 uint32_t ClntObjMgrGetMapID();
 
+void ClntObjMgrInitializeShared();
+
 void ClntObjMgrInitializeStd(uint32_t mapID);
 
 void ClntObjMgrPop();

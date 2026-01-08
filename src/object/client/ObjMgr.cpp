@@ -1,7 +1,22 @@
 #include "object/client/ObjMgr.hpp"
 #include "client/ClientServices.hpp"
+#include "console/Command.hpp"
 #include "net/Connection.hpp"
+#include "object/client/CGContainer_C.hpp"
+#include "object/client/CGCorpse_C.hpp"
+#include "object/client/CGDynamicObject_C.hpp"
+#include "object/client/CGGameObject_C.hpp"
+#include "object/client/CGItem_C.hpp"
+#include "object/client/CGObject_C.hpp"
+#include "object/client/CGPlayer_C.hpp"
+#include "object/client/CGUnit_C.hpp"
+#include "util/Unimplemented.hpp"
+#include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
+
+static bool s_heapsAllocated;
+static uint32_t s_objHeapId[8];
+static ClntObjMgr* s_savMgr;
 
 #if defined(WHOA_SYSTEM_WIN)
 static thread_local ClntObjMgr* s_curMgr;
@@ -9,7 +24,46 @@ static thread_local ClntObjMgr* s_curMgr;
 static ClntObjMgr* s_curMgr;
 #endif
 
-static ClntObjMgr* s_savMgr;
+static uint32_t s_objTotalSize[] = {
+    static_cast<uint32_t>(sizeof(CGObject_C)          + sizeof(CGObjectData)          + (sizeof(uint32_t) * CGObject::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGItem_C)            + sizeof(CGItemData)            + (sizeof(uint32_t) * CGItem::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGContainer_C)       + sizeof(CGContainerData)       + (sizeof(uint32_t) * CGContainer::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGUnit_C)            + sizeof(CGUnitData)            + (sizeof(uint32_t) * CGUnit::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGPlayer_C)          + sizeof(CGPlayerData)          + (sizeof(uint32_t) * CGPlayer::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGGameObject_C)      + sizeof(CGGameObjectData)      + (sizeof(uint32_t) * CGGameObject::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGDynamicObject_C)   + sizeof(CGDynamicObjectData)   + (sizeof(uint32_t) * CGDynamicObject::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGCorpse_C)          + sizeof(CGCorpseData)          + (sizeof(uint32_t) * CGCorpse::TotalFieldsSaved())),
+};
+
+static const char* s_objNames[] = {
+    "CGObject_C",
+    "CGItem_C",
+    "CGContainer_C",
+    "CGUnit_C",
+    "CGPlayer_C",
+    "CGGameObject_C",
+    "CGDynamicObject_C",
+    "CGCorpse_C",
+};
+
+static uint32_t s_heapSizes[] = {
+    0,
+    512,
+    32,
+    64,
+    64,
+    64,
+    32,
+    32,
+};
+
+int32_t CCommand_ObjUsage(const char* command, const char* arguments) {
+    WHOA_UNIMPLEMENTED(0);
+}
+
+void MirrorInitialize() {
+    // TODO
+}
 
 uint64_t ClntObjMgrGetActivePlayer() {
     if (!s_curMgr) {
@@ -29,6 +83,20 @@ uint32_t ClntObjMgrGetMapID() {
     }
 
     return s_curMgr->m_mapID;
+}
+
+void ClntObjMgrInitializeShared() {
+    if (!s_heapsAllocated) {
+        for (int32_t i = ID_ITEM; i < NUM_CLIENT_OBJECT_TYPES; i++) {
+            s_objHeapId[i] = ObjectAllocAddHeap(s_objTotalSize[i], s_heapSizes[i], s_objNames[i], true);
+        }
+
+        s_heapsAllocated = true;
+    }
+
+    MirrorInitialize();
+
+    ConsoleCommandRegister("ObjUsage", &CCommand_ObjUsage, GAME, nullptr);
 }
 
 void ClntObjMgrInitializeStd(uint32_t mapID) {
