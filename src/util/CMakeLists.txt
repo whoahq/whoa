@@ -28,6 +28,8 @@ target_link_libraries(util
         common
         storm
         tempest
+    PRIVATE
+        zlib-1.2
 )
 
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
