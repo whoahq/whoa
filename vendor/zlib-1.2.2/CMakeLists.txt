@@ -10,7 +10,9 @@ add_library(zlib-1.2 STATIC
     ${ZLIB_SRC_DIR}/crc32.c
     ${ZLIB_SRC_DIR}/deflate.c
     ${ZLIB_SRC_DIR}/gzio.c
+    ${ZLIB_SRC_DIR}/inffast.c
     ${ZLIB_SRC_DIR}/inflate.c
+    ${ZLIB_SRC_DIR}/inftrees.c
     ${ZLIB_SRC_DIR}/trees.c
     ${ZLIB_SRC_DIR}/uncompr.c
     ${ZLIB_SRC_DIR}/zutil.c
