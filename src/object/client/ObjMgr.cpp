@@ -66,6 +66,29 @@ void MirrorInitialize() {
     // TODO
 }
 
+void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
+    auto playerGUID = ClntObjMgrGetActivePlayer();
+
+    // Heap allocate player object for current player
+    if (guid == playerGUID) {
+        return STORM_ALLOC(sizeof(CGPlayer_C) + sizeof(CGPlayerData) + (sizeof(uint32_t) * CGPlayer::TotalFieldsSaved()));
+    }
+
+    // TODO GarbageCollect(typeID, 10000);
+
+    uint32_t memHandle;
+    void* mem;
+
+    if (!ObjectAlloc(s_objHeapId[typeID], &memHandle, &mem, false)) {
+        return nullptr;
+    }
+
+    // TODO pointer should be fetched via ObjectPtr
+    static_cast<CGObject_C*>(mem)->m_memHandle = memHandle;
+
+    return mem;
+}
+
 uint64_t ClntObjMgrGetActivePlayer() {
     if (!s_curMgr) {
         return 0;
