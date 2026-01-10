@@ -10,6 +10,7 @@ struct CGGameObjectData {
 class CGGameObject {
     public:
         // Public static functions
+        static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 };
 

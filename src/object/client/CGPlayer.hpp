@@ -10,6 +10,8 @@ struct CGPlayerData {
 class CGPlayer {
     public:
         // Public static functions
+        static uint32_t TotalFields();
+        static uint32_t TotalRemoteFields();
         static uint32_t TotalFieldsSaved();
         static uint32_t TotalRemoteFieldsSaved();
 };

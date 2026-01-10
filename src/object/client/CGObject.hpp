@@ -15,6 +15,7 @@ struct CGObjectData {
 class CGObject {
     public:
         // Public static functions
+        static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
         // Public member variables

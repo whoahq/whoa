@@ -10,6 +10,7 @@ struct CGDynamicObjectData {
 class CGDynamicObject {
     public:
         // Public static functions
+        static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 };
 
