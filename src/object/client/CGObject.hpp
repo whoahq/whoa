@@ -19,6 +19,7 @@ class CGObject {
         static uint32_t TotalFieldsSaved();
 
         // Public member variables
+        uint32_t uint0; // TODO what is this?
         CGObjectData* m_obj;
         uint32_t* m_objSaved;
         uint32_t m_memHandle;
