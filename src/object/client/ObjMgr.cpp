@@ -30,7 +30,7 @@ static uint32_t s_objTotalSize[] = {
     static_cast<uint32_t>(sizeof(CGItem_C)            + sizeof(CGItemData)            + (sizeof(uint32_t) * CGItem::TotalFieldsSaved())),
     static_cast<uint32_t>(sizeof(CGContainer_C)       + sizeof(CGContainerData)       + (sizeof(uint32_t) * CGContainer::TotalFieldsSaved())),
     static_cast<uint32_t>(sizeof(CGUnit_C)            + sizeof(CGUnitData)            + (sizeof(uint32_t) * CGUnit::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGPlayer_C)          + sizeof(CGPlayerData)          + (sizeof(uint32_t) * CGPlayer::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGPlayer_C)          + sizeof(CGPlayerData)          + (sizeof(uint32_t) * CGPlayer::TotalRemoteFieldsSaved())),
     static_cast<uint32_t>(sizeof(CGGameObject_C)      + sizeof(CGGameObjectData)      + (sizeof(uint32_t) * CGGameObject::TotalFieldsSaved())),
     static_cast<uint32_t>(sizeof(CGDynamicObject_C)   + sizeof(CGDynamicObjectData)   + (sizeof(uint32_t) * CGDynamicObject::TotalFieldsSaved())),
     static_cast<uint32_t>(sizeof(CGCorpse_C)          + sizeof(CGCorpseData)          + (sizeof(uint32_t) * CGCorpse::TotalFieldsSaved())),
