@@ -39,14 +39,23 @@ enum INVENTORY_SLOTS {
 };
 
 enum OBJECT_TYPE {
-    TYPE_OBJECT         = 0x1,
-    TYPE_ITEM           = 0x2,
-    TYPE_CONTAINER      = 0x4,
-    TYPE_UNIT           = 0x8,
-    TYPE_PLAYER         = 0x10,
-    TYPE_GAMEOBJECT     = 0x20,
-    TYPE_DYNAMICOBJECT  = 0x40,
-    TYPE_CORPSE         = 0x80,
+    TYPE_OBJECT             = 0x1,
+    TYPE_ITEM               = 0x2,
+    TYPE_CONTAINER          = 0x4,
+    TYPE_UNIT               = 0x8,
+    TYPE_PLAYER             = 0x10,
+    TYPE_GAMEOBJECT         = 0x20,
+    TYPE_DYNAMICOBJECT      = 0x40,
+    TYPE_CORPSE             = 0x80,
+    // TODO
+    HIER_TYPE_OBJECT        = TYPE_OBJECT,
+    HIER_TYPE_ITEM          = TYPE_OBJECT | TYPE_ITEM,
+    HIER_TYPE_CONTAINER     = TYPE_OBJECT | TYPE_ITEM | TYPE_CONTAINER,
+    HIER_TYPE_UNIT          = TYPE_OBJECT | TYPE_UNIT,
+    HIER_TYPE_PLAYER        = TYPE_OBJECT | TYPE_UNIT | TYPE_PLAYER,
+    HIER_TYPE_GAMEOBJECT    = TYPE_OBJECT | TYPE_GAMEOBJECT,
+    HIER_TYPE_DYNAMICOBJECT = TYPE_OBJECT | TYPE_DYNAMICOBJECT,
+    HIER_TYPE_CORPSE        = TYPE_OBJECT | TYPE_CORPSE,
     // TODO
 };
 
