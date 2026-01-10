@@ -18,6 +18,8 @@ void ClntObjMgrPop();
 
 void ClntObjMgrPush(ClntObjMgr* mgr);
 
+void ClntObjMgrSetActivePlayer(uint64_t guid);
+
 void ClntObjMgrSetHandlers();
 
 #endif

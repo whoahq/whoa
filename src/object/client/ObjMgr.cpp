@@ -133,6 +133,10 @@ void ClntObjMgrPush(ClntObjMgr* mgr) {
     s_curMgr = mgr;
 }
 
+void ClntObjMgrSetActivePlayer(uint64_t guid) {
+    s_curMgr->m_activePlayer = guid;
+}
+
 void ClntObjMgrSetHandlers() {
     s_curMgr->m_net->SetMessageHandler(SMSG_UPDATE_OBJECT, &ObjectUpdateHandler, nullptr);
     s_curMgr->m_net->SetMessageHandler(SMSG_COMPRESSED_UPDATE_OBJECT, &ObjectCompressedUpdateHandler, nullptr);
