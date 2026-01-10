@@ -5,7 +5,11 @@
 #include <cstdint>
 
 struct CGObjectData {
-    // TODO
+    uint64_t m_guid;
+    OBJECT_TYPE m_type;
+    int32_t m_entryID;
+    float m_scale;
+    uint32_t pad;
 };
 
 class CGObject {
