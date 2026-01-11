@@ -55,6 +55,7 @@ unsigned char InterfaceKey[256] = {
     0x0D, 0x36, 0xEA, 0x01, 0xE0, 0xAA, 0x91, 0x20, 0x54, 0xF0, 0x72, 0xD8, 0x1E, 0xC7, 0x89, 0xD2
 };
 
+int32_t CGlueMgr::m_acceptedContest = 1; // TODO
 int32_t CGlueMgr::m_acceptedEULA = 1; // TODO
 int32_t CGlueMgr::m_acceptedTerminationWithoutNotice;
 int32_t CGlueMgr::m_acceptedTOS = 1; // TODO
