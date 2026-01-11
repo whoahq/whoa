@@ -21,7 +21,7 @@ class CGlueMgr {
             IDLE_CHARACTER_LIST     = 3,
             IDLE_REALM_LIST         = 4,
             IDLE_5                  = 5,
-            IDLE_6                  = 6,
+            IDLE_DELETE_CHARACTER   = 6,
             IDLE_7                  = 7,
             IDLE_8                  = 8,
             IDLE_9                  = 9,
