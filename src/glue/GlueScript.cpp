@@ -210,7 +210,14 @@ int32_t Script_ShowScanningNotice(lua_State* L) {
 }
 
 int32_t Script_ScanningAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGlueMgr::m_acceptedScanning) {
+        lua_pushnumber(L, 1.0);
+    }
+    else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_AcceptScanning(lua_State* L) {
