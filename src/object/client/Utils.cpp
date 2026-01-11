@@ -1,4 +1,48 @@
 #include "object/client/Utils.hpp"
+#include "object/client/CGContainer.hpp"
+#include "object/client/CGCorpse.hpp"
+#include "object/client/CGDynamicObject.hpp"
+#include "object/client/CGGameObject.hpp"
+#include "object/client/CGItem.hpp"
+#include "object/client/CGObject_C.hpp"
+#include "object/client/CGPlayer.hpp"
+#include "object/client/CGUnit.hpp"
+#include "object/client/ObjMgr.hpp"
+
+/**
+ * Given an object type hierarchy and GUID, return the number of DWORD blocks backing the object's
+ * data storage.
+ */
+uint32_t GetNumDwordBlocks(OBJECT_TYPE type, uint64_t guid) {
+    switch (type) {
+        case HIER_TYPE_OBJECT:
+            return CGObject::TotalFields();
+
+        case HIER_TYPE_ITEM:
+            return CGItem::TotalFields();
+
+        case HIER_TYPE_CONTAINER:
+            return CGContainer::TotalFields();
+
+        case HIER_TYPE_UNIT:
+            return CGUnit::TotalFields();
+
+        case HIER_TYPE_PLAYER:
+            return guid == ClntObjMgrGetActivePlayer() ? CGPlayer::TotalFields() : CGPlayer::TotalRemoteFields();
+
+        case HIER_TYPE_GAMEOBJECT:
+            return CGGameObject::TotalFields();
+
+        case HIER_TYPE_DYNAMICOBJECT:
+            return CGDynamicObject::TotalFields();
+
+        case HIER_TYPE_CORPSE:
+            return CGCorpse::TotalFields();
+
+        default:
+            return 0;
+    }
+}
 
 /**
  * Accounting for the full hierarchy of the given object, return the next inherited type ID after
