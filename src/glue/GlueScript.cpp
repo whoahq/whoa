@@ -198,7 +198,14 @@ int32_t Script_ShowTerminationWithoutNoticeNotice(lua_State* L) {
 }
 
 int32_t Script_TerminationWithoutNoticeAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGlueMgr::m_acceptedTerminationWithoutNotice) {
+        lua_pushnumber(L, 1.0);
+    }
+    else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_AcceptTerminationWithoutNotice(lua_State* L) {
