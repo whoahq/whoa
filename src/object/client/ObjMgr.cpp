@@ -26,14 +26,14 @@ static ClntObjMgr* s_curMgr;
 #endif
 
 static uint32_t s_objTotalSize[] = {
-    static_cast<uint32_t>(sizeof(CGObject_C)          + sizeof(CGObjectData)          + (sizeof(uint32_t) * CGObject::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGItem_C)            + sizeof(CGItemData)            + (sizeof(uint32_t) * CGItem::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGContainer_C)       + sizeof(CGContainerData)       + (sizeof(uint32_t) * CGContainer::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGUnit_C)            + sizeof(CGUnitData)            + (sizeof(uint32_t) * CGUnit::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGPlayer_C)          + sizeof(CGPlayerData)          + (sizeof(uint32_t) * CGPlayer::TotalRemoteFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGGameObject_C)      + sizeof(CGGameObjectData)      + (sizeof(uint32_t) * CGGameObject::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGDynamicObject_C)   + sizeof(CGDynamicObjectData)   + (sizeof(uint32_t) * CGDynamicObject::TotalFieldsSaved())),
-    static_cast<uint32_t>(sizeof(CGCorpse_C)          + sizeof(CGCorpseData)          + (sizeof(uint32_t) * CGCorpse::TotalFieldsSaved())),
+    static_cast<uint32_t>(sizeof(CGObject_C)            + CGObject::GetDataSize()           + CGObject::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGItem_C)              + CGItem::GetDataSize()             + CGItem::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGContainer_C)         + CGContainer::GetDataSize()        + CGContainer::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGUnit_C)              + CGUnit::GetDataSize()             + CGUnit::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGPlayer_C)            + CGPlayer::GetRemoteDataSize()     + CGPlayer::GetRemoteDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGGameObject_C)        + CGGameObject::GetDataSize()       + CGGameObject::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGDynamicObject_C)     + CGDynamicObject::GetDataSize()    + CGDynamicObject::GetDataSizeSaved()),
+    static_cast<uint32_t>(sizeof(CGCorpse_C)            + CGCorpse::GetDataSize()           + CGCorpse::GetDataSizeSaved()),
 };
 
 static const char* s_objNames[] = {
@@ -71,7 +71,7 @@ void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
 
     // Heap allocate player object for current player
     if (guid == playerGUID) {
-        return STORM_ALLOC(sizeof(CGPlayer_C) + sizeof(CGPlayerData) + (sizeof(uint32_t) * CGPlayer::TotalFieldsSaved()));
+        return STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved());
     }
 
     // TODO GarbageCollect(typeID, 10000);

@@ -9,7 +9,8 @@ class CreatureModelDataRec;
 
 class CGPlayer_C : public CGUnit_C, public CGPlayer {
     public:
-        // TODO
+        // Public member functions
+        void SetStorage(uint32_t* storage, uint32_t* saved);
 };
 
 uint32_t Player_C_GetDisplayId(uint32_t race, uint32_t sex);

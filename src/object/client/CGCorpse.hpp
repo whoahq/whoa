@@ -10,8 +10,16 @@ struct CGCorpseData {
 class CGCorpse {
     public:
         // Public static functions
+        static uint32_t GetBaseOffset();
+        static uint32_t GetBaseOffsetSaved();
+        static uint32_t GetDataSize();
+        static uint32_t GetDataSizeSaved();
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
+
+        // Public member variables
+        CGCorpseData* m_corpse;
+        uint32_t* m_corpseSaved;
 };
 
 #endif

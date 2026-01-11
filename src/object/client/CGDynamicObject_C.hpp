@@ -6,7 +6,8 @@
 
 class CGDynamicObject_C : public CGObject_C, public CGDynamicObject {
     public:
-        // TODO
+        // Public member functions
+        void SetStorage(uint32_t* storage, uint32_t* saved);
 };
 
 #endif

@@ -6,7 +6,8 @@
 
 class CGItem_C : public CGObject_C, public CGItem {
     public:
-        // TODO
+        // Public member functions
+        void SetStorage(uint32_t* storage, uint32_t* saved);
 };
 
 #endif

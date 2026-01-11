@@ -1,18 +1,42 @@
 #include "object/client/CGPlayer.hpp"
 #include "object/client/CGUnit.hpp"
 
+uint32_t CGPlayer::GetBaseOffset() {
+    return CGUnit::TotalFields();
+}
+
+uint32_t CGPlayer::GetBaseOffsetSaved() {
+    return CGUnit::TotalFieldsSaved();
+}
+
+uint32_t CGPlayer::GetDataSize() {
+    return CGPlayer::TotalFields() * sizeof(uint32_t);
+}
+
+uint32_t CGPlayer::GetDataSizeSaved() {
+    return CGPlayer::TotalFieldsSaved() * sizeof(uint32_t);
+}
+
+uint32_t CGPlayer::GetRemoteDataSize() {
+    return CGPlayer::TotalRemoteFields() * sizeof(uint32_t);
+}
+
+uint32_t CGPlayer::GetRemoteDataSizeSaved() {
+    return CGPlayer::TotalRemoteFieldsSaved() * sizeof(uint32_t);
+}
+
 uint32_t CGPlayer::TotalFields() {
-    return CGUnit::TotalFields() + 1178;
+    return CGPlayer::GetBaseOffset() + 1178;
 }
 
 uint32_t CGPlayer::TotalRemoteFields() {
-    return CGUnit::TotalFields() + 176;
+    return CGPlayer::GetBaseOffset() + 176;
 }
 
 uint32_t CGPlayer::TotalFieldsSaved() {
-    return CGUnit::TotalFieldsSaved() + 1043;
+    return CGPlayer::GetBaseOffsetSaved() + 1043;
 }
 
 uint32_t CGPlayer::TotalRemoteFieldsSaved() {
-    return CGUnit::TotalFieldsSaved() + 173;
+    return CGPlayer::GetBaseOffsetSaved() + 173;
 }

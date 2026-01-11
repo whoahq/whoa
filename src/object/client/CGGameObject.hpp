@@ -10,8 +10,16 @@ struct CGGameObjectData {
 class CGGameObject {
     public:
         // Public static functions
+        static uint32_t GetBaseOffset();
+        static uint32_t GetBaseOffsetSaved();
+        static uint32_t GetDataSize();
+        static uint32_t GetDataSizeSaved();
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
+
+        // Public member variables
+        CGGameObjectData* m_gameObj;
+        uint32_t* m_gameObjSaved;
 };
 
 #endif

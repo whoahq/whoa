@@ -4,14 +4,24 @@
 #include <cstdint>
 
 struct CGContainerData {
-    // TODO
+    uint32_t numSlots;
+    uint32_t pad;
+    uint64_t slots[36];
 };
 
 class CGContainer {
     public:
         // Public static functions
+        static uint32_t GetBaseOffset();
+        static uint32_t GetBaseOffsetSaved();
+        static uint32_t GetDataSize();
+        static uint32_t GetDataSizeSaved();
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
+
+        // Public member variables
+        CGContainerData* m_cont;
+        uint32_t* m_contSaved;
 };
 
 #endif

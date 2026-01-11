@@ -13,6 +13,9 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         // Public static functions
         static const char* GetDisplayClassNameFromRecord(const ChrClassesRec* classRec, UNIT_SEX sex, UNIT_SEX* displaySex);
         static const char* GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, UNIT_SEX sex, UNIT_SEX* displaySex);
+
+        // Public member functions
+        void SetStorage(uint32_t* storage, uint32_t* saved);
 };
 
 #endif

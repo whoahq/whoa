@@ -1,5 +1,10 @@
 #include "object/client/CGObject_C.hpp"
 
+void CGObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
+    this->m_obj = reinterpret_cast<CGObjectData*>(&storage[CGObject::GetBaseOffset()]);
+    this->m_objSaved = &saved[CGObject::GetBaseOffsetSaved()];
+}
+
 void CGObject_C::SetTypeID(OBJECT_TYPE_ID typeID) {
     this->m_typeID = typeID;
 

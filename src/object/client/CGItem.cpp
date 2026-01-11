@@ -1,10 +1,26 @@
 #include "object/client/CGItem.hpp"
 #include "object/client/CGObject.hpp"
 
+uint32_t CGItem::GetBaseOffset() {
+    return CGObject::TotalFields();
+}
+
+uint32_t CGItem::GetBaseOffsetSaved() {
+    return CGObject::TotalFieldsSaved();
+}
+
+uint32_t CGItem::GetDataSize() {
+    return CGItem::TotalFields() * sizeof(uint32_t);
+}
+
+uint32_t CGItem::GetDataSizeSaved() {
+    return CGItem::TotalFieldsSaved() * sizeof(uint32_t);
+}
+
 uint32_t CGItem::TotalFields() {
-    return CGObject::TotalFields() + 58;
+    return CGItem::GetBaseOffset() + 58;
 }
 
 uint32_t CGItem::TotalFieldsSaved() {
-    return CGObject::TotalFieldsSaved() + 47;
+    return CGItem::GetBaseOffsetSaved() + 47;
 }

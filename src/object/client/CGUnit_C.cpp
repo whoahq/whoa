@@ -88,3 +88,10 @@ const char* CGUnit_C::GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, U
 
     return raceRec->m_name;
 }
+
+void CGUnit_C::SetStorage(uint32_t* storage, uint32_t* saved) {
+    this->CGObject_C::SetStorage(storage, saved);
+
+    this->m_unit = reinterpret_cast<CGUnitData*>(&storage[CGUnit::GetBaseOffset()]);
+    this->m_unitSaved = &saved[CGUnit::GetBaseOffsetSaved()];
+}

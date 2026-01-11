@@ -3,6 +3,13 @@
 #include "object/Types.hpp"
 #include <storm/Error.hpp>
 
+void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
+    this->CGUnit_C::SetStorage(storage, saved);
+
+    this->m_player = reinterpret_cast<CGPlayerData*>(&storage[CGPlayer::GetBaseOffset()]);
+    this->m_playerSaved = &saved[CGPlayer::GetBaseOffsetSaved()];
+}
+
 uint32_t Player_C_GetDisplayId(uint32_t race, uint32_t sex) {
     STORM_ASSERT(sex < UNITSEX_LAST);
 
