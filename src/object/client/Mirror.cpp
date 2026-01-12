@@ -8,14 +8,15 @@
 #include "object/client/CGPlayer.hpp"
 #include "object/client/CGUnit.hpp"
 #include "object/client/ObjMgr.hpp"
+#include "object/Types.hpp"
 #include <common/DataStore.hpp>
 
-#define MAX_DIRTY_MASKS 42
+#define MAX_CHANGE_MASKS 42
 
 /**
- * Given a message data store, extract the dirty masks contained inside. Any masks not present are
- * zeroed out. This function assumes the provided masks pointer has enough space for
- * MAX_DIRTY_MASKS.
+ * Given a message data store, extract the dirty change masks contained inside. Any masks not
+ * present are zeroed out. This function assumes the provided masks pointer has enough space for
+ * MAX_CHANGE_MASKS.
  */
 int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* maskCount, uint32_t* masks) {
     uint8_t count;
@@ -23,7 +24,7 @@ int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* maskCount, uint32_t* masks) 
 
     *maskCount = count;
 
-    if (count > MAX_DIRTY_MASKS) {
+    if (count > MAX_CHANGE_MASKS) {
         return 0;
     }
 
@@ -31,8 +32,8 @@ int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* maskCount, uint32_t* masks) 
         msg->Get(masks[i]);
     }
 
-    // Zero out unused masks
-    memset(&masks[count], 0, (MAX_DIRTY_MASKS - count) * sizeof(uint32_t));
+    // Zero out masks that aren't present
+    memset(&masks[count], 0, (MAX_CHANGE_MASKS - count) * sizeof(uint32_t));
 
     return 1;
 }
