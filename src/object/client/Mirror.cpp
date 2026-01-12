@@ -1,4 +1,4 @@
-#include "object/client/Utils.hpp"
+#include "object/client/Mirror.hpp"
 #include "object/client/CGContainer.hpp"
 #include "object/client/CGCorpse.hpp"
 #include "object/client/CGDynamicObject.hpp"
