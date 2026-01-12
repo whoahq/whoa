@@ -1,5 +1,10 @@
 #include "object/client/CGObject_C.hpp"
 
+void CGObject_C::SetBlock(uint32_t block, uint32_t value) {
+    auto storage = reinterpret_cast<uint32_t*>(this->m_obj);
+    storage[block] = value;
+}
+
 void CGObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->m_obj = reinterpret_cast<CGObjectData*>(&storage[CGObject::GetBaseOffset()]);
     this->m_objSaved = &saved[CGObject::GetBaseOffsetSaved()];
