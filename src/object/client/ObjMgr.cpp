@@ -66,7 +66,7 @@ void MirrorInitialize() {
     // TODO
 }
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
+void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
     auto playerGUID = ClntObjMgrGetActivePlayer();
 
     // Heap allocate player object for current player
@@ -89,7 +89,7 @@ void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
     return mem;
 }
 
-uint64_t ClntObjMgrGetActivePlayer() {
+WOWGUID ClntObjMgrGetActivePlayer() {
     if (!s_curMgr) {
         return 0;
     }
@@ -156,7 +156,7 @@ void ClntObjMgrPush(ClntObjMgr* mgr) {
     s_curMgr = mgr;
 }
 
-void ClntObjMgrSetActivePlayer(uint64_t guid) {
+void ClntObjMgrSetActivePlayer(WOWGUID guid) {
     s_curMgr->m_activePlayer = guid;
 }
 

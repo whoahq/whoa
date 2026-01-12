@@ -1,17 +1,18 @@
-#ifndef UTIL_C_HASH_KEY_GUID_HPP
-#define UTIL_C_HASH_KEY_GUID_HPP
+#ifndef UTIL_GUID_C_HASH_KEY_GUID_HPP
+#define UTIL_GUID_C_HASH_KEY_GUID_HPP
 
+#include "util/guid/Types.hpp"
 #include <cstdint>
 
 class CHashKeyGUID {
     public:
         // Public member functions
         CHashKeyGUID();
-        CHashKeyGUID(uint64_t guid);
+        CHashKeyGUID(WOWGUID guid);
 
     private:
         // Private member variables
-        uint64_t m_guid;
+        WOWGUID m_guid;
 };
 
 #endif

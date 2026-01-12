@@ -1,11 +1,11 @@
-#include "util/SmartGUID.hpp"
+#include "util/guid/SmartGUID.hpp"
 #include <common/DataStore.hpp>
 
-SmartGUID::operator uint64_t() const {
+SmartGUID::operator WOWGUID() const {
     return this->guid;
 }
 
-SmartGUID& SmartGUID::operator=(uint64_t guid) {
+SmartGUID& SmartGUID::operator=(WOWGUID guid) {
     this->guid = guid;
     return *this;
 }

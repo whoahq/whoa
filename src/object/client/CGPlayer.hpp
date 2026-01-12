@@ -2,6 +2,7 @@
 #define OBJECT_CLIENT_CG_PLAYER_HPP
 
 #include "object/Types.hpp"
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct CQuestLogData {
@@ -19,7 +20,7 @@ struct CVisibleItemData {
 };
 
 struct CGPlayerData {
-    uint64_t duelArbiter;
+    WOWGUID duelArbiter;
     uint32_t flags;
     uint32_t guildID;
     uint32_t guildRank;
@@ -33,18 +34,18 @@ struct CGPlayerData {
     int32_t chosenTitle;
     int32_t fakeInebriation;
     int32_t pad4;
-    uint64_t invSlots[NUM_INVENTORY_SLOTS];
-    uint64_t packSlots[16];
-    uint64_t bankSlots[28];
-    uint64_t bankBagSlots[7];
-    uint64_t vendorBuybackSlots[12];
-    uint64_t keyringSlots[32];
-    uint64_t currencyTokenSlots[32];
-    uint64_t farsightObject;
-    uint64_t knownTitles;
-    uint64_t knownTitles2;
-    uint64_t knownTitles3;
-    uint64_t knownCurrencies;
+    WOWGUID invSlots[NUM_INVENTORY_SLOTS];
+    WOWGUID packSlots[16];
+    WOWGUID bankSlots[28];
+    WOWGUID bankBagSlots[7];
+    WOWGUID vendorBuybackSlots[12];
+    WOWGUID keyringSlots[32];
+    WOWGUID currencyTokenSlots[32];
+    WOWGUID farsightObject;
+    WOWGUID knownTitles;
+    WOWGUID knownTitles2;
+    WOWGUID knownTitles3;
+    WOWGUID knownCurrencies;
     uint32_t xp;
     uint32_t nextLevelXP;
     // TODO

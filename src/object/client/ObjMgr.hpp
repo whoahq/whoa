@@ -6,9 +6,9 @@
 #include "object/Types.hpp"
 #include <cstdint>
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid);
+void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid);
 
-uint64_t ClntObjMgrGetActivePlayer();
+WOWGUID ClntObjMgrGetActivePlayer();
 
 ClntObjMgr* ClntObjMgrGetCurrent();
 
@@ -22,7 +22,7 @@ void ClntObjMgrPop();
 
 void ClntObjMgrPush(ClntObjMgr* mgr);
 
-void ClntObjMgrSetActivePlayer(uint64_t guid);
+void ClntObjMgrSetActivePlayer(WOWGUID guid);
 
 void ClntObjMgrSetHandlers();
 

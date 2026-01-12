@@ -2,10 +2,11 @@
 #define OBJECT_CLIENT_CG_OBJECT_HPP
 
 #include "object/Types.hpp"
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct CGObjectData {
-    uint64_t m_guid;
+    WOWGUID m_guid;
     OBJECT_TYPE m_type;
     int32_t m_entryID;
     float m_scale;

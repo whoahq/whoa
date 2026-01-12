@@ -8,7 +8,7 @@ class ClientConnection;
 class ClntObjMgr {
     public:
         // Member variables
-        uint64_t m_activePlayer = 0;
+        WOWGUID m_activePlayer = 0;
         uint32_t m_mapID = 0;
         ClientConnection* m_net = nullptr;
 };

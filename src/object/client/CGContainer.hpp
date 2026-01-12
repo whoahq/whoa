@@ -1,12 +1,13 @@
 #ifndef OBJECT_CLIENT_CG_CONTAINER_HPP
 #define OBJECT_CLIENT_CG_CONTAINER_HPP
 
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct CGContainerData {
     uint32_t numSlots;
     uint32_t pad;
-    uint64_t slots[36];
+    WOWGUID slots[36];
 };
 
 class CGContainer {

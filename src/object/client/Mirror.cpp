@@ -53,7 +53,7 @@ int32_t ExtractDirtyMasks(CDataStore* msg, uint8_t* maskCount, uint32_t* masks) 
  * Given an object type hierarchy and GUID, return the number of DWORD blocks backing the object's
  * data storage.
  */
-uint32_t GetNumDwordBlocks(OBJECT_TYPE type, uint64_t guid) {
+uint32_t GetNumDwordBlocks(OBJECT_TYPE type, WOWGUID guid) {
     switch (type) {
         case HIER_TYPE_OBJECT:
             return CGObject::TotalFields();
@@ -150,7 +150,7 @@ int32_t IsMaskBitSet(uint32_t* masks, uint32_t block) {
     return masks[block / 32] & (1 << (block % 32));
 }
 
-int32_t FillInPartialObjectData(CGObject_C* object, uint64_t guid, CDataStore* msg, bool forFullUpdate, bool zeroZeroBits) {
+int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* msg, bool forFullUpdate, bool zeroZeroBits) {
     uint8_t changeMaskCount;
     uint32_t changeMasks[MAX_CHANGE_MASKS];
     if (!ExtractDirtyMasks(msg, &changeMaskCount, changeMasks)) {

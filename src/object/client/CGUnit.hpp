@@ -1,17 +1,18 @@
 #ifndef OBJECT_CLIENT_CG_UNIT_HPP
 #define OBJECT_CLIENT_CG_UNIT_HPP
 
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct CGUnitData {
-    uint64_t charm;
-    uint64_t summon;
-    uint64_t critter;
-    uint64_t charmedBy;
-    uint64_t summonedBy;
-    uint64_t createdBy;
-    uint64_t target;
-    uint64_t channelObject;
+    WOWGUID charm;
+    WOWGUID summon;
+    WOWGUID critter;
+    WOWGUID charmedBy;
+    WOWGUID summonedBy;
+    WOWGUID createdBy;
+    WOWGUID target;
+    WOWGUID channelObject;
     int32_t channelSpell;
     int32_t pad1;
     int32_t health;
