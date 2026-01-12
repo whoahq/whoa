@@ -13,6 +13,17 @@
 
 #define MAX_CHANGE_MASKS 42
 
+static uint32_t s_objMirrorBlocks[] = {
+    CGObject::TotalFields(),
+    CGItem::TotalFields(),
+    CGContainer::TotalFields(),
+    CGUnit::TotalFields(),
+    CGPlayer::TotalFields(),
+    CGGameObject::TotalFields(),
+    CGDynamicObject::TotalFields(),
+    CGCorpse::TotalFields(),
+};
+
 /**
  * Given a message data store, extract the dirty change masks contained inside. Any masks not
  * present are zeroed out. This function assumes the provided masks pointer has enough space for
@@ -133,4 +144,44 @@ OBJECT_TYPE_ID IncTypeID(CGObject_C* object, OBJECT_TYPE_ID curTypeID) {
         default:
             return NUM_CLIENT_OBJECT_TYPES;
     }
+}
+
+int32_t IsMaskBitSet(uint32_t* masks, uint32_t block) {
+    return masks[block / 32] & (1 << (block % 32));
+}
+
+int32_t FillInPartialObjectData(CGObject_C* object, uint64_t guid, CDataStore* msg, bool forFullUpdate, bool zeroZeroBits) {
+    uint8_t changeMaskCount;
+    uint32_t changeMasks[MAX_CHANGE_MASKS];
+    if (!ExtractDirtyMasks(msg, &changeMaskCount, changeMasks)) {
+        return 0;
+    }
+
+    OBJECT_TYPE_ID typeID = ID_OBJECT;
+    uint32_t blockOffset = 0;
+    uint32_t numBlocks = GetNumDwordBlocks(object->m_obj->m_type, guid);
+
+    for (int32_t block = 0; block < numBlocks; block++) {
+        if (block >= s_objMirrorBlocks[typeID]) {
+            blockOffset = s_objMirrorBlocks[typeID];
+            typeID = IncTypeID(object, typeID);
+        }
+
+        if (!forFullUpdate) {
+            // TODO
+        }
+
+        if (IsMaskBitSet(changeMasks, block)) {
+            uint32_t blockValue;
+            msg->GetArray(reinterpret_cast<uint8_t*>(&blockValue), sizeof(blockValue));
+
+            object->SetBlock(block, blockValue);
+        } else if (zeroZeroBits) {
+            object->SetBlock(block, 0);
+        }
+    }
+
+    // TODO
+
+    return 1;
 }
