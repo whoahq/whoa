@@ -14,6 +14,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         CGObject_C(uint32_t time, CClientObjCreate& objCreate);
         void AddWorldObject();
         void SetBlock(uint32_t block, uint32_t value);
+        void SetDisablePending(int32_t pending);
         void SetStorage(uint32_t* storage, uint32_t* saved);
         void SetTypeID(OBJECT_TYPE_ID typeID);
 };

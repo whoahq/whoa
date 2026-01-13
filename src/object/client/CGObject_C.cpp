@@ -18,6 +18,10 @@ void CGObject_C::SetBlock(uint32_t block, uint32_t value) {
     storage[block] = value;
 }
 
+void CGObject_C::SetDisablePending(int32_t pending) {
+    // TODO
+}
+
 void CGObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->m_obj = reinterpret_cast<CGObjectData*>(&storage[CGObject::GetBaseOffset()]);
     this->m_objSaved = &saved[CGObject::GetBaseOffsetSaved()];
