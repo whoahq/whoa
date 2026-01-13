@@ -18,6 +18,8 @@ void ClntObjMgrInitializeShared();
 
 void ClntObjMgrInitializeStd(uint32_t mapID);
 
+void ClntObjMgrLinkInNewObject(CGObject_C* object);
+
 void ClntObjMgrPop();
 
 void ClntObjMgrPush(ClntObjMgr* mgr);

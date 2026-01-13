@@ -138,6 +138,11 @@ void ClntObjMgrInitializeStd(uint32_t mapID) {
     mgr->m_mapID = mapID;
 }
 
+void ClntObjMgrLinkInNewObject(CGObject_C* object) {
+    CHashKeyGUID key(object->m_obj->m_guid);
+    s_curMgr->m_objects.Insert(object, object->m_obj->m_guid, key);
+}
+
 void ClntObjMgrPop() {
     if (!s_savMgr) {
         return;

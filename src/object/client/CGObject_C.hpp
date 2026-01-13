@@ -10,6 +10,7 @@
 class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID> {
     public:
         // Public member functions
+        CGObject_C() = default;
         CGObject_C(uint32_t time, CClientObjCreate& objCreate);
         void AddWorldObject();
         void SetBlock(uint32_t block, uint32_t value);

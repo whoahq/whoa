@@ -1,6 +1,11 @@
 #include "object/client/CGObject_C.hpp"
+#include "object/client/ObjMgr.hpp"
 
 CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
+    // TODO
+
+    ClntObjMgrLinkInNewObject(this);
+
     // TODO
 }
 
