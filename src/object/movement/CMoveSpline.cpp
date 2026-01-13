@@ -9,7 +9,7 @@ CDataStore& operator>>(CDataStore& msg, CMoveSpline& spline) {
         msg.Get(spline.face.facing);
     } else if (spline.flags & 0x10000) {
         msg.Get(spline.face.guid);
-    } else {
+    } else if (spline.flags & 0x8000) {
         msg >> spline.face.spot;
     }
 
