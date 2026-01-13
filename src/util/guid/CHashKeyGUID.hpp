@@ -9,6 +9,8 @@ class CHashKeyGUID {
         // Public member functions
         CHashKeyGUID();
         CHashKeyGUID(WOWGUID guid);
+        bool operator==(WOWGUID guid) const;
+        bool operator==(const CHashKeyGUID& key) const;
 
     private:
         // Private member variables
