@@ -1,6 +1,7 @@
 file(GLOB PRIVATE_SOURCES
     "*.cpp"
     "client/*.cpp"
+    "movement/*.cpp"
 )
 
 add_library(object STATIC
