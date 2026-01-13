@@ -1,5 +1,9 @@
 #include "object/client/CGItem_C.hpp"
 
+CGItem_C::CGItem_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time, objCreate) {
+    // TODO
+}
+
 void CGItem_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGObject_C::SetStorage(storage, saved);
 

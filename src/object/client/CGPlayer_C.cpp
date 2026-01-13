@@ -3,6 +3,10 @@
 #include "object/Types.hpp"
 #include <storm/Error.hpp>
 
+CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(time, objCreate) {
+    // TODO
+}
+
 void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGUnit_C::SetStorage(storage, saved);
 
