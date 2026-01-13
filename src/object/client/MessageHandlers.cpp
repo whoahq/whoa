@@ -10,6 +10,7 @@
 #include "object/client/CGUnit_C.hpp"
 #include "object/client/Mirror.hpp"
 #include "object/client/ObjMgr.hpp"
+#include "object/client/Util.hpp"
 #include "util/GUID.hpp"
 #include "util/Unimplemented.hpp"
 #include "util/Zlib.hpp"
@@ -28,7 +29,18 @@ enum UPDATE_TYPE {
 };
 
 CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
-    WHOA_UNIMPLEMENTED(nullptr);
+    *reenabled = false;
+
+    auto activeObject = FindActiveObject(guid);
+
+    if (activeObject) {
+        activeObject->SetDisablePending(false);
+
+        return activeObject;
+    }
+
+    // TODO handle reenabling object
+    return nullptr;
 }
 
 void UpdateOutOfRangeObjects(CDataStore* msg) {
