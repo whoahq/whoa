@@ -13,6 +13,10 @@ void CGObject_C::AddWorldObject() {
     // TODO
 }
 
+void CGObject_C::Reenable() {
+    // TODO
+}
+
 void CGObject_C::SetBlock(uint32_t block, uint32_t value) {
     auto storage = reinterpret_cast<uint32_t*>(this->m_obj);
     storage[block] = value;
