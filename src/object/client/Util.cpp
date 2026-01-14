@@ -17,6 +17,8 @@ CGObject_C* FindActiveObject(WOWGUID guid) {
 CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
     *reenabled = false;
 
+    // Active object
+
     auto activeObject = FindActiveObject(guid);
 
     if (activeObject) {
@@ -25,7 +27,32 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
         return activeObject;
     }
 
-    // TODO handle reenabling object
+    // Disabled object
+
+    auto disabledObject = ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Ptr(guid, CHashKeyGUID(guid));
+
+    if (disabledObject) {
+        ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Unlink(disabledObject);
+        disabledObject->m_link.Unlink();
+
+        ClntObjMgrGetCurrent()->m_objects.Insert(disabledObject, guid, CHashKeyGUID(guid));
+
+        // These link checks are guaranteed to pass because of the unlink above (both lists share
+        // the same link). This check is either from an inlined function or is cruft left behind
+        // after a refactor.
+        if (
+            !ClntObjMgrGetCurrent()->m_visibleObjects.IsLinked(disabledObject)
+            && !ClntObjMgrGetCurrent()->m_reenabledObjects.IsLinked(disabledObject)
+        ) {
+            *reenabled = true;
+            ClntObjMgrGetCurrent()->m_reenabledObjects.LinkToTail(disabledObject);
+        }
+
+        return disabledObject;
+    }
+
+    // Object not found
+
     return nullptr;
 }
 
