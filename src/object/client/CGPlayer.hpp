@@ -19,21 +19,49 @@ struct CVisibleItemData {
     uint32_t enchantment;
 };
 
+struct CSkillInfo {
+    uint16_t skillLineID;
+    uint16_t skillStep;
+    uint16_t skillRank;
+    uint16_t skillMaxRank;
+    int16_t skillTempModifier;
+    int16_t skillPermModifier;
+};
+
+struct CArenaTeamInfo {
+    uint32_t field1;
+    uint32_t field2;
+    uint32_t field3;
+    uint32_t field4;
+    uint32_t field5;
+    uint32_t field6;
+    uint32_t field7;
+};
+
 struct CGPlayerData {
     WOWGUID duelArbiter;
     uint32_t flags;
     uint32_t guildID;
     uint32_t guildRank;
-    int32_t pad1;
-    int32_t pad2;
-    int32_t pad3;
+    uint8_t skinID;
+    uint8_t faceID;
+    uint8_t hairStyleID;
+    uint8_t hairColorID;
+    uint8_t facialHairStyleID;
+    uint8_t bytes_2_2; // TODO
+    uint8_t bytes_2_3; // TODO
+    uint8_t restState;
+    uint8_t bytes_3_1; // TODO
+    uint8_t bytes_3_2; // TODO
+    uint8_t bytes_3_3; // TODO
+    uint8_t bytes_3_4; // TODO
     uint32_t duelTeam;
     int32_t guildTimestamp;
     CQuestLogData questLog[25];
     CVisibleItemData visibleItems[19];
     int32_t chosenTitle;
     int32_t fakeInebriation;
-    int32_t pad4;
+    int32_t pad1;
     WOWGUID invSlots[NUM_INVENTORY_SLOTS];
     WOWGUID packSlots[16];
     WOWGUID bankSlots[28];
@@ -48,7 +76,62 @@ struct CGPlayerData {
     WOWGUID knownCurrencies;
     uint32_t xp;
     uint32_t nextLevelXP;
-    // TODO
+    CSkillInfo skillInfo[128];
+    int32_t characterPoints[2];
+    uint32_t trackCreatureMask;
+    uint32_t trackResourceMask;
+    float blockPercentage;
+    float dodgePercentage;
+    float parryPercentage;
+    int32_t expertise;
+    int32_t offhandExpertise;
+    float critPercentage;
+    float rangedCritPercentage;
+    float offhandCritPercentage;
+    float spellCritPercentage[7];
+    int32_t shieldBlock;
+    float shieldBlockCritPercentage;
+    uint8_t exploredZones[512];
+    uint32_t restStateXP;
+    uint32_t coinage;
+    int32_t modDamageDonePos[7];
+    int32_t modDamageDoneNeg[7];
+    float modDamageDonePct[7];
+    uint32_t modHealingDonePos;
+    float modHealingPct;
+    float modHealingDonePct;
+    int32_t modTargetResistance;
+    int32_t modTargetPhysicalResistance;
+    uint8_t field_bytes_1; // TODO
+    uint8_t field_bytes_2; // TODO
+    uint8_t field_bytes_3; // TODO
+    uint8_t field_bytes_4; // TODO
+    int32_t ammoID;
+    int32_t selfResSpell;
+    uint32_t pvpMedals;
+    uint32_t buybackPrice[12];
+    uint32_t buybackTimestamp[12];
+    uint16_t kills[2];
+    uint32_t todayContribution;
+    uint32_t yesterdayContribution;
+    uint32_t lifetimeHonorableKills;
+    uint8_t field_bytes_2_1; // TODO
+    uint8_t field_bytes_2_2; // TODO
+    uint8_t field_bytes_2_3; // TODO
+    uint8_t field_bytes_2_4; // TODO
+    int32_t watchedFactionIndex;
+    uint32_t combatRating[25];
+    CArenaTeamInfo arenaTeamInfo[3];
+    uint32_t honorCurrency;
+    uint32_t arenaCurrency;
+    uint32_t maxLevel;
+    uint32_t dailyQuests[25];
+    float runeRegen[4];
+    uint32_t noReagentCost[3];
+    uint32_t glyphSlots[6];
+    uint32_t glyphs[6];
+    int32_t glyphsEnabled;
+    uint32_t petSpellPower;
 };
 
 class CGPlayer {
