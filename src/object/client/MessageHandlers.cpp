@@ -276,11 +276,12 @@ int32_t ObjectUpdateFirstPass(CDataStore* msg, uint32_t time, uint32_t updateIdx
             }
 
             case UPDATE_MOVEMENT: {
-                // Read but ignored in first pass
+                // Skipped in first pass
+
                 SmartGUID guid;
                 *msg >> guid;
 
-                UpdateObjectMovement(msg);
+                CClientMoveUpdate::Skip(msg);
 
                 break;
             }
