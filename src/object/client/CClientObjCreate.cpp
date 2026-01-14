@@ -4,6 +4,69 @@
 #include "util/Unimplemented.hpp"
 #include <common/DataStore.hpp>
 
+void CClientObjCreate::Skip(CDataStore* msg) {
+    uint16_t flags;
+    msg->Get(flags);
+
+    if (flags & 0x20) {
+        CClientMoveUpdate::Skip(msg);
+    } else if (flags & 0x100) {
+        SmartGUID guid;
+        *msg >> guid;
+
+        C3Vector position28;
+        *msg >> position28;
+
+        C3Vector position18;
+        *msg >> position18;
+
+        float facing34;
+        msg->Get(facing34);
+
+        float facing24;
+        msg->Get(facing24);
+    } else if (flags & 0x40) {
+        C3Vector position28;
+        *msg >> position28;
+
+        float facing34;
+        msg->Get(facing34);
+    }
+
+    if (flags & 0x8) {
+        uint32_t uint2AC;
+        msg->Get(uint2AC);
+    }
+
+    if (flags & 0x10) {
+        uint32_t uint2B0;
+        msg->Get(uint2B0);
+    }
+
+    if (flags & 0x4) {
+        SmartGUID guid2B8;
+        *msg >> guid2B8;
+    }
+
+    if (flags & 0x2) {
+        uint32_t uint2C0;
+        msg->Get(uint2C0);
+    }
+
+    if (flags & 0x80) {
+        uint32_t uint2C4;
+        msg->Get(uint2C4);
+
+        float float2C8;
+        msg->Get(float2C8);
+    }
+
+    if (flags & 0x200) {
+        uint64_t uint2D4;
+        msg->Get(uint2D4);
+    }
+}
+
 int32_t CClientObjCreate::Get(CDataStore* msg) {
     uint16_t flags;
     msg->Get(flags);

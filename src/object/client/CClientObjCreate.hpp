@@ -20,6 +20,7 @@ struct CClientObjCreate {
     // TODO
     WOWGUID guid2D4 = 0;
 
+    static void Skip(CDataStore* msg);
     int32_t Get(CDataStore* msg);
 };
 
