@@ -18,7 +18,7 @@ struct CClientObjCreate {
     uint32_t uint2C4;
     float float2C8;
     // TODO
-    WOWGUID guid2D4 = 0;
+    uint64_t uint2D4 = 0; // TODO guid?
 
     static void Skip(CDataStore* msg);
     int32_t Get(CDataStore* msg);

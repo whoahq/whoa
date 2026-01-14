@@ -124,11 +124,9 @@ int32_t CClientObjCreate::Get(CDataStore* msg) {
     }
 
     if (this->flags & 0x200) {
-        SmartGUID guid;
-        *msg >> guid;
-        this->guid2D4 = guid;
+        msg->Get(this->uint2D4);
     } else {
-        this->guid2D4 = 0;
+        this->uint2D4 = 0;
     }
 
     return msg->Size() >= msg->Tell();
