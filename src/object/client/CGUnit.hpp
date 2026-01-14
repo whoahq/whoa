@@ -19,7 +19,7 @@ struct CGUnitData {
     int32_t power[7];
     int32_t maxHealth;
     int32_t maxPower[7];
-    int32_t powerRegenFlatModifier[7];
+    float powerRegenFlatModifier[7];
     int32_t powerRegenInterruptedFlatModifier[7];
     int32_t level;
     int32_t factionTemplate;
@@ -34,8 +34,8 @@ struct CGUnitData {
     int32_t displayID;
     int32_t nativeDisplayID;
     int32_t mountDisplayID;
-    uint32_t minDamage;
-    uint32_t maxDamage;
+    float minDamage;
+    float maxDamage;
     uint32_t minOffhandDamage;
     uint32_t maxOffhandDamage;
     int32_t pad2;
@@ -44,7 +44,7 @@ struct CGUnitData {
     uint32_t petExperience;
     uint32_t petNextLevelExperience;
     uint32_t dynamicFlags;
-    int32_t modCastingSpeed;
+    float modCastingSpeed;
     int32_t createdBySpell;
     uint32_t npcFlags;
     uint32_t emoteState;
@@ -63,12 +63,12 @@ struct CGUnitData {
     int32_t rangedAttackPower;
     int32_t rangedAttackPowerMods;
     int32_t rangedAttackPowerMultiplier;
-    int32_t minRangedDamage;
-    int32_t maxRangedDamage;
+    float minRangedDamage;
+    float maxRangedDamage;
     int32_t powerCostModifier[7];
     int32_t powerCostMultiplier[7];
     int32_t maxHealthModifier;
-    int32_t hoverHeight;
+    float hoverHeight;
     int32_t pad4;
 };
 
