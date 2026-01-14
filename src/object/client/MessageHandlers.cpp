@@ -218,8 +218,17 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
     auto existingObject = GetUpdateObject(guid, &reenabled);
 
     if (existingObject) {
-        // TODO
-        return 0;
+        CClientObjCreate::Skip(msg);
+
+        if (!FillInPartialObjectData(existingObject, existingObject->m_obj->m_guid, msg, false, true)) {
+            return 0;
+        }
+
+        if (reenabled) {
+            existingObject->Reenable();
+        }
+
+        return 1;
     }
 
     CClientObjCreate objCreate;
