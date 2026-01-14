@@ -43,12 +43,35 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
     return nullptr;
 }
 
+int32_t SkipPartialObjectUpdate(CDataStore* msg) {
+    // TODO
+    return 0;
+}
+
 void UpdateOutOfRangeObjects(CDataStore* msg) {
     WHOA_UNIMPLEMENTED();
 }
 
 int32_t UpdateObject(CDataStore* msg) {
-    WHOA_UNIMPLEMENTED(0);
+    SmartGUID guid;
+    *msg >> guid;
+
+    int32_t reenabled;
+    auto object = GetUpdateObject(guid, &reenabled);
+
+    if (object) {
+        if (!FillInPartialObjectData(object, object->m_obj->m_guid, msg, false, false)) {
+            return 0;
+        }
+
+        if (reenabled) {
+            object->Reenable();
+        }
+
+        return 1;
+    }
+
+    return SkipPartialObjectUpdate(msg);
 }
 
 void UpdateObjectMovement(CDataStore* msg) {
