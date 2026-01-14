@@ -1,4 +1,13 @@
 #include "object/client/Util.hpp"
+#include "object/client/CClientObjCreate.hpp"
+#include "object/client/CGContainer_C.hpp"
+#include "object/client/CGCorpse_C.hpp"
+#include "object/client/CGDynamicObject_C.hpp"
+#include "object/client/CGGameObject_C.hpp"
+#include "object/client/CGItem_C.hpp"
+#include "object/client/CGObject_C.hpp"
+#include "object/client/CGPlayer_C.hpp"
+#include "object/client/CGUnit_C.hpp"
 #include "object/client/ObjMgr.hpp"
 
 CGObject_C* FindActiveObject(WOWGUID guid) {
@@ -18,4 +27,59 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
 
     // TODO handle reenabling object
     return nullptr;
+}
+
+void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
+    switch (object->m_typeID) {
+        case ID_ITEM: {
+            new (object) CGItem_C(time, objCreate);
+
+            break;
+        }
+
+        case ID_CONTAINER: {
+            new (object) CGContainer_C(time, objCreate);
+
+            break;
+        }
+
+        case ID_UNIT: {
+            new (object) CGUnit_C(time, objCreate);
+            object->AddWorldObject();
+
+            break;
+        }
+
+        case ID_PLAYER: {
+            new (object) CGPlayer_C(time, objCreate);
+            object->AddWorldObject();
+
+            break;
+        }
+
+        case ID_GAMEOBJECT: {
+            new (object) CGGameObject_C(time, objCreate);
+            object->AddWorldObject();
+
+            break;
+        }
+
+        case ID_DYNAMICOBJECT: {
+            new (object) CGDynamicObject_C(time, objCreate);
+            object->AddWorldObject();
+
+            break;
+        }
+
+        case ID_CORPSE: {
+            new (object) CGCorpse_C(time, objCreate);
+            object->AddWorldObject();
+
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
 }

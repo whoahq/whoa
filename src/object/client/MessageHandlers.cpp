@@ -159,61 +159,6 @@ void SetupObjectStorage(OBJECT_TYPE_ID typeID, CGObject_C* object, WOWGUID guid)
     }
 }
 
-void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
-    switch (object->m_typeID) {
-        case ID_ITEM: {
-            new (object) CGItem_C(time, objCreate);
-
-            break;
-        }
-
-        case ID_CONTAINER: {
-            new (object) CGContainer_C(time, objCreate);
-
-            break;
-        }
-
-        case ID_UNIT: {
-            new (object) CGUnit_C(time, objCreate);
-            object->AddWorldObject();
-
-            break;
-        }
-
-        case ID_PLAYER: {
-            new (object) CGPlayer_C(time, objCreate);
-            object->AddWorldObject();
-
-            break;
-        }
-
-        case ID_GAMEOBJECT: {
-            new (object) CGGameObject_C(time, objCreate);
-            object->AddWorldObject();
-
-            break;
-        }
-
-        case ID_DYNAMICOBJECT: {
-            new (object) CGDynamicObject_C(time, objCreate);
-            object->AddWorldObject();
-
-            break;
-        }
-
-        case ID_CORPSE: {
-            new (object) CGCorpse_C(time, objCreate);
-            object->AddWorldObject();
-
-            break;
-        }
-
-        default: {
-            break;
-        }
-    }
-}
-
 int32_t CreateObject(CDataStore* msg, uint32_t time) {
     SmartGUID guid;
     *msg >> guid;
