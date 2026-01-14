@@ -6,9 +6,13 @@
 #include "object/client/CGObject.hpp"
 #include "util/GUID.hpp"
 #include <storm/Hash.hpp>
+#include <storm/List.hpp>
 
 class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID> {
     public:
+        // Public member variables
+        TSLink<CGObject_C> m_link;
+
         // Public member functions
         CGObject_C() = default;
         CGObject_C(uint32_t time, CClientObjCreate& objCreate);

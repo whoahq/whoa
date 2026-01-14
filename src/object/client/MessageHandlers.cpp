@@ -205,7 +205,7 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
 
     InitObject(newObject, time, objCreate);
 
-    // TODO link to one of the ClntObjMgr lists
+    ClntObjMgrGetCurrent()->m_visibleObjects.LinkToTail(newObject);
 
     return 1;
 }
