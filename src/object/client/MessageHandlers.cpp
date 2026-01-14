@@ -211,7 +211,22 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
 }
 
 void UpdateInRangeObjects(CDataStore* msg) {
-    WHOA_UNIMPLEMENTED();
+    uint32_t count;
+    msg->Get(count);
+
+    for (int32_t i = 0; i < count; i++) {
+        SmartGUID guid;
+        *msg >> guid;
+
+        if (guid != ClntObjMgrGetActivePlayer()) {
+            int32_t reenabled;
+            auto object = GetUpdateObject(guid, &reenabled);
+
+            if (object && reenabled) {
+                object->Reenable();
+            }
+        }
+    }
 }
 
 int32_t ObjectUpdateFirstPass(CDataStore* msg, uint32_t time, uint32_t updateIdx, uint32_t updateCount) {
