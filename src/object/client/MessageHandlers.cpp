@@ -28,21 +28,6 @@ enum UPDATE_TYPE {
     UPDATE_IN_RANGE     = 5,
 };
 
-CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
-    *reenabled = false;
-
-    auto activeObject = FindActiveObject(guid);
-
-    if (activeObject) {
-        activeObject->SetDisablePending(false);
-
-        return activeObject;
-    }
-
-    // TODO handle reenabling object
-    return nullptr;
-}
-
 int32_t SkipPartialObjectUpdate(CDataStore* msg) {
     // TODO
     return 0;
