@@ -25,6 +25,8 @@ struct CMovementStatus {
     float float4C = 0.0f;
     float float50 = 0.0f;
     // TODO
+
+    static uint32_t Skip(CDataStore* msg);
 };
 
 CDataStore& operator>>(CDataStore& msg, CMovementStatus& move);

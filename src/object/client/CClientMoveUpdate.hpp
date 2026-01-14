@@ -18,6 +18,8 @@ struct CClientMoveUpdate {
     float float80;
     // TODO
     CMoveSpline spline;
+
+    static void Skip(CDataStore* msg);
 };
 
 CDataStore& operator>>(CDataStore& msg, CClientMoveUpdate& move);

@@ -1,5 +1,16 @@
 #include "object/client/CClientMoveUpdate.hpp"
 
+void CClientMoveUpdate::Skip(CDataStore* msg) {
+    uint32_t moveFlags = CMovementStatus::Skip(msg);
+
+    void* data;
+    msg->GetDataInSitu(data, 9 * sizeof(float));
+
+    if (moveFlags & 0x8000000) {
+        CMoveSpline::Skip(msg);
+    }
+}
+
 CDataStore& operator>>(CDataStore& msg, CClientMoveUpdate& move) {
     msg >> move.status;
 

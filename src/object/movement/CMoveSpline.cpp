@@ -2,6 +2,29 @@
 #include "util/DataStore.hpp"
 #include <common/Time.hpp>
 
+void CMoveSpline::Skip(CDataStore* msg) {
+    uint32_t flags;
+    msg->Get(flags);
+
+    uint32_t faceBytes = 0;
+
+    if (flags & 0x20000) {
+        faceBytes = 4;
+    } else if (flags & 0x10000) {
+        faceBytes = 8;
+    } else if (flags & 0x8000) {
+        faceBytes = 12;
+    }
+
+    void* data;
+    msg->GetDataInSitu(data, faceBytes + 28);
+
+    uint32_t splinePoints = 0;
+    msg->Get(splinePoints);
+
+    msg->GetDataInSitu(data, (splinePoints * sizeof(C3Vector)) + 13);
+}
+
 CDataStore& operator>>(CDataStore& msg, CMoveSpline& spline) {
     msg.Get(spline.flags);
 

@@ -25,6 +25,8 @@ struct CMoveSpline {
     float float20C;
     uint32_t uint210;
     // TODO
+
+    static void Skip(CDataStore* msg);
 };
 
 CDataStore& operator>>(CDataStore& msg, CMoveSpline& spline);
