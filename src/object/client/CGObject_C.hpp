@@ -12,6 +12,13 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
     public:
         // Public member variables
         TSLink<CGObject_C> m_link;
+        // TODO
+        uint32_t m_lockCount        : 16;
+        uint32_t m_disabled         : 1;
+        uint32_t m_inReenable       : 1;
+        uint32_t m_postInited       : 1;
+        uint32_t m_flag19           : 1;
+        uint32_t m_disablePending   : 1;
 
         // Public member functions
         CGObject_C() = default;

@@ -4,6 +4,15 @@
 CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 
+    this->m_lockCount = 0;
+    this->m_disabled = 0;
+    this->m_inReenable = 0;
+    this->m_postInited = 0;
+    this->m_flag19 = 0;
+    this->m_disablePending = 0;
+
+    // TODO
+
     ClntObjMgrLinkInNewObject(this);
 
     // TODO
@@ -23,7 +32,11 @@ void CGObject_C::SetBlock(uint32_t block, uint32_t value) {
 }
 
 void CGObject_C::SetDisablePending(int32_t pending) {
-    // TODO
+    if (pending) {
+        this->m_disablePending = true;
+    } else {
+        this->m_disablePending = false;
+    }
 }
 
 void CGObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
