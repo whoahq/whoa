@@ -11,6 +11,7 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "object/client/CGUnit_C.hpp"
 #include "object/client/MessageHandlers.hpp"
+#include "object/client/Util.hpp"
 #include "util/Unimplemented.hpp"
 #include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
@@ -141,6 +142,24 @@ void ClntObjMgrInitializeStd(uint32_t mapID) {
 void ClntObjMgrLinkInNewObject(CGObject_C* object) {
     CHashKeyGUID key(object->m_obj->m_guid);
     s_curMgr->m_objects.Insert(object, object->m_obj->m_guid, key);
+}
+
+CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type) {
+    if (!s_curMgr || !guid) {
+        return nullptr;
+    }
+
+    auto object = FindActiveObject(guid);
+
+    if (!object) {
+        return nullptr;
+    }
+
+    if (!(object->m_obj->m_type & type)) {
+        return nullptr;
+    }
+
+    return object;
 }
 
 void ClntObjMgrPop() {
