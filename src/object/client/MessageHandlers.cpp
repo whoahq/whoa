@@ -41,15 +41,15 @@ int32_t UpdateObject(CDataStore* msg) {
     SmartGUID guid;
     *msg >> guid;
 
-    int32_t reenabled;
-    auto object = GetUpdateObject(guid, &reenabled);
+    int32_t reenable;
+    auto object = GetUpdateObject(guid, &reenable);
 
     if (object) {
         if (!FillInPartialObjectData(object, object->m_obj->m_guid, msg, false, false)) {
             return 0;
         }
 
-        if (reenabled) {
+        if (reenable) {
             object->Reenable();
         }
 
@@ -167,8 +167,8 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
     msg->Get(_typeID);
     auto typeID = static_cast<OBJECT_TYPE_ID>(_typeID);
 
-    int32_t reenabled;
-    auto existingObject = GetUpdateObject(guid, &reenabled);
+    int32_t reenable;
+    auto existingObject = GetUpdateObject(guid, &reenable);
 
     if (existingObject) {
         CClientObjCreate::Skip(msg);
@@ -177,7 +177,7 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
             return 0;
         }
 
-        if (reenabled) {
+        if (reenable) {
             existingObject->Reenable();
         }
 
@@ -219,10 +219,10 @@ void UpdateInRangeObjects(CDataStore* msg) {
         *msg >> guid;
 
         if (guid != ClntObjMgrGetActivePlayer()) {
-            int32_t reenabled;
-            auto object = GetUpdateObject(guid, &reenabled);
+            int32_t reenable;
+            auto object = GetUpdateObject(guid, &reenable);
 
-            if (object && reenabled) {
+            if (object && reenable) {
                 object->Reenable();
             }
         }

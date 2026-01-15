@@ -9,7 +9,7 @@ class CGObject_C;
 
 CGObject_C* FindActiveObject(WOWGUID guid);
 
-CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled);
+CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable);
 
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate);
 

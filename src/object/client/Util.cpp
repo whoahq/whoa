@@ -14,8 +14,8 @@ CGObject_C* FindActiveObject(WOWGUID guid) {
     return ClntObjMgrGetCurrent()->m_objects.Ptr(guid, CHashKeyGUID(guid));
 }
 
-CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
-    *reenabled = false;
+CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable) {
+    *reenable = false;
 
     // Active object
 
@@ -44,7 +44,7 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenabled) {
             !ClntObjMgrGetCurrent()->m_visibleObjects.IsLinked(disabledObject)
             && !ClntObjMgrGetCurrent()->m_reenabledObjects.IsLinked(disabledObject)
         ) {
-            *reenabled = true;
+            *reenable = true;
             ClntObjMgrGetCurrent()->m_reenabledObjects.LinkToTail(disabledObject);
         }
 
