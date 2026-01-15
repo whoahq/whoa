@@ -5,11 +5,11 @@ CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 
     this->m_lockCount = 0;
-    this->m_disabled = 0;
-    this->m_inReenable = 0;
-    this->m_postInited = 0;
-    this->m_flag19 = 0;
-    this->m_disablePending = 0;
+    this->m_disabled = false;
+    this->m_inReenable = false;
+    this->m_postInited = false;
+    this->m_flag19 = false;
+    this->m_disablePending = false;
 
     // TODO
 
@@ -23,6 +23,9 @@ void CGObject_C::AddWorldObject() {
 }
 
 void CGObject_C::Reenable() {
+    this->m_disabled = false;
+    this->m_inReenable = true;
+
     // TODO
 }
 
