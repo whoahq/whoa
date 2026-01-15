@@ -25,6 +25,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         CGObject_C(uint32_t time, CClientObjCreate& objCreate);
         void AddWorldObject();
         int32_t IsInReenable();
+        int32_t IsObjectLocked();
         void Reenable();
         void SetBlock(uint32_t block, uint32_t value);
         void SetDisablePending(int32_t pending);

@@ -26,6 +26,10 @@ int32_t CGObject_C::IsInReenable() {
     return this->m_inReenable;
 }
 
+int32_t CGObject_C::IsObjectLocked() {
+    return this->m_lockCount != 0;
+}
+
 void CGObject_C::Reenable() {
     this->m_disabled = false;
     this->m_inReenable = true;
