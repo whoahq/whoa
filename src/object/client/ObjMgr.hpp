@@ -20,7 +20,7 @@ void ClntObjMgrInitializeStd(uint32_t mapID);
 
 void ClntObjMgrLinkInNewObject(CGObject_C* object);
 
-CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type);
+CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* fileName, int32_t lineNumber);
 
 void ClntObjMgrPop();
 

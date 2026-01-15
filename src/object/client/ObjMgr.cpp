@@ -144,7 +144,7 @@ void ClntObjMgrLinkInNewObject(CGObject_C* object) {
     s_curMgr->m_objects.Insert(object, object->m_obj->m_guid, key);
 }
 
-CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type) {
+CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* fileName, int32_t lineNumber) {
     if (!s_curMgr || !guid) {
         return nullptr;
     }
