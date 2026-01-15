@@ -50,6 +50,18 @@ void CGObject_C::SetDisablePending(int32_t pending) {
     }
 }
 
+void CGObject_C::SetObjectLocked(int32_t locked) {
+    if (locked) {
+        if (this->m_lockCount != 0xFFFF) {
+            this->m_lockCount++;
+        }
+    } else {
+        if (this->m_lockCount != 0) {
+            this->m_lockCount--;
+        }
+    }
+}
+
 void CGObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->m_obj = reinterpret_cast<CGObjectData*>(&storage[CGObject::GetBaseOffset()]);
     this->m_objSaved = &saved[CGObject::GetBaseOffsetSaved()];
