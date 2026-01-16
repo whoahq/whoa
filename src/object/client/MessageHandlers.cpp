@@ -368,5 +368,21 @@ int32_t ObjectUpdateHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataS
 }
 
 int32_t OnObjectDestroy(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
-    WHOA_UNIMPLEMENTED(0);
+    WOWGUID guid;
+    msg->Get(guid);
+
+    uint8_t dead;
+    msg->Get(dead);
+
+    auto object = FindActiveObject(guid);
+
+    if (object) {
+        // TODO handle unit death
+
+        if (HandleObjectOutOfRangePass1(object, OUT_OF_RANGE_1)) {
+            HandleObjectOutOfRangePass2(object);
+        }
+    }
+
+    return 1;
 }
