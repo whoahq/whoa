@@ -13,7 +13,7 @@ class ClntObjMgr {
         // Member variables
         TSHashTable<CGObject_C, CHashKeyGUID> m_objects;
         TSHashTable<CGObject_C, CHashKeyGUID> m_lazyCleanupObjects;
-        // TODO
+        STORM_EXPLICIT_LIST(CGObject_C, m_link) m_lazyCleanupFifo[NUM_CLIENT_OBJECT_TYPES - 1];
         STORM_EXPLICIT_LIST(CGObject_C, m_link) m_visibleObjects;
         STORM_EXPLICIT_LIST(CGObject_C, m_link) m_reenabledObjects;
         // TODO

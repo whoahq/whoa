@@ -83,8 +83,7 @@ void HandleObjectOutOfRangePass2(CGObject_C* object) {
     }
 
     ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Insert(object, object->m_hashval, CHashKeyGUID(object->m_key));
-
-    // TODO link to type specific (disabled?) list in ClntObjMgrGetCurrent()
+    ClntObjMgrGetCurrent()->m_lazyCleanupFifo[object->m_typeID - 1].LinkToTail(object);
 }
 
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
