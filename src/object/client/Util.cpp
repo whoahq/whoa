@@ -73,6 +73,20 @@ int32_t HandleObjectOutOfRangePass1(CGObject_C* object, OUT_OF_RANGE_TYPE type) 
     return true;
 }
 
+void HandleObjectOutOfRangePass2(CGObject_C* object) {
+    // TODO ClearObjectMirrorHandlers(object);
+
+    ClntObjMgrGetCurrent()->m_objects.Unlink(object);
+
+    if (ClntObjMgrGetCurrent()->m_visibleObjects.IsLinked(object)) {
+        ClntObjMgrGetCurrent()->m_visibleObjects.UnlinkNode(object);
+    }
+
+    ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Insert(object, object->m_hashval, CHashKeyGUID(object->m_key));
+
+    // TODO link to type specific (disabled?) list in ClntObjMgrGetCurrent()
+}
+
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
     switch (object->m_typeID) {
         case ID_ITEM: {

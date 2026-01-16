@@ -14,6 +14,8 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable);
 
 int32_t HandleObjectOutOfRangePass1(CGObject_C* object, OUT_OF_RANGE_TYPE type);
 
+void HandleObjectOutOfRangePass2(CGObject_C* object);
+
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate);
 
 #endif
