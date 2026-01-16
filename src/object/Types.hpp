@@ -72,6 +72,12 @@ enum OBJECT_TYPE_ID {
     // TODO
 };
 
+enum OUT_OF_RANGE_TYPE {
+    OUT_OF_RANGE_0      = 0,
+    OUT_OF_RANGE_1      = 1,
+    OUT_OF_RANGE_2      = 2,
+};
+
 enum SHEATHE_TYPE {
     SHEATHE_0           = 0,
     SHEATHE_1           = 1,
