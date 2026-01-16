@@ -34,7 +34,50 @@ int32_t SkipPartialObjectUpdate(CDataStore* msg) {
 }
 
 void UpdateOutOfRangeObjects(CDataStore* msg) {
-    WHOA_UNIMPLEMENTED();
+    uint32_t count;
+    msg->Get(count);
+
+    // TODO CVehiclePassenger_C::StartAddingPendingRescueTransitions();
+
+    auto startPos = msg->Tell();
+
+    // Pass 1
+
+    for (int32_t i = 0; i < count; i++) {
+        SmartGUID guid;
+        *msg >> guid;
+
+        if (guid == ClntObjMgrGetActivePlayer()) {
+            continue;
+        }
+
+        auto object = FindActiveObject(guid);
+
+        if (object) {
+            HandleObjectOutOfRangePass1(object, OUT_OF_RANGE_0);
+        }
+    }
+
+    msg->Seek(startPos);
+
+    // Pass 2
+
+    for (int32_t i = 0; i < count; i++) {
+        SmartGUID guid;
+        *msg >> guid;
+
+        if (guid == ClntObjMgrGetActivePlayer()) {
+            continue;
+        }
+
+        auto object = FindActiveObject(guid);
+
+        if (object && !object->IsObjectLocked()) {
+            HandleObjectOutOfRangePass2(object);
+        }
+    }
+
+    // TODO CVehiclePassenger_C::ExecutePendingRescueTransitions();
 }
 
 int32_t UpdateObject(CDataStore* msg) {
