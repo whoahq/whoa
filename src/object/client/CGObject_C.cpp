@@ -22,6 +22,10 @@ void CGObject_C::AddWorldObject() {
     // TODO
 }
 
+void CGObject_C::Disable() {
+    // TODO
+}
+
 int32_t CGObject_C::IsInReenable() {
     return this->m_inReenable;
 }

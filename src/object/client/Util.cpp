@@ -56,6 +56,23 @@ CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable) {
     return nullptr;
 }
 
+int32_t HandleObjectOutOfRangePass1(CGObject_C* object, OUT_OF_RANGE_TYPE type) {
+    // TODO arena unit out of range handling
+
+    object->HandleOutOfRange(type);
+
+    if (object->IsObjectLocked()) {
+        object->SetDisablePending(true);
+
+        return false;
+    }
+
+    object->SetDisablePending(false);
+    object->Disable();
+
+    return true;
+}
+
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
     switch (object->m_typeID) {
         case ID_ITEM: {

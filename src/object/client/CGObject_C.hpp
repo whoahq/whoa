@@ -19,6 +19,14 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         uint32_t m_postInited       : 1;
         uint32_t m_flag19           : 1;
         uint32_t m_disablePending   : 1;
+        // TODO
+
+        // Virtual public member functions
+        // TODO
+        virtual void Disable();
+        // TODO
+        virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};
+        // TODO
 
         // Public member functions
         CGObject_C() = default;
