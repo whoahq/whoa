@@ -23,6 +23,9 @@ void CGObject_C::AddWorldObject() {
 }
 
 void CGObject_C::Disable() {
+    this->m_disabled = true;
+    // TODO other flag manipulation
+
     // TODO
 }
 
