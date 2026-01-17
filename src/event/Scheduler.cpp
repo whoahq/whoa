@@ -286,12 +286,10 @@ int32_t SchedulerThreadProcProcess(uint32_t a1) {
             }
         }
 
-        uint32_t v9 = (currTime - context->m_schedLastIdle);
+        float elapsedSec = (currTime - context->m_schedLastIdle) * 0.001;
         context->m_schedLastIdle = currTime;
-        double elapsedSec = v9 * 0.001;
 
-        // TODO
-        // FrameTime::Update(currTime, elapsedSec);
+        SynthesizeTick(context, currTime, elapsedSec);
 
         IEvtTimerDispatch(context);
 
