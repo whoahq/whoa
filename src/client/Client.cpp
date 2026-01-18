@@ -520,8 +520,9 @@ void WowClientDestroy() {
 }
 
 void WowClientInit() {
+    EventRegister(EVENT_ID_TICK, reinterpret_cast<EVENTHANDLERFUNC>(&CWorld::OnTick));
+
     // TODO
-    // EventRegister(EVENT_ID_5, (int)sub_4020E0);
     // _cfltcvt_init_0();
 
     ClientRegisterConsoleCommands();

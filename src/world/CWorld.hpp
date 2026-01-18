@@ -1,6 +1,7 @@
 #ifndef WORLD_C_WORLD_HPP
 #define WORLD_C_WORLD_HPP
 
+#include "event/Event.hpp"
 #include <tempest/Vector.hpp>
 #include <cstdint>
 
@@ -44,14 +45,36 @@ class CWorld {
             Enable_HwPcf = 0x2
         };
 
-        // Static variables
+        // Public static variables
         static uint32_t s_enables;
         static uint32_t s_enables2;
         static Weather* s_weather;
 
-        // Static functions
-        static void Initialize(void);
+        // Public static functions
+        static uint32_t GetCurTimeMs();
+        static float GetCurTimeSec();
+        static uint32_t GetGameTimeFixed();
+        static float GetGameTimeSec();
+        static uint32_t GetTickTimeFixed();
+        static uint32_t GetTickTimeMs();
+        static float GetTickTimeSec();
+        static void Initialize();
         static void LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID);
+        static int32_t OnTick(const EVENT_DATA_TICK* data, void* param);
+        static void SetUpdateTime(float tickTimeSec, uint32_t curTimeMs);
+
+    private:
+        // Private static variables
+        static uint32_t s_curTimeMs;
+        static float s_curTimeSec;
+        static uint32_t s_gameTimeFixed;
+        static float s_gameTimeSec;
+        static uint32_t s_tickTimeFixed;
+        static uint32_t s_tickTimeMs;
+        static float s_tickTimeSec;
+
+        // Private static functions
+        static uint32_t GetFixedPrecisionTime(float timeSec);
 };
 
 #endif

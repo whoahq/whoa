@@ -6,9 +6,48 @@
 #include "world/Weather.hpp"
 #include <storm/Memory.hpp>
 
+uint32_t CWorld::s_curTimeMs;
+float CWorld::s_curTimeSec;
 uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
+uint32_t CWorld::s_gameTimeFixed;
+float CWorld::s_gameTimeSec;
+uint32_t CWorld::s_tickTimeFixed;
+uint32_t CWorld::s_tickTimeMs;
+float CWorld::s_tickTimeSec;
 Weather* CWorld::s_weather;
+
+uint32_t CWorld::GetCurTimeMs() {
+    return CWorld::s_curTimeMs;
+}
+
+float CWorld::GetCurTimeSec() {
+    return CWorld::s_curTimeSec;
+}
+
+uint32_t CWorld::GetFixedPrecisionTime(float timeSec) {
+    return static_cast<uint32_t>(timeSec * 1024.0f);
+}
+
+uint32_t CWorld::GetGameTimeFixed() {
+    return CWorld::s_gameTimeFixed;
+}
+
+float CWorld::GetGameTimeSec() {
+    return CWorld::s_gameTimeSec;
+}
+
+uint32_t CWorld::GetTickTimeFixed() {
+    return CWorld::s_tickTimeFixed;
+}
+
+uint32_t CWorld::GetTickTimeMs() {
+    return CWorld::s_tickTimeMs;
+}
+
+float CWorld::GetTickTimeSec() {
+    return CWorld::s_tickTimeSec;
+}
 
 void CWorld::Initialize() {
     CWorld::s_enables |=
@@ -25,6 +64,9 @@ void CWorld::Initialize() {
         | Enables::Enable_1000000
         | Enables::Enable_Particulates
         | Enables::Enable_LowDetail;
+
+    CWorld::s_gameTimeFixed = 0;
+    CWorld::s_gameTimeSec = 0.0f;
 
     // TODO
 
@@ -57,4 +99,24 @@ void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t zone
     CMap::Load(mapName, zoneID);
 
     // TODO
+}
+
+int32_t CWorld::OnTick(const EVENT_DATA_TICK* data, void* param) {
+    CWorld::SetUpdateTime(data->tickTimeSec, data->curTimeMs);
+
+    return 1;
+}
+
+void CWorld::SetUpdateTime(float tickTimeSec, uint32_t curTimeMs) {
+    auto tickTimeFixed = CWorld::GetFixedPrecisionTime(tickTimeSec);
+
+    CWorld::s_curTimeMs = curTimeMs;
+    CWorld::s_curTimeSec = static_cast<float>(curTimeMs) * 0.001f;
+
+    CWorld::s_gameTimeFixed += tickTimeFixed;
+    CWorld::s_gameTimeSec += tickTimeSec;
+
+    CWorld::s_tickTimeFixed = tickTimeFixed;
+    CWorld::s_tickTimeMs = static_cast<uint32_t>(tickTimeSec * 1000.0f);
+    CWorld::s_tickTimeSec = tickTimeSec;
 }
