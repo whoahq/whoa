@@ -12,6 +12,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
     public:
         // Public member variables
         TSLink<CGObject_C> m_link;
+        uint32_t m_disableTimeMs;
         // TODO
         uint32_t m_lockCount        : 16;
         uint32_t m_disabled         : 1;

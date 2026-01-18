@@ -1,5 +1,6 @@
 #include "object/client/CGObject_C.hpp"
 #include "object/client/ObjMgr.hpp"
+#include "world/World.hpp"
 
 CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
@@ -23,10 +24,12 @@ void CGObject_C::AddWorldObject() {
 }
 
 void CGObject_C::Disable() {
+    // TODO
+
     this->m_disabled = true;
     // TODO other flag manipulation
 
-    // TODO
+    this->m_disableTimeMs = CWorld::GetCurTimeMs();
 }
 
 int32_t CGObject_C::IsInReenable() {
