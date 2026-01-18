@@ -2,6 +2,7 @@
 #include "app/mac/MacClient.h"
 #include "event/Input.hpp"
 #include "gx/gll/CGxDeviceGLL.hpp"
+#include "gx/mtl/CGxDeviceMTL.hpp"
 #include "gx/Device.hpp"
 #include "gx/Window.hpp"
 #include <bc/Debug.hpp>
@@ -171,7 +172,11 @@ void MacOnResized(int32_t width, int32_t height, bool a3) {
         return;
     }
 
-    static_cast<CGxDeviceGLL*>(g_theGxDevicePtr)->Resize(width, height);
+    if (GxDevApi() == GxApi_GLL) {
+        static_cast<CGxDeviceGLL*>(g_theGxDevicePtr)->Resize(width, height);
+    } else if (GxDevApi() == GxApi_Metal) {
+        static_cast<CGxDeviceMTL*>(g_theGxDevicePtr)->Resize(width, height);
+    }
 
     OsQueuePut(OS_INPUT_SIZE, width, height, 0, 0);
 

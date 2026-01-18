@@ -20,6 +20,7 @@ if(WHOA_SYSTEM_MAC)
     file(GLOB MAC_SOURCES
         "gll/*.cpp"
         "gll/*.mm"
+        "mtl/*.mm"
         "mac/*.cpp"
     )
 
