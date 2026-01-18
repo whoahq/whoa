@@ -67,12 +67,12 @@ void MirrorInitialize() {
     // TODO
 }
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
+CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
     auto playerGUID = ClntObjMgrGetActivePlayer();
 
     // Heap allocate player object for current player
     if (guid == playerGUID) {
-        return STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved());
+        return static_cast<CGObject_C*>(STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved()));
     }
 
     // TODO GarbageCollect(typeID, 10000);
@@ -85,9 +85,10 @@ void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
     }
 
     // TODO pointer should be fetched via ObjectPtr
-    static_cast<CGObject_C*>(mem)->m_memHandle = memHandle;
+    auto object = static_cast<CGObject_C*>(mem);
+    object->m_memHandle = memHandle;
 
-    return mem;
+    return object;
 }
 
 WOWGUID ClntObjMgrGetActivePlayer() {

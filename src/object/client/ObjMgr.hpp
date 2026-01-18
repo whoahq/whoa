@@ -6,7 +6,7 @@
 #include "object/Types.hpp"
 #include <cstdint>
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid);
+CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid);
 
 WOWGUID ClntObjMgrGetActivePlayer();
 

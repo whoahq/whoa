@@ -236,7 +236,7 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
         ClntObjMgrSetActivePlayer(guid);
     }
 
-    auto newObject = static_cast<CGObject_C*>(ClntObjMgrAllocObject(typeID, guid));
+    auto newObject = ClntObjMgrAllocObject(typeID, guid);
 
     SetupObjectStorage(typeID, newObject, guid);
 
