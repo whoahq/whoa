@@ -323,7 +323,15 @@ int32_t ObjectUpdateFirstPass(CDataStore* msg, uint32_t time, uint32_t updateIdx
 
 int32_t ObjectUpdateSecondPass(CDataStore* msg, uint32_t time, uint32_t updateCount) {
     // TODO
-    return 0;
+
+    // Finish reenabling objects
+
+    while (auto reenabledObject = ClntObjMgrGetCurrent()->m_reenabledObjects.Head()) {
+        ClntObjMgrGetCurrent()->m_visibleObjects.LinkToTail(reenabledObject);
+        reenabledObject->PostReenable();
+    }
+
+    return 1;
 }
 
 int32_t ObjectCompressedUpdateHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {

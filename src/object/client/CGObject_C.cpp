@@ -44,6 +44,14 @@ int32_t CGObject_C::IsObjectLocked() {
     return this->m_lockCount != 0;
 }
 
+void CGObject_C::PostReenable() {
+    // TODO
+
+    this->m_inReenable = false;
+
+    // TODO
+}
+
 void CGObject_C::Reenable() {
     this->m_disabled = false;
     this->m_inReenable = true;

@@ -25,7 +25,8 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         // Virtual public member functions
         virtual ~CGObject_C();
         virtual void Disable();
-        // TODO
+        void Reenable();
+        void PostReenable();
         virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};
         // TODO
 
@@ -35,7 +36,6 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         void AddWorldObject();
         int32_t IsInReenable();
         int32_t IsObjectLocked();
-        void Reenable();
         void SetBlock(uint32_t block, uint32_t value);
         void SetDisablePending(int32_t pending);
         void SetObjectLocked(int32_t locked);
