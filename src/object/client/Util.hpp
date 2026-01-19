@@ -10,6 +10,8 @@ class CGObject_C;
 
 CGObject_C* FindActiveObject(WOWGUID guid);
 
+void GarbageCollect(OBJECT_TYPE_ID typeID, uint32_t collectAgeMs);
+
 CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable);
 
 int32_t HandleObjectOutOfRangePass1(CGObject_C* object, OUT_OF_RANGE_TYPE type);

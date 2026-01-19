@@ -9,9 +9,33 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "object/client/CGUnit_C.hpp"
 #include "object/client/ObjMgr.hpp"
+#include <common/Time.hpp>
 
 CGObject_C* FindActiveObject(WOWGUID guid) {
     return ClntObjMgrGetCurrent()->m_objects.Ptr(guid, CHashKeyGUID(guid));
+}
+
+/**
+ * Given an object type and collection age, free the object at the head of that type's FIFO queue
+ * if it was disabled longer ago than the collection age. Only frees at most one object per call.
+ */
+void GarbageCollect(OBJECT_TYPE_ID typeID, uint32_t collectAgeMs) {
+    auto object = ClntObjMgrGetCurrent()->m_lazyCleanupFifo[typeID - 1].Head();
+
+    if (!object) {
+        return;
+    }
+
+    uint32_t disableAgeMs = OsGetAsyncTimeMsPrecise() - object->m_disableTimeMs;
+
+    if (disableAgeMs < collectAgeMs) {
+        return;
+    }
+
+    ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Unlink(object);
+    object->m_link.Unlink();
+
+    ClntObjMgrFreeObject(object);
 }
 
 CGObject_C* GetUpdateObject(WOWGUID guid, int32_t* reenable) {

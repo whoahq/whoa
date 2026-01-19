@@ -10,6 +10,8 @@ CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid);
 
 WOWGUID ClntObjMgrGetActivePlayer();
 
+void ClntObjMgrFreeObject(CGObject_C* object);
+
 ClntObjMgr* ClntObjMgrGetCurrent();
 
 uint32_t ClntObjMgrGetMapID();

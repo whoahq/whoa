@@ -75,7 +75,7 @@ CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
         return static_cast<CGObject_C*>(STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved()));
     }
 
-    // TODO GarbageCollect(typeID, 10000);
+    GarbageCollect(typeID, 10000);
 
     uint32_t memHandle;
     void* mem;
@@ -89,6 +89,10 @@ CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
     object->m_memHandle = memHandle;
 
     return object;
+}
+
+void ClntObjMgrFreeObject(CGObject_C* object) {
+    // TODO
 }
 
 WOWGUID ClntObjMgrGetActivePlayer() {

@@ -384,6 +384,8 @@ int32_t ObjectUpdateHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataS
     uint32_t updateCount;
     msg->Get(updateCount);
 
+    // If first update type is out of range, handle it before continuing with normal processing
+
     auto startPos = msg->Tell();
 
     uint8_t firstUpdateType;
@@ -398,6 +400,8 @@ int32_t ObjectUpdateHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataS
         msg->Seek(startPos);
     }
 
+    // Process all updates in two passes (creates, updates and disables objects as appropriate)
+
     int32_t result = 0;
 
     if (ObjectUpdateFirstPass(msg, time, updateIdx, updateCount)) {
@@ -405,7 +409,11 @@ int32_t ObjectUpdateHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataS
         result = ObjectUpdateSecondPass(msg, time, updateCount);
     }
 
-    // TODO
+    // Garbage collect objects disabled more than 2 minutes ago (catch all)
+
+    for (int32_t typeID = ID_OBJECT; typeID < NUM_CLIENT_OBJECT_TYPES; typeID++) {
+        GarbageCollect(static_cast<OBJECT_TYPE_ID>(typeID), 120000);
+    }
 
     return result;
 }
