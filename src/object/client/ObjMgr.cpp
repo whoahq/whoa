@@ -92,7 +92,33 @@ CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
 }
 
 void ClntObjMgrFreeObject(CGObject_C* object) {
-    // TODO
+    auto playerGUID = ClntObjMgrGetActivePlayer();
+    auto isActivePlayer = object->m_obj->m_guid == playerGUID;
+
+    switch (object->m_obj->m_type) {
+        case TYPE_OBJECT:
+        case HIER_TYPE_ITEM:
+        case HIER_TYPE_CONTAINER:
+        case HIER_TYPE_UNIT:
+        case HIER_TYPE_PLAYER:
+        case HIER_TYPE_GAMEOBJECT:
+        case HIER_TYPE_DYNAMICOBJECT:
+        case HIER_TYPE_CORPSE: {
+            object->~CGObject_C();
+
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+
+    if (isActivePlayer) {
+        STORM_FREE(object);
+    } else {
+        ObjectFree(s_objHeapId[object->m_typeID], object->m_memHandle);
+    }
 }
 
 WOWGUID ClntObjMgrGetActivePlayer() {
