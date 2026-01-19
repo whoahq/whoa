@@ -7,6 +7,9 @@
 
 class CGCorpse_C : public CGObject_C, public CGCorpse {
     public:
+        // Virtual public member functions
+        virtual ~CGCorpse_C();
+
         // Public member functions
         CGCorpse_C(uint32_t time, CClientObjCreate& objCreate);
         void SetStorage(uint32_t* storage, uint32_t* saved);

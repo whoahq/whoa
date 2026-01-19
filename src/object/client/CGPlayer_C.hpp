@@ -10,6 +10,9 @@ class CreatureModelDataRec;
 
 class CGPlayer_C : public CGUnit_C, public CGPlayer {
     public:
+        // Virtual public member functions
+        virtual ~CGPlayer_C();
+
         // Public member functions
         CGPlayer_C(uint32_t time, CClientObjCreate& objCreate);
         void SetStorage(uint32_t* storage, uint32_t* saved);

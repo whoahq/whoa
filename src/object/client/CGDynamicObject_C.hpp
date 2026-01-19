@@ -7,6 +7,9 @@
 
 class CGDynamicObject_C : public CGObject_C, public CGDynamicObject {
     public:
+        // Virtual public member functions
+        virtual ~CGDynamicObject_C();
+
         // Public member functions
         CGDynamicObject_C(uint32_t time, CClientObjCreate& objCreate);
         void SetStorage(uint32_t* storage, uint32_t* saved);

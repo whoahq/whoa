@@ -4,6 +4,10 @@ CGCorpse_C::CGCorpse_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(
     // TODO
 }
 
+CGCorpse_C::~CGCorpse_C() {
+    // TODO
+}
+
 void CGCorpse_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGObject_C::SetStorage(storage, saved);
 

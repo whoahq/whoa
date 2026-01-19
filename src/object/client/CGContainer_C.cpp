@@ -4,6 +4,10 @@ CGContainer_C::CGContainer_C(uint32_t time, CClientObjCreate& objCreate) : CGIte
     // TODO
 }
 
+CGContainer_C::~CGContainer_C() {
+    // TODO
+}
+
 void CGContainer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGItem_C::SetStorage(storage, saved);
 

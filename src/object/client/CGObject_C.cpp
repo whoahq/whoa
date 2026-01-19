@@ -19,6 +19,10 @@ CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 }
 
+CGObject_C::~CGObject_C() {
+    // TODO
+}
+
 void CGObject_C::AddWorldObject() {
     // TODO
 }

@@ -7,6 +7,10 @@ CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(ti
     // TODO
 }
 
+CGPlayer_C::~CGPlayer_C() {
+    // TODO
+}
+
 void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGUnit_C::SetStorage(storage, saved);
 

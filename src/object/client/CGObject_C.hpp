@@ -23,7 +23,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         // TODO
 
         // Virtual public member functions
-        // TODO
+        virtual ~CGObject_C();
         virtual void Disable();
         // TODO
         virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};

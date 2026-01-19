@@ -7,6 +7,9 @@
 
 class CGContainer_C : public CGItem_C, public CGContainer {
     public:
+        // Virtual public member functions
+        virtual ~CGContainer_C();
+
         // Public member functions
         CGContainer_C(uint32_t time, CClientObjCreate& objCreate);
         void SetStorage(uint32_t* storage, uint32_t* saved);
