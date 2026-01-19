@@ -28,9 +28,123 @@ enum UPDATE_TYPE {
     UPDATE_IN_RANGE     = 5,
 };
 
-int32_t SkipPartialObjectUpdate(CDataStore* msg) {
-    // TODO
-    return 0;
+void SkipSetOfObjects(CDataStore* msg) {
+    uint32_t count;
+    msg->Get(count);
+
+    for (int32_t i = 0; i < count; i++) {
+        SmartGUID guid;
+        *msg >> guid;
+    }
+}
+
+int32_t PostInitObject(CDataStore* msg, uint32_t time, bool a3) {
+    SmartGUID guid;
+    *msg >> guid;
+
+    uint8_t _typeID;
+    msg->Get(_typeID);
+    auto typeID = static_cast<OBJECT_TYPE_ID>(_typeID);
+
+    if (guid == 0) {
+        return 0;
+    }
+
+    auto object = FindActiveObject(guid);
+
+    if (!object) {
+        return 0;
+    }
+
+    CClientObjCreate init;
+    if (!init.Get(msg)) {
+        return 0;
+    }
+
+    if (object->m_inReenable && object->m_obj->m_type & TYPE_UNIT) {
+        // TODO
+    }
+
+    if (object->m_postInited) {
+        // TODO
+        return 1;
+    }
+
+    switch (typeID) {
+        case ID_OBJECT: {
+            object->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_ITEM:
+        case ID_CONTAINER: {
+            static_cast<CGItem_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_UNIT: {
+            static_cast<CGUnit_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_PLAYER: {
+            static_cast<CGPlayer_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_GAMEOBJECT: {
+            static_cast<CGGameObject_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_DYNAMICOBJECT: {
+            static_cast<CGDynamicObject_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        case ID_CORPSE: {
+            static_cast<CGCorpse_C*>(object)->PostInit(time, init, a3);
+
+            break;
+        }
+
+        default: {
+            STORM_APP_FATAL("PostInitObject: unknown object type %d", typeID);
+        }
+    }
+
+    return SkipPartialObjectUpdate(msg);
+}
+
+void PostMovementUpdate(CDataStore* msg) {
+    SmartGUID guid;
+    *msg >> guid;
+
+    CClientMoveUpdate move;
+    *msg >> move;
+
+    if (guid == CGUnit_C::s_activeMover) {
+        return;
+    }
+
+    int32_t reenable;
+    auto unit = static_cast<CGUnit_C*>(GetUpdateObject(guid, &reenable));
+
+    if (!unit) {
+        return;
+    }
+
+    unit->PostMovementUpdate(move, unit->m_obj->m_guid == CGUnit_C::s_activeMover);
+
+    if (reenable) {
+        unit->Reenable();
+    }
 }
 
 void UpdateOutOfRangeObjects(CDataStore* msg) {
@@ -322,7 +436,48 @@ int32_t ObjectUpdateFirstPass(CDataStore* msg, uint32_t time, uint32_t updateIdx
 }
 
 int32_t ObjectUpdateSecondPass(CDataStore* msg, uint32_t time, uint32_t updateCount) {
-    // TODO
+    // Handle post updates
+
+    for (int32_t i = 0; i < updateCount; i++) {
+        uint8_t updateType;
+        msg->Get(updateType);
+
+        switch (updateType) {
+            case UPDATE_PARTIAL: {
+                if (!CallMirrorHandlers(msg, false, 0)) {
+                    return 0;
+                }
+
+                break;
+            }
+
+            case UPDATE_MOVEMENT: {
+                PostMovementUpdate(msg);
+
+                break;
+            }
+
+            case UPDATE_FULL:
+            case UPDATE_3: {
+                if (!PostInitObject(msg, time, updateType == UPDATE_3)) {
+                    return 0;
+                }
+
+                break;
+            }
+
+            case UPDATE_IN_RANGE:
+            case UPDATE_OUT_OF_RANGE: {
+                SkipSetOfObjects(msg);
+
+                break;
+            }
+
+            default: {
+                break;
+            }
+        }
+    }
 
     // Finish reenabling objects
 

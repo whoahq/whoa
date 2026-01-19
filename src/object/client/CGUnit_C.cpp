@@ -1,6 +1,8 @@
 #include "object/client/CGUnit_C.hpp"
 #include "db/Db.hpp"
 
+WOWGUID CGUnit_C::s_activeMover;
+
 const char* CGUnit_C::GetDisplayClassNameFromRecord(const ChrClassesRec* classRec, UNIT_SEX sex, UNIT_SEX* displaySex) {
     if (displaySex) {
         *displaySex = sex;
@@ -94,6 +96,14 @@ CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time
 }
 
 CGUnit_C::~CGUnit_C() {
+    // TODO
+}
+
+void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+}
+
+void CGUnit_C::PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover) {
     // TODO
 }
 

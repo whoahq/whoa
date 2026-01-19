@@ -8,6 +8,10 @@ CGGameObject_C::~CGGameObject_C() {
     // TODO
 }
 
+void CGGameObject_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+}
+
 void CGGameObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGObject_C::SetStorage(storage, saved);
 

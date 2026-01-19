@@ -8,6 +8,10 @@ CGItem_C::~CGItem_C() {
     // TODO
 }
 
+void CGItem_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+}
+
 void CGItem_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGObject_C::SetStorage(storage, saved);
 

@@ -8,6 +8,7 @@
 #include "object/client/CGPlayer.hpp"
 #include "object/client/CGUnit.hpp"
 #include "object/client/ObjMgr.hpp"
+#include "object/client/Util.hpp"
 #include "object/Types.hpp"
 #include <common/DataStore.hpp>
 
@@ -148,6 +149,49 @@ OBJECT_TYPE_ID IncTypeID(CGObject_C* object, OBJECT_TYPE_ID curTypeID) {
 
 int32_t IsMaskBitSet(uint32_t* masks, uint32_t block) {
     return masks[block / 32] & (1 << (block % 32));
+}
+
+int32_t CallMirrorHandlers(CDataStore* msg, bool a2, WOWGUID guid) {
+    if (!a2) {
+        SmartGUID _guid;
+        *msg >> _guid;
+
+        guid = _guid;
+    }
+
+    auto object = FindActiveObject(guid);
+
+    if (!object) {
+        return SkipPartialObjectUpdate(msg);
+    }
+
+    uint8_t changeMaskCount;
+    uint32_t changeMasks[MAX_CHANGE_MASKS];
+    if (!ExtractDirtyMasks(msg, &changeMaskCount, changeMasks)) {
+        return 0;
+    }
+
+    OBJECT_TYPE_ID typeID = ID_OBJECT;
+    uint32_t blockOffset = 0;
+    uint32_t numBlocks = GetNumDwordBlocks(object->m_obj->m_type, guid);
+
+    for (int32_t block = 0; block < numBlocks; block++) {
+        if (block >= s_objMirrorBlocks[typeID]) {
+            blockOffset = s_objMirrorBlocks[typeID];
+            typeID = IncTypeID(object, typeID);
+        }
+
+        // TODO
+
+        if (IsMaskBitSet(changeMasks, block)) {
+            uint32_t blockValue = 0;
+            msg->Get(blockValue);
+        }
+
+        // TODO
+    }
+
+    return 1;
 }
 
 int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* msg, bool forFullUpdate, bool zeroZeroBits) {

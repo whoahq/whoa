@@ -12,6 +12,7 @@ class CGItem_C : public CGObject_C, public CGItem {
 
         // Public member functions
         CGItem_C(uint32_t time, CClientObjCreate& objCreate);
+        void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void SetStorage(uint32_t* storage, uint32_t* saved);
 };
 

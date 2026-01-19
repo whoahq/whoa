@@ -59,6 +59,10 @@ void CGObject_C::Reenable() {
     // TODO
 }
 
+void CGObject_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+}
+
 void CGObject_C::SetBlock(uint32_t block, uint32_t value) {
     auto storage = reinterpret_cast<uint32_t*>(this->m_obj);
     storage[block] = value;
