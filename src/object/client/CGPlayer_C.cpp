@@ -13,6 +13,10 @@ CGPlayer_C::~CGPlayer_C() {
 
 void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
+
+    this->CGUnit_C::PostInit(time, init, a4);
+
+    // TODO
 }
 
 void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {

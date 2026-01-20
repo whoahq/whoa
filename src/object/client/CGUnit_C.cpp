@@ -101,6 +101,10 @@ CGUnit_C::~CGUnit_C() {
 
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
+
+    this->CGObject_C::PostInit(time, init, a4);
+
+    // TODO
 }
 
 void CGUnit_C::PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover) {

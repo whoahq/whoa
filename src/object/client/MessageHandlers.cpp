@@ -66,8 +66,7 @@ int32_t PostInitObject(CDataStore* msg, uint32_t time, bool a3) {
     }
 
     if (object->m_postInited) {
-        // TODO
-        return 1;
+        return CallMirrorHandlers(msg, true, guid);
     }
 
     switch (typeID) {

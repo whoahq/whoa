@@ -10,6 +10,10 @@ CGCorpse_C::~CGCorpse_C() {
 
 void CGCorpse_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
+
+    this->CGObject_C::PostInit(time, init, a4);
+
+    // TODO
 }
 
 void CGCorpse_C::SetStorage(uint32_t* storage, uint32_t* saved) {

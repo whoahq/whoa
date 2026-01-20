@@ -9,6 +9,8 @@ CGItem_C::~CGItem_C() {
 }
 
 void CGItem_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    this->CGObject_C::PostInit(time, init, a4);
+
     // TODO
 }
 

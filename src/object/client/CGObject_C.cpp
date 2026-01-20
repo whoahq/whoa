@@ -60,6 +60,8 @@ void CGObject_C::Reenable() {
 }
 
 void CGObject_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    this->m_postInited = true;
+
     // TODO
 }
 
