@@ -1,6 +1,7 @@
 #include "world/map/CMap.hpp"
 #include <storm/String.hpp>
 
+STORM_EXPLICIT_LIST(CMapBaseObj, m_lameAssLink) CMap::s_entityList;
 char CMap::s_mapName[256];
 char CMap::s_mapPath[256];
 char CMap::s_wdtFilename[256];

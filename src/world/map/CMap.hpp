@@ -1,11 +1,14 @@
 #ifndef WORLD_MAP_C_MAP_HPP
 #define WORLD_MAP_C_MAP_HPP
 
+#include "world/map/CMapBaseObj.hpp"
+#include <storm/List.hpp>
 #include <cstdint>
 
 class CMap {
     public:
         // Static variables
+        static STORM_EXPLICIT_LIST(CMapBaseObj, m_lameAssLink) s_entityList;
         static char s_mapName[];
         static char s_mapPath[];
         static char s_wdtFilename[];
