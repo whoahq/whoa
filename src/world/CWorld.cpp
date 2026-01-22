@@ -88,6 +88,10 @@ void CWorld::Initialize() {
 
     // TODO
 
+    CMap::Initialize();
+
+    // TODO
+
     CWorld::s_weather = STORM_NEW(Weather);
 
     // TODO
