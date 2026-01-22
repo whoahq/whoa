@@ -39,6 +39,7 @@ CMapEntity* CMap::AllocEntity(int32_t a1) {
 
     if (ObjectAlloc(*CMap::s_entityHeap, &memHandle, &mem, false)) {
         entity = new (mem) CMapEntity();
+        entity->m_memHandle = memHandle;
     } else {
         entity = nullptr;
     }
