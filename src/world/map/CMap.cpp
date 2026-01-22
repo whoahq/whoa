@@ -32,6 +32,26 @@ char CMap::s_mapName[256];
 char CMap::s_mapPath[256];
 char CMap::s_wdtFilename[256];
 
+CMapEntity* CMap::AllocEntity(int32_t a1) {
+    CMapEntity* entity;
+    uint32_t memHandle;
+    void* mem = nullptr;
+
+    if (ObjectAlloc(*CMap::s_entityHeap, &memHandle, &mem, false)) {
+        entity = new (mem) CMapEntity();
+    } else {
+        entity = nullptr;
+    }
+
+    if (a1) {
+        CMap::s_entityList.LinkToHead(entity);
+    } else {
+        CMap::s_entityList.LinkToTail(entity);
+    }
+
+    return entity;
+}
+
 void CMap::Initialize() {
     // TODO
 

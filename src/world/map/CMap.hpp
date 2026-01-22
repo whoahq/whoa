@@ -5,6 +5,8 @@
 #include <storm/List.hpp>
 #include <cstdint>
 
+class CMapEntity;
+
 class CMap {
     public:
         // Static variables
@@ -27,6 +29,7 @@ class CMap {
         static char s_wdtFilename[];
 
         // Static functions
+        static CMapEntity* AllocEntity(int32_t a1);
         static void Initialize();
         static void Load(const char* mapName, int32_t zoneID);
         static void MapMemInitialize();
