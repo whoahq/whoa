@@ -2,9 +2,11 @@
 #define WORLD_C_WORLD_HPP
 
 #include "event/Event.hpp"
+#include "world/Types.hpp"
 #include <tempest/Vector.hpp>
 #include <cstdint>
 
+class CM2Model;
 class Weather;
 
 class CWorld {
@@ -51,6 +53,7 @@ class CWorld {
         static Weather* s_weather;
 
         // Public static functions
+        static HWORLDOBJECT AddObject(CM2Model* model, void* handler, void* handlerParam, uint64_t param64, uint32_t param32, uint32_t objFlags);
         static uint32_t GetCurTimeMs();
         static float GetCurTimeSec();
         static uint32_t GetGameTimeFixed();

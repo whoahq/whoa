@@ -17,6 +17,35 @@ uint32_t CWorld::s_tickTimeMs;
 float CWorld::s_tickTimeSec;
 Weather* CWorld::s_weather;
 
+HWORLDOBJECT CWorld::AddObject(CM2Model* model, void* handler, void* handlerParam, uint64_t param64, uint32_t param32, uint32_t objFlags) {
+    auto entity = CMap::AllocEntity(objFlags & 0x8 ? true : false);
+
+    entity->m_model = model;
+    entity->m_param64 = param64;
+    entity->m_param32 = param32;
+
+    // TODO
+
+    entity->m_dirLightScale = 1.0f;
+    entity->m_dirLightScaleTarget = 1.0f;
+
+    // TODO
+
+    entity->m_type |= CMapBaseObj::Type_200;
+
+    // TODO
+
+    entity->m_flags = 0x0;
+
+    if (objFlags & 0x20) {
+        entity->m_flags = 0x20000;
+    }
+
+    // TODO
+
+    return reinterpret_cast<HWORLDOBJECT>(entity);
+}
+
 uint32_t CWorld::GetCurTimeMs() {
     return CWorld::s_curTimeMs;
 }

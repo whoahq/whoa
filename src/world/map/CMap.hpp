@@ -2,10 +2,9 @@
 #define WORLD_MAP_C_MAP_HPP
 
 #include "world/map/CMapBaseObj.hpp"
+#include "world/map/CMapEntity.hpp"
 #include <storm/List.hpp>
 #include <cstdint>
-
-class CMapEntity;
 
 class CMap {
     public:

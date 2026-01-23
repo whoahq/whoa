@@ -18,6 +18,9 @@ class CMapBaseObjLink {
 };
 
 class CMapBaseObj {
+    friend class CMap;
+    friend class CWorld;
+
     public:
         // Enums
         enum {
@@ -29,10 +32,13 @@ class CMapBaseObj {
             Type_Entity         = 0x20,
             Type_DoodadDef      = 0x40,
             Type_Light          = 0x80,
+            Type_100            = 0x100,
+            Type_200            = 0x200,
         };
 
         // Public member variables
         uint32_t m_memHandle;
+        uint32_t m_flags = 0x0;
         TSLink<CMapBaseObj> m_lameAssLink;
         STORM_EXPLICIT_LIST(CMapBaseObjLink, ownerLink) m_parentLinkList;
 
