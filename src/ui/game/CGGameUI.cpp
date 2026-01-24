@@ -1,0 +1,94 @@
+#include "ui/game/CGGameUI.hpp"
+#include "client/Client.hpp"
+#include "ui/FrameXML.hpp"
+#include "ui/Key.hpp"
+#include "ui/game/CGWorldFrame.hpp"
+#include "ui/simple/CSimpleTop.hpp"
+#include "util/CStatus.hpp"
+#include <common/MD5.hpp>
+
+CSimpleTop* CGGameUI::s_simpleTop;
+
+void CGGameUI::Initialize() {
+    // TODO
+
+    CGGameUI::s_simpleTop = STORM_NEW(CSimpleTop);
+
+    // TODO
+
+    CGGameUI::RegisterFrameFactories();
+
+    // TODO
+
+    CStatus status;
+
+    // TODO
+
+    MD5_CTX md5;
+    uint8_t digest1[16];
+    uint8_t digest2[16];
+
+    MD5Init(&md5);
+
+    switch (FrameXML_CheckSignature("Interface\\FrameXML\\FrameXML.toc", "Interface\\FrameXML\\Bindings.xml", InterfaceKey, digest1)) {
+        case 0: {
+            status.Add(STATUS_WARNING, "FrameXML missing signature");
+            ClientPostClose(10);
+
+            return;
+        }
+
+        case 1: {
+            status.Add(STATUS_WARNING, "FrameXML has corrupt signature");
+            ClientPostClose(10);
+
+            return;
+        }
+
+        case 2: {
+            status.Add(STATUS_WARNING, "FrameXML is modified or corrupt");
+            ClientPostClose(10);
+
+            return;
+        }
+
+        case 3: {
+            // Success
+            break;
+        }
+
+        default: {
+            ClientPostClose(10);
+
+            return;
+        }
+    }
+
+    // TODO file count and progress bar logic
+
+    FrameXML_FreeHashNodes();
+
+    FrameXML_CreateFrames("Interface\\FrameXML\\FrameXML.toc", nullptr, &md5, &status);
+
+    // TODO CGUIBindings::s_bindings->Load("Interface\\FrameXML\\Bindings.xml", &md5, &status);
+
+    MD5Final(digest2, &md5);
+
+    // TODO digest validation
+
+    // TODO
+}
+
+void CGGameUI::InitializeGame() {
+    // TODO
+
+    CGGameUI::Initialize();
+
+    // TODO
+}
+
+void CGGameUI::RegisterFrameFactories() {
+    FrameXML_RegisterFactory("WorldFrame", &CGWorldFrame::Create, true);
+
+    // TODO register remaining factories
+}

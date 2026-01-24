@@ -18,6 +18,7 @@
 #include "sound/Interface.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
+#include "ui/Game.hpp"
 #include "util/Random.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
@@ -82,6 +83,10 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
 
     ClntObjMgrInitializeShared();
     ClntObjMgrInitializeStd(mapId);
+
+    // TODO
+
+    CGGameUI::InitializeGame();
 
     // TODO
 
