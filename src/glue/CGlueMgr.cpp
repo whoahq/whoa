@@ -987,51 +987,53 @@ void CGlueMgr::Resume() {
 
     DeleteInterfaceFiles();
 
-    MD5_CTX md5;
-    unsigned char digest1[16];
-    unsigned char digest2[16];
-
-    int32_t v8;
-    unsigned char* v9;
-    unsigned char* v10;
-
-    MD5Init(&md5);
+    uint8_t digest1[16];
 
     switch (FrameXML_CheckSignature("Interface\\GlueXML\\GlueXML.toc", nullptr, InterfaceKey, digest1)) {
-        case 0:
+        case 0: {
             status.Add(STATUS_WARNING, "GlueXML missing signature");
             ClientPostClose(9);
-            return;
 
-        case 1:
+            return;
+        }
+
+        case 1: {
             status.Add(STATUS_WARNING, "GlueXML has corrupt signature");
             ClientPostClose(9);
-            return;
 
-        case 2:
+            return;
+        }
+
+        case 2: {
             status.Add(STATUS_WARNING, "GlueXML is modified or corrupt");
             ClientPostClose(9);
+
             return;
+        }
 
-        case 3:
-            FrameXML_FreeHashNodes();
-            FrameXML_CreateFrames("Interface\\GlueXML\\GlueXML.toc", 0, &md5, &status);
-
-            MD5Final(digest2, &md5);
-
-            v8 = 16;
-            v9 = digest2;
-            v10 = digest1;
-
+        case 3: {
+            // Success
             break;
+        }
 
-        default:
+        default: {
             ClientPostClose(9);
+
             return;
+        }
     }
 
-    // TODO
-    // - some kind of digest validation?
+    MD5_CTX md5;
+    MD5Init(&md5);
+
+    FrameXML_FreeHashNodes();
+
+    FrameXML_CreateFrames("Interface\\GlueXML\\GlueXML.toc", nullptr, &md5, &status);
+
+    uint8_t digest2[16];
+    MD5Final(digest2, &md5);
+
+    // TODO digest validation
 
     FrameScript_SignalEvent(22, nullptr);
 

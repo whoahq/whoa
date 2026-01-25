@@ -24,32 +24,28 @@ void CGGameUI::Initialize() {
 
     // TODO
 
-    MD5_CTX md5;
     uint8_t digest1[16];
-    uint8_t digest2[16];
-
-    MD5Init(&md5);
 
     switch (FrameXML_CheckSignature("Interface\\FrameXML\\FrameXML.toc", "Interface\\FrameXML\\Bindings.xml", InterfaceKey, digest1)) {
         case 0: {
             status.Add(STATUS_WARNING, "FrameXML missing signature");
             ClientPostClose(10);
 
-            return;
+            break;
         }
 
         case 1: {
             status.Add(STATUS_WARNING, "FrameXML has corrupt signature");
             ClientPostClose(10);
 
-            return;
+            break;
         }
 
         case 2: {
             status.Add(STATUS_WARNING, "FrameXML is modified or corrupt");
             ClientPostClose(10);
 
-            return;
+            break;
         }
 
         case 3: {
@@ -60,9 +56,12 @@ void CGGameUI::Initialize() {
         default: {
             ClientPostClose(10);
 
-            return;
+            break;
         }
     }
+
+    MD5_CTX md5;
+    MD5Init(&md5);
 
     // TODO file count and progress bar logic
 
@@ -72,6 +71,7 @@ void CGGameUI::Initialize() {
 
     // TODO CGUIBindings::s_bindings->Load("Interface\\FrameXML\\Bindings.xml", &md5, &status);
 
+    uint8_t digest2[16];
     MD5Final(digest2, &md5);
 
     // TODO digest validation
