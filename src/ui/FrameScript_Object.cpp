@@ -5,6 +5,12 @@
 
 int32_t FrameScript_Object::s_objectTypes = 0;
 
+FrameScript_Object::ScriptIx::~ScriptIx() {
+    if (this->luaRef) {
+        luaL_unref(FrameScript_GetContext(), LUA_REGISTRYINDEX, this->luaRef);
+    }
+}
+
 int32_t FrameScript_Object::CreateScriptMetaTable(lua_State* L, void (*a2)(lua_State* L)) {
     lua_createtable(L, 0, 0);
     lua_pushstring(L, "__index");
@@ -21,12 +27,6 @@ void FrameScript_Object::FillScriptMethodTable(lua_State *L, FrameScript_Method 
         lua_pushstring(L, methods[i].name);
         lua_pushcclosure(L, methods[i].method, 0);
         lua_settable(L, -3);
-    }
-}
-
-FrameScript_Object::~FrameScript_Object() {
-    if (this->m_onEvent.luaRef) {
-        luaL_unref(FrameScript_GetContext(), LUA_REGISTRYINDEX, this->m_onEvent.luaRef);
     }
 }
 
