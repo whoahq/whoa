@@ -64,12 +64,14 @@ CSimpleFrame::CSimpleFrame(CSimpleFrame* parent) : CScriptRegion() {
 }
 
 CSimpleFrame::~CSimpleFrame() {
-    // TODO
-
     this->m_intAC = 3;
 
     this->m_top->UnregisterFrame(this);
     this->m_top = nullptr;
+
+    if (this->m_titleRegion) {
+        delete this->m_titleRegion;
+    }
 
     // TODO
 }
