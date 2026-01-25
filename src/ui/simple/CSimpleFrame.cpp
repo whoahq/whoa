@@ -81,6 +81,11 @@ CSimpleFrame::~CSimpleFrame() {
         }
     }
 
+    while (auto region = this->m_regions.Head()) {
+        this->m_regions.UnlinkNode(region);
+        delete region;
+    }
+
     // TODO
 }
 
