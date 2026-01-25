@@ -69,6 +69,7 @@ CSimpleFrame::~CSimpleFrame() {
     this->m_intAC = 3;
 
     this->m_top->UnregisterFrame(this);
+    this->m_top = nullptr;
 
     // TODO
 }
