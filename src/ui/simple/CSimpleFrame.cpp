@@ -73,6 +73,14 @@ CSimpleFrame::~CSimpleFrame() {
         delete this->m_titleRegion;
     }
 
+    for (int32_t layer = 0; layer < NUM_SIMPLEFRAME_DRAWLAYERS; layer++) {
+        this->m_drawlayers[layer].UnlinkAll();
+
+        if (this->m_batch[layer]) {
+            delete this->m_batch[layer];
+        }
+    }
+
     // TODO
 }
 
