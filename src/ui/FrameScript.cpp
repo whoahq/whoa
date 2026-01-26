@@ -1047,7 +1047,7 @@ const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32
     return buffer;
 }
 
-void FrameScript_UnregisterFunction(char const* name) {
+void FrameScript_UnregisterFunction(const char* name) {
     auto L = FrameScript::s_context;
 
     lua_pushnil(L);
