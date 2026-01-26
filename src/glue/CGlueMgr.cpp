@@ -1187,6 +1187,10 @@ void CGlueMgr::Suspend() {
 
     // TODO
 
+    SystemUnregisterFunctions();
+
+    // TODO
+
     FrameXML_FreeHashNodes();
 
     // TODO
