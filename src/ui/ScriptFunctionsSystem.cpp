@@ -1,4 +1,4 @@
-#include "ui/ScriptFunctions.hpp"
+#include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
@@ -22,10 +22,12 @@ int32_t Script_ConsoleExec(lua_State* L) {
 }
 
 int32_t Script_AccessDenied(lua_State* L) {
-    return luaL_error(L, "Access Denied");
+    luaL_error(L, "Access Denied");
+
+    return 0;
 }
 
-FrameScript_Method FrameScript::s_ScriptFunctions_System[NUM_SCRIPT_FUNCTIONS_SYSTEM] = {
+static FrameScript_Method s_SystemFunctions[] = {
     { "GetTime",                    &Script_GetTime },
     { "GetGameTime",                &Script_GetGameTime },
     { "ConsoleExec",                &Script_ConsoleExec },
@@ -34,3 +36,9 @@ FrameScript_Method FrameScript::s_ScriptFunctions_System[NUM_SCRIPT_FUNCTIONS_SY
     { "AppendToFile",               &Script_AccessDenied },
     { "GetAccountExpansionLevel",   &Script_GetAccountExpansionLevel }
 };
+
+void SystemRegisterFunctions() {
+    for (auto& func : s_SystemFunctions) {
+        FrameScript_RegisterFunction(func.name, func.method);
+    }
+}

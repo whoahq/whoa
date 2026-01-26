@@ -54,12 +54,3 @@ void RegisterSimpleFrameScriptMethods() {
     // CSimpleColorSelect::CreateScriptMetaTable();
     // CSimpleMovieFrame::CreateScriptMetaTable();
 }
-
-void SystemRegisterFunctions() {
-    for (int32_t i = 0; i < NUM_SCRIPT_FUNCTIONS_SYSTEM; ++i) {
-        FrameScript_RegisterFunction(
-            FrameScript::s_ScriptFunctions_System[i].name,
-            FrameScript::s_ScriptFunctions_System[i].method
-        );
-    }
-}

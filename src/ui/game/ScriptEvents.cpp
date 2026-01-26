@@ -1,7 +1,6 @@
 #include "ui/game/ScriptEvents.hpp"
 #include "ui/FrameScript.hpp"
-#include "ui/ScriptFunctions.hpp"
-#include "ui/ScriptFunctionsShared.hpp"
+#include "ui/ScriptFunctionsSystem.hpp"
 #include "util/Unimplemented.hpp"
 
 int32_t Script_UnitExists(lua_State* L) {

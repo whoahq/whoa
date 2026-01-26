@@ -27,6 +27,7 @@
 #include "ui/Interface.hpp"
 #include "ui/Key.hpp"
 #include "ui/ScriptFunctions.hpp"
+#include "ui/ScriptFunctionsSystem.hpp"
 #include "ui/game/CGVideoOptions.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "ui/simple/CSimpleTop.hpp"
