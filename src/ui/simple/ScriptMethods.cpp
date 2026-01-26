@@ -1,13 +1,24 @@
+#include "ui/simple/ScriptMethods.hpp"
 #include "ui/FrameXML.hpp"
-#include "ui/ScriptFunctions.hpp"
 #include "ui/Types.hpp"
+#include "ui/simple/CSimpleButton.hpp"
+#include "ui/simple/CSimpleCheckbox.hpp"
+#include "ui/simple/CSimpleEditBox.hpp"
+#include "ui/simple/CSimpleFont.hpp"
+#include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
+#include "ui/simple/CSimpleHTML.hpp"
+#include "ui/simple/CSimpleModel.hpp"
+#include "ui/simple/CSimpleModelFFX.hpp"
+#include "ui/simple/CSimpleScrollFrame.hpp"
+#include "ui/simple/CSimpleSlider.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include "util/CStatus.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <common/XML.hpp>
-#include <cstdint>
 #include <storm/String.hpp>
+#include <cstdint>
 
 int32_t Script_GetText(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
@@ -137,7 +148,7 @@ int32_t Script_GetCurrentKeyBoardFocus(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }
 
-FrameScript_Method FrameScript::s_ScriptFunctions_SimpleFrame[NUM_SCRIPT_FUNCTIONS_SIMPLE_FRAME] = {
+static FrameScript_Method s_ScriptFunctions[] = {
     { "GetText",                        &Script_GetText },
     { "GetNumFrames",                   &Script_GetNumFrames },
     { "EnumerateFrames",                &Script_EnumerateFrames },
@@ -146,3 +157,42 @@ FrameScript_Method FrameScript::s_ScriptFunctions_SimpleFrame[NUM_SCRIPT_FUNCTIO
     { "GetFramesRegisteredForEvent",    &Script_GetFramesRegisteredForEvent },
     { "GetCurrentKeyBoardFocus",        &Script_GetCurrentKeyBoardFocus },
 };
+
+void RegisterSimpleFrameScriptMethods() {
+    for (auto& func : s_ScriptFunctions) {
+        FrameScript_RegisterFunction(func.name, func.method);
+    }
+
+    // TODO
+    // CSimpleAnim::CreateScriptMetaTable();
+    // CSimpleTranslationAnim::CreateScriptMetaTable();
+    // CSimpleRotationAnim::CreateScriptMetaTable();
+    // CSimpleScaleAnim::CreateScriptMetaTable();
+    // CSimpleControlPoint::CreateScriptMetaTable();
+    // CSimplePathAnim::CreateScriptMetaTable();
+    // CSimpleAlphaAnim::CreateScriptMetaTable();
+    // CSimpleAnimGroup::CreateScriptMetaTable();
+
+    CSimpleFont::CreateScriptMetaTable();
+    CSimpleTexture::CreateScriptMetaTable();
+    CSimpleFontString::CreateScriptMetaTable();
+    CSimpleFrame::CreateScriptMetaTable();
+    CSimpleButton::CreateScriptMetaTable();
+    CSimpleCheckbox::CreateScriptMetaTable();
+    CSimpleEditBox::CreateScriptMetaTable();
+    CSimpleHTML::CreateScriptMetaTable();
+
+    // TODO
+    // CSimpleMessageFrame::CreateScriptMetaTable();
+    // CSimpleMessageScrollFrame::CreateScriptMetaTable();
+
+    CSimpleModel::CreateScriptMetaTable();
+    CSimpleModelFFX::CreateScriptMetaTable();
+    CSimpleScrollFrame::CreateScriptMetaTable();
+    CSimpleSlider::CreateScriptMetaTable();
+
+    // TODO
+    // CSimpleStatusBar::CreateScriptMetaTable();
+    // CSimpleColorSelect::CreateScriptMetaTable();
+    // CSimpleMovieFrame::CreateScriptMetaTable();
+}

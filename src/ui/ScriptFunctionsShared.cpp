@@ -1,4 +1,4 @@
-#include "ui/ScriptFunctions.hpp"
+#include "ui/ScriptFunctionsShared.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
