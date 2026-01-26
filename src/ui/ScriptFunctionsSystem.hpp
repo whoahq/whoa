@@ -3,4 +3,6 @@
 
 void SystemRegisterFunctions();
 
+void SystemUnregisterFunctions();
+
 #endif

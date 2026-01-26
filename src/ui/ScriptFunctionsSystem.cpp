@@ -42,3 +42,9 @@ void SystemRegisterFunctions() {
         FrameScript_RegisterFunction(func.name, func.method);
     }
 }
+
+void SystemUnregisterFunctions() {
+    for (auto& func : s_SystemFunctions) {
+        FrameScript_UnregisterFunction(func.name);
+    }
+}
