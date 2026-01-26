@@ -3,16 +3,29 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
 #include "ui/game/CGWorldFrame.hpp"
+#include "ui/game/ScriptEvents.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
 #include <common/MD5.hpp>
 
 CSimpleTop* CGGameUI::s_simpleTop;
 
+void LoadScriptFunctions() {
+    // TODO
+
+    ScriptEventsRegisterFunctions();
+
+    // TODO
+}
+
 void CGGameUI::Initialize() {
     // TODO
 
     CGGameUI::s_simpleTop = STORM_NEW(CSimpleTop);
+
+    // TODO
+
+    LoadScriptFunctions();
 
     // TODO
 
