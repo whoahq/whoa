@@ -1342,7 +1342,7 @@ void CSimpleFrame::SetBeingScrolled(int32_t a2, int32_t a3) {
         this->m_batchDirty |= 0x1F;
     }
 
-    for (auto child = this->m_children.Head(); child; this->m_children.Link(child)->Next()) {
+    for (auto child = this->m_children.Head(); child; child = this->m_children.Link(child)->Next()) {
         if (!(child->frame->m_flags & 0x4000)) {
             child->frame->SetBeingScrolled(a2, -1);
         }
