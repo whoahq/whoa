@@ -97,7 +97,16 @@ int32_t CSimpleTexture_Hide(lua_State* L) {
 }
 
 int32_t CSimpleTexture_IsVisible(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleTexture::GetObjectType();
+    auto texture = static_cast<CSimpleTexture*>(FrameScript_GetObjectThis(L, type));
+
+    if (texture->IsVisible()) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleTexture_IsShown(lua_State* L) {
