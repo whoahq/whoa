@@ -3,6 +3,7 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
 #include "ui/game/CGWorldFrame.hpp"
+#include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
@@ -14,6 +15,10 @@ void LoadScriptFunctions() {
     // TODO
 
     ScriptEventsRegisterFunctions();
+
+    // TODO
+
+    GMTicketInfoRegisterScriptFunctions();
 
     // TODO
 }
