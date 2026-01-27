@@ -2,6 +2,7 @@
 #include "client/Client.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
+#include "ui/game/CGTooltip.hpp"
 #include "ui/game/CGWorldFrame.hpp"
 #include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/GameScript.hpp"
@@ -112,6 +113,7 @@ void CGGameUI::InitializeGame() {
 
 void CGGameUI::RegisterFrameFactories() {
     FrameXML_RegisterFactory("WorldFrame", &CGWorldFrame::Create, true);
+    FrameXML_RegisterFactory("GameTooltip", &CGTooltip::Create, false);
 
     // TODO register remaining factories
 }
