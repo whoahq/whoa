@@ -1,6 +1,8 @@
 #include "ui/game/GameScript.hpp"
+#include "console/CVar.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -133,7 +135,21 @@ int32_t Script_GetCVar(lua_State* L) {
 }
 
 int32_t Script_GetCVarBool(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Usage: GetCVarBool(\"cvar\")");
+        return 0;
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (var && !(var->m_flags & 0x40) && StringToBOOL(var->GetString())) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetCVarDefault(lua_State* L) {
