@@ -1,7 +1,9 @@
 #include "ui/game/GameScript.hpp"
 #include "console/CVar.hpp"
+#include "gx/Coordinate.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
+#include "ui/simple/CSimpleTop.hpp"
 #include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
@@ -617,7 +619,25 @@ int32_t Script_CancelSummon(lua_State* L) {
 }
 
 int32_t Script_GetCursorPosition(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    STORM_ASSERT(CSimpleTop::s_instance);
+
+    float ddcX = 0.0f;
+    float ddcY = 0.0f;
+
+    NDCToDDC(
+        CSimpleTop::s_instance->m_mousePosition.x,
+        CSimpleTop::s_instance->m_mousePosition.y,
+        &ddcX,
+        &ddcY
+    );
+
+    float ndcX = DDCToNDCWidth(CoordinateGetAspectCompensation() * 1024.0f * ddcX);
+    lua_pushnumber(L, ndcX);
+
+    float ndcY = DDCToNDCWidth(CoordinateGetAspectCompensation() * 1024.0f * ddcY);
+    lua_pushnumber(L, ndcY);
+
+    return 2;
 }
 
 int32_t Script_GetNetStats(lua_State* L) {
