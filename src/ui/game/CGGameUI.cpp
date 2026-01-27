@@ -4,8 +4,9 @@
 #include "ui/Key.hpp"
 #include "ui/game/CGTooltip.hpp"
 #include "ui/game/CGWorldFrame.hpp"
-#include "ui/game/GMTicketInfoScript.hpp"
+#include "ui/game/CharacterInfoScript.hpp"
 #include "ui/game/GameScript.hpp"
+#include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
@@ -21,6 +22,10 @@ void LoadScriptFunctions() {
     // TODO
 
     ScriptEventsRegisterFunctions();
+
+    // TODO
+
+    CharacterInfoRegisterScriptFunctions();
 
     // TODO
 
