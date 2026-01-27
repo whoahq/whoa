@@ -14,7 +14,10 @@ int32_t Script_GetTime(lua_State* L) {
 }
 
 int32_t Script_GetGameTime(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // TODO real implementation
+    lua_pushnumber(L, 1.0);
+    lua_pushnumber(L, 15.0);
+    WHOA_UNIMPLEMENTED(2);
 }
 
 int32_t Script_ConsoleExec(lua_State* L) {
