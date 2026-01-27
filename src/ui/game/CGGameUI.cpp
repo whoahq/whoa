@@ -4,6 +4,7 @@
 #include "ui/Key.hpp"
 #include "ui/game/CGWorldFrame.hpp"
 #include "ui/game/GMTicketInfoScript.hpp"
+#include "ui/game/GameScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
@@ -12,6 +13,10 @@
 CSimpleTop* CGGameUI::s_simpleTop;
 
 void LoadScriptFunctions() {
+    // TODO
+
+    GameScriptRegisterFunctions();
+
     // TODO
 
     ScriptEventsRegisterFunctions();
