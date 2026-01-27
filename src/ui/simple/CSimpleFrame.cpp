@@ -100,6 +100,18 @@ void CSimpleFrame::DisableDrawLayer(uint32_t drawlayer) {
     this->NotifyDrawLayerChanged(drawlayer);
 }
 
+void CSimpleFrame::DisableEvent(CSimpleEventType eventType) {
+    if (!(this->m_eventmask & (1 << eventType))) {
+        return;
+    }
+
+    if (this->m_visible) {
+        this->m_top->UnregisterForEvent(this, eventType, 0);
+    }
+
+    this->m_eventmask &= ~(1 << eventType);
+}
+
 void CSimpleFrame::EnableDrawLayer(uint32_t drawlayer) {
     this->m_drawenabled[drawlayer] = 1;
     this->NotifyDrawLayerChanged(drawlayer);

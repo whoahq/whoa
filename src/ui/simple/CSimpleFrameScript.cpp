@@ -4,6 +4,7 @@
 #include "ui/FrameScript.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <algorithm>
 #include <cstdint>
@@ -459,7 +460,22 @@ int32_t CSimpleFrame_IsKeyboardEnabled(lua_State* L) {
 }
 
 int32_t CSimpleFrame_EnableMouse(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (!frame->ProtectedFunctionsAllowed()) {
+        // TODO disallowed logic
+
+        return 0;
+    }
+
+    if (StringToBOOL(L, 2, 1)) {
+        frame->EnableEvent(SIMPLE_EVENT_MOUSE, -1);
+    } else {
+        frame->DisableEvent(SIMPLE_EVENT_MOUSE);
+    }
+
+    return 0;
 }
 
 int32_t CSimpleFrame_IsMouseEnabled(lua_State* L) {

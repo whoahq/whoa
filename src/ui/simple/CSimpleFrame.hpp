@@ -123,6 +123,7 @@ class CSimpleFrame : public CScriptRegion {
         CSimpleFrame(CSimpleFrame* parent);
         void AddFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
         void DisableDrawLayer(uint32_t drawlayer);
+        void DisableEvent(CSimpleEventType eventType);
         void EnableDrawLayer(uint32_t drawlayer);
         void EnableEvent(CSimpleEventType eventType, int32_t priority);
         int32_t GetHitRect(CRect& rect);
