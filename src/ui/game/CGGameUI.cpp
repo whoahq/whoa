@@ -18,6 +18,10 @@ CSimpleTop* CGGameUI::s_simpleTop;
 void LoadScriptFunctions() {
     // TODO
 
+    CGTooltip::CreateScriptMetaTable();
+
+    // TODO
+
     GameScriptRegisterFunctions();
 
     // TODO

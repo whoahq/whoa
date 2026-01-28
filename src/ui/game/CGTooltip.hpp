@@ -6,11 +6,14 @@
 class CGTooltip : public CSimpleFrame {
     public:
         // Static variables
+        static int32_t s_metatable;
         static int32_t s_objectType;
 
         // Static functions
         static CSimpleFrame* Create(CSimpleFrame* parent);
+        static void CreateScriptMetaTable();
         static int32_t GetObjectType();
+        static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
         // TODO
