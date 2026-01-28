@@ -33,6 +33,7 @@ class CGlueMgr {
 
         // Static variables
         static int32_t m_acceptedEULA;
+        static int32_t m_acceptedScanning;
         static int32_t m_acceptedTerminationWithoutNotice;
         static int32_t m_acceptedTOS;
         static int32_t m_accountMsgAvailable;
