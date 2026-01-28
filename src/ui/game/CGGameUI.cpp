@@ -1,5 +1,6 @@
 #include "ui/game/CGGameUI.hpp"
 #include "client/Client.hpp"
+#include "ui/CScriptObject.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
 #include "ui/game/BattlefieldInfoScript.hpp"
@@ -14,6 +15,7 @@
 #include "util/CStatus.hpp"
 #include <common/MD5.hpp>
 
+CScriptObject* CGGameUI::s_gameTooltip;
 CSimpleTop* CGGameUI::s_simpleTop;
 
 void LoadScriptFunctions() {
@@ -115,6 +117,11 @@ void CGGameUI::Initialize() {
     MD5Final(digest2, &md5);
 
     // TODO digest validation
+
+    // TODO
+
+    CGGameUI::s_gameTooltip = CScriptObject::GetScriptObjectByName("GameTooltip", CGTooltip::GetObjectType());
+    // TODO STORM_ASSERT(CGGameUI::s_gameTooltip);
 
     // TODO
 }
