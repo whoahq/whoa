@@ -22,6 +22,8 @@ if(WHOA_SYSTEM_MAC)
             "-framework AppKit"
             "-framework Carbon"
             "-framework IOKit"
+            "-framework Metal"
+            "-framework QuartzCore"
     )
 endif()
 
