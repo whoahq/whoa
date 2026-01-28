@@ -47,6 +47,7 @@ float CGlueMgr::m_aspect;
 bool CGlueMgr::m_authenticated;
 const CharacterSelectionDisplay* CGlueMgr::m_characterInfo;
 int32_t CGlueMgr::m_clientKickReason;
+int32_t CGlueMgr::m_contestAccepted = 1; // TODO
 char CGlueMgr::m_currentScreen[64];
 EffectDeath* CGlueMgr::m_deathEffect;
 int32_t CGlueMgr::m_disconnectPending;
