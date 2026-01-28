@@ -31,3 +31,7 @@ void CGTooltip::RegisterScriptMethods(lua_State* L) {
 CGTooltip::CGTooltip(CSimpleFrame* parent) : CSimpleFrame(parent) {
     // TODO
 }
+
+int32_t CGTooltip::GetScriptMetaTable() {
+    return CGTooltip::s_metatable;
+}

@@ -18,6 +18,9 @@ class CGTooltip : public CSimpleFrame {
         // Member variables
         // TODO
 
+        // Virtual member functions
+        virtual int32_t GetScriptMetaTable();
+
         // Member functions
         CGTooltip(CSimpleFrame* parent);
 };
