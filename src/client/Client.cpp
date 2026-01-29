@@ -20,7 +20,6 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Game.hpp"
 #include "util/Random.hpp"
-#include "util/Time.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>

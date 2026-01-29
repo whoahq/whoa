@@ -2,10 +2,10 @@
 #define CLIENT_CLIENT_HPP
 
 #include "event/Event.hpp"
+#include "util/Time.hpp"
 #include <tempest/Vector.hpp>
 
 class CVar;
-class CGameTime;
 
 namespace Client {
     extern CVar* g_accountNameVar;

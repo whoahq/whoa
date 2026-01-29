@@ -1,4 +1,5 @@
 #include "ui/FrameScript.hpp"
+#include "client/Client.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
 #include "ui/Types.hpp"
 #include "util/Lua.hpp"
@@ -14,10 +15,10 @@ int32_t Script_GetTime(lua_State* L) {
 }
 
 int32_t Script_GetGameTime(lua_State* L) {
-    // TODO real implementation
-    lua_pushnumber(L, 1.0);
-    lua_pushnumber(L, 15.0);
-    WHOA_UNIMPLEMENTED(2);
+    lua_pushnumber(L, g_clientGameTime.m_hour);
+    lua_pushnumber(L, g_clientGameTime.m_minute);
+
+    return 2;
 }
 
 int32_t Script_ConsoleExec(lua_State* L) {
