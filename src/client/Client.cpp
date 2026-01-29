@@ -20,6 +20,7 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Game.hpp"
 #include "util/Random.hpp"
+#include "util/Time.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
 #include <common/Prop.hpp>
@@ -29,6 +30,8 @@
 CVar* Client::g_accountNameVar;
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
+
+CGameTime g_clientGameTime;
 
 static CVar* s_desktopGammaCvar;
 static CVar* s_gammaCvar;
@@ -70,10 +73,18 @@ void BaseInitializeGlobal() {
     PropInitialize();
 }
 
+int32_t ClientGameTimeTickHandler(const void* data, void* param) {
+    STORM_ASSERT(data);
+
+    g_clientGameTime.GameTimeUpdate(static_cast<const EVENT_DATA_IDLE*>(data)->elapsedSec);
+
+    return 1;
+}
+
 int32_t ClientIdle(const void* data, void* param) {
-    // TODO
-    // ClientGameTimeTickHandler(data, param);
-    // Player_C_ZoneUpdateHandler(data, param);
+    ClientGameTimeTickHandler(data, nullptr);
+
+    // TODO Player_C_ZoneUpdateHandler(data, nullptr);
 
     return 1;
 }
