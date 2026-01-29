@@ -1,12 +1,14 @@
 #include "client/ClientHandlers.hpp"
+#include "Client.hpp"
 #include "console/Console.hpp"
 #include "db/Db.hpp"
 #include "object/Client.hpp"
+#include "util/Time.hpp"
 #include "util/Unimplemented.hpp"
 #include "world/World.hpp"
 #include <common/DataStore.hpp>
-#include <tempest/Vector.hpp>
 #include <cstdint>
+#include <tempest/Vector.hpp>
 
 static float s_newFacing;
 static C3Vector s_newPosition;
@@ -91,7 +93,37 @@ int32_t ReceiveNewGameTime(void* param, NETMESSAGE msgId, uint32_t time, CDataSt
 }
 
 int32_t ReceiveNewTimeSpeed(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
-    WHOA_UNIMPLEMENTED(0);
+    uint32_t encodedTime;
+    msg->Get(encodedTime);
+
+    float newSpeed;
+    msg->Get(newSpeed);
+
+    uint32_t holidayOffset;
+    msg->Get(holidayOffset);
+
+    if (!msg->IsRead()) {
+        STORM_ASSERT(msg->IsFinal());
+        // TODO ConsoleWriteA("Malformed message received: Id = %d, Len = %d, Read = %d\n", DEFAULT_COLOR, msgId, msg->Size(), msg->Tell());
+
+        return 0;
+    }
+
+    WowTime newTime;
+    WowTime::WowDecodeTime(encodedTime, &newTime);
+    newTime.m_holidayOffset = holidayOffset;
+
+    g_clientGameTime.GameTimeSetTime(newTime, true);
+
+    // TODO UpdateTime();
+
+    auto oldSpeed = g_clientGameTime.GameTimeSetMinutesPerSecond(newSpeed);
+
+    char logStr[256];
+    SStrPrintf(logStr, sizeof(logStr), "Gamespeed set from %.03f to %.03f", oldSpeed, newSpeed);
+    ConsoleWrite(logStr, DEFAULT_COLOR);
+
+    return 1;
 }
 
 int32_t ReceiveServerTime(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
