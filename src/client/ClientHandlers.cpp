@@ -2,6 +2,7 @@
 #include "console/Console.hpp"
 #include "db/Db.hpp"
 #include "object/Client.hpp"
+#include "util/Unimplemented.hpp"
 #include "world/World.hpp"
 #include <common/DataStore.hpp>
 #include <tempest/Vector.hpp>
@@ -75,6 +76,26 @@ int32_t PlayedTimeHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataSto
     // TODO
 
     return 0;
+}
+
+int32_t ReceiveGameTimeUpdate(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    WHOA_UNIMPLEMENTED(0);
+}
+
+int32_t ReceiveNewGameSpeed(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    WHOA_UNIMPLEMENTED(0);
+}
+
+int32_t ReceiveNewGameTime(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    WHOA_UNIMPLEMENTED(0);
+}
+
+int32_t ReceiveNewTimeSpeed(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    WHOA_UNIMPLEMENTED(0);
+}
+
+int32_t ReceiveServerTime(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {
+    WHOA_UNIMPLEMENTED(0);
 }
 
 int32_t TransferAbortedHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg) {

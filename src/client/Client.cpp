@@ -80,6 +80,16 @@ int32_t ClientGameTimeTickHandler(const void* data, void* param) {
     return 1;
 }
 
+void ClientInitializeGameTime() {
+    ClientServices::SetMessageHandler(SMSG_GAME_SPEED_SET, &ReceiveNewGameSpeed, nullptr);
+    ClientServices::SetMessageHandler(SMSG_LOGIN_SET_TIME_SPEED, &ReceiveNewTimeSpeed, nullptr);
+    ClientServices::SetMessageHandler(SMSG_GAME_TIME_UPDATE, &ReceiveGameTimeUpdate, nullptr);
+    ClientServices::SetMessageHandler(SMSG_SERVERTIME, &ReceiveServerTime, nullptr);
+    ClientServices::SetMessageHandler(SMSG_GAME_TIME_SET, &ReceiveNewGameTime, nullptr);
+
+    // TODO initialize s_forcedChangeCallbacks
+}
+
 int32_t ClientIdle(const void* data, void* param) {
     ClientGameTimeTickHandler(data, nullptr);
 
@@ -101,6 +111,7 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
     // TODO
 
     EventRegister(EVENT_ID_IDLE, ClientIdle);
+    ClientInitializeGameTime();
 
     // TODO
 

@@ -14,6 +14,16 @@ int32_t NotifyHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* 
 
 int32_t PlayedTimeHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 
+int32_t ReceiveGameTimeUpdate(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+
+int32_t ReceiveNewGameSpeed(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+
+int32_t ReceiveNewGameTime(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+
+int32_t ReceiveNewTimeSpeed(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+
+int32_t ReceiveServerTime(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
+
 int32_t TransferAbortedHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
 
 int32_t TransferPendingHandler(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
