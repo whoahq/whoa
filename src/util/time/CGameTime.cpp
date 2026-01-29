@@ -1,6 +1,20 @@
 #include "util/time/CGameTime.hpp"
 #include "common/Time.hpp"
 
+float CGameTime::GameTimeSetMinutesPerSecond(float minutesPerSec) {
+    float oldMinutesPerSec = this->m_gameMinutesPerRealSecond;
+
+    if (minutesPerSec > CGameTime::MAX_SPEED) {
+        minutesPerSec = CGameTime::MAX_SPEED;
+    } else if (minutesPerSec < CGameTime::MIN_SPEED) {
+        minutesPerSec = CGameTime::MIN_SPEED;
+    }
+
+    this->m_gameMinutesPerRealSecond = minutesPerSec;
+
+    return oldMinutesPerSec;
+}
+
 void CGameTime::GameTimeSetTime(const WowTime& time, bool shouldTick) {
     WowTime biasTime = time;
 

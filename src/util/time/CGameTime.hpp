@@ -5,7 +5,12 @@
 
 class CGameTime : public WowTime {
     public:
+        // Public static variables
+        static constexpr float MIN_SPEED = 1.0f / 60.0f;
+        static constexpr float MAX_SPEED = 60.0f;
+
         // Public member functions
+        float GameTimeSetMinutesPerSecond(float minutesPerSec);
         void GameTimeSetTime(const WowTime& time, bool shouldTick);
         void GameTimeUpdate(float elapsedSec);
 
@@ -15,7 +20,7 @@ class CGameTime : public WowTime {
         int32_t m_timeBias = 0;
         int32_t m_dateBias = 0;
         uint32_t m_gameMinutesElapsed = 0;
-        float m_gameMinutesPerRealSecond = 1.0f / 60.0f;
+        float m_gameMinutesPerRealSecond = MIN_SPEED;
         float m_gameMinutesThisTick = 0.0f;
         uint32_t m_timeDifferential = 0;
         uint32_t m_lastTickMinute = 0;
