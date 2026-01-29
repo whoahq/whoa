@@ -144,3 +144,13 @@ TEST_CASE("WowTime::GetHourAndMinutes", "[util]") {
         REQUIRE(time.GetHourAndMinutes() == 11 * 60 + 18);
     }
 }
+
+TEST_CASE("WowTime::SetHourAndMinutes", "[util]") {
+    SECTION("sets expected hour and minutes for 11:18") {
+        WowTime time;
+        time.SetHourAndMinutes(11 * 60 + 18);
+
+        CHECK(time.m_hour == 11);
+        CHECK(time.m_minute == 18);
+    }
+}

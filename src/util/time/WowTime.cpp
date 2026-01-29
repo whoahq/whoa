@@ -164,3 +164,8 @@ int32_t WowTime::GetHourAndMinutes() {
 
     return this->m_hour * 60 + this->m_minute;
 }
+
+void WowTime::SetHourAndMinutes(int32_t minutes) {
+    this->m_hour = minutes / 60;
+    this->m_minute = minutes % 60;
+}
