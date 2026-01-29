@@ -133,7 +133,21 @@ int32_t Script_SetCVar(lua_State* L) {
 }
 
 int32_t Script_GetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Usage: GetCVar(\"cvar\")");
+        return 0;
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (var && !(var->m_flags & 0x40)) {
+        lua_pushstring(L, var->GetString());
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetCVarBool(lua_State* L) {
