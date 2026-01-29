@@ -7,6 +7,7 @@ class CGameTime : public WowTime {
     public:
         // Public member functions
         void GameTimeSetTime(const WowTime& time, bool shouldTick);
+        void GameTimeUpdate(float elapsedSec);
 
     private:
         // Private member variables

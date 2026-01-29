@@ -42,6 +42,28 @@ void CGameTime::GameTimeSetTime(const WowTime& time, bool shouldTick) {
     }
 }
 
+void CGameTime::GameTimeUpdate(float elapsedSec) {
+    this->m_gameMinutesThisTick += this->m_gameMinutesPerRealSecond * elapsedSec;
+
+    // Skip minute ticks for time differential
+    if (this->m_timeDifferential != 0 && this->m_gameMinutesThisTick >= 1.0f) {
+        auto minutesToConsume = static_cast<uint32_t>(this->m_gameMinutesThisTick);
+
+        // Clamp to differential
+        if (this->m_timeDifferential < minutesToConsume) {
+            minutesToConsume = this->m_timeDifferential;
+        }
+
+        this->m_timeDifferential -= minutesToConsume;
+        this->m_gameMinutesThisTick -= static_cast<float>(minutesToConsume);
+    }
+
+    while (this->m_gameMinutesThisTick >= 1.0f) {
+        this->m_gameMinutesThisTick -= 1.0f;
+        this->TickMinute();
+    }
+}
+
 void CGameTime::PerformCallbacks(int32_t minutes) {
     // TODO
 }
