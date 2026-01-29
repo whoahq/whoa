@@ -1,6 +1,7 @@
 #include "util/time/WowTime.hpp"
 #include <storm/Error.hpp>
 #include <storm/String.hpp>
+#include <ctime>
 
 static const char* s_weekdays[] = {
     "Sun",
@@ -155,6 +156,59 @@ char* WowTime::WowGetTimeString(WowTime* time, char* str, int32_t len) {
     SStrPrintf(str, len, "%s/%s/%s (%s) %s:%s", monthStr, monthdayStr, yearStr, weekdayStr, hourStr, minuteStr);
 
     return str;
+}
+
+void WowTime::AddDays(int32_t days, bool includeTime) {
+    // Validate date
+
+    if (this->m_year < 0 || this->m_month < 0 || this->m_monthday < 0) {
+        return;
+    }
+
+    // Convert WowTime to tm
+
+    tm t = {};
+
+    t.tm_year = this->m_year + 100;     // WowTime year is years since 2000; tm_year is years since 1900
+    t.tm_mon = this->m_month;           // WowTime month and tm_mon are both 0-based
+    t.tm_mday = this->m_monthday + 1;   // WowTime monthday is 0-based; tm_mday is 1-based
+    t.tm_isdst = -1;                    // Let mktime determine DST
+
+    if (includeTime) {
+        t.tm_hour = this->m_hour;
+        t.tm_min = this->m_minute;
+    }
+
+    // Convert tm to time_t and add the specified days
+
+    auto time = mktime(&t);
+    time += days * 86400;
+
+
+    if (!includeTime) {
+        time += 3600;                   // Tack on hour to ensure DST boundaries don't muck with days added
+    }
+
+    // Convert adjusted time back to tm
+
+    auto t_ = localtime(&time);
+    if (t_) {
+        t = *t_;
+    } else {
+        t = {};
+    }
+
+    // Convert adjusted tm back to WowTime
+
+    this->m_year = t.tm_year - 100;
+    this->m_month = t.tm_mon;
+    this->m_monthday = t.tm_mday - 1;
+    this->m_weekday = t.tm_wday;
+
+    if (includeTime) {
+        this->m_hour = t.tm_hour;
+        this->m_minute = t.tm_min;
+    }
 }
 
 int32_t WowTime::GetHourAndMinutes() {

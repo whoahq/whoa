@@ -129,6 +129,27 @@ TEST_CASE("WowTime::WowGetTimeString", "[util]") {
     }
 }
 
+TEST_CASE("WowTime::AddDays", "[util]") {
+    SECTION("adds 1 day to 1/28/2026") {
+        WowTime time;
+        time.m_minute = 18;
+        time.m_hour = 11;
+        time.m_weekday = 3;
+        time.m_monthday = 27;
+        time.m_month = 0;
+        time.m_year = 26;
+
+        time.AddDays(1, false);
+
+        CHECK(time.m_minute == 18);
+        CHECK(time.m_hour == 11);
+        CHECK(time.m_weekday == 4);
+        CHECK(time.m_monthday == 28);
+        CHECK(time.m_month == 0);
+        CHECK(time.m_year == 26);
+    }
+}
+
 TEST_CASE("WowTime::GetHourAndMinutes", "[util]") {
     SECTION("gets expected hour and minutes for default constructed time") {
         WowTime time;

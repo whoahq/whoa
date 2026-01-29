@@ -23,6 +23,7 @@ class WowTime {
         int32_t m_holidayOffset = 0;
 
         // Member functions
+        void AddDays(int32_t days, bool includeTime);
         int32_t GetHourAndMinutes();
         void SetHourAndMinutes(int32_t minutes);
         int32_t SetHourAndMinutes(uint32_t hour, uint32_t minutes);
