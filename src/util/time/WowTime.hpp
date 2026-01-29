@@ -25,6 +25,7 @@ class WowTime {
         // Member functions
         int32_t GetHourAndMinutes();
         void SetHourAndMinutes(int32_t minutes);
+        int32_t SetHourAndMinutes(uint32_t hour, uint32_t minutes);
 };
 
 #endif

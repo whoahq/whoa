@@ -152,5 +152,18 @@ TEST_CASE("WowTime::SetHourAndMinutes", "[util]") {
 
         CHECK(time.m_hour == 11);
         CHECK(time.m_minute == 18);
+
+        time.SetHourAndMinutes(11, 18);
+
+        CHECK(time.m_hour == 11);
+        CHECK(time.m_minute == 18);
+    }
+
+    SECTION("does not set invalid hour and minutes") {
+        WowTime time;
+
+        CHECK(time.SetHourAndMinutes(25, 61) == 0);
+        CHECK(time.m_hour == -1);
+        CHECK(time.m_minute == -1);
     }
 }

@@ -169,3 +169,14 @@ void WowTime::SetHourAndMinutes(int32_t minutes) {
     this->m_hour = minutes / 60;
     this->m_minute = minutes % 60;
 }
+
+int32_t WowTime::SetHourAndMinutes(uint32_t hour, uint32_t minutes) {
+    if (hour >= 24 || minutes >= 60) {
+        return 0;
+    }
+
+    this->m_hour = hour;
+    this->m_minute = minutes;
+
+    return 1;
+}
