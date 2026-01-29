@@ -16,13 +16,24 @@ TEST_CASE("CGameTime::CGameTime", "[util]") {
     }
 }
 
-TEST_CASE("CGameTime::TickMinute", "[util]") {
-    SECTION("ticks minute correctly") {
-        CGameTime time;
-        time.SetHourAndMinutes(0, 0);
-        time.TickMinute();
+TEST_CASE("CGameTime::GameTimeSetTime", "[util]") {
+    SECTION("sets game time correctly") {
+        WowTime time;
+        time.m_minute = 18;
+        time.m_hour = 11;
+        time.m_weekday = 3;
+        time.m_monthday = 27;
+        time.m_month = 0;
+        time.m_year = 26;
 
-        CHECK(time.m_hour == 0);
-        CHECK(time.m_minute == 1);
+        CGameTime gameTime;
+        gameTime.GameTimeSetTime(time, true);
+
+        CHECK(gameTime.m_minute == 18);
+        CHECK(gameTime.m_hour == 11);
+        CHECK(gameTime.m_weekday == 3);
+        CHECK(gameTime.m_monthday == 27);
+        CHECK(gameTime.m_month == 0);
+        CHECK(gameTime.m_year == 26);
     }
 }

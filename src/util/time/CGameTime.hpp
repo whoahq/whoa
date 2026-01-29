@@ -6,8 +6,7 @@
 class CGameTime : public WowTime {
     public:
         // Public member functions
-        void PerformCallbacks(int32_t minutes);
-        void TickMinute();
+        void GameTimeSetTime(const WowTime& time, bool shouldTick);
 
     private:
         // Private member variables
@@ -24,6 +23,10 @@ class CGameTime : public WowTime {
         float float48 = 0.0f;
         float float4C = 0.0f;
         // TODO m_callbackLists
+
+        // Private member functions
+        void PerformCallbacks(int32_t minutes);
+        void TickMinute();
 };
 
 #endif
