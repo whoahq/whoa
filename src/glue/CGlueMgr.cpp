@@ -39,6 +39,7 @@
 #include <cstdio>
 
 int32_t CGlueMgr::m_acceptedEULA = 1; // TODO
+int32_t CGlueMgr::m_acceptedScanning = 1; // TODO
 int32_t CGlueMgr::m_acceptedTerminationWithoutNotice;
 int32_t CGlueMgr::m_acceptedTOS = 1; // TODO
 int32_t CGlueMgr::m_accountMsgAvailable;
