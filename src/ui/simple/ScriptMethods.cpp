@@ -12,6 +12,7 @@
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "ui/simple/CSimpleScrollFrame.hpp"
 #include "ui/simple/CSimpleSlider.hpp"
+#include "ui/simple/CSimpleStatusBar.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/CStatus.hpp"
 #include "util/Lua.hpp"
@@ -190,9 +191,9 @@ void RegisterSimpleFrameScriptMethods() {
     CSimpleModelFFX::CreateScriptMetaTable();
     CSimpleScrollFrame::CreateScriptMetaTable();
     CSimpleSlider::CreateScriptMetaTable();
+    CSimpleStatusBar::CreateScriptMetaTable();
 
     // TODO
-    // CSimpleStatusBar::CreateScriptMetaTable();
     // CSimpleColorSelect::CreateScriptMetaTable();
     // CSimpleMovieFrame::CreateScriptMetaTable();
 }

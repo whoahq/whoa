@@ -8,6 +8,7 @@
 #include "ui/simple/CSimpleModel.hpp"
 #include "ui/simple/CSimpleScrollFrame.hpp"
 #include "ui/simple/CSimpleSlider.hpp"
+#include "ui/simple/CSimpleStatusBar.hpp"
 #include "util/CStatus.hpp"
 #include "util/SFile.hpp"
 #include <common/XML.hpp>
@@ -96,9 +97,9 @@ CSimpleFrame* Create_SimpleHTML(CSimpleFrame* parent) {
 }
 
 CSimpleFrame* Create_SimpleStatusBar(CSimpleFrame* parent) {
-    // TODO
+    // TODO CDataAllocator
 
-    return nullptr;
+    return STORM_NEW(CSimpleStatusBar(parent));
 }
 
 CSimpleFrame* Create_SimpleColorSelect(CSimpleFrame* parent) {
