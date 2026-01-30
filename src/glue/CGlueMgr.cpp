@@ -129,6 +129,17 @@ void CGlueMgr::ChangeRealm(const REALM_INFO* realmInfo) {
     ClientServices::Connection()->Connect();
 }
 
+void CGlueMgr::DeleteCharacter(uint64_t guid) {
+    if (guid) {
+        CGlueMgr::SetIdleState(IDLE_DELETE_CHARACTER);
+
+        auto text = FrameScript_GetText(ClientServices::GetErrorToken(70), -1, GENDER_NOT_APPLICABLE);
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "CANCEL", text);
+
+        ClientServices::CharacterDelete(guid);
+    }
+}
+
 void CGlueMgr::EnterWorld() {
     if (!ClientServices::GetSelectedRealm()) {
         return;
