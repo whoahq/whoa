@@ -541,19 +541,19 @@ int32_t FrameXML_RegisterFactory(const char* type, CSimpleFrame* (*factory)(CSim
 }
 
 void FrameXML_RegisterDefault() {
-    FrameXML_RegisterFactory("Button", &Create_SimpleButton, 0);
-    FrameXML_RegisterFactory("CheckButton", &Create_SimpleCheckButton, 0);
-    FrameXML_RegisterFactory("EditBox", &Create_SimpleEditBox, 0);
-    FrameXML_RegisterFactory("Frame", &Create_SimpleFrame, 0);
-    FrameXML_RegisterFactory("MessageFrame", &Create_SimpleMessageFrame, 0);
-    FrameXML_RegisterFactory("Model", &Create_SimpleModel, 0);
-    FrameXML_RegisterFactory("ScrollFrame", &Create_SimpleScrollFrame, 0);
-    FrameXML_RegisterFactory("ScrollingMessageFrame", &Create_SimpleScrollingMessageFrame, 0);
-    FrameXML_RegisterFactory("Slider", &Create_SimpleSlider, 0);
-    FrameXML_RegisterFactory("SimpleHTML", &Create_SimpleHTML, 0);
-    FrameXML_RegisterFactory("StatusBar", &Create_SimpleStatusBar, 0);
-    FrameXML_RegisterFactory("ColorSelect", &Create_SimpleColorSelect, 0);
-    FrameXML_RegisterFactory("MovieFrame", &Create_SimpleMovieFrame, 0);
+    FrameXML_RegisterFactory("Button", &Create_SimpleButton, false);
+    FrameXML_RegisterFactory("CheckButton", &Create_SimpleCheckButton, false);
+    FrameXML_RegisterFactory("EditBox", &Create_SimpleEditBox, false);
+    FrameXML_RegisterFactory("Frame", &Create_SimpleFrame, false);
+    FrameXML_RegisterFactory("MessageFrame", &Create_SimpleMessageFrame, false);
+    FrameXML_RegisterFactory("Model", &Create_SimpleModel, false);
+    FrameXML_RegisterFactory("ScrollFrame", &Create_SimpleScrollFrame, false);
+    FrameXML_RegisterFactory("ScrollingMessageFrame", &Create_SimpleScrollingMessageFrame, false);
+    FrameXML_RegisterFactory("Slider", &Create_SimpleSlider, false);
+    FrameXML_RegisterFactory("SimpleHTML", &Create_SimpleHTML, false);
+    FrameXML_RegisterFactory("StatusBar", &Create_SimpleStatusBar, false);
+    FrameXML_RegisterFactory("ColorSelect", &Create_SimpleColorSelect, false);
+    FrameXML_RegisterFactory("MovieFrame", &Create_SimpleMovieFrame, false);
 }
 
 void FrameXML_ReleaseHashNode(const char* name) {
