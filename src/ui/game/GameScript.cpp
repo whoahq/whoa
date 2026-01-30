@@ -8,6 +8,7 @@
 #include "util/Unimplemented.hpp"
 
 namespace {
+
 int32_t Script_FrameXML_Debug(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }

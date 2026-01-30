@@ -3,6 +3,8 @@
 #include "ui/ScriptFunctionsSystem.hpp"
 #include "util/Unimplemented.hpp"
 
+namespace {
+
 int32_t Script_UnitExists(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
 }
@@ -677,6 +679,8 @@ int32_t Script_IsXPUserDisabled(lua_State* L) {
 
 int32_t Script_FillLocalizedClassList(lua_State* L) {
     WHOA_UNIMPLEMENTED(0);
+}
+
 }
 
 static FrameScript_Method s_UnitFunctions[] = {
