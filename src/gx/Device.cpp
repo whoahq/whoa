@@ -24,6 +24,8 @@ CGxDevice* GxDevCreate(EGxApi api, int32_t (*windowProc)(void* window, uint32_t 
             device = CGxDevice::NewOpenGl();
         } else if (api == GxApi_GLL) {
             device = CGxDevice::NewGLL();
+        } else if (api == GxApi_Metal) {
+            device = CGxDevice::NewMTL();
         } else {
             // Error
         }
