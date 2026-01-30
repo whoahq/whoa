@@ -1,0 +1,10 @@
+#ifndef UI_GAME_C_G_TABARD_MODEL_FRAME_SCRIPT_HPP
+#define UI_GAME_C_G_TABARD_MODEL_FRAME_SCRIPT_HPP
+
+#include "ui/Types.hpp"
+
+#define NUM_CG_TABARD_MODEL_FRAME_SCRIPT_METHODS 10
+
+extern FrameScript_Method CGTabardModelFrameMethods[NUM_CG_TABARD_MODEL_FRAME_SCRIPT_METHODS];
+
+#endif

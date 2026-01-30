@@ -1,0 +1,10 @@
+#ifndef UI_GAME_C_G_DRESS_UP_MODEL_FRAME_SCRIPT_HPP
+#define UI_GAME_C_G_DRESS_UP_MODEL_FRAME_SCRIPT_HPP
+
+#include "ui/Types.hpp"
+
+#define NUM_CG_DRESS_UP_MODEL_FRAME_SCRIPT_METHODS 3
+
+extern FrameScript_Method CGDressUpModelFrameMethods[NUM_CG_DRESS_UP_MODEL_FRAME_SCRIPT_METHODS];
+
+#endif

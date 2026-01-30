@@ -4,6 +4,12 @@
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
 #include "ui/game/BattlefieldInfoScript.hpp"
+#include "ui/game/CGCharacterModelBase.hpp"
+#include "ui/game/CGCooldown.hpp"
+#include "ui/game/CGDressUpModelFrame.hpp"
+#include "ui/game/CGMinimapFrame.hpp"
+#include "ui/game/CGQuestPOIFrame.hpp"
+#include "ui/game/CGTabardModelFrame.hpp"
 #include "ui/game/CGTooltip.hpp"
 #include "ui/game/CGWorldFrame.hpp"
 #include "ui/game/CharacterInfoScript.hpp"
@@ -22,8 +28,12 @@ void LoadScriptFunctions() {
     // TODO
 
     CGTooltip::CreateScriptMetaTable();
-
-    // TODO
+    CGCooldown::CreateScriptMetaTable();
+    CGMinimapFrame::CreateScriptMetaTable();
+    CGCharacterModelBase::CreateScriptMetaTable();
+    CGDressUpModelFrame::CreateScriptMetaTable();
+    CGTabardModelFrame::CreateScriptMetaTable();
+    CGQuestPOIFrame::CreateScriptMetaTable();
 
     GameScriptRegisterFunctions();
     UIBindingsRegisterScriptFunctions();
@@ -137,6 +147,10 @@ void CGGameUI::InitializeGame() {
 void CGGameUI::RegisterFrameFactories() {
     FrameXML_RegisterFactory("WorldFrame", &CGWorldFrame::Create, true);
     FrameXML_RegisterFactory("GameTooltip", &CGTooltip::Create, false);
-
-    // TODO register remaining factories
+    FrameXML_RegisterFactory("Cooldown", &CGCooldown::Create, false);
+    FrameXML_RegisterFactory("Minimap", &CGMinimapFrame::Create, false);
+    FrameXML_RegisterFactory("PlayerModel", &CGCharacterModelBase::Create, false);
+    FrameXML_RegisterFactory("DressUpModel", &CGDressUpModelFrame::Create, false);
+    FrameXML_RegisterFactory("TabardModel", &CGTabardModelFrame::Create, false);
+    FrameXML_RegisterFactory("QuestPOIFrame", &CGQuestPOIFrame::Create, false);
 }
