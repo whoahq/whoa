@@ -1,4 +1,5 @@
 #include "ui/game/BattlefieldInfoScript.hpp"
+#include "ui/game/CGBattlefieldInfo.hpp"
 #include "ui/FrameScript.hpp"
 #include "util/Unimplemented.hpp"
 
@@ -105,7 +106,9 @@ int32_t Script_GetBattlefieldStatData(lua_State* L) {
 }
 
 int32_t Script_RequestBattlefieldPositions(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    CGBattlefieldInfo::RequestPlayerPositions();
+
+    return 0;
 }
 
 int32_t Script_GetNumBattlefieldPositions(lua_State* L) {
