@@ -35,3 +35,10 @@ CGTooltip::CGTooltip(CSimpleFrame* parent) : CSimpleFrame(parent) {
 int32_t CGTooltip::GetScriptMetaTable() {
     return CGTooltip::s_metatable;
 }
+
+bool CGTooltip::IsA(int32_t type) {
+    return type == CGTooltip::s_objectType
+        || type == CSimpleFrame::s_objectType
+        || type == CScriptRegion::s_objectType
+        || type == CScriptObject::s_objectType;
+}

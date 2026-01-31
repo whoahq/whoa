@@ -23,6 +23,7 @@ class CGTooltip : public CSimpleFrame {
         // TODO
 
         // Virtual member functions
+        virtual bool IsA(int32_t type);
         virtual int32_t GetScriptMetaTable();
 
         // Member functions
