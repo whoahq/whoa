@@ -16,6 +16,10 @@ class CGTooltip : public CSimpleFrame {
         static void RegisterScriptMethods(lua_State* L);
 
         // Member variables
+        CSimpleFrame* m_owner = nullptr;
+        TOOLTIP_ANCHORPOINT m_anchorPoint;
+        // TODO
+        C2Vector m_offset;
         // TODO
 
         // Virtual member functions

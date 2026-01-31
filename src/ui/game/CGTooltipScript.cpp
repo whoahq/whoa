@@ -1,5 +1,7 @@
 #include "ui/game/CGTooltipScript.hpp"
+#include "ui/game/CGTooltip.hpp"
 #include "ui/FrameScript.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -25,7 +27,35 @@ int32_t CGTooltip_GetPadding(lua_State* L) {
 }
 
 int32_t CGTooltip_IsOwned(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CGTooltip::GetObjectType();
+    auto tooltip = static_cast<CGTooltip*>(FrameScript_GetObjectThis(L, type));
+
+    if (lua_type(L, 2) != LUA_TTABLE) {
+        luaL_error(L, "Usage: %s:IsOwned(frame)", tooltip->GetDisplayName());
+        return 0;
+    }
+
+    lua_rawgeti(L, 2, 0);
+    auto frame = static_cast<CSimpleFrame*>(lua_touserdata(L, -1));
+    lua_settop(L, -2);
+
+    if (!frame) {
+        luaL_error(L, "%s:IsOwned(): Couldn't find 'this' in frame object", tooltip->GetDisplayName());
+        return 0;
+    }
+
+    if (!frame->IsA(CSimpleFrame::GetObjectType())) {
+        luaL_error(L, "%s:IsOwned(): Wrong object type, expected frame", tooltip->GetDisplayName());
+        return 0;
+    }
+
+    if (tooltip->m_owner == frame) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CGTooltip_GetOwner(lua_State* L) {
