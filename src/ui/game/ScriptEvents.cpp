@@ -1,6 +1,11 @@
 #include "ui/game/ScriptEvents.hpp"
+#include "object/client/ObjMgr.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsSystem.hpp"
+#include "ui/game/CGGameUI.hpp"
+#include "ui/game/ScriptUtil.hpp"
+#include "util/GUID.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -18,7 +23,19 @@ int32_t Script_UnitIsUnit(lua_State* L) {
 }
 
 int32_t Script_UnitIsPlayer(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto token = lua_tostring(L, 1);
+    WOWGUID guid = 0;
+    Script_GetGUIDFromToken(token, guid, false);
+
+    auto object = ClntObjMgrObjectPtr(guid, TYPE_PLAYER, __FILE__, __LINE__);
+
+    if (object || CGGameUI::IsRaidMember(guid)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_UnitIsInMyGuild(lua_State* L) {
