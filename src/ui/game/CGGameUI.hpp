@@ -1,6 +1,8 @@
 #ifndef UI_GAME_C_G_GAME_UI_HPP
 #define UI_GAME_C_G_GAME_UI_HPP
 
+#include "util/guid/Types.hpp"
+
 class CScriptObject;
 class CSimpleTop;
 
@@ -11,9 +13,13 @@ class CGGameUI {
         static CSimpleTop* s_simpleTop;
 
         // Static functions
+        static WOWGUID& GetLockedTarget();
         static void Initialize();
         static void InitializeGame();
         static void RegisterFrameFactories();
+
+    private:
+        static WOWGUID s_lockedTarget;
 };
 
 #endif

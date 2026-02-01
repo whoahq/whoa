@@ -23,6 +23,7 @@
 
 CScriptObject* CGGameUI::s_gameTooltip;
 CSimpleTop* CGGameUI::s_simpleTop;
+WOWGUID CGGameUI::s_lockedTarget;
 
 void LoadScriptFunctions() {
     // TODO
@@ -55,6 +56,10 @@ void LoadScriptFunctions() {
     GMTicketInfoRegisterScriptFunctions();
 
     // TODO
+}
+
+WOWGUID& CGGameUI::GetLockedTarget() {
+    return CGGameUI::s_lockedTarget;
 }
 
 void CGGameUI::Initialize() {
@@ -131,7 +136,7 @@ void CGGameUI::Initialize() {
     // TODO
 
     CGGameUI::s_gameTooltip = CScriptObject::GetScriptObjectByName("GameTooltip", CGTooltip::GetObjectType());
-    // TODO STORM_ASSERT(CGGameUI::s_gameTooltip);
+    STORM_ASSERT(CGGameUI::s_gameTooltip);
 
     // TODO
 }
