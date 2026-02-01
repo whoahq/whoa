@@ -29,6 +29,9 @@ class CGObject {
         uint32_t* m_objSaved;
         uint32_t m_memHandle;
         OBJECT_TYPE_ID m_typeID;
+
+        // Public member functions
+        WOWGUID GetGUID() const;
 };
 
 #endif

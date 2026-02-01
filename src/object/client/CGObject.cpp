@@ -23,3 +23,7 @@ uint32_t CGObject::TotalFields() {
 uint32_t CGObject::TotalFieldsSaved() {
     return CGObject::GetBaseOffsetSaved() + 3;
 }
+
+WOWGUID CGObject::GetGUID() const {
+    return this->m_obj->m_guid;
+}
