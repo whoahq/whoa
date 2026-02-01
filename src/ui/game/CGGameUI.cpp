@@ -149,6 +149,12 @@ void CGGameUI::InitializeGame() {
     // TODO
 }
 
+int32_t CGGameUI::IsRaidMember(const WOWGUID& guid) {
+    // TODO
+
+    return false;
+}
+
 void CGGameUI::RegisterFrameFactories() {
     FrameXML_RegisterFactory("WorldFrame", &CGWorldFrame::Create, true);
     FrameXML_RegisterFactory("GameTooltip", &CGTooltip::Create, false);

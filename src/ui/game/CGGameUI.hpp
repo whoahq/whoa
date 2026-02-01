@@ -16,6 +16,7 @@ class CGGameUI {
         static WOWGUID& GetLockedTarget();
         static void Initialize();
         static void InitializeGame();
+        static int32_t IsRaidMember(const WOWGUID& guid);
         static void RegisterFrameFactories();
 
     private:
