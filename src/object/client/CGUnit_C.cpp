@@ -99,6 +99,10 @@ CGUnit_C::~CGUnit_C() {
     // TODO
 }
 
+int32_t CGUnit_C::CanBeTargetted() {
+    return this->CanHighlight();
+}
+
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
 

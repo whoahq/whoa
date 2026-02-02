@@ -21,6 +21,9 @@ class CGUnit_C : public CGObject_C, public CGUnit {
 
         // Virtual public member functions
         virtual ~CGUnit_C();
+        // TODO
+        virtual int32_t CanBeTargetted();
+        // TODO
 
         // Public member functions
         CGUnit_C(uint32_t time, CClientObjCreate& objCreate);
