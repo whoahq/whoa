@@ -3,6 +3,8 @@
 
 #include "util/GUID.hpp"
 
+bool Script_GetGUIDFromString(const char*& token, WOWGUID& guid);
+
 bool Script_GetGUIDFromToken(const char* token, WOWGUID& guid, bool defaultToTarget);
 
 #endif

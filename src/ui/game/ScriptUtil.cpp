@@ -3,6 +3,20 @@
 #include "ui/game/CGGameUI.hpp"
 #include <storm/String.hpp>
 
+namespace {
+
+bool ParseTrailingTokens(const char* token, WOWGUID& guid, CGPlayer_C* player) {
+    // TODO
+    return true;
+}
+
+}
+
+bool Script_GetGUIDFromString(const char*& token, WOWGUID& guid) {
+    // TODO
+    return true;
+}
+
 bool Script_GetGUIDFromToken(const char* token, WOWGUID& guid, bool defaultToTarget) {
     auto activePlayer = static_cast<CGPlayer_C*>(ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPE_PLAYER, __FILE__, __LINE__));
 
@@ -118,7 +132,11 @@ bool Script_GetGUIDFromToken(const char* token, WOWGUID& guid, bool defaultToTar
     else if (!SStrCmpI(parseToken, "mouseover", 9)) {
         parseToken += 9;
 
-        // TODO
+        auto trackedObjectGuid = CGGameUI::GetCurrentObjectTrack();
+
+        if (ClntObjMgrObjectPtr(trackedObjectGuid, TYPE_UNIT, __FILE__, __LINE__) || CGGameUI::IsRaidMemberOrPet(trackedObjectGuid)) {
+            guid = trackedObjectGuid;
+        }
     }
 
     // focus - focus target
@@ -149,9 +167,25 @@ bool Script_GetGUIDFromToken(const char* token, WOWGUID& guid, bool defaultToTar
         guid = -1;
     }
 
-    // TODO ParseTrailingTokens
-    // TODO Script_GetGUIDFromString
-    // TODO guid -2
+    // Token string was fully parsed or GUID was determined and token string potentially includes
+    // trailing tokens
+    if ((*parseToken == '\0' || guid) && ParseTrailingTokens(parseToken, guid, activePlayer)) {
+        if (!guid) {
+            guid = -2;
+        }
 
+        return true;
+    }
+
+    // Token string was either not parsed or only partially parsed and GUID was not determined
+    if (!guid && Script_GetGUIDFromString(token, guid) && ParseTrailingTokens(token, guid, activePlayer)) {
+        if (!guid) {
+            guid = -2;
+        }
+
+        return true;
+    }
+
+    // GUID was not successfully determined
     return false;
 }
