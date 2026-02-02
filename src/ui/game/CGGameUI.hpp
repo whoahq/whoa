@@ -18,6 +18,7 @@ class CGGameUI {
         static void Initialize();
         static void InitializeGame();
         static int32_t IsRaidMember(const WOWGUID& guid);
+        static int32_t IsRaidMemberOrPet(const WOWGUID& guid);
         static void RegisterFrameFactories();
 
     private:
