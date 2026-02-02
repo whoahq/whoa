@@ -40,3 +40,7 @@ uint32_t CGPlayer::TotalFieldsSaved() {
 uint32_t CGPlayer::TotalRemoteFieldsSaved() {
     return CGPlayer::GetBaseOffsetSaved() + 173;
 }
+
+CGPlayerData* CGPlayer::Player() const {
+    return this->m_player;
+}

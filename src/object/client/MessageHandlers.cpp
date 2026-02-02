@@ -61,7 +61,7 @@ int32_t PostInitObject(CDataStore* msg, uint32_t time, bool a3) {
         return 0;
     }
 
-    if (object->m_inReenable && object->m_obj->m_type & TYPE_UNIT) {
+    if (object->m_inReenable && object->GetType() & TYPE_UNIT) {
         // TODO
     }
 
@@ -139,7 +139,7 @@ void PostMovementUpdate(CDataStore* msg) {
         return;
     }
 
-    unit->PostMovementUpdate(move, unit->m_obj->m_guid == CGUnit_C::s_activeMover);
+    unit->PostMovementUpdate(move, unit->GetGUID() == CGUnit_C::s_activeMover);
 
     if (reenable) {
         unit->Reenable();
@@ -201,7 +201,7 @@ int32_t UpdateObject(CDataStore* msg) {
     auto object = GetUpdateObject(guid, &reenable);
 
     if (object) {
-        if (!FillInPartialObjectData(object, object->m_obj->m_guid, msg, false, false)) {
+        if (!FillInPartialObjectData(object, object->GetGUID(), msg, false, false)) {
             return 0;
         }
 
@@ -329,7 +329,7 @@ int32_t CreateObject(CDataStore* msg, uint32_t time) {
     if (existingObject) {
         CClientObjCreate::Skip(msg);
 
-        if (!FillInPartialObjectData(existingObject, existingObject->m_obj->m_guid, msg, false, true)) {
+        if (!FillInPartialObjectData(existingObject, existingObject->GetGUID(), msg, false, true)) {
             return 0;
         }
 

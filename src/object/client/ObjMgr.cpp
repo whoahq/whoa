@@ -93,9 +93,9 @@ CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
 
 void ClntObjMgrFreeObject(CGObject_C* object) {
     auto playerGUID = ClntObjMgrGetActivePlayer();
-    auto isActivePlayer = object->m_obj->m_guid == playerGUID;
+    auto isActivePlayer = object->GetGUID() == playerGUID;
 
-    switch (object->m_obj->m_type) {
+    switch (object->GetType()) {
         case TYPE_OBJECT:
         case HIER_TYPE_ITEM:
         case HIER_TYPE_CONTAINER:
@@ -117,7 +117,7 @@ void ClntObjMgrFreeObject(CGObject_C* object) {
     if (isActivePlayer) {
         STORM_FREE(object);
     } else {
-        ObjectFree(s_objHeapId[object->m_typeID], object->m_memHandle);
+        ObjectFree(s_objHeapId[object->GetTypeID()], object->m_memHandle);
     }
 }
 
@@ -171,8 +171,8 @@ void ClntObjMgrInitializeStd(uint32_t mapID) {
 }
 
 void ClntObjMgrLinkInNewObject(CGObject_C* object) {
-    CHashKeyGUID key(object->m_obj->m_guid);
-    s_curMgr->m_objects.Insert(object, object->m_obj->m_guid, key);
+    CHashKeyGUID key(object->GetGUID());
+    s_curMgr->m_objects.Insert(object, object->GetGUID(), key);
 }
 
 CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* fileName, int32_t lineNumber) {
@@ -186,7 +186,7 @@ CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* file
         return nullptr;
     }
 
-    if (!(object->m_obj->m_type & type)) {
+    if (!(object->GetType() & type)) {
         return nullptr;
     }
 

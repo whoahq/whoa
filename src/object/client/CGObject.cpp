@@ -27,3 +27,15 @@ uint32_t CGObject::TotalFieldsSaved() {
 WOWGUID CGObject::GetGUID() const {
     return this->m_obj->m_guid;
 }
+
+OBJECT_TYPE CGObject::GetType() const {
+    return this->m_obj->m_type;
+}
+
+OBJECT_TYPE_ID CGObject::GetTypeID() const {
+    return this->m_typeID;
+}
+
+CGObjectData* CGObject::Obj() const {
+    return this->m_obj;
+}

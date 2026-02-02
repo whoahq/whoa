@@ -24,3 +24,7 @@ uint32_t CGItem::TotalFields() {
 uint32_t CGItem::TotalFieldsSaved() {
     return CGItem::GetBaseOffsetSaved() + 47;
 }
+
+CGItemData* CGItem::Item() const {
+    return this->m_item;
+}
