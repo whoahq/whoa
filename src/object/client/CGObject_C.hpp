@@ -33,6 +33,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         void PostReenable();
         virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};
         // TODO
+        virtual int32_t CanHighlight();
 
         // Public member functions
         CGObject_C() = default;
