@@ -11,7 +11,19 @@
 namespace {
 
 int32_t Script_UnitExists(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto token = lua_tostring(L, 1);
+    WOWGUID guid = 0;
+    Script_GetGUIDFromToken(token, guid, false);
+
+    auto object = ClntObjMgrObjectPtr(guid, TYPE_OBJECT, __FILE__, __LINE__);
+
+    if ((object && object->CanBeTargetted()) || CGGameUI::IsRaidMemberOrPet(guid)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_UnitIsVisible(lua_State* L) {
