@@ -13,6 +13,7 @@ class CGGameUI {
         static CSimpleTop* s_simpleTop;
 
         // Static functions
+        static WOWGUID& GetCurrentObjectTrack();
         static WOWGUID& GetLockedTarget();
         static void Initialize();
         static void InitializeGame();
@@ -20,6 +21,7 @@ class CGGameUI {
         static void RegisterFrameFactories();
 
     private:
+        static WOWGUID s_currentObjectTrack;
         static WOWGUID s_lockedTarget;
 };
 

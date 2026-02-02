@@ -21,9 +21,10 @@
 #include "util/CStatus.hpp"
 #include <common/MD5.hpp>
 
+WOWGUID CGGameUI::s_currentObjectTrack;
 CScriptObject* CGGameUI::s_gameTooltip;
-CSimpleTop* CGGameUI::s_simpleTop;
 WOWGUID CGGameUI::s_lockedTarget;
+CSimpleTop* CGGameUI::s_simpleTop;
 
 void LoadScriptFunctions() {
     // TODO
@@ -56,6 +57,10 @@ void LoadScriptFunctions() {
     GMTicketInfoRegisterScriptFunctions();
 
     // TODO
+}
+
+WOWGUID& CGGameUI::GetCurrentObjectTrack() {
+    return CGGameUI::s_currentObjectTrack;
 }
 
 WOWGUID& CGGameUI::GetLockedTarget() {
