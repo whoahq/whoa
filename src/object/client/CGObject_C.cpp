@@ -31,6 +31,10 @@ void CGObject_C::AddWorldObject() {
     // TODO
 }
 
+int32_t CGObject_C::CanBeTargetted() {
+    return false;
+}
+
 int32_t CGObject_C::CanHighlight() {
     return false;
 }

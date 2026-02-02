@@ -34,6 +34,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};
         // TODO
         virtual int32_t CanHighlight();
+        virtual int32_t CanBeTargetted();
 
         // Public member functions
         CGObject_C() = default;
