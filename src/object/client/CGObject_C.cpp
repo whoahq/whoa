@@ -5,6 +5,10 @@
 CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 
+    this->m_model = nullptr;
+
+    // TODO
+
     this->m_lockCount = 0;
     this->m_disabled = false;
     this->m_inReenable = false;

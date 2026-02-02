@@ -8,11 +8,15 @@
 #include <storm/Hash.hpp>
 #include <storm/List.hpp>
 
+class CM2Model;
+
 class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID> {
     public:
         // Public member variables
         TSLink<CGObject_C> m_link;
         uint32_t m_disableTimeMs;
+        // TODO
+        CM2Model* m_model;
         // TODO
         uint32_t m_lockCount        : 16;
         uint32_t m_disabled         : 1;
