@@ -184,26 +184,156 @@ int32_t CSimpleFrame_GetAttribute(lua_State* L) {
     auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
 
     // 3 argument form
+
     if (lua_gettop(L) == 4 && lua_isstring(L, 3)) {
-        // TODO 3 argument form isn't handled yet
-        WHOA_UNIMPLEMENTED(0);
+        size_t prefixLen, nameLen, suffixLen;
+        auto prefix = lua_tolstring(L, 2, &prefixLen);
+        auto name = lua_tolstring(L, 3, &nameLen);
+        auto suffix = lua_tolstring(L, 4, &suffixLen);
+
+        char buffer[256];
+        char* write;
+        size_t remaining;
+        size_t copyLen;
+
+        int32_t luaRef;
+
+        // Attempt 1: prefix + name + suffix
+
+        write = buffer;
+        remaining = 255;
+
+        if (prefixLen > 0) {
+            copyLen = (prefixLen < remaining) ? prefixLen : remaining;
+            memcpy(write, prefix, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (suffixLen > 0) {
+            copyLen = (suffixLen < remaining) ? suffixLen : remaining;
+            memcpy(write, suffix, copyLen);
+            write += copyLen;
+        }
+
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 2: "*" + name + suffix
+
+        write = buffer;
+        *write++ = '*';
+        remaining = 254;
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (suffixLen > 0) {
+            copyLen = (suffixLen < remaining) ? suffixLen : remaining;
+            memcpy(write, suffix, copyLen);
+            write += copyLen;
+        }
+
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 3: prefix + name + "*"
+
+        write = buffer;
+        remaining = 254;
+
+        if (prefixLen > 0) {
+            copyLen = (prefixLen < remaining) ? prefixLen : remaining;
+            memcpy(write, prefix, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+        }
+
+        *write++ = '*';
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 4: "*" + name + "*"
+
+        write = buffer;
+        *write++ = '*';
+        remaining = 253;
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+        }
+
+        *write++ = '*';
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 5: name
+
+        if (frame->GetAttribute(name, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Not found
+
+        lua_pushnil(L);
+        return 1;
     }
 
     // 1 argument form
+
     if (lua_isstring(L, 2)) {
         auto attrName = lua_tostring(L, 2);
         int32_t luaRef;
 
         if (frame->GetAttribute(attrName, luaRef)) {
             lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
-        } else {
-            lua_pushnil(L);
+            return 1;
         }
 
+        // Not found
+
+        lua_pushnil(L);
         return 1;
     }
 
     // Invalid call
+
     luaL_error(L, "Usage: %s:GetAttribute(\"name\")", frame->GetDisplayName());
     return 0;
 }
