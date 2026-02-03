@@ -3,6 +3,7 @@
 #include "ui/CScriptObject.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
+#include "ui/game/ActionBarScript.hpp"
 #include "ui/game/BattlefieldInfoScript.hpp"
 #include "ui/game/CGCharacterModelBase.hpp"
 #include "ui/game/CGCooldown.hpp"
@@ -43,6 +44,10 @@ void LoadScriptFunctions() {
     // TODO
 
     ScriptEventsRegisterFunctions();
+
+    // TODO
+
+    ActionBarRegisterScriptFunctions();
 
     // TODO
 
