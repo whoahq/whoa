@@ -162,7 +162,17 @@ int32_t CSimpleFontString_SetFont(lua_State* L) {
 }
 
 int32_t CSimpleFontString_GetText(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFontString::GetObjectType();
+    auto string = static_cast<CSimpleFontString*>(FrameScript_GetObjectThis(L, type));
+
+    auto text = string->GetText();
+    if (!text || !*text) {
+        text = nullptr;
+    }
+
+    lua_pushstring(L, text);
+
+    return 1;
 }
 
 int32_t CSimpleFontString_GetFieldSize(lua_State* L) {
