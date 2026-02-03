@@ -132,6 +132,7 @@ class CSimpleFrame : public CScriptRegion {
         void DisableEvent(CSimpleEventType eventType);
         void EnableDrawLayer(uint32_t drawlayer);
         void EnableEvent(CSimpleEventType eventType, int32_t priority);
+        bool GetAttribute(const char* name, int32_t& luaRef);
         int32_t GetHitRect(CRect& rect);
         void Hide();
         void LoadXML_Attributes(const XMLNode* node, CStatus* status);

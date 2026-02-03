@@ -522,6 +522,18 @@ void CSimpleFrame::PreLoadXML(XMLNode* node, CStatus* status) {
     }
 }
 
+bool CSimpleFrame::GetAttribute(const char* name, int32_t& luaRef) {
+    auto attr = this->m_attributes.Ptr(name);
+
+    if (!attr || attr->luaRef == -1) {
+        return false;
+    }
+
+    luaRef = attr->luaRef;
+
+    return true;
+}
+
 int32_t CSimpleFrame::GetBoundsRect(CRect& bounds) {
     if (this->IsResizePending()) {
         this->Resize(1);
