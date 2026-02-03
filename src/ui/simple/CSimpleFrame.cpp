@@ -376,6 +376,29 @@ void CSimpleFrame::RegisterForEvents(int32_t a2) {
     }
 }
 
+void CSimpleFrame::RunOnAttributeChangedScript(const char* name, int32_t luaRef) {
+    if (!this->m_onAttributeChange.luaRef) {
+        return;
+    }
+
+    auto L = FrameScript_GetContext();
+
+    // TODO taint management
+
+    // Attribute name
+    auto nameLower = static_cast<char*>(alloca(SStrLen(name) + 1));
+    SStrCopy(nameLower, name);
+    SStrLower(nameLower);
+    lua_pushstring(L, nameLower);
+
+    // Attribute ref
+    lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+
+    this->RunScript(this->m_onAttributeChange, 2, nullptr);
+
+    // TODO taint management
+}
+
 void CSimpleFrame::RunOnCharScript(const char* chr) {
     if (this->m_onChar.luaRef) {
         auto L = FrameScript_GetContext();
@@ -1327,6 +1350,18 @@ void CSimpleFrame::RegisterRegion(CSimpleRegion* region) {
 void CSimpleFrame::RemoveFrameRegion(CSimpleRegion* region, uint32_t drawlayer) {
     this->m_drawlayers[drawlayer].UnlinkNode(region);
     this->NotifyDrawLayerChanged(drawlayer);
+}
+
+void CSimpleFrame::SetAttribute(const char* name, int32_t luaRef) {
+    auto attr = this->m_attributes.Ptr(name);
+
+    if (!attr) {
+        attr = this->m_attributes.New(name, 0, 0x0);
+    }
+
+    attr->luaRef = luaRef;
+
+    this->RunOnAttributeChangedScript(name, luaRef);
 }
 
 void CSimpleFrame::SetBackdrop(CBackdropGenerator* backdrop) {

@@ -146,6 +146,7 @@ class CSimpleFrame : public CScriptRegion {
         void RegisterForEvents(int32_t a2);
         void RegisterRegion(CSimpleRegion* region);
         void RemoveFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
+        void RunOnAttributeChangedScript(const char* name, int32_t luaRef);
         void RunOnCharScript(const char* chr);
         void RunOnEnableScript();
         void RunOnEnterScript(int32_t a2);
@@ -159,6 +160,7 @@ class CSimpleFrame : public CScriptRegion {
         void RunOnShowScript();
         void RunOnSizeChangedScript(float width, float height);
         void RunOnUpdateScript(float elapsedSec);
+        void SetAttribute(const char* name, int32_t luaRef);
         void SetBackdrop(CBackdropGenerator* backdrop);
         void SetBeingScrolled(int32_t a2, int32_t a3);
         void SetFrameAlpha(uint8_t alpha);
