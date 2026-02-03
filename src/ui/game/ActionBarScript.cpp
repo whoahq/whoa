@@ -1,5 +1,7 @@
 #include "ui/game/ActionBarScript.hpp"
 #include "ui/FrameScript.hpp"
+#include "ui/game/CGActionBar.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -93,7 +95,13 @@ int32_t Script_ChangeActionBarPage(lua_State* L) {
 }
 
 int32_t Script_GetActionBarPage(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGActionBar::s_tempPageActiveFlags) {
+        lua_pushinteger(L, 1);
+    } else {
+        lua_pushinteger(L, CGActionBar::s_currentPage + 1);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetActionBarToggles(lua_State* L) {
