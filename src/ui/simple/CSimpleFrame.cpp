@@ -772,7 +772,69 @@ int32_t CSimpleFrame::HideThis() {
 }
 
 void CSimpleFrame::LoadXML_Attributes(const XMLNode* node, CStatus* status) {
-    // TODO
+    auto L = FrameScript_GetContext();
+
+    auto child = node->GetChild();
+
+    while (child) {
+        // Unexpected child node
+        if (SStrCmpI(child->GetName(), "Attribute")) {
+            status->Add(STATUS_WARNING, "Frame %s: Unknown attributes element %s", this->GetDisplayName(), child->GetName());
+            child = child->GetSibling();
+            continue;
+        }
+
+        auto attrName = child->GetAttributeByName("name");
+
+        // No attribute name
+        if (!attrName) {
+            status->Add(STATUS_WARNING, "Frame %s: unnamed attribute element", this->GetDisplayName());
+            child = child->GetSibling();
+            continue;
+        }
+
+        auto attrType = child->GetAttributeByName("type");
+
+        if (!attrType) {
+            attrType = "string";
+        }
+
+        auto attrValue = child->GetAttributeByName("value");
+
+        // Missing attribute value for non-nil type
+        if (SStrCmpI(attrType, "nil") && !attrValue) {
+            status->Add(STATUS_WARNING, "Frame %s: attribute element named %s missing value", this->GetDisplayName(), attrName);
+            child = child->GetSibling();
+            continue;
+        }
+
+        // Push attribute value to stack
+        if (!SStrCmpI(attrType, "nil")) {
+            lua_pushnil(L);
+        } else if (!SStrCmpI(attrType, "boolean")) {
+            lua_pushboolean(L, StringToBOOL(attrValue));
+        } else if (!SStrCmpI(attrType, "number")) {
+            lua_pushnumber(L, SStrToFloat(attrValue));
+        } else {
+            lua_pushstring(L, attrValue);
+        }
+
+        auto attr = this->m_attributes.Ptr(attrName);
+
+        if (attr) {
+            luaL_unref(L, LUA_REGISTRYINDEX, attr->luaRef);
+        } else {
+            attr = this->m_attributes.New(attrName, 0, 0x0);
+        }
+
+        // TODO taint management
+
+        attr->luaRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+        // TODO taint management
+
+        child = child->GetSibling();
+    }
 }
 
 void CSimpleFrame::LoadXML_Backdrop(const XMLNode* node, CStatus* status) {
