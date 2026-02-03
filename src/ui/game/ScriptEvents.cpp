@@ -1,11 +1,13 @@
 #include "ui/game/ScriptEvents.hpp"
-#include "object/client/ObjMgr.hpp"
+#include "db/Db.hpp"
+#include "object/Client.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsSystem.hpp"
 #include "ui/game/CGGameUI.hpp"
 #include "ui/game/ScriptUtil.hpp"
 #include "util/GUID.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -707,7 +709,29 @@ int32_t Script_IsXPUserDisabled(lua_State* L) {
 }
 
 int32_t Script_FillLocalizedClassList(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (lua_type(L, 1) != LUA_TTABLE) {
+        luaL_error(L, "Usage: FillLocalizedClassList(classTable[, isFemale])");
+        return 0;
+    }
+
+    auto isFemale = StringToBOOL(L, 2, 0);
+    auto sex = isFemale ? UNITSEX_FEMALE : UNITSEX_MALE;
+
+    lua_settop(L, 1);
+
+    for (int32_t i = 0; i < g_chrClassesDB.GetNumRecords(); ++i) {
+        auto classRec = g_chrClassesDB.GetRecordByIndex(i);
+        if (classRec) {
+            auto displayName = CGUnit_C::GetDisplayClassNameFromRecord(classRec, sex, 0);
+
+            lua_pushstring(L, classRec->m_filename);
+            lua_pushstring(L, displayName);
+
+            lua_settable(L, -3);
+        }
+    }
+
+    return 1;
 }
 
 }
