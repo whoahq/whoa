@@ -6,6 +6,7 @@
 #include "ui/CScriptRegion.hpp"
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleRegion.hpp"
+#include <storm/Hash.hpp>
 #include <storm/List.hpp>
 #include <cstdint>
 
@@ -16,6 +17,10 @@ class CMouseEvent;
 class CSimpleTitleRegion;
 class CSimpleTop;
 struct lua_State;
+
+struct FRAMEATTR : TSHashObject<FRAMEATTR, HASHKEY_STRI> {
+    int32_t luaRef;
+};
 
 class CSimpleFrame : public CScriptRegion {
     public:
@@ -71,6 +76,7 @@ class CSimpleFrame : public CScriptRegion {
         ScriptIx m_onAttributeChange;
         ScriptIx m_onEnable;
         ScriptIx m_onDisable;
+        TSHashTable<FRAMEATTR, HASHKEY_STRI> m_attributes;
         int32_t m_drawenabled[NUM_SIMPLEFRAME_DRAWLAYERS];
         CBackdropGenerator* m_backdrop = nullptr;
         STORM_EXPLICIT_LIST(CSimpleRegion, m_regionLink) m_regions;
