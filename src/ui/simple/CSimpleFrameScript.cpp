@@ -180,7 +180,32 @@ int32_t CSimpleFrame_CanChangeAttributes(lua_State* L) {
 }
 
 int32_t CSimpleFrame_GetAttribute(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    // 3 argument form
+    if (lua_gettop(L) == 4 && lua_isstring(L, 3)) {
+        // TODO 3 argument form isn't handled yet
+        WHOA_UNIMPLEMENTED(0);
+    }
+
+    // 1 argument form
+    if (lua_isstring(L, 2)) {
+        auto attrName = lua_tostring(L, 2);
+        int32_t luaRef;
+
+        if (frame->GetAttribute(attrName, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+        } else {
+            lua_pushnil(L);
+        }
+
+        return 1;
+    }
+
+    // Invalid call
+    luaL_error(L, "Usage: %s:GetAttribute(\"name\")", frame->GetDisplayName());
+    return 0;
 }
 
 int32_t CSimpleFrame_SetAttribute(lua_State* L) {
