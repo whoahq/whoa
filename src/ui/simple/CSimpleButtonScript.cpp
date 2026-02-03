@@ -372,7 +372,18 @@ int32_t CSimpleButton_GetTextWidth(lua_State* L) {
 }
 
 int32_t CSimpleButton_GetTextHeight(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleButton::GetObjectType();
+    auto button = static_cast<CSimpleButton*>(FrameScript_GetObjectThis(L, type));
+
+    auto text = button->m_text;
+
+    float height = text ? text->GetHeight() : 0.0f;
+    float ddcHeight = CoordinateGetAspectCompensation() * 1024.0f * height;
+    float ndcHeight = DDCToNDCWidth(ddcHeight);
+
+    lua_pushnumber(L, ndcHeight);
+
+    return 1;
 }
 
 int32_t CSimpleButton_RegisterForClicks(lua_State* L) {
