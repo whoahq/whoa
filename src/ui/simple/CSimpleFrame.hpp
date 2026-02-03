@@ -128,6 +128,7 @@ class CSimpleFrame : public CScriptRegion {
         // Member functions
         CSimpleFrame(CSimpleFrame* parent);
         void AddFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
+        int32_t AttributeChangesAllowed();
         void DisableDrawLayer(uint32_t drawlayer);
         void DisableEvent(CSimpleEventType eventType);
         void EnableDrawLayer(uint32_t drawlayer);

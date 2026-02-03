@@ -209,7 +209,38 @@ int32_t CSimpleFrame_GetAttribute(lua_State* L) {
 }
 
 int32_t CSimpleFrame_SetAttribute(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (!frame->ProtectedFunctionsAllowed() && !frame->AttributeChangesAllowed()) {
+        // TODO disallowed logic
+
+        return 0;
+    }
+
+    lua_settop(L, 3);
+
+    if (!lua_isstring(L, 2) || lua_type(L, 3) == LUA_TNONE) {
+        luaL_error(L, "Usage: %s:SetAttribute(\"name\", value)", frame->GetDisplayName());
+        return 0;
+    }
+
+    auto attrName = lua_tostring(L, 2);
+    int32_t luaRef;
+
+    if (frame->GetAttribute(attrName, luaRef)) {
+        luaL_unref(L, LUA_REGISTRYINDEX, luaRef);
+    }
+
+    // TODO taint management
+
+    luaRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+    // TODO taint management
+
+    frame->SetAttribute(attrName, luaRef);
+
+    return 0;
 }
 
 int32_t CSimpleFrame_GetEffectiveScale(lua_State* L) {

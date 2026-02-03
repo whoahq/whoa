@@ -95,6 +95,10 @@ void CSimpleFrame::AddFrameRegion(CSimpleRegion* region, uint32_t drawlayer) {
     this->NotifyDrawLayerChanged(drawlayer);
 }
 
+int32_t CSimpleFrame::AttributeChangesAllowed() {
+    return true;
+}
+
 void CSimpleFrame::DisableDrawLayer(uint32_t drawlayer) {
     this->m_drawenabled[drawlayer] = 0;
     this->NotifyDrawLayerChanged(drawlayer);
