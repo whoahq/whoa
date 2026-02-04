@@ -49,6 +49,10 @@ int32_t CSimpleStatusBar::GetScriptMetaTable() {
     return CSimpleStatusBar::s_metatable;
 }
 
+float CSimpleStatusBar::GetValue() const {
+    return this->m_value;
+}
+
 void CSimpleStatusBar::RunOnMinMaxChangedScript() {
     if (!this->m_onMinMaxChanged.luaRef) {
         return;

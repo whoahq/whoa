@@ -22,6 +22,7 @@ class CSimpleStatusBar : public CSimpleFrame {
 
         // Public member functions
         CSimpleStatusBar(CSimpleFrame* parent);
+        float GetValue() const;
         void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
         void SetMinMaxValues(float min, float max);
