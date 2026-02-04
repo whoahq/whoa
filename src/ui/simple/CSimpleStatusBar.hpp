@@ -20,13 +20,18 @@ class CSimpleStatusBar : public CSimpleFrame {
         virtual bool IsA(int32_t type);
         // TODO
         virtual void SetValue(float value);
+        virtual void LoadXML(const XMLNode* node, CStatus* status);
 
         // Public member functions
         CSimpleStatusBar(CSimpleFrame* parent);
         float GetValue() const;
         void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
+        void SetBarTexture(CSimpleTexture* texture, int32_t drawlayer);
         void SetMinMaxValues(float min, float max);
+        void SetOrientation(ORIENTATION orientation);
+        void SetRotatesTexture(int32_t enabled);
+        void SetStatusBarColor(const CImVector& color);
 
     protected:
         // Protected member variables

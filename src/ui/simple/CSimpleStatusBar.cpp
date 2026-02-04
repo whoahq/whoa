@@ -1,6 +1,10 @@
 #include "ui/simple/CSimpleStatusBar.hpp"
+#include "ui/LoadXML.hpp"
 #include "ui/simple/CSimpleStatusBarScript.hpp"
+#include "util/CStatus.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
+#include <common/XML.hpp>
 
 int32_t CSimpleStatusBar::s_metatable;
 int32_t CSimpleStatusBar::s_objectType;
@@ -60,6 +64,66 @@ bool CSimpleStatusBar::IsA(int32_t type) {
         || type == CScriptObject::s_objectType;
 }
 
+void CSimpleStatusBar::LoadXML(const XMLNode* node, CStatus* status) {
+    this->CSimpleFrame::LoadXML(node, status);
+
+    int32_t drawlayer = DRAWLAYER_ARTWORK;
+    auto drawlayerAttr = node->GetAttributeByName("drawLayer");
+    if (drawlayerAttr && *drawlayerAttr) {
+        StringToDrawLayer(drawlayerAttr, drawlayer);
+    }
+
+    for (auto child = node->GetChild(); child; child = child->GetSibling()) {
+        if (!SStrCmpI(child->GetName(), "BarTexture")) {
+            auto texture = LoadXML_Texture(child, this, status);
+            this->SetBarTexture(texture, drawlayer);
+        } else if (!SStrCmpI(child->GetName(), "BarColor")) {
+            CImVector color = {};
+            LoadXML_Color(child, color);
+            this->SetStatusBarColor(color);
+        }
+    }
+
+    auto minValueAttr = node->GetAttributeByName("minValue");
+    if (minValueAttr && *minValueAttr) {
+        auto maxValueAttr = node->GetAttributeByName("maxValue");
+        if (maxValueAttr && *maxValueAttr) {
+            auto minValue = SStrToFloat(minValueAttr);
+            auto maxValue = SStrToFloat(maxValueAttr);
+
+            if (minValue < -1.0e12 || minValue > 1.0e12 || maxValue < -1.0e12 || maxValue > 1.0e12) {
+                status->Add(STATUS_ERROR, "Frame %s: Min or Max out of range", this->GetDisplayName());
+            } else if (maxValue - minValue > 1.0e12) {
+                status->Add(STATUS_ERROR, "Frame %s: Min and Max too far apart", this->GetDisplayName());
+            } else {
+                this->SetMinMaxValues(minValue, maxValue);
+            }
+
+            auto defaultValueAttr = node->GetAttributeByName("defaultValue");
+            if (defaultValueAttr && *defaultValueAttr) {
+                auto defaultValue = SStrToFloat(defaultValueAttr);
+                this->SetValue(defaultValue);
+            }
+        }
+    }
+
+    auto orientationAttr = node->GetAttributeByName("orientation");
+    if (orientationAttr && *orientationAttr) {
+        ORIENTATION orientation;
+        if (StringToOrientation(orientationAttr, orientation)) {
+            this->SetOrientation(orientation);
+        } else {
+            status->Add(STATUS_WARNING, "Frame %s: Unknown orientation %s in element %s", this->GetDisplayName(), orientationAttr, node->GetName());
+        }
+    }
+
+    auto rotatesTextureAttr = node->GetAttributeByName("rotatesTexture");
+    if (rotatesTextureAttr && *rotatesTextureAttr) {
+        auto rotatesTexture = StringToBOOL(rotatesTextureAttr);
+        this->SetRotatesTexture(rotatesTexture);
+    }
+}
+
 void CSimpleStatusBar::RunOnMinMaxChangedScript() {
     if (!this->m_onMinMaxChanged.luaRef) {
         return;
@@ -85,6 +149,10 @@ void CSimpleStatusBar::RunOnValueChangedScript() {
     this->RunScript(this->m_onValueChanged, 1, nullptr);
 }
 
+void CSimpleStatusBar::SetBarTexture(CSimpleTexture* texture, int32_t drawlayer) {
+    // TODO
+}
+
 void CSimpleStatusBar::SetMinMaxValues(float min, float max) {
     if (min > max) {
         min = max;
@@ -106,6 +174,18 @@ void CSimpleStatusBar::SetMinMaxValues(float min, float max) {
     if (this->m_valueSet) {
         this->SetValue(this->m_value);
     }
+}
+
+void CSimpleStatusBar::SetOrientation(ORIENTATION orientation) {
+    // TODO
+}
+
+void CSimpleStatusBar::SetRotatesTexture(int32_t enabled) {
+    // TODO
+}
+
+void CSimpleStatusBar::SetStatusBarColor(const CImVector& color) {
+    // TODO
 }
 
 void CSimpleStatusBar::SetValue(float value) {
