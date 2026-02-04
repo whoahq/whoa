@@ -188,7 +188,10 @@ int32_t CSimpleFrame_HasScript(lua_State* L) {
 }
 
 int32_t CSimpleFrame_GetScript(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    return frame->GetScript(L);
 }
 
 int32_t CSimpleFrame_SetScript(lua_State* L) {

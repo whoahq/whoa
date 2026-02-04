@@ -35,6 +35,33 @@ const char* FrameScript_Object::GetDisplayName() {
     return name ? name : "<unnamed>";
 }
 
+int32_t FrameScript_Object::GetScript(lua_State* L) {
+    if (!lua_isstring(L, 2)) {
+        luaL_error(L, "Usage: %s:GetScript(\"type\")", this->GetDisplayName());
+        return 0;
+    }
+
+    auto name = lua_tostring(L, 2);
+    ScriptData data;
+
+    auto script = this->GetScriptByName(name, data);
+
+    if (!script) {
+        luaL_error(L, "%s doesn't have a \"%s\" script", this->GetDisplayName(), lua_tostring(L, 2));
+        return 0;
+    }
+
+    // TODO taint management
+
+    if (script->luaRef > 0) {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, script->luaRef);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
+}
+
 FrameScript_Object::ScriptIx* FrameScript_Object::GetScriptByName(const char* name, FrameScript_Object::ScriptData& data) {
     if (!SStrCmpI(name, "OnEvent", STORM_MAX_STR)) {
         data.wrapper = "return function(self,event,...) %s end";
