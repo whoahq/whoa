@@ -17,9 +17,12 @@ class CSimpleStatusBar : public CSimpleFrame {
         // Public virtual member functions
         virtual int32_t GetScriptMetaTable();
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
+        // TODO
+        virtual void SetValue(float value);
 
         // Public member functions
         CSimpleStatusBar(CSimpleFrame* parent);
+        void RunOnValueChangedScript();
 
     protected:
         // Protected member variables

@@ -1,5 +1,6 @@
 #include "ui/simple/CSimpleStatusBar.hpp"
 #include "ui/simple/CSimpleStatusBarScript.hpp"
+#include "util/Lua.hpp"
 
 int32_t CSimpleStatusBar::s_metatable;
 int32_t CSimpleStatusBar::s_objectType;
@@ -46,4 +47,36 @@ FrameScript_Object::ScriptIx* CSimpleStatusBar::GetScriptByName(const char* name
 
 int32_t CSimpleStatusBar::GetScriptMetaTable() {
     return CSimpleStatusBar::s_metatable;
+}
+
+void CSimpleStatusBar::RunOnValueChangedScript() {
+    if (!this->m_onValueChanged.luaRef) {
+        return;
+    }
+
+    auto L = FrameScript_GetContext();
+
+    lua_pushnumber(L, this->m_value);
+
+    this->RunScript(this->m_onValueChanged, 1, nullptr);
+}
+
+void CSimpleStatusBar::SetValue(float value) {
+    if (!this->m_rangeSet) {
+        return;
+    }
+
+    // Clamp value
+    value = std::min(std::max(value, this->m_minValue), this->m_maxValue);
+
+    if (this->m_valueSet && this->m_value == value) {
+        return;
+    }
+
+    this->m_value = value;
+
+    this->m_changed = true;
+    this->m_valueSet = true;
+
+    this->RunOnValueChangedScript();
 }
