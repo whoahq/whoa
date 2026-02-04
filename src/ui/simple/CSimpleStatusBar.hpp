@@ -17,6 +17,7 @@ class CSimpleStatusBar : public CSimpleFrame {
         // Public virtual member functions
         virtual int32_t GetScriptMetaTable();
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
+        virtual bool IsA(int32_t type);
         // TODO
         virtual void SetValue(float value);
 

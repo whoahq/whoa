@@ -53,6 +53,13 @@ float CSimpleStatusBar::GetValue() const {
     return this->m_value;
 }
 
+bool CSimpleStatusBar::IsA(int32_t type) {
+    return type == CSimpleStatusBar::s_objectType
+        || type == CSimpleFrame::s_objectType
+        || type == CScriptRegion::s_objectType
+        || type == CScriptObject::s_objectType;
+}
+
 void CSimpleStatusBar::RunOnMinMaxChangedScript() {
     if (!this->m_onMinMaxChanged.luaRef) {
         return;
