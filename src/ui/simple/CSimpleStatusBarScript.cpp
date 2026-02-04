@@ -1,5 +1,7 @@
 #include "ui/simple/CSimpleStatusBarScript.hpp"
+#include "ui/simple/CSimpleStatusBar.hpp"
 #include "ui/FrameScript.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -25,7 +27,19 @@ int32_t CSimpleStatusBar_GetValue(lua_State* L) {
 }
 
 int32_t CSimpleStatusBar_SetValue(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleStatusBar::GetObjectType();
+    auto statusBar = static_cast<CSimpleStatusBar*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isnumber(L, 2)) {
+        luaL_error(L, "Usage: %s:SetValue(value)", statusBar->GetDisplayName());
+        return 0;
+    }
+
+    auto value = static_cast<float>(lua_tonumber(L, 2));
+
+    statusBar->SetValue(value);
+
+    return 0;
 }
 
 int32_t CSimpleStatusBar_GetStatusBarTexture(lua_State* L) {
