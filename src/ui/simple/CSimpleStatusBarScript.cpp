@@ -19,7 +19,30 @@ int32_t CSimpleStatusBar_GetMinMaxValues(lua_State* L) {
 }
 
 int32_t CSimpleStatusBar_SetMinMaxValues(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleStatusBar::GetObjectType();
+    auto statusBar = static_cast<CSimpleStatusBar*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isnumber(L, 2) || !lua_isnumber(L, 3)) {
+        luaL_error(L, "Usage: %s:SetMinMaxValues(min, max)", statusBar->GetDisplayName());
+        return 0;
+    }
+
+    auto min = lua_tonumber(L, 2);
+    auto max = lua_tonumber(L, 3);
+
+    if (min < -1.0e12 || min > 1.0e12 || max < -1.0e12 || max > 1.0e12) {
+        luaL_error(L, "Min or Max out of range");
+        return 0;
+    }
+
+    if (max - min > 1.0e12) {
+        luaL_error(L, "Min and Max too far apart");
+        return 0;
+    }
+
+    statusBar->SetMinMaxValues(static_cast<float>(min), static_cast<float>(max));
+
+    return 0;
 }
 
 int32_t CSimpleStatusBar_GetValue(lua_State* L) {
