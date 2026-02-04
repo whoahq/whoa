@@ -22,7 +22,9 @@ class CSimpleStatusBar : public CSimpleFrame {
 
         // Public member functions
         CSimpleStatusBar(CSimpleFrame* parent);
+        void RunOnMinMaxChangedScript();
         void RunOnValueChangedScript();
+        void SetMinMaxValues(float min, float max);
 
     protected:
         // Protected member variables

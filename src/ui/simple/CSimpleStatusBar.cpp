@@ -49,6 +49,19 @@ int32_t CSimpleStatusBar::GetScriptMetaTable() {
     return CSimpleStatusBar::s_metatable;
 }
 
+void CSimpleStatusBar::RunOnMinMaxChangedScript() {
+    if (!this->m_onMinMaxChanged.luaRef) {
+        return;
+    }
+
+    auto L = FrameScript_GetContext();
+
+    lua_pushnumber(L, this->m_minValue);
+    lua_pushnumber(L, this->m_maxValue);
+
+    this->RunScript(this->m_onMinMaxChanged, 2, nullptr);
+}
+
 void CSimpleStatusBar::RunOnValueChangedScript() {
     if (!this->m_onValueChanged.luaRef) {
         return;
@@ -61,6 +74,29 @@ void CSimpleStatusBar::RunOnValueChangedScript() {
     this->RunScript(this->m_onValueChanged, 1, nullptr);
 }
 
+void CSimpleStatusBar::SetMinMaxValues(float min, float max) {
+    if (min > max) {
+        min = max;
+    }
+
+    // No change
+    if (this->m_rangeSet && this->m_minValue == min && this->m_maxValue == max) {
+        return;
+    }
+
+    this->m_minValue = min;
+    this->m_maxValue = max;
+
+    this->m_changed = true;
+    this->m_rangeSet = true;
+
+    this->RunOnMinMaxChangedScript();
+
+    if (this->m_valueSet) {
+        this->SetValue(this->m_value);
+    }
+}
+
 void CSimpleStatusBar::SetValue(float value) {
     if (!this->m_rangeSet) {
         return;
@@ -69,6 +105,7 @@ void CSimpleStatusBar::SetValue(float value) {
     // Clamp value
     value = std::min(std::max(value, this->m_minValue), this->m_maxValue);
 
+    // No change
     if (this->m_valueSet && this->m_value == value) {
         return;
     }
