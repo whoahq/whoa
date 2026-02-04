@@ -5,23 +5,34 @@
 
 class CSimpleStatusBar : public CSimpleFrame {
     public:
-        // Static variables
+        // Public static variables
         static int32_t s_metatable;
         static int32_t s_objectType;
 
-        // Static functions
+        // Public static functions
         static void CreateScriptMetaTable();
         static int32_t GetObjectType();
         static void RegisterScriptMethods(lua_State* L);
 
-        // Member variables
-        // TODO
-
-        // Virtual member functions
+        // Public virtual member functions
         virtual int32_t GetScriptMetaTable();
+        virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
 
-        // Member functions
+        // Public member functions
         CSimpleStatusBar(CSimpleFrame* parent);
+
+    protected:
+        // Protected member variables
+        uint32_t m_changed  : 1;
+        uint32_t m_rangeSet : 1;
+        uint32_t m_valueSet : 1;
+        float m_minValue = 0.0f;
+        float m_maxValue = 0.0f;
+        float m_value = 0.0f;
+        CSimpleTexture* m_barTexture = nullptr;
+        ORIENTATION m_orientation = ORIENTATION_HORIZONTAL;
+        ScriptIx m_onValueChanged;
+        ScriptIx m_onMinMaxChanged;
 };
 
 #endif

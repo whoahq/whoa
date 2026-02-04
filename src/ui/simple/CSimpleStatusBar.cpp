@@ -26,6 +26,24 @@ CSimpleStatusBar::CSimpleStatusBar(CSimpleFrame* parent) : CSimpleFrame(parent) 
     // TODO
 }
 
+FrameScript_Object::ScriptIx* CSimpleStatusBar::GetScriptByName(const char* name, ScriptData& data) {
+    auto script = this->CSimpleFrame::GetScriptByName(name, data);
+
+    if (script) {
+        return script;
+    }
+
+    if (!SStrCmpI(name, "OnValueChanged")) {
+        script = &this->m_onValueChanged;
+        data.wrapper = "return function(self,value) %s end";
+    } else if (!SStrCmpI(name, "OnMinMaxChanged")) {
+        script = &this->m_onMinMaxChanged;
+        data.wrapper = "return function(self,min,max) %s end";
+    }
+
+    return script;
+}
+
 int32_t CSimpleStatusBar::GetScriptMetaTable() {
     return CSimpleStatusBar::s_metatable;
 }
