@@ -193,7 +193,23 @@ int32_t Script_UnitXP(lua_State* L) {
 }
 
 int32_t Script_UnitXPMax(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Usage: UnitXPMax(\"unit\")");
+        return 0;
+    }
+
+    auto name = lua_tostring(L, 1);
+    auto unit = Script_GetUnitFromName(name);
+
+    float xpMax = 0.0f;
+
+    if (unit && unit->IsA(TYPE_PLAYER)) {
+        xpMax = static_cast<CGPlayer_C*>(unit)->GetActiveNextLevelXP();
+    }
+
+    lua_pushnumber(L, xpMax);
+
+    return 1;
 }
 
 int32_t Script_UnitHealth(lua_State* L) {
