@@ -28,6 +28,16 @@ void CSimpleStatusBar::RegisterScriptMethods(lua_State* L) {
     FrameScript_Object::FillScriptMethodTable(L, SimpleStatusBarMethods, NUM_SIMPLE_STATUS_BAR_SCRIPT_METHODS);
 }
 
+float CSimpleStatusBar::GetAnimValue() const {
+    auto range = this->m_maxValue - this->m_minValue;
+
+    if (range <= 0.0f) {
+        return 0.0f;
+    }
+
+    return (this->m_value - this->m_minValue) / range;
+}
+
 FrameScript_Object::ScriptIx* CSimpleStatusBar::GetScriptByName(const char* name, ScriptData& data) {
     auto script = this->CSimpleFrame::GetScriptByName(name, data);
 
@@ -127,6 +137,46 @@ void CSimpleStatusBar::LoadXML(const XMLNode* node, CStatus* status) {
         auto rotatesTexture = StringToBOOL(rotatesTextureAttr);
         this->SetRotatesTexture(rotatesTexture);
     }
+}
+
+void CSimpleStatusBar::OnLayerUpdate(float elapsedSec) {
+    this->CSimpleFrame::OnLayerUpdate(elapsedSec);
+
+    if (!this->m_changed || !this->m_rangeSet || !this->m_valueSet || !this->m_barTexture) {
+        return;
+    }
+
+    auto animValue = this->GetAnimValue();
+
+    if (animValue <= 0.0f) {
+        this->m_barTexture->Hide();
+        this->m_changed = false;
+
+        return;
+    }
+
+    float width, height;
+    this->GetSize(width, height, false);
+
+    auto fill = 1.0f - animValue;
+
+    this->m_barTexture->Show();
+
+    if (this->m_orientation == ORIENTATION_VERTICAL) {
+        this->m_barTexture->SetPoint(FRAMEPOINT_BOTTOMLEFT, this, FRAMEPOINT_BOTTOMLEFT, 0.0f, 0.0f, true);
+        this->m_barTexture->SetPoint(FRAMEPOINT_BOTTOMRIGHT, this, FRAMEPOINT_BOTTOMRIGHT, 0.0f, 0.0f, true);
+
+        this->m_barTexture->SetPoint(FRAMEPOINT_TOPLEFT, this, FRAMEPOINT_TOPLEFT, 0.0f, -(fill * height), true);
+        this->m_barTexture->SetPoint(FRAMEPOINT_TOPRIGHT, this, FRAMEPOINT_TOPRIGHT, 0.0f, -(fill * height), true);
+    } else {
+        this->m_barTexture->SetPoint(FRAMEPOINT_TOPLEFT, this, FRAMEPOINT_TOPLEFT, 0.0f, 0.0f, true);
+        this->m_barTexture->SetPoint(FRAMEPOINT_BOTTOMLEFT, this, FRAMEPOINT_BOTTOMLEFT, 0.0f, 0.0f, true);
+
+        this->m_barTexture->SetPoint(FRAMEPOINT_TOPRIGHT, this, FRAMEPOINT_TOPRIGHT, -(fill * width), 0.0f, true);
+        this->m_barTexture->SetPoint(FRAMEPOINT_BOTTOMRIGHT, this, FRAMEPOINT_BOTTOMRIGHT, -(fill * width), 0.0f, true);
+    }
+
+    this->m_changed = false;
 }
 
 void CSimpleStatusBar::RunOnMinMaxChangedScript() {

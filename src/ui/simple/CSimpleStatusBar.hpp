@@ -19,6 +19,8 @@ class CSimpleStatusBar : public CSimpleFrame {
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
         virtual bool IsA(int32_t type);
         // TODO
+        virtual void OnLayerUpdate(float elapsedSec);
+        // TODO
         virtual void SetValue(float value);
         virtual void LoadXML(const XMLNode* node, CStatus* status);
 
@@ -28,6 +30,7 @@ class CSimpleStatusBar : public CSimpleFrame {
             , m_changed(false)
             , m_rangeSet(false)
             , m_valueSet(false) {};
+        float GetAnimValue() const;
         float GetMaxValue() const;
         float GetMinValue() const;
         float GetValue() const;
