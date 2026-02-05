@@ -28,10 +28,6 @@ void CSimpleStatusBar::RegisterScriptMethods(lua_State* L) {
     FrameScript_Object::FillScriptMethodTable(L, SimpleStatusBarMethods, NUM_SIMPLE_STATUS_BAR_SCRIPT_METHODS);
 }
 
-CSimpleStatusBar::CSimpleStatusBar(CSimpleFrame* parent) : CSimpleFrame(parent) {
-    // TODO
-}
-
 FrameScript_Object::ScriptIx* CSimpleStatusBar::GetScriptByName(const char* name, ScriptData& data) {
     auto script = this->CSimpleFrame::GetScriptByName(name, data);
 

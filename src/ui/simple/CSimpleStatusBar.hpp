@@ -23,7 +23,11 @@ class CSimpleStatusBar : public CSimpleFrame {
         virtual void LoadXML(const XMLNode* node, CStatus* status);
 
         // Public member functions
-        CSimpleStatusBar(CSimpleFrame* parent);
+        CSimpleStatusBar(CSimpleFrame* parent)
+            : CSimpleFrame(parent)
+            , m_changed(false)
+            , m_rangeSet(false)
+            , m_valueSet(false) {};
         float GetMaxValue() const;
         float GetMinValue() const;
         float GetValue() const;
