@@ -41,6 +41,10 @@ uint32_t CGPlayer::TotalRemoteFieldsSaved() {
     return CGPlayer::GetBaseOffsetSaved() + 173;
 }
 
+uint32_t CGPlayer::GetNextLevelXP() const {
+    return this->Player()->nextLevelXP;
+}
+
 uint32_t CGPlayer::GetXP() const {
     return this->Player()->xp;
 }
