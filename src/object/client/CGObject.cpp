@@ -36,6 +36,10 @@ OBJECT_TYPE_ID CGObject::GetTypeID() const {
     return this->m_typeID;
 }
 
+int32_t CGObject::IsA(OBJECT_TYPE type) const {
+    return (this->GetType() & type) != 0;
+}
+
 CGObjectData* CGObject::Obj() const {
     return this->m_obj;
 }
