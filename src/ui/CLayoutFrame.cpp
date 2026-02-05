@@ -332,6 +332,10 @@ void CLayoutFrame::GetFirstPointY(const FRAMEPOINT* const pointarray, int32_t el
     }
 }
 
+float CLayoutFrame::GetHeight() {
+    return this->m_height;
+}
+
 CLayoutFrame* CLayoutFrame::GetLayoutFrameByName(const char* name) {
     return nullptr;
 }
@@ -353,8 +357,20 @@ int32_t CLayoutFrame::GetRect(CRect* rect) {
     return 1;
 }
 
-float CLayoutFrame::GetHeight() {
-    return this->m_height;
+void CLayoutFrame::GetSize(float& width, float& height, int32_t a4) {
+    width = this->GetWidth();
+    height = this->GetHeight();
+
+    if (!a4 && (width == 0.0f || height == 0.0f)) {
+        if (this->m_flags & FLAG_RESIZE_PENDING) {
+            this->Resize(1);
+        }
+
+        if (this->m_flags & 0x1) {
+            width = (this->m_rect.maxX - this->m_rect.minX) / this->m_layoutScale;
+            height = (this->m_rect.maxY - this->m_rect.minY) / this->m_layoutScale;
+        }
+    }
 }
 
 float CLayoutFrame::GetWidth() {
