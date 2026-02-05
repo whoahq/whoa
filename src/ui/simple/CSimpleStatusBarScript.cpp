@@ -83,7 +83,15 @@ int32_t CSimpleStatusBar_GetStatusBarColor(lua_State* L) {
 }
 
 int32_t CSimpleStatusBar_SetStatusBarColor(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleStatusBar::GetObjectType();
+    auto statusBar = static_cast<CSimpleStatusBar*>(FrameScript_GetObjectThis(L, type));
+
+    CImVector color = {};
+    FrameScript_GetColor(L, 2, color);
+
+    statusBar->SetStatusBarColor(color);
+
+    return 0;
 }
 
 int32_t CSimpleStatusBar_GetRotatesTexture(lua_State* L) {
