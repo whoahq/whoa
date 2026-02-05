@@ -1,6 +1,7 @@
 #include "ui/simple/CSimpleStatusBar.hpp"
 #include "ui/LoadXML.hpp"
 #include "ui/simple/CSimpleStatusBarScript.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include "util/CStatus.hpp"
 #include "util/Lua.hpp"
 #include "util/StringTo.hpp"
@@ -150,7 +151,27 @@ void CSimpleStatusBar::RunOnValueChangedScript() {
 }
 
 void CSimpleStatusBar::SetBarTexture(CSimpleTexture* texture, int32_t drawlayer) {
-    // TODO
+    // No change
+    if (this->m_barTexture == texture) {
+        return;
+    }
+
+    if (this->m_barTexture) {
+        delete this->m_barTexture;
+    }
+
+    if (texture) {
+        texture->SetFrame(this, drawlayer, true);
+
+        texture->SetPoint(FRAMEPOINT_BOTTOMLEFT, this, FRAMEPOINT_BOTTOMLEFT, 0.0f, 0.0f, true);
+        texture->SetPoint(FRAMEPOINT_BOTTOMRIGHT, this, FRAMEPOINT_BOTTOMRIGHT, 0.0f, 0.0f, true);
+        texture->SetPoint(FRAMEPOINT_TOPLEFT, this, FRAMEPOINT_TOPLEFT, 0.0f, 0.0f, true);
+        texture->SetPoint(FRAMEPOINT_TOPRIGHT, this, FRAMEPOINT_TOPRIGHT, 0.0f, 0.0f, true);
+    }
+
+    this->m_barTexture = texture;
+
+    this->m_changed = true;
 }
 
 void CSimpleStatusBar::SetMinMaxValues(float min, float max) {
