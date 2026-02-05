@@ -12,6 +12,14 @@ CGPlayer_C::~CGPlayer_C() {
     // TODO
 }
 
+uint32_t CGPlayer_C::GetActiveNextLevelXP() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->GetNextLevelXP();
+}
+
 uint32_t CGPlayer_C::GetActiveXP() const {
     if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
         return 0;
