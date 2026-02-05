@@ -206,7 +206,9 @@ void CSimpleStatusBar::SetRotatesTexture(int32_t enabled) {
 }
 
 void CSimpleStatusBar::SetStatusBarColor(const CImVector& color) {
-    // TODO
+    if (this->m_barTexture) {
+        this->m_barTexture->SetVertexColor(color);
+    }
 }
 
 void CSimpleStatusBar::SetValue(float value) {
