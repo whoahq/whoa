@@ -32,6 +32,7 @@ class CGObject {
         OBJECT_TYPE GetType() const;
         OBJECT_TYPE_ID GetTypeID() const;
         int32_t IsA(OBJECT_TYPE type) const;
+        int32_t IsExactlyA(OBJECT_TYPE_ID typeID) const;
 
     protected:
         // Protected member variables

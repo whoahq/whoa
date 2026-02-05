@@ -40,6 +40,10 @@ int32_t CGObject::IsA(OBJECT_TYPE type) const {
     return (this->GetType() & type) != 0;
 }
 
+int32_t CGObject::IsExactlyA(OBJECT_TYPE_ID typeID) const {
+    return this->m_typeID == typeID;
+}
+
 CGObjectData* CGObject::Obj() const {
     return this->m_obj;
 }
