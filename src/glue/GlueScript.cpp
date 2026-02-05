@@ -17,7 +17,13 @@
 #include <cstdint>
 
 int32_t Script_IsShiftKeyDown(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (EventIsKeyDown(KEY_LSHIFT) || EventIsKeyDown(KEY_RSHIFT)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetBuildInfo(lua_State* L) {
