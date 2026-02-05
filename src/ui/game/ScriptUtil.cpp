@@ -12,6 +12,16 @@ bool ParseTrailingTokens(const char* token, WOWGUID& guid, CGPlayer_C* player) {
 
 }
 
+CGUnit_C* Script_GetUnitFromName(const char* name) {
+    WOWGUID guid;
+
+    if (!Script_GetGUIDFromToken(name, guid, false)) {
+        return nullptr;
+    }
+
+    return static_cast<CGUnit_C*>(ClntObjMgrObjectPtr(guid, TYPE_UNIT, __FILE__, __LINE__));
+}
+
 bool Script_GetGUIDFromString(const char*& token, WOWGUID& guid) {
     // TODO
     return true;

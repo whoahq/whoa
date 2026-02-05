@@ -3,6 +3,10 @@
 
 #include "util/GUID.hpp"
 
+class CGUnit_C;
+
+CGUnit_C* Script_GetUnitFromName(const char* name);
+
 bool Script_GetGUIDFromString(const char*& token, WOWGUID& guid);
 
 bool Script_GetGUIDFromToken(const char* token, WOWGUID& guid, bool defaultToTarget);
