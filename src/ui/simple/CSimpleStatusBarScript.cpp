@@ -15,7 +15,13 @@ int32_t CSimpleStatusBar_SetOrientation(lua_State* L) {
 }
 
 int32_t CSimpleStatusBar_GetMinMaxValues(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleStatusBar::GetObjectType();
+    auto statusBar = static_cast<CSimpleStatusBar*>(FrameScript_GetObjectThis(L, type));
+
+    lua_pushnumber(L, statusBar->GetMinValue());
+    lua_pushnumber(L, statusBar->GetMaxValue());
+
+    return 2;
 }
 
 int32_t CSimpleStatusBar_SetMinMaxValues(lua_State* L) {

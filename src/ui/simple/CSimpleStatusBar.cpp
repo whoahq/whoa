@@ -54,6 +54,14 @@ int32_t CSimpleStatusBar::GetScriptMetaTable() {
     return CSimpleStatusBar::s_metatable;
 }
 
+float CSimpleStatusBar::GetMaxValue() const {
+    return this->m_maxValue;
+}
+
+float CSimpleStatusBar::GetMinValue() const {
+    return this->m_minValue;
+}
+
 float CSimpleStatusBar::GetValue() const {
     return this->m_value;
 }
