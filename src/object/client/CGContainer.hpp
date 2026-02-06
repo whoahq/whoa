@@ -20,9 +20,13 @@ class CGContainer {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGContainerData* m_cont;
         uint32_t* m_contSaved;
+
+        // Protected member functions
+        CGContainerData* Container() const;
 };
 
 #endif

@@ -107,11 +107,11 @@ void HandleObjectOutOfRangePass2(CGObject_C* object) {
     }
 
     ClntObjMgrGetCurrent()->m_lazyCleanupObjects.Insert(object, object->m_hashval, CHashKeyGUID(object->m_key));
-    ClntObjMgrGetCurrent()->m_lazyCleanupFifo[object->m_typeID - 1].LinkToTail(object);
+    ClntObjMgrGetCurrent()->m_lazyCleanupFifo[object->GetTypeID() - 1].LinkToTail(object);
 }
 
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate) {
-    switch (object->m_typeID) {
+    switch (object->GetTypeID()) {
         case ID_ITEM: {
             new (object) CGItem_C(time, objCreate);
 

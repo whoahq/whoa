@@ -1,5 +1,6 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "db/Db.hpp"
+#include "object/client/ObjMgr.hpp"
 #include "object/Types.hpp"
 #include <storm/Error.hpp>
 
@@ -9,6 +10,22 @@ CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(ti
 
 CGPlayer_C::~CGPlayer_C() {
     // TODO
+}
+
+uint32_t CGPlayer_C::GetActiveNextLevelXP() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->GetNextLevelXP();
+}
+
+uint32_t CGPlayer_C::GetActiveXP() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->GetXP();
 }
 
 void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {

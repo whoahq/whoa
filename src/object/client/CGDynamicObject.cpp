@@ -24,3 +24,7 @@ uint32_t CGDynamicObject::TotalFields() {
 uint32_t CGDynamicObject::TotalFieldsSaved() {
     return CGDynamicObject::GetBaseOffsetSaved() + 0;
 }
+
+CGDynamicObjectData* CGDynamicObject::DynamicObject() const {
+    return this->m_dynamicObj;
+}

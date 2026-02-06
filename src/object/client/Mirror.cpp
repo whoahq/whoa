@@ -91,7 +91,7 @@ uint32_t GetNumDwordBlocks(OBJECT_TYPE type, WOWGUID guid) {
  * to indicate the end of the hierarchy.
  */
 OBJECT_TYPE_ID IncTypeID(CGObject_C* object, OBJECT_TYPE_ID curTypeID) {
-    switch (object->m_obj->m_type) {
+    switch (object->GetType()) {
         // ID_OBJECT -> ID_ITEM -> ID_CONTAINER
         case HIER_TYPE_ITEM:
         case HIER_TYPE_CONTAINER:
@@ -173,7 +173,7 @@ int32_t CallMirrorHandlers(CDataStore* msg, bool a2, WOWGUID guid) {
 
     OBJECT_TYPE_ID typeID = ID_OBJECT;
     uint32_t blockOffset = 0;
-    uint32_t numBlocks = GetNumDwordBlocks(object->m_obj->m_type, guid);
+    uint32_t numBlocks = GetNumDwordBlocks(object->GetType(), guid);
 
     for (int32_t block = 0; block < numBlocks; block++) {
         if (block >= s_objMirrorBlocks[typeID]) {
@@ -203,7 +203,7 @@ int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* ms
 
     OBJECT_TYPE_ID typeID = ID_OBJECT;
     uint32_t blockOffset = 0;
-    uint32_t numBlocks = GetNumDwordBlocks(object->m_obj->m_type, guid);
+    uint32_t numBlocks = GetNumDwordBlocks(object->GetType(), guid);
 
     for (int32_t block = 0; block < numBlocks; block++) {
         if (block >= s_objMirrorBlocks[typeID]) {

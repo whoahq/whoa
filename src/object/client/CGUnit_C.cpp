@@ -1,5 +1,7 @@
 #include "object/client/CGUnit_C.hpp"
+#include "object/client/ObjMgr.hpp"
 #include "db/Db.hpp"
+#include "ui/Game.hpp"
 
 WOWGUID CGUnit_C::s_activeMover;
 
@@ -97,6 +99,20 @@ CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time
 
 CGUnit_C::~CGUnit_C() {
     // TODO
+}
+
+int32_t CGUnit_C::CanHighlight() {
+    if (this->m_unit->flags & 0x2000000) {
+        if (this->m_unit->createdBy != ClntObjMgrGetActivePlayer() || this->GetGUID() != CGPetInfo::GetPet(0)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int32_t CGUnit_C::CanBeTargetted() {
+    return this->CanHighlight();
 }
 
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {

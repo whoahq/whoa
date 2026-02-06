@@ -2,9 +2,13 @@
 #include "gx/Coordinate.hpp"
 #include "ui/CBackdropGenerator.hpp"
 #include "ui/FrameScript.hpp"
+#include "ui/FrameXML.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
+#include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
+#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
+#include <storm/Memory.hpp>
 #include <algorithm>
 #include <cstdint>
 #include <limits>
@@ -18,7 +22,66 @@ int32_t CSimpleFrame_CreateTitleRegion(lua_State* L) {
 }
 
 int32_t CSimpleFrame_CreateTexture(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    const char* name = nullptr;
+    if (lua_isstring(L, 2)) {
+        name = lua_tostring(L, 2);
+    }
+
+    int32_t drawlayer = DRAWLAYER_ARTWORK;
+    if (lua_isstring(L, 3)) {
+        auto drawlayerStr = lua_tostring(L, 3);
+        StringToDrawLayer(drawlayerStr, drawlayer);
+    }
+
+    XMLNode* inheritNode = nullptr;
+
+    if (lua_type(L, 4) == LUA_TSTRING) {
+        auto inheritName = lua_tostring(L, 4);
+        const char* tainted;
+        bool locked;
+
+        inheritNode = FrameXML_AcquireHashNode(inheritName, tainted, locked);
+
+        if (!inheritNode) {
+            luaL_error(L, "%s:CreateTexture(): Couldn't find inherited node \"%s\"", frame->GetDisplayName(), inheritName);
+            return 0;
+        }
+
+        if (locked) {
+            luaL_error(L, "%s:CreateTexture(): Recursively inherited node \"%s\"", frame->GetDisplayName(), inheritName);
+            return 0;
+        }
+    }
+
+    // TODO CDataAllocator::GetData
+    auto texture = STORM_NEW(CSimpleTexture)(frame, drawlayer, true);
+
+    if (name && *name) {
+        texture->SetName(name);
+    }
+
+    if (inheritNode) {
+        CStatus status;
+
+        texture->LoadXML(inheritNode, &status);
+        texture->PostLoadXML(inheritNode, &status);
+
+        auto inheritName = lua_tostring(L, 4);
+        FrameXML_ReleaseHashNode(inheritName);
+    }
+
+    // TODO anim related logic?
+
+    if (!texture->lua_registered) {
+        texture->RegisterScriptObject(nullptr);
+    }
+
+    lua_rawgeti(L, LUA_REGISTRYINDEX, texture->lua_objectRef);
+
+    return 1;
 }
 
 int32_t CSimpleFrame_CreateFontString(lua_State* L) {
@@ -125,7 +188,10 @@ int32_t CSimpleFrame_HasScript(lua_State* L) {
 }
 
 int32_t CSimpleFrame_GetScript(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    return frame->GetScript(L);
 }
 
 int32_t CSimpleFrame_SetScript(lua_State* L) {
@@ -179,11 +245,197 @@ int32_t CSimpleFrame_CanChangeAttributes(lua_State* L) {
 }
 
 int32_t CSimpleFrame_GetAttribute(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    // 3 argument form
+
+    if (lua_gettop(L) == 4 && lua_isstring(L, 3)) {
+        size_t prefixLen, nameLen, suffixLen;
+        auto prefix = lua_tolstring(L, 2, &prefixLen);
+        auto name = lua_tolstring(L, 3, &nameLen);
+        auto suffix = lua_tolstring(L, 4, &suffixLen);
+
+        char buffer[256];
+        char* write;
+        size_t remaining;
+        size_t copyLen;
+
+        int32_t luaRef;
+
+        // Attempt 1: prefix + name + suffix
+
+        write = buffer;
+        remaining = 255;
+
+        if (prefixLen > 0) {
+            copyLen = (prefixLen < remaining) ? prefixLen : remaining;
+            memcpy(write, prefix, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (suffixLen > 0) {
+            copyLen = (suffixLen < remaining) ? suffixLen : remaining;
+            memcpy(write, suffix, copyLen);
+            write += copyLen;
+        }
+
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 2: "*" + name + suffix
+
+        write = buffer;
+        *write++ = '*';
+        remaining = 254;
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (suffixLen > 0) {
+            copyLen = (suffixLen < remaining) ? suffixLen : remaining;
+            memcpy(write, suffix, copyLen);
+            write += copyLen;
+        }
+
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 3: prefix + name + "*"
+
+        write = buffer;
+        remaining = 254;
+
+        if (prefixLen > 0) {
+            copyLen = (prefixLen < remaining) ? prefixLen : remaining;
+            memcpy(write, prefix, copyLen);
+            write += copyLen;
+            remaining -= copyLen;
+        }
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+        }
+
+        *write++ = '*';
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 4: "*" + name + "*"
+
+        write = buffer;
+        *write++ = '*';
+        remaining = 253;
+
+        if (nameLen > 0) {
+            copyLen = (nameLen < remaining) ? nameLen : remaining;
+            memcpy(write, name, copyLen);
+            write += copyLen;
+        }
+
+        *write++ = '*';
+        *write = '\0';
+
+        if (frame->GetAttribute(buffer, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Attempt 5: name
+
+        if (frame->GetAttribute(name, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Not found
+
+        lua_pushnil(L);
+        return 1;
+    }
+
+    // 1 argument form
+
+    if (lua_isstring(L, 2)) {
+        auto attrName = lua_tostring(L, 2);
+        int32_t luaRef;
+
+        if (frame->GetAttribute(attrName, luaRef)) {
+            lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+            return 1;
+        }
+
+        // Not found
+
+        lua_pushnil(L);
+        return 1;
+    }
+
+    // Invalid call
+
+    luaL_error(L, "Usage: %s:GetAttribute(\"name\")", frame->GetDisplayName());
+    return 0;
 }
 
 int32_t CSimpleFrame_SetAttribute(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (!frame->ProtectedFunctionsAllowed() && !frame->AttributeChangesAllowed()) {
+        // TODO disallowed logic
+
+        return 0;
+    }
+
+    lua_settop(L, 3);
+
+    if (!lua_isstring(L, 2) || lua_type(L, 3) == LUA_TNONE) {
+        luaL_error(L, "Usage: %s:SetAttribute(\"name\", value)", frame->GetDisplayName());
+        return 0;
+    }
+
+    auto attrName = lua_tostring(L, 2);
+    int32_t luaRef;
+
+    if (frame->GetAttribute(attrName, luaRef)) {
+        luaL_unref(L, LUA_REGISTRYINDEX, luaRef);
+    }
+
+    // TODO taint management
+
+    luaRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+    // TODO taint management
+
+    frame->SetAttribute(attrName, luaRef);
+
+    return 0;
 }
 
 int32_t CSimpleFrame_GetEffectiveScale(lua_State* L) {
@@ -459,7 +711,22 @@ int32_t CSimpleFrame_IsKeyboardEnabled(lua_State* L) {
 }
 
 int32_t CSimpleFrame_EnableMouse(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (!frame->ProtectedFunctionsAllowed()) {
+        // TODO disallowed logic
+
+        return 0;
+    }
+
+    if (StringToBOOL(L, 2, 1)) {
+        frame->EnableEvent(SIMPLE_EVENT_MOUSE, -1);
+    } else {
+        frame->DisableEvent(SIMPLE_EVENT_MOUSE);
+    }
+
+    return 0;
 }
 
 int32_t CSimpleFrame_IsMouseEnabled(lua_State* L) {

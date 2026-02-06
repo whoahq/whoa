@@ -5,6 +5,7 @@ if(WHOA_SYSTEM_MAC)
         "gx/*.cpp"
         "gx/font/*.cpp"
         "util/*.cpp"
+        "util/time/*.cpp"
     )
 
     set_source_files_properties(${PRIVATE_SOURCES}

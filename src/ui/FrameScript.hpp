@@ -99,6 +99,8 @@ void FrameScript_SignalEvent(uint32_t index, const char* format, ...);
 
 const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32_t bufferLen);
 
+void FrameScript_UnregisterFunction(const char* name);
+
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
 
 void ScriptEventsInitialize();

@@ -24,3 +24,7 @@ uint32_t CGUnit::TotalFields() {
 uint32_t CGUnit::TotalFieldsSaved() {
     return CGUnit::GetBaseOffsetSaved() + 123;
 }
+
+CGUnitData* CGUnit::Unit() const {
+    return this->m_unit;
+}

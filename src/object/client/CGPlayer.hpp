@@ -148,9 +148,17 @@ class CGPlayer {
         static uint32_t TotalFieldsSaved();
         static uint32_t TotalRemoteFieldsSaved();
 
-        // Public member variables
+        // Public member functions
+        uint32_t GetNextLevelXP() const;
+        uint32_t GetXP() const;
+
+    protected:
+        // Protected member variables
         CGPlayerData* m_player;
         uint32_t* m_playerSaved;
+
+        // Protected member functions
+        CGPlayerData* Player() const;
 };
 
 #endif

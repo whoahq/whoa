@@ -400,6 +400,18 @@ CSimpleTop::CSimpleTop() : CLayoutFrame() {
 CSimpleTop::~CSimpleTop() {
     // TODO
 
+    while (auto frame = this->m_frames.Head()) {
+        this->m_frames.UnlinkNode(frame);
+        delete frame;
+    }
+
+    for (auto& strata : this->m_strata) {
+        delete strata;
+        strata = nullptr;
+    }
+
+    // TODO
+
     this->DisableEvents();
 
     HandleClose(this->m_screenLayer);

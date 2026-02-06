@@ -32,6 +32,7 @@ class CSimpleRegion : public CScriptRegion {
         void Hide();
         void HideThis();
         bool IsShown();
+        bool IsVisible();
         void OnRegionChanged();
         void SetVertexColor(const CImVector& color);
         void SetVertexGradient(ORIENTATION orientation, const CImVector& minColor, const CImVector& maxColor);

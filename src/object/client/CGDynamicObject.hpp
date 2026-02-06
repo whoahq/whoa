@@ -17,9 +17,13 @@ class CGDynamicObject {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGDynamicObjectData* m_dynamicObj;
         uint32_t* m_dynamicObjSaved;
+
+        // Protected member functions
+        CGDynamicObjectData* DynamicObject() const;
 };
 
 #endif

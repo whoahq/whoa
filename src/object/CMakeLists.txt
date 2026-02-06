@@ -16,4 +16,5 @@ target_include_directories(object
 target_link_libraries(object
     PRIVATE
         db
+        ui
 )

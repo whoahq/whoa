@@ -5,6 +5,10 @@
 CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 
+    this->m_model = nullptr;
+
+    // TODO
+
     this->m_lockCount = 0;
     this->m_disabled = false;
     this->m_inReenable = false;
@@ -25,6 +29,14 @@ CGObject_C::~CGObject_C() {
 
 void CGObject_C::AddWorldObject() {
     // TODO
+}
+
+int32_t CGObject_C::CanBeTargetted() {
+    return false;
+}
+
+int32_t CGObject_C::CanHighlight() {
+    return false;
 }
 
 void CGObject_C::Disable() {

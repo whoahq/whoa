@@ -25,10 +25,23 @@ class CGObject {
 
         // Public member variables
         uint32_t uint0; // TODO what is this?
+        uint32_t m_memHandle;
+
+        // Public member functions
+        WOWGUID GetGUID() const;
+        OBJECT_TYPE GetType() const;
+        OBJECT_TYPE_ID GetTypeID() const;
+        int32_t IsA(OBJECT_TYPE type) const;
+        int32_t IsExactlyA(OBJECT_TYPE_ID typeID) const;
+
+    protected:
+        // Protected member variables
         CGObjectData* m_obj;
         uint32_t* m_objSaved;
-        uint32_t m_memHandle;
         OBJECT_TYPE_ID m_typeID;
+
+        // Protected member functions
+        CGObjectData* Obj() const;
 };
 
 #endif

@@ -51,6 +51,7 @@ class CLayoutFrame {
         virtual void SetHeight(float height);
         virtual float GetWidth();
         virtual float GetHeight();
+        virtual void GetSize(float& width, float& height, int32_t a4);
         virtual void GetClampRectInsets(float& a1, float& a2, float& a3, float& a4);
         virtual int32_t IsAttachmentOrigin();
         virtual CLayoutFrame* GetLayoutFrameByName(const char* name);

@@ -24,3 +24,7 @@ uint32_t CGCorpse::TotalFields() {
 uint32_t CGCorpse::TotalFieldsSaved() {
     return CGCorpse::GetBaseOffsetSaved() + 3;
 }
+
+CGCorpseData* CGCorpse::Corpse() const {
+    return this->m_corpse;
+}

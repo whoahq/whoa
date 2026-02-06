@@ -82,9 +82,13 @@ class CGUnit {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGUnitData* m_unit;
         uint32_t* m_unitSaved;
+
+        // Protected member functions
+        CGUnitData* Unit() const;
 };
 
 #endif

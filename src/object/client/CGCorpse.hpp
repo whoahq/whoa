@@ -17,9 +17,13 @@ class CGCorpse {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGCorpseData* m_corpse;
         uint32_t* m_corpseSaved;
+
+        // Protected member functions
+        CGCorpseData* Corpse() const;
 };
 
 #endif

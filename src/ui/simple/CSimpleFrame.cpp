@@ -64,11 +64,27 @@ CSimpleFrame::CSimpleFrame(CSimpleFrame* parent) : CScriptRegion() {
 }
 
 CSimpleFrame::~CSimpleFrame() {
-    // TODO
-
     this->m_intAC = 3;
 
     this->m_top->UnregisterFrame(this);
+    this->m_top = nullptr;
+
+    if (this->m_titleRegion) {
+        delete this->m_titleRegion;
+    }
+
+    for (int32_t layer = 0; layer < NUM_SIMPLEFRAME_DRAWLAYERS; layer++) {
+        this->m_drawlayers[layer].UnlinkAll();
+
+        if (this->m_batch[layer]) {
+            delete this->m_batch[layer];
+        }
+    }
+
+    while (auto region = this->m_regions.Head()) {
+        this->m_regions.UnlinkNode(region);
+        delete region;
+    }
 
     // TODO
 }
@@ -79,9 +95,25 @@ void CSimpleFrame::AddFrameRegion(CSimpleRegion* region, uint32_t drawlayer) {
     this->NotifyDrawLayerChanged(drawlayer);
 }
 
+int32_t CSimpleFrame::AttributeChangesAllowed() {
+    return true;
+}
+
 void CSimpleFrame::DisableDrawLayer(uint32_t drawlayer) {
     this->m_drawenabled[drawlayer] = 0;
     this->NotifyDrawLayerChanged(drawlayer);
+}
+
+void CSimpleFrame::DisableEvent(CSimpleEventType eventType) {
+    if (!(this->m_eventmask & (1 << eventType))) {
+        return;
+    }
+
+    if (this->m_visible) {
+        this->m_top->UnregisterForEvent(this, eventType, 0);
+    }
+
+    this->m_eventmask &= ~(1 << eventType);
 }
 
 void CSimpleFrame::EnableDrawLayer(uint32_t drawlayer) {
@@ -348,6 +380,29 @@ void CSimpleFrame::RegisterForEvents(int32_t a2) {
     }
 }
 
+void CSimpleFrame::RunOnAttributeChangedScript(const char* name, int32_t luaRef) {
+    if (!this->m_onAttributeChange.luaRef) {
+        return;
+    }
+
+    auto L = FrameScript_GetContext();
+
+    // TODO taint management
+
+    // Attribute name
+    auto nameLower = static_cast<char*>(alloca(SStrLen(name) + 1));
+    SStrCopy(nameLower, name);
+    SStrLower(nameLower);
+    lua_pushstring(L, nameLower);
+
+    // Attribute ref
+    lua_rawgeti(L, LUA_REGISTRYINDEX, luaRef);
+
+    this->RunScript(this->m_onAttributeChange, 2, nullptr);
+
+    // TODO taint management
+}
+
 void CSimpleFrame::RunOnCharScript(const char* chr) {
     if (this->m_onChar.luaRef) {
         auto L = FrameScript_GetContext();
@@ -492,6 +547,18 @@ void CSimpleFrame::PreLoadXML(XMLNode* node, CStatus* status) {
         region->SetDeferredResize(1);
         region = region->m_regionLink.Next();
     }
+}
+
+bool CSimpleFrame::GetAttribute(const char* name, int32_t& luaRef) {
+    auto attr = this->m_attributes.Ptr(name);
+
+    if (!attr || attr->luaRef == -1) {
+        return false;
+    }
+
+    luaRef = attr->luaRef;
+
+    return true;
 }
 
 int32_t CSimpleFrame::GetBoundsRect(CRect& bounds) {
@@ -709,7 +776,69 @@ int32_t CSimpleFrame::HideThis() {
 }
 
 void CSimpleFrame::LoadXML_Attributes(const XMLNode* node, CStatus* status) {
-    // TODO
+    auto L = FrameScript_GetContext();
+
+    auto child = node->GetChild();
+
+    while (child) {
+        // Unexpected child node
+        if (SStrCmpI(child->GetName(), "Attribute")) {
+            status->Add(STATUS_WARNING, "Frame %s: Unknown attributes element %s", this->GetDisplayName(), child->GetName());
+            child = child->GetSibling();
+            continue;
+        }
+
+        auto attrName = child->GetAttributeByName("name");
+
+        // No attribute name
+        if (!attrName) {
+            status->Add(STATUS_WARNING, "Frame %s: unnamed attribute element", this->GetDisplayName());
+            child = child->GetSibling();
+            continue;
+        }
+
+        auto attrType = child->GetAttributeByName("type");
+
+        if (!attrType) {
+            attrType = "string";
+        }
+
+        auto attrValue = child->GetAttributeByName("value");
+
+        // Missing attribute value for non-nil type
+        if (SStrCmpI(attrType, "nil") && !attrValue) {
+            status->Add(STATUS_WARNING, "Frame %s: attribute element named %s missing value", this->GetDisplayName(), attrName);
+            child = child->GetSibling();
+            continue;
+        }
+
+        // Push attribute value to stack
+        if (!SStrCmpI(attrType, "nil")) {
+            lua_pushnil(L);
+        } else if (!SStrCmpI(attrType, "boolean")) {
+            lua_pushboolean(L, StringToBOOL(attrValue));
+        } else if (!SStrCmpI(attrType, "number")) {
+            lua_pushnumber(L, SStrToFloat(attrValue));
+        } else {
+            lua_pushstring(L, attrValue);
+        }
+
+        auto attr = this->m_attributes.Ptr(attrName);
+
+        if (attr) {
+            luaL_unref(L, LUA_REGISTRYINDEX, attr->luaRef);
+        } else {
+            attr = this->m_attributes.New(attrName, 0, 0x0);
+        }
+
+        // TODO taint management
+
+        attr->luaRef = luaL_ref(L, LUA_REGISTRYINDEX);
+
+        // TODO taint management
+
+        child = child->GetSibling();
+    }
 }
 
 void CSimpleFrame::LoadXML_Backdrop(const XMLNode* node, CStatus* status) {
@@ -1289,6 +1418,18 @@ void CSimpleFrame::RemoveFrameRegion(CSimpleRegion* region, uint32_t drawlayer) 
     this->NotifyDrawLayerChanged(drawlayer);
 }
 
+void CSimpleFrame::SetAttribute(const char* name, int32_t luaRef) {
+    auto attr = this->m_attributes.Ptr(name);
+
+    if (!attr) {
+        attr = this->m_attributes.New(name, 0, 0x0);
+    }
+
+    attr->luaRef = luaRef;
+
+    this->RunOnAttributeChangedScript(name, luaRef);
+}
+
 void CSimpleFrame::SetBackdrop(CBackdropGenerator* backdrop) {
     if (this->m_backdrop) {
         delete this->m_backdrop;
@@ -1326,7 +1467,7 @@ void CSimpleFrame::SetBeingScrolled(int32_t a2, int32_t a3) {
         this->m_batchDirty |= 0x1F;
     }
 
-    for (auto child = this->m_children.Head(); child; this->m_children.Link(child)->Next()) {
+    for (auto child = this->m_children.Head(); child; child = this->m_children.Link(child)->Next()) {
         if (!(child->frame->m_flags & 0x4000)) {
             child->frame->SetBeingScrolled(a2, -1);
         }

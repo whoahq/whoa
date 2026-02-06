@@ -38,9 +38,13 @@ class CGItem {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGItemData* m_item;
         uint32_t* m_itemSaved;
+
+        // Protected member functions
+        CGItemData* Item() const;
 };
 
 #endif

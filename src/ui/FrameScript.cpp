@@ -1047,6 +1047,15 @@ const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32
     return buffer;
 }
 
+void FrameScript_UnregisterFunction(const char* name) {
+    auto L = FrameScript::s_context;
+
+    lua_pushnil(L);
+    lua_pushstring(L, name);
+    lua_insert(L, -2);
+    lua_rawset(L, LUA_GLOBALSINDEX);
+}
+
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event) {
     if (event->pendingSignalCount) {
         auto node = event->unregisterListeners.Head();
