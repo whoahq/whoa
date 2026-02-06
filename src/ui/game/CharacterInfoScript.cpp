@@ -1,11 +1,48 @@
 #include "ui/game/CharacterInfoScript.hpp"
+#include "db/Db.hpp"
 #include "ui/FrameScript.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
 
 int32_t Script_GetInventorySlotInfo(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Invalid inventory slot in GetInventorySlotInfo");
+        return 0;
+    }
+
+    auto slotName = lua_tostring(L, 1);
+
+    PaperDollItemFrameRec* slotRec = nullptr;
+    for (int32_t i = 0; i < g_paperDollItemFrameDB.GetNumRecords(); i++) {
+        auto paperDollItemFrameRec = g_paperDollItemFrameDB.GetRecordByIndex(i);
+
+        if (paperDollItemFrameRec && !SStrCmpI(slotName, paperDollItemFrameRec->m_itemButtonName)) {
+            slotRec = paperDollItemFrameRec;
+            break;
+        }
+    }
+
+    if (!slotRec) {
+        luaL_error(L, "Invalid inventory slot in GetInventorySlotInfo");
+        return 0;
+    }
+
+    // id
+    lua_pushnumber(L, slotRec->m_slotNumber);
+
+    // textureName
+    lua_pushstring(L, slotRec->m_slotIcon);
+
+    // checkRelic
+    if (slotRec->m_slotNumber == EQUIPPED_LAST) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 3;
 }
 
 int32_t Script_GetInventoryItemsForSlot(lua_State* L) {
