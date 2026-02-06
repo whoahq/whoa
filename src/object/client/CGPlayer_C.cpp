@@ -1,7 +1,9 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "db/Db.hpp"
-#include "object/client/ObjMgr.hpp"
 #include "object/Types.hpp"
+#include "object/client/ObjMgr.hpp"
+#include "ui/FrameScript.hpp"
+#include "ui/Game.hpp"
 #include <storm/Error.hpp>
 
 CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(time, objCreate) {
@@ -45,6 +47,22 @@ void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) 
 }
 
 void CGPlayer_C::PostInitActivePlayer() {
+    // TODO
+
+    if (ClntObjMgrGetPlayerType() == PLAYER_NORMAL) {
+        // TODO
+
+        FrameScript_SignalEvent(SCRIPT_ACTIONBAR_SLOT_CHANGED, "%d", 0);
+    }
+
+    // TODO
+
+    if (ClntObjMgrGetPlayerType() == PLAYER_NORMAL) {
+        // TODO
+
+        CGGameUI::EnterWorld();
+    }
+
     // TODO
 }
 
