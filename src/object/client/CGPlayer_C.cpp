@@ -34,6 +34,18 @@ void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) 
     this->CGUnit_C::PostInit(time, init, a4);
 
     // TODO
+
+    if (this->GetGUID() == ClntObjMgrGetActivePlayer()) {
+        this->PostInitActivePlayer();
+    } else {
+        this->UpdatePartyMemberState();
+    }
+
+    // TODO
+}
+
+void CGPlayer_C::PostInitActivePlayer() {
+    // TODO
 }
 
 void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
@@ -41,6 +53,10 @@ void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
 
     this->m_player = reinterpret_cast<CGPlayerData*>(&storage[CGPlayer::GetBaseOffset()]);
     this->m_playerSaved = &saved[CGPlayer::GetBaseOffsetSaved()];
+}
+
+void CGPlayer_C::UpdatePartyMemberState() {
+    // TODO
 }
 
 uint32_t Player_C_GetDisplayId(uint32_t race, uint32_t sex) {
