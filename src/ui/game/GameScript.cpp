@@ -3,6 +3,7 @@
 #include "gx/Coordinate.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
+#include "ui/game/CGGameUI.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
@@ -502,7 +503,9 @@ int32_t Script_ForceQuit(lua_State* L) {
 }
 
 int32_t Script_GetCursorMoney(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CGGameUI::GetCursorMoney());
+
+    return 1;
 }
 
 int32_t Script_DropCursorMoney(lua_State* L) {

@@ -15,6 +15,7 @@ class CGGameUI {
         // Static functions
         static void EnterWorld();
         static WOWGUID& GetCurrentObjectTrack();
+        static uint32_t GetCursorMoney();
         static WOWGUID& GetLockedTarget();
         static void Initialize();
         static void InitializeGame();
@@ -25,6 +26,7 @@ class CGGameUI {
 
     private:
         static WOWGUID s_currentObjectTrack;
+        static uint32_t s_cursorMoney;
         static bool s_inWorld;
         static WOWGUID s_lockedTarget;
         static bool s_loggingIn;

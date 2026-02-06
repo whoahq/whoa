@@ -25,6 +25,7 @@
 #include <common/MD5.hpp>
 
 WOWGUID CGGameUI::s_currentObjectTrack;
+uint32_t CGGameUI::s_cursorMoney;
 CScriptObject* CGGameUI::s_gameTooltip;
 bool CGGameUI::s_inWorld;
 WOWGUID CGGameUI::s_lockedTarget;
@@ -92,6 +93,10 @@ void CGGameUI::EnterWorld() {
 
 WOWGUID& CGGameUI::GetCurrentObjectTrack() {
     return CGGameUI::s_currentObjectTrack;
+}
+
+uint32_t CGGameUI::GetCursorMoney() {
+    return CGGameUI::s_cursorMoney;
 }
 
 WOWGUID& CGGameUI::GetLockedTarget() {
