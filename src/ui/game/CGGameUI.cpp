@@ -80,6 +80,7 @@ void CGGameUI::Initialize() {
     // TODO
 
     LoadScriptFunctions();
+    ScriptEventsRegisterEvents();
 
     // TODO
 

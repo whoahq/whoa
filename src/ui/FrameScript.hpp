@@ -40,7 +40,6 @@ class FrameScript_EventObject : public TSHashObject<FrameScript_EventObject, HAS
 };
 
 extern int32_t g_glueFrameScriptGenders[UNITSEX_LAST];
-extern const char* g_scriptEvents[722];
 
 namespace FrameScript {
     extern void* s_mempool;
@@ -102,7 +101,5 @@ const char* FrameScript_Sprintf(lua_State* L, int32_t idx, char buffer[], uint32
 void FrameScript_UnregisterFunction(const char* name);
 
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
-
-void ScriptEventsInitialize();
 
 #endif
