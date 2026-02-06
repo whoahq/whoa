@@ -48,7 +48,7 @@ THE SOFTWARE.
 #define FT_COMPONENT  trace_pcfdriver
 
 
-  static FT_Error
+  static void
   PCF_Face_Done( PCF_Face  face )
   {
     FT_Memory    memory = FT_FACE_MEMORY( face );
@@ -81,8 +81,6 @@ THE SOFTWARE.
     FREE( face->charset_registry );
 
     FT_TRACE4(( "DONE_FACE!!!\n" ));
-
-    return PCF_Err_Ok;
   }
 
 

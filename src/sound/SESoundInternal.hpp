@@ -2,12 +2,17 @@
 #define SOUND_SE_SOUND_INTERNAL_HPP
 
 #include <storm/List.hpp>
-#include <fmod.hpp>
 #include <cstdint>
+
+#if !defined(WHOA_SYSTEM_WEB)
+#include <fmod.hpp>
+#endif
 
 class SESound;
 class SEUserData;
 class SFile;
+
+#if !defined(WHOA_SYSTEM_WEB)
 
 class SoundCacheNode : public TSLinkedNode<SoundCacheNode> {
     public:
@@ -83,5 +88,7 @@ class SEStreamedSound : public SESoundInternal {
     public:
         // TODO
 };
+
+#endif // !defined(WHOA_SYSTEM_WEB)
 
 #endif

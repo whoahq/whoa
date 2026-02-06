@@ -5,9 +5,11 @@
 #include "sound/SESoundInternal.hpp"
 #include "sound/SEUserData.hpp"
 #include <cstdint>
-#include <fmod.hpp>
 #include <storm/Hash.hpp>
 #include <storm/Thread.hpp>
+
+#if !defined(WHOA_SYSTEM_WEB)
+#include <fmod.hpp>
 
 struct SOUND_INTERNAL_LOOKUP : TSHashObject<SOUND_INTERNAL_LOOKUP, HASHKEY_NONE> {
     SESoundInternal* m_internal;
@@ -64,5 +66,41 @@ class SESound {
         // Private member variables
         SESoundInternal* m_internal = nullptr;
 };
+
+#else // WHOA_SYSTEM_WEB
+
+// Stub SESound class for web builds - sound is not supported
+class SESound {
+    public:
+        // Public static variables
+        static TSGrowableArray<SEChannelGroup> s_ChannelGroups;
+        static int32_t s_Initialized;
+
+        // Public static functions
+        static void* CreateSoundGroup(const char* name, int32_t maxAudible);
+        static SEChannelGroup* GetChannelGroup(const char* name, bool create, bool createInMaster);
+        static float GetChannelGroupVolume(const char* name);
+        static int32_t Heartbeat(const void* data, void* param);
+        static void Init(int32_t maxChannels, int32_t (*a2), int32_t enableReverb, int32_t enableSoftwareHRTF, int32_t* numChannels, int32_t* outputDriverIndex, const char* outputDriverName, void (*a8), int32_t a9);
+        static int32_t IsInitialized();
+        static void MuteChannelGroup(const char* name, bool mute);
+        static void SetChannelGroupVolume(const char* name, float volume);
+        static void SetMasterVolume(float volume);
+
+        // Public member functions
+        void CompleteLoad();
+        SEUserData* GetUserData();
+        bool IsPlaying();
+        int32_t Load(const char* filename, int32_t a3, void* soundGroup1, void* soundGroup2, bool a6, bool a7, uint32_t a8, int32_t a9, uint32_t a10);
+        void Play();
+        void SetChannelGroup(const char* name, bool inMaster);
+        void SetFadeInTime(float fadeInTime);
+        void SetFadeOutTime(float fadeOutTime);
+        void SetUserData(SEUserData* userData);
+        void SetVolume(float volume);
+        void StopOrFadeOut(int32_t stop, float fadeOutTime);
+};
+
+#endif // WHOA_SYSTEM_WEB
 
 #endif
