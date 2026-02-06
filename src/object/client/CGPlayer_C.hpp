@@ -15,8 +15,8 @@ class CGPlayer_C : public CGUnit_C, public CGPlayer {
 
         // Public member functions
         CGPlayer_C(uint32_t time, CClientObjCreate& objCreate);
-        uint32_t GetActiveNextLevelXP() const;
-        uint32_t GetActiveXP() const;
+        uint32_t GetNextLevelXP() const;
+        uint32_t GetXP() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void PostInitActivePlayer();
         void SetStorage(uint32_t* storage, uint32_t* saved);

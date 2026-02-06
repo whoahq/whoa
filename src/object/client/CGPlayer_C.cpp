@@ -14,20 +14,20 @@ CGPlayer_C::~CGPlayer_C() {
     // TODO
 }
 
-uint32_t CGPlayer_C::GetActiveNextLevelXP() const {
+uint32_t CGPlayer_C::GetNextLevelXP() const {
     if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
         return 0;
     }
 
-    return this->GetNextLevelXP();
+    return this->CGPlayer::GetNextLevelXP();
 }
 
-uint32_t CGPlayer_C::GetActiveXP() const {
+uint32_t CGPlayer_C::GetXP() const {
     if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
         return 0;
     }
 
-    return this->GetXP();
+    return this->CGPlayer::GetXP();
 }
 
 void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {

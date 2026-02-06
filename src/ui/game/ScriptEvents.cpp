@@ -189,7 +189,7 @@ int32_t Script_UnitXP(lua_State* L) {
     float xp = 0.0f;
 
     if (unit && unit->IsA(TYPE_PLAYER)) {
-        xp = static_cast<CGPlayer_C*>(unit)->GetActiveXP();
+        xp = static_cast<CGPlayer_C*>(unit)->GetXP();
     }
 
     lua_pushnumber(L, xp);
@@ -209,7 +209,7 @@ int32_t Script_UnitXPMax(lua_State* L) {
     float xpMax = 0.0f;
 
     if (unit && unit->IsA(TYPE_PLAYER)) {
-        xpMax = static_cast<CGPlayer_C*>(unit)->GetActiveNextLevelXP();
+        xpMax = static_cast<CGPlayer_C*>(unit)->GetNextLevelXP();
     }
 
     lua_pushnumber(L, xpMax);
