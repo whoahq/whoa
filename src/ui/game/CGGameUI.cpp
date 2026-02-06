@@ -1,5 +1,6 @@
 #include "ui/game/CGGameUI.hpp"
 #include "client/Client.hpp"
+#include "object/Client.hpp"
 #include "ui/CScriptObject.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/Key.hpp"
@@ -17,6 +18,7 @@
 #include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/GameScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
+#include "ui/game/Types.hpp"
 #include "ui/game/UIBindingsScript.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
@@ -24,6 +26,7 @@
 
 WOWGUID CGGameUI::s_currentObjectTrack;
 CScriptObject* CGGameUI::s_gameTooltip;
+bool CGGameUI::s_inWorld;
 WOWGUID CGGameUI::s_lockedTarget;
 bool CGGameUI::s_loggingIn;
 CSimpleTop* CGGameUI::s_simpleTop;
@@ -61,6 +64,28 @@ void LoadScriptFunctions() {
     // TODO
 
     GMTicketInfoRegisterScriptFunctions();
+
+    // TODO
+}
+
+void CGGameUI::EnterWorld() {
+    if (CGGameUI::s_inWorld) {
+        return;
+    }
+
+    CGGameUI::s_inWorld = true;
+
+    // TODO
+
+    if (CGGameUI::s_loggingIn) {
+        CGGameUI::s_loggingIn = false;
+
+        FrameScript_SignalEvent(SCRIPT_PLAYER_LOGIN, nullptr);
+
+        // TODO CGLCD::Login();
+    }
+
+    FrameScript_SignalEvent(SCRIPT_PLAYER_ENTERING_WORLD, nullptr);
 
     // TODO
 }
@@ -153,6 +178,12 @@ void CGGameUI::Initialize() {
 
     CGGameUI::s_gameTooltip = CScriptObject::GetScriptObjectByName("GameTooltip", CGTooltip::GetObjectType());
     STORM_ASSERT(CGGameUI::s_gameTooltip);
+
+    // TODO
+
+    if (ClntObjMgrGetActivePlayer()) {
+        CGGameUI::EnterWorld();
+    }
 
     // TODO
 }

@@ -5,6 +5,7 @@
 #include "ui/ScriptFunctionsSystem.hpp"
 #include "ui/game/CGGameUI.hpp"
 #include "ui/game/ScriptUtil.hpp"
+#include "ui/game/Types.hpp"
 #include "util/GUID.hpp"
 #include "util/Lua.hpp"
 #include "util/StringTo.hpp"
@@ -1133,9 +1134,9 @@ void ScriptEventsInitialize() {
     g_scriptEvents[250] = "LOOT_SLOT_CLEARED";
     g_scriptEvents[251] = "LOOT_SLOT_CHANGED";
     g_scriptEvents[252] = "LOOT_CLOSED";
-    g_scriptEvents[253] = "PLAYER_LOGIN";
-    g_scriptEvents[254] = "PLAYER_LOGOUT";
-    g_scriptEvents[255] = "PLAYER_ENTERING_WORLD";
+    g_scriptEvents[SCRIPT_PLAYER_LOGIN] = "PLAYER_LOGIN";
+    g_scriptEvents[SCRIPT_PLAYER_LOGOUT] = "PLAYER_LOGOUT";
+    g_scriptEvents[SCRIPT_PLAYER_ENTERING_WORLD] = "PLAYER_ENTERING_WORLD";
     g_scriptEvents[256] = "PLAYER_LEAVING_WORLD";
     g_scriptEvents[257] = "PLAYER_ALIVE";
     g_scriptEvents[258] = "PLAYER_DEAD";

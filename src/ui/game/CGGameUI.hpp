@@ -13,6 +13,7 @@ class CGGameUI {
         static CSimpleTop* s_simpleTop;
 
         // Static functions
+        static void EnterWorld();
         static WOWGUID& GetCurrentObjectTrack();
         static WOWGUID& GetLockedTarget();
         static void Initialize();
@@ -24,6 +25,7 @@ class CGGameUI {
 
     private:
         static WOWGUID s_currentObjectTrack;
+        static bool s_inWorld;
         static WOWGUID s_lockedTarget;
         static bool s_loggingIn;
 };
