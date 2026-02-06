@@ -10,11 +10,15 @@ class CreatureModelDataRec;
 
 class CGPlayer_C : public CGUnit_C, public CGPlayer {
     public:
+        // Public static functions
+        static CGPlayer_C* GetActivePtr();
+
         // Virtual public member functions
         virtual ~CGPlayer_C();
 
         // Public member functions
         CGPlayer_C(uint32_t time, CClientObjCreate& objCreate);
+        uint32_t GetMoney() const;
         uint32_t GetNextLevelXP() const;
         uint32_t GetXP() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);

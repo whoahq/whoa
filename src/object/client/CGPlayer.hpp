@@ -149,6 +149,7 @@ class CGPlayer {
         static uint32_t TotalRemoteFieldsSaved();
 
         // Public member functions
+        uint32_t GetMoney() const;
         uint32_t GetNextLevelXP() const;
         uint32_t GetXP() const;
 

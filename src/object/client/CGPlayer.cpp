@@ -41,6 +41,10 @@ uint32_t CGPlayer::TotalRemoteFieldsSaved() {
     return CGPlayer::GetBaseOffsetSaved() + 173;
 }
 
+uint32_t CGPlayer::GetMoney() const {
+    return this->Player()->coinage;
+}
+
 uint32_t CGPlayer::GetNextLevelXP() const {
     return this->Player()->nextLevelXP;
 }

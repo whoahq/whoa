@@ -6,12 +6,26 @@
 #include "ui/Game.hpp"
 #include <storm/Error.hpp>
 
+CGPlayer_C* CGPlayer_C::GetActivePtr() {
+    return static_cast<CGPlayer_C*>(
+        ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPE_PLAYER, __FILE__, __LINE__)
+    );
+}
+
 CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(time, objCreate) {
     // TODO
 }
 
 CGPlayer_C::~CGPlayer_C() {
     // TODO
+}
+
+uint32_t CGPlayer_C::GetMoney() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->CGPlayer::GetMoney();
 }
 
 uint32_t CGPlayer_C::GetNextLevelXP() const {

@@ -282,7 +282,15 @@ int32_t Script_UnitLevel(lua_State* L) {
 }
 
 int32_t Script_GetMoney(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto player = CGPlayer_C::GetActivePtr();
+
+    if (player) {
+        lua_pushnumber(L, player->GetMoney());
+    } else {
+        lua_pushnumber(L, 0.0f);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetHonorCurrency(lua_State* L) {
