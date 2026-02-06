@@ -10,6 +10,10 @@
 #include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
+#define NUM_SCRIPT_EVENTS 722
+
+const char* g_scriptEvents[NUM_SCRIPT_EVENTS];
+
 namespace {
 
 int32_t Script_UnitExists(lua_State* L) {
@@ -1596,4 +1600,8 @@ void ScriptEventsInitialize() {
     g_scriptEvents[719] = "CHAT_MSG_BN_INLINE_TOAST_BROADCAST";
     g_scriptEvents[720] = "CHAT_MSG_BN_INLINE_TOAST_BROADCAST_INFORM";
     g_scriptEvents[721] = "CHAT_MSG_BN_INLINE_TOAST_CONVERSATION";
+}
+
+void ScriptEventsRegisterEvents() {
+    FrameScript_CreateEvents(g_scriptEvents, NUM_SCRIPT_EVENTS);
 }

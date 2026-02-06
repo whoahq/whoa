@@ -11,8 +11,6 @@
 #include <storm/String.hpp>
 #include <tempest/Vector.hpp>
 
-const char* g_scriptEvents[722];
-
 int32_t g_glueFrameScriptGenders[] = {
     2, // UNIT_SEX_MALE
     3, // UNIT_SEX_FEMALE
@@ -154,8 +152,10 @@ void FrameScript_CreateEvents(const char* names[], uint32_t count) {
     FrameScript::s_scriptEvents.SetCount(count);
 
     for (int32_t i = 0; i < count; i++) {
-        auto event = FrameScript::s_scriptEventsHash.New(names[i], 0, 0);
-        FrameScript::s_scriptEvents[i] = event;
+        if (names[i]) {
+            auto event = FrameScript::s_scriptEventsHash.New(names[i], 0, 0);
+            FrameScript::s_scriptEvents[i] = event;
+        }
     }
 }
 
