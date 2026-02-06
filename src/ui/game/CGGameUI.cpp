@@ -25,6 +25,7 @@
 WOWGUID CGGameUI::s_currentObjectTrack;
 CScriptObject* CGGameUI::s_gameTooltip;
 WOWGUID CGGameUI::s_lockedTarget;
+bool CGGameUI::s_loggingIn;
 CSimpleTop* CGGameUI::s_simpleTop;
 
 void LoadScriptFunctions() {
@@ -73,6 +74,10 @@ WOWGUID& CGGameUI::GetLockedTarget() {
 }
 
 void CGGameUI::Initialize() {
+    // TODO
+
+    CGGameUI::s_loggingIn = true;
+
     // TODO
 
     CGGameUI::s_simpleTop = STORM_NEW(CSimpleTop);
@@ -158,6 +163,10 @@ void CGGameUI::InitializeGame() {
     CGGameUI::Initialize();
 
     // TODO
+}
+
+bool CGGameUI::IsLoggingIn() {
+    return CGGameUI::s_loggingIn;
 }
 
 int32_t CGGameUI::IsRaidMember(const WOWGUID& guid) {

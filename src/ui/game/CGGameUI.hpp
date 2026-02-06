@@ -17,6 +17,7 @@ class CGGameUI {
         static WOWGUID& GetLockedTarget();
         static void Initialize();
         static void InitializeGame();
+        static bool IsLoggingIn();
         static int32_t IsRaidMember(const WOWGUID& guid);
         static int32_t IsRaidMemberOrPet(const WOWGUID& guid);
         static void RegisterFrameFactories();
@@ -24,6 +25,7 @@ class CGGameUI {
     private:
         static WOWGUID s_currentObjectTrack;
         static WOWGUID s_lockedTarget;
+        static bool s_loggingIn;
 };
 
 #endif
