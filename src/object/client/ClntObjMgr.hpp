@@ -18,8 +18,12 @@ class ClntObjMgr {
         STORM_EXPLICIT_LIST(CGObject_C, m_link) m_reenabledObjects;
         // TODO
         WOWGUID m_activePlayer = 0;
+        PLAYER_TYPE m_type;
         uint32_t m_mapID = 0;
         ClientConnection* m_net = nullptr;
+
+        // Member functions
+        ClntObjMgr(PLAYER_TYPE type) : m_type(type) {};
 };
 
 #endif

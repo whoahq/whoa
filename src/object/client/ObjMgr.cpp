@@ -141,6 +141,10 @@ uint32_t ClntObjMgrGetMapID() {
     return s_curMgr->m_mapID;
 }
 
+PLAYER_TYPE ClntObjMgrGetPlayerType() {
+    return s_curMgr->m_type;
+}
+
 void ClntObjMgrInitializeShared() {
     if (!s_heapsAllocated) {
         for (int32_t i = ID_ITEM; i < NUM_CLIENT_OBJECT_TYPES; i++) {
@@ -158,7 +162,7 @@ void ClntObjMgrInitializeShared() {
 void ClntObjMgrInitializeStd(uint32_t mapID) {
     // TODO last instance time
 
-    auto mgr = STORM_NEW(ClntObjMgr);
+    auto mgr = STORM_NEW(ClntObjMgr)(PLAYER_NORMAL);
 
     g_clientConnection->SetObjMgr(mgr);
     mgr->m_net = g_clientConnection;

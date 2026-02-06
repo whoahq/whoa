@@ -16,6 +16,8 @@ ClntObjMgr* ClntObjMgrGetCurrent();
 
 uint32_t ClntObjMgrGetMapID();
 
+PLAYER_TYPE ClntObjMgrGetPlayerType();
+
 void ClntObjMgrInitializeShared();
 
 void ClntObjMgrInitializeStd(uint32_t mapID);
