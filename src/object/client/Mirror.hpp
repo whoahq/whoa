@@ -11,4 +11,6 @@ int32_t CallMirrorHandlers(CDataStore* msg, bool a2, WOWGUID guid);
 
 int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* msg, bool forFullUpdate, bool zeroZeroBits);
 
+int32_t SkipPartialObjectUpdate(CDataStore* msg);
+
 #endif

@@ -229,3 +229,20 @@ int32_t FillInPartialObjectData(CGObject_C* object, WOWGUID guid, CDataStore* ms
 
     return 1;
 }
+
+int32_t SkipPartialObjectUpdate(CDataStore* msg) {
+    uint8_t changeMaskCount;
+    uint32_t changeMasks[MAX_CHANGE_MASKS];
+    if (!ExtractDirtyMasks(msg, &changeMaskCount, changeMasks)) {
+        return 0;
+    }
+
+    for (int32_t block = 0; block < changeMaskCount * 32; block++) {
+        if (IsMaskBitSet(changeMasks, block)) {
+            uint32_t blockValue;
+            msg->Get(blockValue);
+        }
+    }
+
+    return 1;
+}

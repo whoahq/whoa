@@ -20,6 +20,4 @@ void HandleObjectOutOfRangePass2(CGObject_C* object);
 
 void InitObject(CGObject_C* object, uint32_t time, CClientObjCreate& objCreate);
 
-int32_t SkipPartialObjectUpdate(CDataStore* msg);
-
 #endif
