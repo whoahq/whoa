@@ -3,5 +3,6 @@
 
 #include "ui/game/CGGameUI.hpp"
 #include "ui/game/CGPetInfo.hpp"
+#include "ui/game/ScriptEvents.hpp"
 
 #endif

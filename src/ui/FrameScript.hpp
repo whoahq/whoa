@@ -103,6 +103,4 @@ void FrameScript_UnregisterFunction(const char* name);
 
 void FrameScript_UnregisterScriptEvent(FrameScript_Object* object, FrameScript_EventObject* event);
 
-void ScriptEventsInitialize();
-
 #endif
