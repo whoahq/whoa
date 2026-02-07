@@ -1,5 +1,7 @@
 #include "ui/game/TradeInfoScript.hpp"
 #include "ui/FrameScript.hpp"
+#include "ui/game/CGTradeInfo.hpp"
+#include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
@@ -41,7 +43,13 @@ int32_t Script_CancelTradeAccept(lua_State* L) {
 }
 
 int32_t Script_GetPlayerTradeMoney(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGTradeInfo::GetTradePartner()) {
+        lua_pushnumber(L, CGTradeInfo::GetPlayerTradeMoney());
+    } else {
+        lua_pushnumber(L, 0);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetTargetTradeMoney(lua_State* L) {
