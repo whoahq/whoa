@@ -41,6 +41,7 @@ class CGlueMgr {
         static bool m_authenticated;
         static const CharacterSelectionDisplay* m_characterInfo;
         static int32_t m_clientKickReason;
+        static int32_t m_contestAccepted;
         static char m_currentScreen[];
         static EffectDeath* m_deathEffect;
         static int32_t m_disconnectPending;
