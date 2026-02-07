@@ -160,6 +160,10 @@ ClientConnection* ClientServices::Connection() {
     return ClientServices::s_currentConnection;
 }
 
+void ClientServices::CharacterDelete(uint64_t guid) {
+    ClientServices::Connection()->RequestCharacterDelete(guid);
+}
+
 void ClientServices::Disconnect() {
     ClientServices::Connection()->Disconnect();
 }
