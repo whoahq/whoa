@@ -18,6 +18,7 @@
 #include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/GameScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
+#include "ui/game/TradeInfoScript.hpp"
 #include "ui/game/Types.hpp"
 #include "ui/game/UIBindingsScript.hpp"
 #include "ui/simple/CSimpleTop.hpp"
@@ -57,6 +58,10 @@ void LoadScriptFunctions() {
     // TODO
 
     CharacterInfoRegisterScriptFunctions();
+
+    // TODO
+
+    TradeInfoRegisterScriptFunctions();
 
     // TODO
 
