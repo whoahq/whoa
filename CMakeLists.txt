@@ -26,6 +26,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 include(lib/system/cmake/system.cmake)
 
+
 # Some templates abuse offsetof
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof")
@@ -61,6 +62,13 @@ endif()
 if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
     set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
     find_package(Threads REQUIRED)
+endif()
+
+# Emscripten pthreads support
+if(WHOA_SYSTEM_WEB)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pthread -s PTHREAD_POOL_SIZE=4")
 endif()
 
 # Library search paths
