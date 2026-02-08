@@ -83,7 +83,9 @@ int32_t Script_IsActionInRange(lua_State* L) {
 }
 
 int32_t Script_GetBonusBarOffset(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CGActionBar::GetBonusBarOffset());
+
+    return 1;
 }
 
 int32_t Script_GetMultiCastBarOffset(lua_State* L) {

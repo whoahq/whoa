@@ -5,9 +5,16 @@
 
 class CGActionBar {
     public:
-        // Static variables
+        // Public static variables
         static uint32_t s_currentPage;
         static uint32_t s_tempPageActiveFlags;
+
+        // Public static functions
+        static uint32_t GetBonusBarOffset();
+
+    private:
+        // Private static variables
+        static uint32_t s_bonusBarOffset;
 };
 
 #endif
