@@ -1,4 +1,6 @@
 #include "ui/game/BattlenetUI.hpp"
+#include "client/ClientServices.hpp"
+#include "net/Login.hpp"
 #include "ui/FrameScript.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
@@ -194,7 +196,13 @@ int32_t Script_BNFeaturesEnabledAndConnected(lua_State* L) {
 }
 
 int32_t Script_IsBNLogin(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (ClientServices::LoginConnection() && ClientServices::LoginConnection()->GetLoginServerType() == 1) {
+        lua_pushboolean(L, true);
+    } else {
+        lua_pushboolean(L, false);
+    }
+
+    return 1;
 }
 
 int32_t Script_BNFeaturesEnabled(lua_State* L) {
