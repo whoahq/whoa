@@ -6,6 +6,7 @@
 #include "ui/Key.hpp"
 #include "ui/game/ActionBarScript.hpp"
 #include "ui/game/BattlefieldInfoScript.hpp"
+#include "ui/game/BattlenetUI.hpp"
 #include "ui/game/CGCharacterModelBase.hpp"
 #include "ui/game/CGCooldown.hpp"
 #include "ui/game/CGDressUpModelFrame.hpp"
@@ -70,8 +71,7 @@ void LoadScriptFunctions() {
     // TODO
 
     GMTicketInfoRegisterScriptFunctions();
-
-    // TODO
+    BattlenetUI_RegisterScriptFunctions();
 }
 
 void CGGameUI::EnterWorld() {
