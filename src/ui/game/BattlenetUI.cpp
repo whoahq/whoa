@@ -206,7 +206,10 @@ int32_t Script_IsBNLogin(lua_State* L) {
 }
 
 int32_t Script_BNFeaturesEnabled(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    // TODO real implementation
+    lua_pushboolean(L, false);
+
+    return 1;
 }
 
 int32_t Script_BNRequestFOFInfo(lua_State* L) {
