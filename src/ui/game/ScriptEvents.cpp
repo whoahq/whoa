@@ -1187,7 +1187,7 @@ void ScriptEventsInitialize() {
     g_scriptEvents[295] = "TRAINER_UPDATE";
     g_scriptEvents[296] = "TRAINER_DESCRIPTION_UPDATE";
     g_scriptEvents[297] = "TRAINER_CLOSED";
-    g_scriptEvents[298] = "CVAR_UPDATE";
+    g_scriptEvents[SCRIPT_CVAR_UPDATE] = "CVAR_UPDATE";
     g_scriptEvents[299] = "TRADE_SKILL_SHOW";
     g_scriptEvents[300] = "TRADE_SKILL_UPDATE";
     g_scriptEvents[301] = "TRADE_SKILL_CLOSE";

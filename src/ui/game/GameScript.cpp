@@ -4,6 +4,7 @@
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
 #include "ui/game/CGGameUI.hpp"
+#include "ui/game/Types.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
@@ -131,7 +132,41 @@ int32_t Script_GetCVarInfo(lua_State* L) {
 }
 
 int32_t Script_SetCVar(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (!lua_isstring(L, 1)) {
+        luaL_error(L, "Usage: SetCVar(\"cvar\", value [, \"scriptCvar\")");
+        return 0;
+    }
+
+    auto varName = lua_tostring(L, 1);
+    auto var = CVar::LookupRegistered(varName);
+
+    if (!var || (var->m_flags & 0x40)) {
+        luaL_error(L, "Couldn't find CVar named '%s'", varName);
+        return 0;
+    }
+
+    if (var->m_flags & 0x4 || var->m_flags & 0x100) {
+        luaL_error(L, "\"%s\" is read-only", varName);
+        return 0;
+    }
+
+    if (!(var->m_flags & 0x8)/* TODO || CSimpleTop::GetInstance()->dword124C */) {
+        auto value = lua_tostring(L, 2);
+        if (!value) {
+            value = "0";
+        }
+
+        var->Set(value, true, false, false, true);
+
+        if (lua_isstring(L, 3)) {
+            auto scriptVarName = lua_tostring(L, 3);
+            FrameScript_SignalEvent(SCRIPT_CVAR_UPDATE, "%s%s", scriptVarName, value);
+        }
+    } else {
+        // TODO CGGameUI::ShowBlockedActionFeedback(nullptr, 2);
+    }
+
+    return 0;
 }
 
 int32_t Script_GetCVar(lua_State* L) {
