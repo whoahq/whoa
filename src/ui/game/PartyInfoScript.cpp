@@ -1,12 +1,15 @@
 #include "ui/game/PartyInfoScript.hpp"
 #include "ui/FrameScript.hpp"
+#include "ui/game/CGPartyInfo.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
 
 int32_t Script_GetNumPartyMembers(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CGPartyInfo::NumMembers());
+
+    return 1;
 }
 
 int32_t Script_GetRealNumPartyMembers(lua_State* L) {
