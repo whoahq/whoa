@@ -1,5 +1,6 @@
 #include "ui/game/CGGameUI.hpp"
 #include "client/Client.hpp"
+#include "console/CVar.hpp"
 #include "object/Client.hpp"
 #include "ui/CScriptObject.hpp"
 #include "ui/FrameXML.hpp"
@@ -121,6 +122,7 @@ void CGGameUI::Initialize() {
 
     LoadScriptFunctions();
     ScriptEventsRegisterEvents();
+    CGGameUI::RegisterGameCVars();
 
     // TODO
 
@@ -231,4 +233,48 @@ void CGGameUI::RegisterFrameFactories() {
     FrameXML_RegisterFactory("DressUpModel", &CGDressUpModelFrame::Create, false);
     FrameXML_RegisterFactory("TabardModel", &CGTabardModelFrame::Create, false);
     FrameXML_RegisterFactory("QuestPOIFrame", &CGQuestPOIFrame::Create, false);
+}
+
+void CGGameUI::RegisterGameCVars() {
+    // TODO
+
+    CVar::Register("enableCombatText", "Whether to show floating combat text", 0x10, "1", nullptr, GAME);
+    CVar::Register("combatTextFloatMode", "The combat text float mode", 0x10, "1", nullptr, GAME);
+    CVar::Register("fctCombatState", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctDodgeParryMiss", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctDamageReduction", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctRepChanges", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctReactives", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctFriendlyHealers", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctComboPoints", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctLowManaHealth", nullptr, 0x10, "1", nullptr, GAME);
+    CVar::Register("fctEnergyGains", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctPeriodicEnergyGains", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctHonorGains", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctAuras", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctAllSpellMechanics", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctSpellMechanics", nullptr, 0x10, "0", nullptr, GAME);
+    CVar::Register("fctSpellMechanicsOther", nullptr, 0x10, "0", nullptr, GAME);
+
+    CVar::Register("xpBarText", "Whether the XP bar shows the numeric experience value", 0x10, "0", nullptr, GAME);
+
+    CVar::Register("playerStatusText", "Whether the player portrait shows numeric health/mana values", 0x10, "0", nullptr, GAME);
+    CVar::Register("petStatusText", "Whether the pet portrait shows numeric health/mana values", 0x10, "0", nullptr, GAME);
+    CVar::Register("partyStatusText", "Whether the party portraits shows numeric health/mana values", 0x10, "0", nullptr, GAME);
+    CVar::Register("targetStatusText", "Whether the target portrait shows numeric health/mana values", 0x10, "0", nullptr, GAME);
+    CVar::Register("statusTextPercentage", "Whether numeric health/mana values are shown as raw values or percentages", 0x10, "0", nullptr, GAME);
+
+    CVar::Register("showPartyBackground", "Show a background behind party members", 0x10, "0", nullptr, GAME);
+    CVar::Register("partyBackgroundOpacity", "The opacity of the party background", 0x10, "0.5", nullptr, GAME);
+    CVar::Register("hidePartyInRaid", "Whether to hide the party UI while in a raid", 0x10, "0", nullptr, GAME);
+    CVar::Register("showPartyPets", "Whether to show pets in the party UI", 0x20, "1", nullptr, GAME);
+    CVar::Register("showRaidRange", "Show range indicator in raid UI", 0x20, "0", nullptr, GAME);
+
+    CVar::Register("showArenaEnemyFrames", "Show arena enemy frames while in an Arena", 0x20, "1", nullptr, GAME);
+    CVar::Register("showArenaEnemyCastbar", "Show the spell enemies are casting on the Arena Enemy frames", 0x20, "1", nullptr, GAME);
+    CVar::Register("showArenaEnemyPets", "Show the enemy team's pets on the ArenaEnemy frames", 0x20, "1", nullptr, GAME);
+
+    CVar::Register("fullSizeFocusFrame", "Increases the size of the focus frame to that of the target frame", 0x20, "0", nullptr, GAME);
+
+    // TODO
 }

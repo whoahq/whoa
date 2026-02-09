@@ -23,6 +23,7 @@ class CGGameUI {
         static int32_t IsRaidMember(const WOWGUID& guid);
         static int32_t IsRaidMemberOrPet(const WOWGUID& guid);
         static void RegisterFrameFactories();
+        static void RegisterGameCVars();
 
     private:
         static WOWGUID s_currentObjectTrack;
