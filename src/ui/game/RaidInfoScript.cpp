@@ -1,12 +1,15 @@
 #include "ui/game/RaidInfoScript.hpp"
 #include "ui/FrameScript.hpp"
+#include "ui/game/CGRaidInfo.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {
 
 int32_t Script_GetNumRaidMembers(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushnumber(L, CGRaidInfo::NumMembers());
+
+    return 1;
 }
 
 int32_t Script_GetRealNumRaidMembers(lua_State* L) {
