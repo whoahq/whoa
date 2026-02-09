@@ -20,6 +20,7 @@
 #include "ui/game/GMTicketInfoScript.hpp"
 #include "ui/game/GameScript.hpp"
 #include "ui/game/PartyInfoScript.hpp"
+#include "ui/game/RaidInfoScript.hpp"
 #include "ui/game/ScriptEvents.hpp"
 #include "ui/game/TradeInfoScript.hpp"
 #include "ui/game/Types.hpp"
@@ -70,6 +71,10 @@ void LoadScriptFunctions() {
     // TODO
 
     BattlefieldInfoRegisterScriptFunctions();
+
+    // TODO
+
+    RaidInfoRegisterScriptFunctions();
 
     // TODO
 
