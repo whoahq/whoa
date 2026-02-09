@@ -193,6 +193,25 @@ int32_t FrameScript_Object::SetScript(lua_State* L) {
     return 0;
 }
 
+void FrameScript_Object::UnregisterScriptEvent(const char* name) {
+    auto event = FrameScript::s_scriptEventsHash.Ptr(name);
+
+    if (!event) {
+        return;
+    }
+
+    if (event->pendingSignalCount) {
+        for (auto node = event->registerListeners.Head(); node; node = event->registerListeners.Next(node)) {
+            if (node->listener == this) {
+                event->registerListeners.DeleteNode(node);
+                break;
+            }
+        }
+    }
+
+    FrameScript_UnregisterScriptEvent(this, event);
+}
+
 void FrameScript_Object::UnregisterScriptObject(const char* name) {
     auto L = FrameScript_GetContext();
 
