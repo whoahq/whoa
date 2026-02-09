@@ -289,7 +289,19 @@ int32_t CSimpleFrame_RegisterEvent(lua_State* L) {
 }
 
 int32_t CSimpleFrame_UnregisterEvent(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isstring(L, 2)) {
+        luaL_error(L, "Usage: %s:UnregisterEvent(\"event\")", frame->GetDisplayName());
+        return 0;
+    }
+
+    auto eventName = lua_tostring(L, 2);
+
+    frame->UnregisterScriptEvent(eventName);
+
+    return 0;
 }
 
 int32_t CSimpleFrame_RegisterAllEvents(lua_State* L) {
