@@ -862,6 +862,13 @@ void CLayoutFrame::SetProtectFlag(uint32_t flag) {
     this->m_flags &= ~0x800;
 }
 
+void CLayoutFrame::SetSize(float width, float height) {
+    this->m_flags &= ~0x8;
+    this->m_width = width;
+    this->m_height = height;
+    this->Resize(0);
+}
+
 void CLayoutFrame::SetWidth(float width) {
     this->m_flags &= ~0x8;
     this->m_width = width;

@@ -49,6 +49,7 @@ class CLayoutFrame {
         virtual bool SetLayoutScale(float scale, bool force);
         virtual void SetWidth(float width);
         virtual void SetHeight(float height);
+        virtual void SetSize(float width, float height);
         virtual float GetWidth();
         virtual float GetHeight();
         virtual void GetSize(float& width, float& height, int32_t a4);
