@@ -7,6 +7,7 @@
 #include <cstdint>
 
 class CM2Model;
+class CM2Scene;
 class Weather;
 
 class CWorld {
@@ -58,6 +59,7 @@ class CWorld {
         static float GetCurTimeSec();
         static uint32_t GetGameTimeFixed();
         static float GetGameTimeSec();
+        static CM2Scene* GetM2Scene();
         static uint32_t GetTickTimeFixed();
         static uint32_t GetTickTimeMs();
         static float GetTickTimeSec();
@@ -72,6 +74,7 @@ class CWorld {
         static float s_curTimeSec;
         static uint32_t s_gameTimeFixed;
         static float s_gameTimeSec;
+        static CM2Scene* s_m2Scene;
         static uint32_t s_tickTimeFixed;
         static uint32_t s_tickTimeMs;
         static float s_tickTimeSec;

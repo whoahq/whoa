@@ -12,6 +12,7 @@ uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
 uint32_t CWorld::s_gameTimeFixed;
 float CWorld::s_gameTimeSec;
+CM2Scene* CWorld::s_m2Scene;
 uint32_t CWorld::s_tickTimeFixed;
 uint32_t CWorld::s_tickTimeMs;
 float CWorld::s_tickTimeSec;
@@ -66,6 +67,10 @@ float CWorld::GetGameTimeSec() {
     return CWorld::s_gameTimeSec;
 }
 
+CM2Scene* CWorld::GetM2Scene() {
+    return CWorld::s_m2Scene;
+}
+
 uint32_t CWorld::GetTickTimeFixed() {
     return CWorld::s_tickTimeFixed;
 }
@@ -97,8 +102,6 @@ void CWorld::Initialize() {
     CWorld::s_gameTimeFixed = 0;
     CWorld::s_gameTimeSec = 0.0f;
 
-    // TODO
-
     if (GxCaps().m_shaderTargets[GxSh_Pixel] > GxShPS_none) {
         CWorld::s_enables |= Enables::Enable_PixelShader;
     }
@@ -106,6 +109,10 @@ void CWorld::Initialize() {
     if (GxCaps().m_shaderTargets[GxSh_Vertex] > GxShVS_none) {
         CWorld::s_enables2 |= Enables2::Enable_VertexShader;
     }
+
+    // TODO
+
+    CWorld::s_m2Scene = M2CreateScene();
 
     // TODO
 
