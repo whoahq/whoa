@@ -219,7 +219,28 @@ int32_t CScriptRegion_SetHeight(lua_State* L) {
 }
 
 int32_t CScriptRegion_SetSize(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CScriptRegion::GetObjectType();
+    auto region = static_cast<CScriptRegion*>(FrameScript_GetObjectThis(L, type));
+
+    if (!region->ProtectedFunctionsAllowed()) {
+        // TODO disallowed logic
+        return 0;
+    }
+
+    if (!lua_isnumber(L, 2) || !lua_isnumber(L, 3)) {
+        luaL_error(L, "Usage: %s:SetSize(width, height)", region->GetDisplayName());
+        return 0;
+    }
+
+    auto ndcWidth = static_cast<float>(lua_tonumber(L, 2)) / (CoordinateGetAspectCompensation() * 1024.0f);
+    auto ddcWidth = NDCToDDCWidth(ndcWidth);
+
+    auto ndcHeight = static_cast<float>(lua_tonumber(L, 3)) / (CoordinateGetAspectCompensation() * 1024.0f);
+    auto ddcHeight = NDCToDDCWidth(ndcHeight);
+
+    region->SetSize(ddcWidth, ddcHeight);
+
+    return 0;
 }
 
 int32_t CScriptRegion_GetSize(lua_State* L) {
