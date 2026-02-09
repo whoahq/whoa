@@ -1,4 +1,5 @@
 #include "object/client/CGObject_C.hpp"
+#include "model/Model2.hpp"
 #include "object/client/ObjMgr.hpp"
 #include "world/World.hpp"
 
@@ -6,6 +7,7 @@ CGObject_C::CGObject_C(uint32_t time, CClientObjCreate& objCreate) {
     // TODO
 
     this->m_model = nullptr;
+    this->m_worldObject = 0;
 
     // TODO
 
@@ -28,7 +30,52 @@ CGObject_C::~CGObject_C() {
 }
 
 void CGObject_C::AddWorldObject() {
-    // TODO
+    if (!this->m_model) {
+        const char* fileName;
+        if (this->GetModelFileName(fileName)) {
+            auto model = CWorld::GetM2Scene()->CreateModel(fileName, 0);
+            this->SetModel(model);
+            model->Release();
+        }
+    }
+
+    if (!this->m_model) {
+        return;
+    }
+
+    if (ClntObjMgrGetPlayerType() != PLAYER_NORMAL) {
+        return;
+    }
+
+    if (this->m_worldObject) {
+        // TODO SysMsgPrintf(1, 2, "OBJECTALREADYACTIVE|0x%016I64X", this->GetGUID());
+
+        return;
+    }
+
+    uint32_t objFlags = 0x0;
+
+    if (this->IsA(TYPE_GAMEOBJECT)) {
+        objFlags |= 0x8 | 0x2 | 0x1;
+    } else if (this->IsA(TYPE_DYNAMICOBJECT)) {
+        objFlags |= 0x8 | 0x2;
+    } else if (this->IsA(TYPE_CORPSE)) {
+        // TODO
+    } else if (this->IsA(TYPE_UNIT)) {
+        // TODO
+
+        objFlags |= 0x10;
+
+        if (this->IsA(TYPE_PLAYER)) {
+            objFlags |= 0x20;
+        }
+    }
+
+    this->m_worldObject = CWorld::AddObject(this->GetObjectModel(), nullptr, nullptr, this->GetGUID(), 0, objFlags);
+
+    if (!this->m_inReenable && this->m_postInited) {
+        this->UpdateWorldObject(false);
+    }
 }
 
 int32_t CGObject_C::CanBeTargetted() {
@@ -46,6 +93,14 @@ void CGObject_C::Disable() {
     // TODO other flag manipulation
 
     this->m_disableTimeMs = CWorld::GetCurTimeMs();
+}
+
+int32_t CGObject_C::GetModelFileName(const char*& name) {
+    return false;
+}
+
+CM2Model* CGObject_C::GetObjectModel() {
+    return this->m_model;
 }
 
 int32_t CGObject_C::IsInReenable() {
@@ -88,6 +143,25 @@ void CGObject_C::SetDisablePending(int32_t pending) {
     } else {
         this->m_disablePending = false;
     }
+}
+
+void CGObject_C::SetModel(CM2Model* model) {
+    // No change
+    if (this->m_model == model) {
+        return;
+    }
+
+    if (model) {
+        model->AddRef();
+    }
+
+    this->m_model = model;
+
+    this->SetModelFinish(model);
+}
+
+void CGObject_C::SetModelFinish(CM2Model* model) {
+    // TODO
 }
 
 void CGObject_C::SetObjectLocked(int32_t locked) {
@@ -146,4 +220,8 @@ void CGObject_C::SetTypeID(OBJECT_TYPE_ID typeID) {
         default:
             break;
     }
+}
+
+void CGObject_C::UpdateWorldObject(int32_t a2) {
+    // TODO
 }
