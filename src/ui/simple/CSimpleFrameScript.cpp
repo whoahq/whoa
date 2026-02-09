@@ -3,6 +3,8 @@
 #include "ui/CBackdropGenerator.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
+#include "ui/simple/CSimpleFont.hpp"
+#include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
@@ -85,7 +87,73 @@ int32_t CSimpleFrame_CreateTexture(lua_State* L) {
 }
 
 int32_t CSimpleFrame_CreateFontString(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleFrame::GetObjectType();
+    auto frame = static_cast<CSimpleFrame*>(FrameScript_GetObjectThis(L, type));
+
+    const char* name = nullptr;
+    if (lua_isstring(L, 2)) {
+        name = lua_tostring(L, 2);
+    }
+
+    int32_t drawlayer = DRAWLAYER_ARTWORK;
+    if (lua_isstring(L, 3)) {
+        auto drawlayerStr = lua_tostring(L, 3);
+        StringToDrawLayer(drawlayerStr, drawlayer);
+    }
+
+    CSimpleFont* inheritFont = nullptr;
+    XMLNode* inheritNode = nullptr;
+
+    if (lua_type(L, 4) == LUA_TSTRING) {
+        auto inheritName = lua_tostring(L, 4);
+
+        inheritFont = CSimpleFont::GetFont(inheritName, 0);
+
+        if (!inheritFont) {
+            const char* tainted;
+            bool locked;
+            inheritNode = FrameXML_AcquireHashNode(inheritName, tainted, locked);
+
+            if (!inheritNode) {
+                luaL_error(L, "%s:CreateFontString(): Couldn't find inherited node \"%s\"", frame->GetDisplayName(), inheritName);
+                return 0;
+            }
+
+            if (locked) {
+                luaL_error(L, "%s:CreateFontString(): Recursively inherited node \"%s\"", frame->GetDisplayName(), inheritName);
+                return 0;
+            }
+        }
+    }
+
+    // TODO CDataAllocator::GetData
+    auto string = STORM_NEW(CSimpleFontString)(frame, drawlayer, true);
+
+    if (name && *name) {
+        string->SetName(name);
+    }
+
+    if (inheritFont) {
+        string->SetFontObject(inheritFont);
+    } else if (inheritNode) {
+        CStatus status;
+
+        string->LoadXML(inheritNode, &status);
+        string->PostLoadXML(inheritNode, &status);
+
+        auto inheritName = lua_tostring(L, 4);
+        FrameXML_ReleaseHashNode(inheritName);
+    }
+
+    // TODO anim related logic?
+
+    if (!string->lua_registered) {
+        string->RegisterScriptObject(nullptr);
+    }
+
+    lua_rawgeti(L, LUA_REGISTRYINDEX, string->lua_objectRef);
+
+    return 1;
 }
 
 int32_t CSimpleFrame_GetBoundsRect(lua_State* L) {
