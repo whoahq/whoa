@@ -36,7 +36,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         virtual void HandleOutOfRange(OUT_OF_RANGE_TYPE type) {};
         virtual void UpdateWorldObject(int32_t a2);
         // TODO
-        virtual int32_t GetModelFileName(const char*& name);
+        virtual int32_t GetModelFileName(const char*& name) const;
         // TODO
         virtual int32_t CanHighlight();
         virtual int32_t CanBeTargetted();

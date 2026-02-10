@@ -9,6 +9,7 @@
 
 class ChrClassesRec;
 class ChrRacesRec;
+class CreatureModelDataRec;
 
 class CGUnit_C : public CGObject_C, public CGUnit {
     public:
@@ -22,12 +23,15 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         // Virtual public member functions
         virtual ~CGUnit_C();
         // TODO
+        virtual int32_t GetModelFileName(const char*& name) const;
+        // TODO
         virtual int32_t CanHighlight();
         virtual int32_t CanBeTargetted();
         // TODO
 
         // Public member functions
         CGUnit_C(uint32_t time, CClientObjCreate& objCreate);
+        CreatureModelDataRec* GetModelData() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover);
         void SetStorage(uint32_t* storage, uint32_t* saved);

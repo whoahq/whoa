@@ -115,6 +115,26 @@ int32_t CGUnit_C::CanBeTargetted() {
     return this->CanHighlight();
 }
 
+CreatureModelDataRec* CGUnit_C::GetModelData() const {
+    // TODO
+    return nullptr;
+}
+
+int32_t CGUnit_C::GetModelFileName(const char*& name) const {
+    auto modelDataRec = this->GetModelData();
+
+    // Model data not found
+    if (!modelDataRec) {
+        name = "Spells\\ErrorCube.mdx";
+
+        return true;
+    }
+
+    name = modelDataRec->m_modelName;
+
+    return modelDataRec->m_modelName ? true : false;
+}
+
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
 
