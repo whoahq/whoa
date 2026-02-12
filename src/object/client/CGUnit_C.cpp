@@ -120,8 +120,27 @@ int32_t CGUnit_C::GetLocalDisplayID() const {
 }
 
 CreatureModelDataRec* CGUnit_C::GetModelData() const {
-    // TODO
-    return nullptr;
+    // Prefer local display ID if set and unit's display ID hasn't been overridden from unit's
+    // native display ID; otherwise prefer overridden display ID.
+    auto displayID = this->GetLocalDisplayID() && this->GetDisplayID() == this->GetNativeDisplayID()
+        ? this->GetLocalDisplayID()
+        : this->GetDisplayID();
+
+    auto creatureDisplayInfoRec = g_creatureDisplayInfoDB.GetRecord(displayID);
+
+    if (!creatureDisplayInfoRec) {
+        // TODO SysMsgPrintf(1, 2, "NOCREATUREDISPLAYIDFOUND|%d", displayID);
+        return nullptr;
+    }
+
+    auto creatureModelDataRec = g_creatureModelDataDB.GetRecord(creatureDisplayInfoRec->m_modelID);
+
+    if (!creatureModelDataRec) {
+        // TODO SysMsgPrintf(1, 16, "INVALIDDISPLAYMODELRECORD|%d|%d", creatureDisplayInfoRec->m_modelID, creatureDisplayInfoRec->m_ID);
+        return nullptr;
+    }
+
+    return creatureModelDataRec;
 }
 
 int32_t CGUnit_C::GetModelFileName(const char*& name) const {
