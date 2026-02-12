@@ -25,6 +25,10 @@ uint32_t CGUnit::TotalFieldsSaved() {
     return CGUnit::GetBaseOffsetSaved() + 123;
 }
 
+int32_t CGUnit::GetDisplayID() const {
+    return this->Unit()->displayID;
+}
+
 CGUnitData* CGUnit::Unit() const {
     return this->m_unit;
 }

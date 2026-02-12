@@ -82,6 +82,9 @@ class CGUnit {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
+        // Public member functions
+        int32_t GetDisplayID() const;
+
     protected:
         // Protected member variables
         CGUnitData* m_unit;
