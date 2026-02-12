@@ -29,6 +29,10 @@ int32_t CGUnit::GetDisplayID() const {
     return this->Unit()->displayID;
 }
 
+int32_t CGUnit::GetNativeDisplayID() const {
+    return this->Unit()->nativeDisplayID;
+}
+
 CGUnitData* CGUnit::Unit() const {
     return this->m_unit;
 }

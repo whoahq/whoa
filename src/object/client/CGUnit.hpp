@@ -84,6 +84,7 @@ class CGUnit {
 
         // Public member functions
         int32_t GetDisplayID() const;
+        int32_t GetNativeDisplayID() const;
 
     protected:
         // Protected member variables
