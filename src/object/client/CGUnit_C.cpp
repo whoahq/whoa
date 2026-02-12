@@ -115,6 +115,10 @@ int32_t CGUnit_C::CanBeTargetted() {
     return this->CanHighlight();
 }
 
+int32_t CGUnit_C::GetLocalDisplayID() const {
+    return this->m_localDisplayID;
+}
+
 CreatureModelDataRec* CGUnit_C::GetModelData() const {
     // TODO
     return nullptr;

@@ -31,10 +31,17 @@ class CGUnit_C : public CGObject_C, public CGUnit {
 
         // Public member functions
         CGUnit_C(uint32_t time, CClientObjCreate& objCreate);
+        int32_t GetLocalDisplayID() const;
         CreatureModelDataRec* GetModelData() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover);
         void SetStorage(uint32_t* storage, uint32_t* saved);
+
+    private:
+        // Private member variables
+        // TODO
+        int32_t m_localDisplayID = 0;
+        // TODO
 };
 
 #endif
