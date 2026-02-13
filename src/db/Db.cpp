@@ -12,6 +12,7 @@ WowClientDB<CharacterFacialHairStylesRec> g_characterFacialHairStylesDB;
 WowClientDB<ChrClassesRec> g_chrClassesDB;
 WowClientDB<ChrRacesRec> g_chrRacesDB;
 WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
+WowClientDB<CreatureDisplayInfoExtraRec> g_creatureDisplayInfoExtraDB;
 WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
 WowClientDB<FactionGroupRec> g_factionGroupDB;
 WowClientDB<FactionTemplateRec> g_factionTemplateDB;
@@ -38,6 +39,7 @@ void StaticDBLoadAll(void (*loadFn)(WowClientDB_Base*, const char*, int32_t)) {
     loadFn(&g_chrClassesDB, __FILE__, __LINE__);
     loadFn(&g_chrRacesDB, __FILE__, __LINE__);
     loadFn(&g_creatureDisplayInfoDB, __FILE__, __LINE__);
+    loadFn(&g_creatureDisplayInfoExtraDB, __FILE__, __LINE__);
     loadFn(&g_creatureModelDataDB, __FILE__, __LINE__);
     loadFn(&g_factionGroupDB, __FILE__, __LINE__);
     loadFn(&g_factionTemplateDB, __FILE__, __LINE__);
