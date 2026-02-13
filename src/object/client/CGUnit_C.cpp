@@ -2,6 +2,7 @@
 #include "object/client/ObjMgr.hpp"
 #include "db/Db.hpp"
 #include "ui/Game.hpp"
+#include <storm/Error.hpp>
 
 WOWGUID CGUnit_C::s_activeMover;
 
@@ -95,6 +96,10 @@ const char* CGUnit_C::GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, U
 
 CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time, objCreate) {
     // TODO
+
+    this->RefreshDataPointers();
+
+    // TODO
 }
 
 CGUnit_C::~CGUnit_C() {
@@ -115,16 +120,22 @@ int32_t CGUnit_C::CanBeTargetted() {
     return this->CanHighlight();
 }
 
+int32_t CGUnit_C::GetDisplayID() const {
+    // Prefer local display ID if set and unit's display ID hasn't been overridden from unit's
+    // native display ID.
+    if (this->GetLocalDisplayID() && this->GetDisplayID() == this->GetNativeDisplayID()) {
+        return this->GetLocalDisplayID();
+    }
+
+    return this->CGUnit::GetDisplayID();
+}
+
 int32_t CGUnit_C::GetLocalDisplayID() const {
     return this->m_localDisplayID;
 }
 
 CreatureModelDataRec* CGUnit_C::GetModelData() const {
-    // Prefer local display ID if set and unit's display ID hasn't been overridden from unit's
-    // native display ID; otherwise prefer overridden display ID.
-    auto displayID = this->GetLocalDisplayID() && this->GetDisplayID() == this->GetNativeDisplayID()
-        ? this->GetLocalDisplayID()
-        : this->GetDisplayID();
+    auto displayID = this->GetDisplayID();
 
     auto creatureDisplayInfoRec = g_creatureDisplayInfoDB.GetRecord(displayID);
 
@@ -168,6 +179,63 @@ void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
 
 void CGUnit_C::PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover) {
     // TODO
+}
+
+void CGUnit_C::RefreshDataPointers() {
+    auto displayID = this->GetDisplayID();
+
+    // Display info
+
+    this->m_displayInfo = g_creatureDisplayInfoDB.GetRecord(displayID);
+
+    if (!this->m_displayInfo) {
+        // TODO auto name = this->GetUnitName(0, 1);
+        // TODO SysMsgPrintf(2, 2, "NOUNITDISPLAYID|%d|%s", displayID, name);
+
+        this->m_displayInfo = g_creatureDisplayInfoDB.GetRecordByIndex(0);
+
+        if (!this->m_displayInfo) {
+            STORM_APP_FATAL("Error, NO creature display records found");
+        }
+    }
+
+    // Display info extra
+
+    this->m_displayInfoExtra = g_creatureDisplayInfoExtraDB.GetRecord(this->m_displayInfo->m_extendedDisplayInfoID);
+
+    // Model data
+
+    this->m_modelData = g_creatureModelDataDB.GetRecord(this->m_displayInfo->m_modelID);
+
+    // Sound data
+
+    this->m_soundData = g_creatureSoundDataDB.GetRecord(this->m_displayInfo->m_soundID);
+
+    if (!this->m_soundData) {
+        this->m_soundData = g_creatureSoundDataDB.GetRecord(this->m_modelData->m_soundID);
+    }
+
+    // Blood levels
+
+    this->m_bloodRec = g_unitBloodLevelsDB.GetRecord(this->m_displayInfo->m_bloodID);
+
+    if (!this->m_bloodRec) {
+        this->m_bloodRec = g_unitBloodLevelsDB.GetRecord(this->m_modelData->m_bloodID);
+
+        if (!this->m_bloodRec) {
+            this->m_bloodRec = g_unitBloodLevelsDB.GetRecordByIndex(0);
+        }
+    }
+
+    // Creature stats
+
+    if (this->GetType() == HIER_TYPE_UNIT) {
+        // TODO load creature stats
+    }
+
+    // Flags
+
+    // TODO set flags
 }
 
 void CGUnit_C::SetStorage(uint32_t* storage, uint32_t* saved) {

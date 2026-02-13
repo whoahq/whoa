@@ -9,7 +9,11 @@
 
 class ChrClassesRec;
 class ChrRacesRec;
+class CreatureDisplayInfoRec;
+class CreatureDisplayInfoExtraRec;
 class CreatureModelDataRec;
+class CreatureSoundDataRec;
+class UnitBloodLevelsRec;
 
 class CGUnit_C : public CGObject_C, public CGUnit {
     public:
@@ -31,14 +35,26 @@ class CGUnit_C : public CGObject_C, public CGUnit {
 
         // Public member functions
         CGUnit_C(uint32_t time, CClientObjCreate& objCreate);
-        int32_t GetLocalDisplayID() const;
+        int32_t GetDisplayID() const;
         CreatureModelDataRec* GetModelData() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover);
         void SetStorage(uint32_t* storage, uint32_t* saved);
 
+    protected:
+        // Protected member functions
+        int32_t GetLocalDisplayID() const;
+        void RefreshDataPointers();
+
     private:
         // Private member variables
+        // TODO
+        CreatureDisplayInfoRec* m_displayInfo;
+        CreatureDisplayInfoExtraRec* m_displayInfoExtra;
+        CreatureModelDataRec* m_modelData;
+        CreatureSoundDataRec* m_soundData;
+        // TODO
+        UnitBloodLevelsRec* m_bloodRec;
         // TODO
         int32_t m_localDisplayID = 0;
         // TODO
