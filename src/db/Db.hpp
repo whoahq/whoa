@@ -24,6 +24,7 @@
 #include "db/rec/PaperDollItemFrameRec.hpp"
 #include "db/rec/SoundEntriesRec.hpp"
 #include "db/rec/SoundEntriesAdvancedRec.hpp"
+#include "db/rec/UnitBloodLevelsRec.hpp"
 
 extern WowClientDB<AchievementRec> g_achievementDB;
 extern WowClientDB<AreaTableRec> g_areaTableDB;
@@ -47,6 +48,7 @@ extern WowClientDB<MapRec> g_mapDB;
 extern WowClientDB<PaperDollItemFrameRec> g_paperDollItemFrameDB;
 extern WowClientDB<SoundEntriesRec> g_soundEntriesDB;
 extern WowClientDB<SoundEntriesAdvancedRec> g_soundEntriesAdvancedDB;
+extern WowClientDB<UnitBloodLevelsRec> g_unitBloodLevelsDB;
 
 void ClientDBInitialize();
 
