@@ -39,6 +39,8 @@ CGWorldFrame::CGWorldFrame(CSimpleFrame* parent) : CSimpleFrame(parent) {
 
     // TODO
 
+    this->SetFrameStrata(FRAME_STRATA_WORLD);
+
     this->EnableEvent(SIMPLE_EVENT_KEY, -1);
     this->EnableEvent(SIMPLE_EVENT_MOUSE, -1);
     this->EnableEvent(SIMPLE_EVENT_MOUSEWHEEL, -1);
