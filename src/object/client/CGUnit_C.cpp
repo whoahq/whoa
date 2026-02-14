@@ -1,4 +1,6 @@
 #include "object/client/CGUnit_C.hpp"
+#include "component/CCharacterComponent.hpp"
+#include "model/Model2.hpp"
 #include "object/client/ObjMgr.hpp"
 #include "db/Db.hpp"
 #include "ui/Game.hpp"
@@ -173,6 +175,17 @@ void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
 
     this->CGObject_C::PostInit(time, init, a4);
+
+    // TODO
+
+    if (this->m_displayInfo) {
+        CCharacterComponent::ApplyMonsterGeosets(this->m_model, this->m_displayInfo);
+        CCharacterComponent::ReplaceMonsterSkin(this->m_model, this->m_displayInfo, this->m_modelData);
+
+        if (this->m_modelData) {
+            this->m_model->m_flag4 = (this->m_modelData->m_flags & 0x200) ? true : false;
+        }
+    }
 
     // TODO
 }

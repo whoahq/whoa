@@ -178,6 +178,7 @@ class CM2Model {
         int32_t IsDrawable(int32_t a2, int32_t a3);
         int32_t IsLoaded(int32_t a2, int32_t attachments);
         void LinkToCallbackListTail();
+        void OptimizeVisibleGeometry();
         int32_t ProcessCallbacks();
         void ProcessCallbacksRecursive();
         uint32_t Release();
