@@ -11,9 +11,15 @@ class CGWorldFrame : public CSimpleFrame {
 
         // Static functions
         static CSimpleFrame* Create(CSimpleFrame* parent);
+        static void RenderWorld(void* param);
+
+        // Virtual member functions
+        virtual void OnFrameRender(CRenderBatch* batch, uint32_t layer);
 
         // Member functions
         CGWorldFrame(CSimpleFrame* parent);
+        void OnWorldRender();
+        void OnWorldUpdate();
 };
 
 #endif
