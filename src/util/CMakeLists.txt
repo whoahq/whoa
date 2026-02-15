@@ -40,3 +40,13 @@ if(WHOA_SYSTEM_LINUX OR WHOA_SYSTEM_MAC)
             Threads::Threads
     )
 endif()
+
+if(WHOA_SYSTEM_WEB)
+    set(FETCHFS_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/web/library_fetchfs.js)
+    target_link_options(util
+        PUBLIC
+            --js-library ${FETCHFS_LIBRARY}
+    )
+    # Ensure rebuild when JS library changes
+    set_property(TARGET util APPEND PROPERTY LINK_DEPENDS ${FETCHFS_LIBRARY})
+endif()

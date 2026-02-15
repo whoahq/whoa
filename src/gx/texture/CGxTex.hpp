@@ -39,6 +39,7 @@ class CGxTexParms {
         CGxTexFlags flags = CGxTexFlags(GxTex_Linear, 0, 0, 0, 0, 0, 1);
         void* userArg;
         void (*userFunc)(EGxTexCommand, uint32_t, uint32_t, uint32_t, uint32_t, void*, uint32_t&, const void*&);
+        const char* name = "";
 };
 
 class CGxTex {
@@ -61,6 +62,7 @@ class CGxTex {
         uint8_t m_needsUpdate;
         uint8_t m_needsCreation;
         uint8_t m_needsFlagUpdate;
+        char m_name[260];
 
         // Member functions
         CGxTex(EGxTexTarget, uint32_t, uint32_t, uint32_t, EGxTexFormat, EGxTexFormat, CGxTexFlags, void*, void (*)(EGxTexCommand, uint32_t, uint32_t, uint32_t, uint32_t, void*, uint32_t&, const void*&), const char*);
