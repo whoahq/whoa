@@ -1129,7 +1129,7 @@ void CGlueMgr::StatusDialogClick() {
         }
 
         case IDLE_REALM_LIST:
-        case IDLE_5:
+        case IDLE_CREATE_CHARACTER:
         case IDLE_DELETE_CHARACTER:
         case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
