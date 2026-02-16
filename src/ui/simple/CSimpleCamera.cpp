@@ -1,4 +1,55 @@
 #include "ui/simple/CSimpleCamera.hpp"
+#include <tempest/Math.hpp>
+
+namespace {
+
+void FaceDirection(const C3Vector& direction, C3Vector& xPrime, C3Vector& yPrime, C3Vector& zPrime) {
+    STORM_ASSERT(CMath::fnotequal(direction.SquaredMag(), 0.0f));
+
+    // Forward
+    xPrime = direction;
+
+    // Right
+    if (CMath::fequal(xPrime.SquaredMag(), 0.0f)) {
+        yPrime.x = 1.0f;
+        yPrime.y = 0.0f;
+        yPrime.z = 0.0f;
+    } else {
+        yPrime.x = -xPrime.y;
+        yPrime.y = xPrime.x;
+        yPrime.z = 0.0f;
+
+        CMath::normalize(yPrime.x, yPrime.y);
+    }
+
+    // Up (Forward cross Right)
+    zPrime = C3Vector::Cross(xPrime, yPrime);
+}
+
+void BuildBillboardMatrix(const C3Vector& direction, C33Matrix& rotation) {
+    C3Vector xPrime = {};
+    C3Vector yPrime = {};
+    C3Vector zPrime = {};
+
+    FaceDirection(direction, xPrime, yPrime, zPrime);
+
+    // Forward
+    rotation.a0 = xPrime.x;
+    rotation.a1 = xPrime.y;
+    rotation.a2 = xPrime.z;
+
+    // Right
+    rotation.b0 = yPrime.x;
+    rotation.b1 = yPrime.y;
+    rotation.b2 = yPrime.z;
+
+    // Up
+    rotation.c0 = zPrime.x;
+    rotation.c1 = zPrime.y;
+    rotation.c2 = zPrime.z;
+}
+
+}
 
 CSimpleCamera::CSimpleCamera(float nearZ, float farZ, float fov) {
     this->float10 = 0.0f;
@@ -24,7 +75,7 @@ C3Vector CSimpleCamera::Right() const {
 }
 
 void CSimpleCamera::SetFacing(const C3Vector& forward) {
-    // TODO
+    BuildBillboardMatrix(forward, this->m_facing);
 }
 
 void CSimpleCamera::SetFacing(const C3Vector& forward, const C3Vector& up) {
