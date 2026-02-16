@@ -4,6 +4,8 @@
 #include <tempest/Matrix.hpp>
 #include <tempest/Vector.hpp>
 
+class CM2Scene;
+
 class CSimpleCamera {
     public:
         // Virtual public member functions
@@ -14,6 +16,7 @@ class CSimpleCamera {
 
         // Public member functions
         CSimpleCamera(float nearZ, float farZ, float fov);
+        CM2Scene* GetScene();
         void SetFacing(const C3Vector& forward);
         void SetFacing(const C3Vector& forward, const C3Vector& up);
         void SetFacing(float yaw, float pitch, float roll);
@@ -23,8 +26,8 @@ class CSimpleCamera {
 
     protected:
         // Protected member variables
+        CM2Scene* m_scene;
         C3Vector m_position;
-        float float10;
         C33Matrix m_facing;
         float m_nearZ;
         float m_farZ;

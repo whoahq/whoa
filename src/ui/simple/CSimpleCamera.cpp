@@ -1,4 +1,5 @@
 #include "ui/simple/CSimpleCamera.hpp"
+#include "model/Model2.hpp"
 #include <tempest/Math.hpp>
 
 namespace {
@@ -52,7 +53,7 @@ void BuildBillboardMatrix(const C3Vector& direction, C33Matrix& rotation) {
 }
 
 CSimpleCamera::CSimpleCamera(float nearZ, float farZ, float fov) {
-    this->float10 = 0.0f;
+    this->m_scene = nullptr;
 
     this->m_nearZ = nearZ;
     this->m_farZ = farZ;
@@ -68,6 +69,14 @@ float CSimpleCamera::FOV() {
 
 C3Vector CSimpleCamera::Forward() const {
     return { this->m_facing.a0, this->m_facing.a1, this->m_facing.a2 };
+}
+
+CM2Scene* CSimpleCamera::GetScene() {
+    if (!this->m_scene) {
+        this->m_scene = M2CreateScene();
+    }
+
+    return this->m_scene;
 }
 
 C3Vector CSimpleCamera::Right() const {
