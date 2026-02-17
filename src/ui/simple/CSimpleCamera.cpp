@@ -1,4 +1,5 @@
 #include "ui/simple/CSimpleCamera.hpp"
+#include "gx/Transform.hpp"
 #include "model/Model2.hpp"
 #include <tempest/Math.hpp>
 
@@ -105,6 +106,25 @@ void CSimpleCamera::SetFieldOfView(float fov) {
 
 void CSimpleCamera::SetNearZ(float nearZ) {
     this->m_nearZ = nearZ;
+}
+
+void CSimpleCamera::SetGxProjectionAndView(const CRect& projRect) {
+    // Projection
+
+    this->m_aspect = (projRect.maxX - projRect.minX) / (projRect.maxY - projRect.minY);
+
+    C44Matrix projMat;
+    GxuXformCreateProjection_Exact(this->m_fov * 0.6f, this->m_aspect, this->m_nearZ, this->m_farZ, projMat);
+
+    GxXformSetProjection(projMat);
+
+    // View
+
+    C3Vector eye;
+    C44Matrix viewMat;
+    GxuXformCreateLookAtSgCompat(eye, this->Forward(), this->Up(), viewMat);
+
+    GxXformSetView(viewMat);
 }
 
 C3Vector CSimpleCamera::Up() const {

@@ -2,6 +2,7 @@
 #define UI_SIMPLE_C_SIMPLE_CAMERA_HPP
 
 #include <tempest/Matrix.hpp>
+#include <tempest/Rect.hpp>
 #include <tempest/Vector.hpp>
 
 class CM2Scene;
@@ -22,6 +23,7 @@ class CSimpleCamera {
         void SetFacing(float yaw, float pitch, float roll);
         void SetFarZ(float farZ);
         void SetFieldOfView(float fov);
+        void SetGxProjectionAndView(const CRect& projRect);
         void SetNearZ(float nearZ);
 
     protected:
