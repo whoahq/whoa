@@ -10,9 +10,11 @@ uint32_t CWorld::s_curTimeMs;
 float CWorld::s_curTimeSec;
 uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
+float CWorld::s_farClip;
 uint32_t CWorld::s_gameTimeFixed;
 float CWorld::s_gameTimeSec;
 CM2Scene* CWorld::s_m2Scene;
+float CWorld::s_nearClip = 0.1f;
 uint32_t CWorld::s_tickTimeFixed;
 uint32_t CWorld::s_tickTimeMs;
 float CWorld::s_tickTimeSec;
@@ -55,6 +57,10 @@ float CWorld::GetCurTimeSec() {
     return CWorld::s_curTimeSec;
 }
 
+float CWorld::GetFarClip() {
+    return CWorld::s_farClip;
+}
+
 uint32_t CWorld::GetFixedPrecisionTime(float timeSec) {
     return static_cast<uint32_t>(timeSec * 1024.0f);
 }
@@ -69,6 +75,10 @@ float CWorld::GetGameTimeSec() {
 
 CM2Scene* CWorld::GetM2Scene() {
     return CWorld::s_m2Scene;
+}
+
+float CWorld::GetNearClip() {
+    return CWorld::s_nearClip;
 }
 
 uint32_t CWorld::GetTickTimeFixed() {

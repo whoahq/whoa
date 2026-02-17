@@ -57,9 +57,11 @@ class CWorld {
         static HWORLDOBJECT AddObject(CM2Model* model, void* handler, void* handlerParam, uint64_t param64, uint32_t param32, uint32_t objFlags);
         static uint32_t GetCurTimeMs();
         static float GetCurTimeSec();
+        static float GetFarClip();
         static uint32_t GetGameTimeFixed();
         static float GetGameTimeSec();
         static CM2Scene* GetM2Scene();
+        static float GetNearClip();
         static uint32_t GetTickTimeFixed();
         static uint32_t GetTickTimeMs();
         static float GetTickTimeSec();
@@ -72,9 +74,11 @@ class CWorld {
         // Private static variables
         static uint32_t s_curTimeMs;
         static float s_curTimeSec;
+        static float s_farClip;
         static uint32_t s_gameTimeFixed;
         static float s_gameTimeSec;
         static CM2Scene* s_m2Scene;
+        static float s_nearClip;
         static uint32_t s_tickTimeFixed;
         static uint32_t s_tickTimeMs;
         static float s_tickTimeSec;
