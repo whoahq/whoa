@@ -10,7 +10,7 @@ class CM2Scene;
 class CSimpleCamera {
     public:
         // Virtual public member functions
-        virtual float FOV();
+        virtual float FOV() const;
         virtual C3Vector Forward() const;
         virtual C3Vector Right() const;
         virtual C3Vector Up() const;

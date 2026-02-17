@@ -64,7 +64,7 @@ CSimpleCamera::CSimpleCamera(float nearZ, float farZ, float fov) {
     this->SetFacing(0.0f, 0.0f, 0.0f);
 }
 
-float CSimpleCamera::FOV() {
+float CSimpleCamera::FOV() const {
     return this->m_fov;
 }
 
