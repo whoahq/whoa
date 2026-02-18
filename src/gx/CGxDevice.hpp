@@ -183,6 +183,7 @@ class CGxDevice {
         void PrimVertexFormat(CGxBuf*, CGxVertexAttrib*, uint32_t);
         void PrimVertexMask(uint32_t);
         void PrimVertexPtr(CGxBuf*, EGxVertexBufferFormat);
+        void RenderTargetGet(EGxBuffer buffer, CGxTex*& gxTex);
         void RsGet(EGxRenderState, int32_t&);
         void RsSet(EGxRenderState, int32_t);
         void RsSet(EGxRenderState, void*);
