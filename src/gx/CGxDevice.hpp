@@ -123,6 +123,9 @@ class CGxDevice {
         int32_t m_primIndexDirty = 0;
         TSFixedArray<CGxAppRenderState> m_appRenderStates;
         TSFixedArray<CGxStateBom> m_hwRenderStates;
+        // TODO
+        TextureTarget m_textureTarget[GxBuffers_Last];
+        // TODO
         uint32_t m_baseMipLevel = 0; // TODO placeholder
 
         // Virtual member functions
