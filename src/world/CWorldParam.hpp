@@ -1,7 +1,7 @@
 #ifndef WORLD_C_WORLD_PARAM_HPP
 #define WORLD_C_WORLD_PARAM_HPP
 
-class CVar;
+#include "console/CVar.hpp"
 
 class CWorldParam {
     public:
