@@ -38,6 +38,13 @@ struct ShaderConstants {
 
 class CGxDevice {
     public:
+        // Structs
+        struct TextureTarget {
+            CGxTex* m_texture;
+            uint32_t m_plane;
+            void* m_apiSpecific;
+        };
+
         // Static variables
         static uint32_t s_alphaRef[];
         static C3Vector s_pointScaleIdentity;
