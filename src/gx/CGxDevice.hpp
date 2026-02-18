@@ -108,12 +108,12 @@ class CGxDevice {
         uint32_t m_appMasterEnables = 0;
         uint32_t m_hwMasterEnables = 0;
         TSList<CGxPool, TSGetLink<CGxPool>> m_poolList;
-        CGxBuf* m_bufLocked[GxPoolTargets_Last];
+        CGxBuf* m_bufLocked[GxPoolTargets_Last] = {};
         CGxPool* m_vertexPool = nullptr;
         CGxPool* m_indexPool = nullptr;
-        CGxBuf* m_streamBufs[GxPoolTargets_Last];
+        CGxBuf* m_streamBufs[GxPoolTargets_Last] = {};
         CGxVertexAttrib m_primVertexFormatAttrib[GxVertexBufferFormats_Last];
-        CGxBuf* m_primVertexFormatBuf[GxVertexBufferFormats_Last];
+        CGxBuf* m_primVertexFormatBuf[GxVertexBufferFormats_Last] = {};
         uint32_t m_primVertexMask = 0;
         uint32_t m_primVertexDirty = 0;
         EGxVertexBufferFormat m_primVertexFormat = GxVertexBufferFormats_Last;
@@ -124,7 +124,7 @@ class CGxDevice {
         TSFixedArray<CGxAppRenderState> m_appRenderStates;
         TSFixedArray<CGxStateBom> m_hwRenderStates;
         // TODO
-        TextureTarget m_textureTarget[GxBuffers_Last];
+        TextureTarget m_textureTarget[GxBuffers_Last] = {};
         // TODO
         uint32_t m_baseMipLevel = 0; // TODO placeholder
 
