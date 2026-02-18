@@ -164,10 +164,14 @@ void CWorld::Initialize() {
     // TODO
 }
 
-void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID) {
+void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t mapID) {
+    CWorld::s_farClip = AdjustFarClip(CWorldParam::cvar_farClip->GetFloat(), mapID);
+    CWorld::s_nearClip = 0.2f;
+    CWorld::s_prevFarClip = CWorld::s_farClip;
+
     // TODO
 
-    CMap::Load(mapName, zoneID);
+    CMap::Load(mapName, mapID);
 
     // TODO
 }

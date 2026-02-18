@@ -66,7 +66,7 @@ class CWorld {
         static uint32_t GetTickTimeMs();
         static float GetTickTimeSec();
         static void Initialize();
-        static void LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID);
+        static void LoadMap(const char* mapName, const C3Vector& position, int32_t mapID);
         static int32_t OnTick(const EVENT_DATA_TICK* data, void* param);
         static void SetFarClip(float farClip);
         static void SetUpdateTime(float tickTimeSec, uint32_t curTimeMs);
