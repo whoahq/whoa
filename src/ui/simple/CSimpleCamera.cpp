@@ -104,10 +104,6 @@ void CSimpleCamera::SetFieldOfView(float fov) {
     this->m_fov = fov;
 }
 
-void CSimpleCamera::SetNearZ(float nearZ) {
-    this->m_nearZ = nearZ;
-}
-
 void CSimpleCamera::SetGxProjectionAndView(const CRect& projRect) {
     // Projection
 
@@ -125,6 +121,14 @@ void CSimpleCamera::SetGxProjectionAndView(const CRect& projRect) {
     GxuXformCreateLookAtSgCompat(eye, this->Forward(), this->Up(), viewMat);
 
     GxXformSetView(viewMat);
+}
+
+void CSimpleCamera::SetNearZ(float nearZ) {
+    this->m_nearZ = nearZ;
+}
+
+void CSimpleCamera::SetScreenAspect(const CRect& screenRect) {
+    this->m_aspect = (screenRect.maxX - screenRect.minX) / (screenRect.maxY - screenRect.minY);
 }
 
 C3Vector CSimpleCamera::Up() const {

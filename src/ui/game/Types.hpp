@@ -13,4 +13,16 @@ enum SCRIPTEVENT {
     // TODO
 };
 
+enum CAMERA_VIEW {
+    VIEW_FIRST_PERSON       = 0,
+    VIEW_THIRD_PERSON_A     = 1,
+    VIEW_THIRD_PERSON_B     = 2,
+    VIEW_THIRD_PERSON_C     = 3,
+    VIEW_THIRD_PERSON_D     = 4,
+    VIEW_THIRD_PERSON_E     = 5,
+    VIEW_COMMENTATOR        = 6,
+    VIEW_BARBER_SHOP        = 7,
+    MAX_CAMERA_VIEWS,
+};
+
 #endif

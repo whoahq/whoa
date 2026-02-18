@@ -25,6 +25,7 @@ class CSimpleCamera {
         void SetFieldOfView(float fov);
         void SetGxProjectionAndView(const CRect& projRect);
         void SetNearZ(float nearZ);
+        void SetScreenAspect(const CRect& screenRect);
 
     protected:
         // Protected member variables
