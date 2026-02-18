@@ -28,6 +28,7 @@ uint32_t* CMap::s_mapObjDefGroupHeap;
 uint32_t* CMap::s_mapObjDefHeap;
 uint32_t* CMap::s_mapObjGroupHeap;
 uint32_t* CMap::s_mapObjHeap;
+int32_t CMap::s_mapID = -1;
 char CMap::s_mapName[256];
 char CMap::s_mapPath[256];
 char CMap::s_wdtFilename[256];
@@ -61,7 +62,7 @@ void CMap::Initialize() {
     // TODO
 }
 
-void CMap::Load(const char* mapName, int32_t zoneID) {
+void CMap::Load(const char* mapName, int32_t mapID) {
     // TODO
 
     auto nameOfs = SStrCopy(CMap::s_mapPath, "World\\Maps\\");
@@ -70,6 +71,10 @@ void CMap::Load(const char* mapName, int32_t zoneID) {
     SStrCopy(CMap::s_mapName, mapName);
 
     SStrPrintf(CMap::s_wdtFilename, sizeof(CMap::s_wdtFilename), "%s\\%s.wdt", CMap::s_mapPath, CMap::s_mapName);
+
+    // TODO
+
+    CMap::s_mapID = mapID;
 
     // TODO
 }
