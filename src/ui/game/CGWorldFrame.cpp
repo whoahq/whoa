@@ -91,4 +91,8 @@ void CGWorldFrame::OnWorldRender() {
 
 void CGWorldFrame::OnWorldUpdate() {
     // TODO
+
+    this->m_camera->SetupWorldProjection(this->m_screenRect);
+
+    // TODO
 }
