@@ -1100,7 +1100,7 @@
   static FT_Error
   open_face( FT_Driver      driver,
              FT_Stream      stream,
-             FT_Long        face_index,
+             FT_Int         face_index,
              FT_Int         num_params,
              FT_Parameter*  params,
              FT_Face*       aface )

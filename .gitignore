@@ -3,7 +3,7 @@
 .vscode
 .idea
 
-/build
+/build*
 /cmake-build-*
 /out
 
