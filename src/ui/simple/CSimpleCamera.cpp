@@ -84,6 +84,10 @@ C3Vector CSimpleCamera::Right() const {
     return { this->m_facing.b0, this->m_facing.b1, this->m_facing.b2 };
 }
 
+const C3Vector& CSimpleCamera::Position() const {
+    return this->m_position;
+}
+
 void CSimpleCamera::SetFacing(const C3Vector& forward) {
     BuildBillboardMatrix(forward, this->m_facing);
 }

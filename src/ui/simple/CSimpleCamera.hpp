@@ -18,6 +18,7 @@ class CSimpleCamera {
         // Public member functions
         CSimpleCamera(float nearZ, float farZ, float fov);
         CM2Scene* GetScene();
+        const C3Vector& Position() const;
         void SetFacing(const C3Vector& forward);
         void SetFacing(const C3Vector& forward, const C3Vector& up);
         void SetFacing(float yaw, float pitch, float roll);
