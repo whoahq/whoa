@@ -27,6 +27,7 @@ class CGCamera : public CSimpleCamera {
         CGCamera();
         C33Matrix ParentToWorld() const;
         void SetupWorldProjection(const CRect& projRect);
+        C3Vector Target() const;
 
     private:
         // Private member variables

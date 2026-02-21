@@ -80,6 +80,10 @@ void CGCamera::SetupWorldProjection(const CRect& projRect) {
     this->SetGxProjectionAndView(projRect);
 }
 
+C3Vector CGCamera::Target() const {
+    return this->m_position + this->Forward();
+}
+
 C3Vector CGCamera::Up() const {
     if (this->m_relativeTo) {
         return this->CSimpleCamera::Up() * this->ParentToWorld();
