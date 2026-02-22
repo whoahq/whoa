@@ -80,6 +80,7 @@ class CGlueMgr {
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
         static void PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode);
+        static void PollCreateCharacter(const char* msg, int32_t complete, int32_t result);
         static void PollDeleteCharacter(const char* msg, int32_t complete, int32_t result);
         static void PollEnterWorld();
         static void PollLoginServerLogin();
