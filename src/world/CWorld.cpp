@@ -213,3 +213,7 @@ void CWorld::SetUpdateTime(float tickTimeSec, uint32_t curTimeMs) {
     CWorld::s_tickTimeMs = static_cast<uint32_t>(tickTimeSec * 1000.0f);
     CWorld::s_tickTimeSec = tickTimeSec;
 }
+
+void CWorld::Update(const C3Vector& cameraPos, const C3Vector& cameraTarget, const C3Vector& targetPos) {
+    // TODO
+}

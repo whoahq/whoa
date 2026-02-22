@@ -70,6 +70,7 @@ class CWorld {
         static int32_t OnTick(const EVENT_DATA_TICK* data, void* param);
         static void SetFarClip(float farClip);
         static void SetUpdateTime(float tickTimeSec, uint32_t curTimeMs);
+        static void Update(const C3Vector& cameraPos, const C3Vector& cameraTarget, const C3Vector& targetPos);
 
     private:
         // Private static variables
