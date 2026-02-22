@@ -103,6 +103,10 @@ CM2Model* CGObject_C::GetObjectModel() {
     return this->m_model;
 }
 
+C3Vector CGObject_C::GetPosition() const {
+    return { 0.0f, 0.0f, 0.0f };
+}
+
 int32_t CGObject_C::IsInReenable() {
     return this->m_inReenable;
 }
