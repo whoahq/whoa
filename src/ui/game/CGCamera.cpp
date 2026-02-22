@@ -38,6 +38,9 @@ bool ValidateCameraView(CVar* var, const char* oldValue, const char* value, void
 }
 
 CGCamera::CGCamera() : CSimpleCamera(CWorld::GetNearClip(), CWorld::GetFarClip(), 90.0f * CMath::DEG2RAD) {
+    this->m_model = nullptr;
+
+    this->m_target = 0;
     this->m_relativeTo = 0;
 
     this->m_view = s_cameraView->GetInt();
@@ -65,6 +68,10 @@ C3Vector CGCamera::Forward() const {
 
 const WOWGUID& CGCamera::GetTarget() const {
     return this->m_target;
+}
+
+int32_t CGCamera::HasModel() const {
+    return this->m_model != nullptr;
 }
 
 C33Matrix CGCamera::ParentToWorld() const {

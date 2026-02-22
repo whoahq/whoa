@@ -4,6 +4,8 @@
 #include "ui/simple/CSimpleCamera.hpp"
 #include "util/GUID.hpp"
 
+class CM2Model;
+
 class CGCamera : public CSimpleCamera {
     public:
         // Public structs
@@ -26,12 +28,14 @@ class CGCamera : public CSimpleCamera {
         // Public member functions
         CGCamera();
         const WOWGUID& GetTarget() const;
+        int32_t HasModel() const;
         C33Matrix ParentToWorld() const;
         void SetupWorldProjection(const CRect& projRect);
         C3Vector Target() const;
 
     private:
         // Private member variables
+        CM2Model* m_model;
         // TODO
         WOWGUID m_target;
         // TODO
