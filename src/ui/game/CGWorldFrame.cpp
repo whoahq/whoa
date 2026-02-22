@@ -2,8 +2,10 @@
 #include "gx/Coordinate.hpp"
 #include "gx/Shader.hpp"
 #include "gx/Transform.hpp"
+#include "object/Client.hpp"
 #include "ui/game/CGCamera.hpp"
 #include "ui/game/PlayerName.hpp"
+#include "world/World.hpp"
 #include <storm/Memory.hpp>
 #include <tempest/Matrix.hpp>
 
@@ -92,7 +94,19 @@ void CGWorldFrame::OnWorldRender() {
 void CGWorldFrame::OnWorldUpdate() {
     // TODO
 
+    auto target = ClntObjMgrObjectPtr(this->m_camera->GetTarget(), TYPE_OBJECT, __FILE__, __LINE__);
+
+    // TODO
+
     this->m_camera->SetupWorldProjection(this->m_screenRect);
+
+    // TODO
+
+    auto targetPos = target && !this->m_camera->HasModel()
+        ? target->GetPosition()
+        : this->m_camera->Position();
+
+    CWorld::Update(this->m_camera->Position(), this->m_camera->Target(), targetPos);
 
     // TODO
 }
