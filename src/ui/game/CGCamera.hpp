@@ -25,12 +25,15 @@ class CGCamera : public CSimpleCamera {
 
         // Public member functions
         CGCamera();
+        const WOWGUID& GetTarget() const;
         C33Matrix ParentToWorld() const;
         void SetupWorldProjection(const CRect& projRect);
         C3Vector Target() const;
 
     private:
         // Private member variables
+        // TODO
+        WOWGUID m_target;
         // TODO
         WOWGUID m_relativeTo;
         // TODO

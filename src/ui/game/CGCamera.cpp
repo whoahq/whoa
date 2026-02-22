@@ -63,6 +63,10 @@ C3Vector CGCamera::Forward() const {
     return this->CSimpleCamera::Forward();
 }
 
+const WOWGUID& CGCamera::GetTarget() const {
+    return this->m_target;
+}
+
 C33Matrix CGCamera::ParentToWorld() const {
     // TODO
     return {};
