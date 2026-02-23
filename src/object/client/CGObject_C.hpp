@@ -38,6 +38,8 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         // TODO
         virtual C3Vector GetPosition() const;
         // TODO
+        virtual float GetFacing() const;
+        // TODO
         virtual int32_t GetModelFileName(const char*& name) const;
         // TODO
         virtual int32_t CanHighlight();

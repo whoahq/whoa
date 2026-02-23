@@ -95,6 +95,10 @@ void CGObject_C::Disable() {
     this->m_disableTimeMs = CWorld::GetCurTimeMs();
 }
 
+float CGObject_C::GetFacing() const {
+    return 0.0f;
+}
+
 int32_t CGObject_C::GetModelFileName(const char*& name) const {
     return false;
 }
