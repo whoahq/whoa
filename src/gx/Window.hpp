@@ -11,7 +11,7 @@
     #include <ApplicationServices/ApplicationServices.h>
 #endif
 
-#if defined(WHOA_SYSTEM_LINUX) || defined(WHOA_SYSTEM_WIN)
+#if defined(WHOA_SYSTEM_LINUX) || defined(WHOA_SYSTEM_WIN) || defined(WHOA_SYSTEM_WEB)
 struct Rect {
     int16_t top;
     int16_t left;
@@ -20,7 +20,7 @@ struct Rect {
 };
 #endif
 
-#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX)
+#if defined(WHOA_SYSTEM_MAC) || defined(WHOA_SYSTEM_LINUX) || defined(WHOA_SYSTEM_WEB)
 typedef struct tagRECT {
     int32_t left;
     int32_t top;

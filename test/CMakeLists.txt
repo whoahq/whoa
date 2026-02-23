@@ -45,6 +45,25 @@ if(WHOA_SYSTEM_WIN OR WHOA_SYSTEM_LINUX)
     )
 endif()
 
+if(WHOA_SYSTEM_WEB)
+    file(GLOB PRIVATE_SOURCES
+        "Test.cpp"
+        "gx/*.cpp"
+        "gx/font/*.cpp"
+        "util/*.cpp"
+    )
+
+    add_executable(WhoaTest ${PRIVATE_SOURCES})
+
+    target_link_libraries(WhoaTest
+        PRIVATE
+            client
+            event
+            gx
+            util
+    )
+endif()
+
 target_include_directories(WhoaTest
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src
