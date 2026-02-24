@@ -772,7 +772,7 @@ void CGlueMgr::PollCreateCharacter(const char* msg, int32_t complete, int32_t re
     FrameScript_SignalEvent(UPDATE_STATUS_DIALOG, "%s", msg);
 
     if (CGlueMgr::HandleBattlenetDisconnect()) {
-        SetIdleState(IDLE_NONE);
+        CGlueMgr::SetIdleState(IDLE_NONE);
     }
 
     if (!complete) {
