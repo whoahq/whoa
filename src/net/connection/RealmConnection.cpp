@@ -20,7 +20,7 @@ int32_t RealmConnection::MessageHandler(void* param, NETMESSAGE msgId, uint32_t 
     }
 
     case SMSG_CHAR_CREATE: {
-        // TODO
+        result = connection->CreateCharHandler(msgId, time, msg);
         break;
     }
 
@@ -290,6 +290,15 @@ int32_t RealmConnection::HandleCharEnum(uint32_t msgId, uint32_t time, CDataStor
     }
 
     this->m_realmResponse->CharacterListReceived(this, this->m_characterList, listSuccess);
+
+    return 1;
+}
+
+int32_t RealmConnection::CreateCharHandler(uint32_t msgId, uint32_t time, CDataStore* msg) {
+    uint8_t result;
+    msg->Get(result);
+
+    this->HandleCharacterCreate(result);
 
     return 1;
 }
