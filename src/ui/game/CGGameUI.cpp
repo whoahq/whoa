@@ -8,6 +8,7 @@
 #include "ui/game/ActionBarScript.hpp"
 #include "ui/game/BattlefieldInfoScript.hpp"
 #include "ui/game/BattlenetUI.hpp"
+#include "ui/game/CGCamera.hpp"
 #include "ui/game/CGCharacterModelBase.hpp"
 #include "ui/game/CGCooldown.hpp"
 #include "ui/game/CGDressUpModelFrame.hpp"
@@ -282,6 +283,10 @@ void CGGameUI::RegisterGameCVars() {
     CVar::Register("showArenaEnemyPets", "Show the enemy team's pets on the ArenaEnemy frames", 0x20, "1", nullptr, GAME);
 
     CVar::Register("fullSizeFocusFrame", "Increases the size of the focus frame to that of the target frame", 0x20, "0", nullptr, GAME);
+
+    // TODO
+
+    CameraRegisterCVars();
 
     // TODO
 }

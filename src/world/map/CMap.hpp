@@ -23,6 +23,7 @@ class CMap {
         static uint32_t* s_mapObjDefHeap;
         static uint32_t* s_mapObjGroupHeap;
         static uint32_t* s_mapObjHeap;
+        static int32_t s_mapID;
         static char s_mapName[];
         static char s_mapPath[];
         static char s_wdtFilename[];
@@ -30,7 +31,7 @@ class CMap {
         // Static functions
         static CMapEntity* AllocEntity(int32_t a1);
         static void Initialize();
-        static void Load(const char* mapName, int32_t zoneID);
+        static void Load(const char* mapName, int32_t mapID);
         static void MapMemInitialize();
 };
 

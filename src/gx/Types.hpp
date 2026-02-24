@@ -54,6 +54,12 @@ enum EGxBlend {
     GxBlends_Last = 12
 };
 
+enum EGxBuffer {
+    GxBuffers_Color = 0,
+    GxBuffers_Depth = 1,
+    GxBuffers_Last,
+};
+
 enum EGxColorFormat {
     GxCF_argb = 0,
     GxCF_rgba = 1,

@@ -4,6 +4,8 @@
 #include "ui/simple/CSimpleFrame.hpp"
 #include <cstdint>
 
+class CGCamera;
+
 class CGWorldFrame : public CSimpleFrame {
     public:
         // Static variables
@@ -15,11 +17,22 @@ class CGWorldFrame : public CSimpleFrame {
 
         // Virtual member functions
         virtual void OnFrameRender(CRenderBatch* batch, uint32_t layer);
+        // TODO
+        virtual void OnFrameSizeChanged(const CRect& rect);
 
         // Member functions
         CGWorldFrame(CSimpleFrame* parent);
         void OnWorldRender();
         void OnWorldUpdate();
+
+    private:
+        // Private member variables
+        // TODO
+        CRect m_screenRect;
+        CRect m_viewport;
+        // TODO
+        CGCamera* m_camera;
+        // TODO
 };
 
 #endif

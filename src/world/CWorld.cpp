@@ -2,6 +2,7 @@
 #include "gx/Gx.hpp"
 #include "gx/Shader.hpp"
 #include "model/Model2.hpp"
+#include "world/CWorldParam.hpp"
 #include "world/Map.hpp"
 #include "world/Weather.hpp"
 #include <storm/Memory.hpp>
@@ -10,13 +11,35 @@ uint32_t CWorld::s_curTimeMs;
 float CWorld::s_curTimeSec;
 uint32_t CWorld::s_enables;
 uint32_t CWorld::s_enables2;
+float CWorld::s_farClip;
 uint32_t CWorld::s_gameTimeFixed;
 float CWorld::s_gameTimeSec;
 CM2Scene* CWorld::s_m2Scene;
+float CWorld::s_nearClip = 0.1f;
+float CWorld::s_prevFarClip;
 uint32_t CWorld::s_tickTimeFixed;
 uint32_t CWorld::s_tickTimeMs;
 float CWorld::s_tickTimeSec;
 Weather* CWorld::s_weather;
+
+namespace {
+
+float AdjustFarClip(float farClip, int32_t mapID) {
+    float minFarClip = 183.33333f;
+    float maxFarClip = 1583.3334f;
+
+    if (mapID < 530 || mapID == 575 || mapID == 543) {
+        if (!CWorldParam::cvar_farClipOverride || CWorldParam::cvar_farClipOverride->GetInt() < 1) {
+            maxFarClip = 791.66669f;
+        }
+    } else if (false /* TODO OsGetPhysicalMemory() <= 1073741824 */) {
+        maxFarClip = 791.66669f;
+    }
+
+    return std::min(std::max(farClip, minFarClip), maxFarClip);
+}
+
+}
 
 HWORLDOBJECT CWorld::AddObject(CM2Model* model, void* handler, void* handlerParam, uint64_t param64, uint32_t param32, uint32_t objFlags) {
     auto entity = CMap::AllocEntity(objFlags & 0x8 ? true : false);
@@ -55,6 +78,10 @@ float CWorld::GetCurTimeSec() {
     return CWorld::s_curTimeSec;
 }
 
+float CWorld::GetFarClip() {
+    return CWorld::s_farClip;
+}
+
 uint32_t CWorld::GetFixedPrecisionTime(float timeSec) {
     return static_cast<uint32_t>(timeSec * 1024.0f);
 }
@@ -69,6 +96,10 @@ float CWorld::GetGameTimeSec() {
 
 CM2Scene* CWorld::GetM2Scene() {
     return CWorld::s_m2Scene;
+}
+
+float CWorld::GetNearClip() {
+    return CWorld::s_nearClip;
 }
 
 uint32_t CWorld::GetTickTimeFixed() {
@@ -133,10 +164,14 @@ void CWorld::Initialize() {
     // TODO
 }
 
-void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID) {
+void CWorld::LoadMap(const char* mapName, const C3Vector& position, int32_t mapID) {
+    CWorld::s_farClip = AdjustFarClip(CWorldParam::cvar_farClip->GetFloat(), mapID);
+    CWorld::s_nearClip = 0.2f;
+    CWorld::s_prevFarClip = CWorld::s_farClip;
+
     // TODO
 
-    CMap::Load(mapName, zoneID);
+    CMap::Load(mapName, mapID);
 
     // TODO
 }
@@ -145,6 +180,24 @@ int32_t CWorld::OnTick(const EVENT_DATA_TICK* data, void* param) {
     CWorld::SetUpdateTime(data->tickTimeSec, data->curTimeMs);
 
     return 1;
+}
+
+void CWorld::SetFarClip(float farClip) {
+    farClip = AdjustFarClip(farClip, CMap::s_mapID);
+
+    if (CWorld::s_farClip == farClip) {
+        return;
+    }
+
+    CWorld::s_prevFarClip = CWorld::s_farClip;
+    CWorld::s_farClip = farClip;
+
+    // TODO CMapRenderChunk::DirtyPools();
+
+    CWorld::s_nearClip = 0.2f;
+
+    // TODO dword_D1C410 = 1;
+    // TODO dword_ADEEE0 = 1;
 }
 
 void CWorld::SetUpdateTime(float tickTimeSec, uint32_t curTimeMs) {
@@ -159,4 +212,8 @@ void CWorld::SetUpdateTime(float tickTimeSec, uint32_t curTimeMs) {
     CWorld::s_tickTimeFixed = tickTimeFixed;
     CWorld::s_tickTimeMs = static_cast<uint32_t>(tickTimeSec * 1000.0f);
     CWorld::s_tickTimeSec = tickTimeSec;
+}
+
+void CWorld::Update(const C3Vector& cameraPos, const C3Vector& cameraTarget, const C3Vector& targetPos) {
+    // TODO
 }

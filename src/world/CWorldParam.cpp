@@ -1,4 +1,5 @@
 #include "world/CWorldParam.hpp"
+#include "world/CWorld.hpp"
 #include "console/CVar.hpp"
 
 CVar* CWorldParam::cvar_baseMip;
@@ -53,7 +54,8 @@ bool CWorldParam::ExtShadowQualityCallback(CVar* var, const char* oldValue, cons
 }
 
 bool CWorldParam::FarClipCallback(CVar* var, const char* oldValue, const char* value, void* arg) {
-    // TODO
+    CWorld::SetFarClip(SStrToFloat(value));
+
     return true;
 }
 

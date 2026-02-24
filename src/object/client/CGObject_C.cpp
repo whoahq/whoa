@@ -95,12 +95,20 @@ void CGObject_C::Disable() {
     this->m_disableTimeMs = CWorld::GetCurTimeMs();
 }
 
+float CGObject_C::GetFacing() const {
+    return 0.0f;
+}
+
 int32_t CGObject_C::GetModelFileName(const char*& name) const {
     return false;
 }
 
 CM2Model* CGObject_C::GetObjectModel() {
     return this->m_model;
+}
+
+C3Vector CGObject_C::GetPosition() const {
+    return { 0.0f, 0.0f, 0.0f };
 }
 
 int32_t CGObject_C::IsInReenable() {
