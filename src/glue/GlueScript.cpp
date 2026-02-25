@@ -200,8 +200,7 @@ int32_t Script_ShowTerminationWithoutNoticeNotice(lua_State* L) {
 int32_t Script_TerminationWithoutNoticeAccepted(lua_State* L) {
     if (CGlueMgr::m_acceptedTerminationWithoutNotice) {
         lua_pushnumber(L, 1.0);
-    }
-    else {
+    } else {
         lua_pushnil(L);
     }
 
