@@ -1,5 +1,7 @@
 file(GLOB PRIVATE_SOURCES
     "*.cpp"
+    "guid/*.cpp"
+    "time/*.cpp"
 )
 
 if(WHOA_SYSTEM_MAC)

@@ -49,6 +49,10 @@ bool CSimpleRegion::IsShown() {
     return this->m_shown == 1;
 }
 
+bool CSimpleRegion::IsVisible() {
+    return this->m_visible == 1;
+}
+
 void CSimpleRegion::OnColorChanged(bool a2) {
     if (this->m_parent) {
         uint8_t effectiveAlpha = this->m_parent->m_alpha * this->m_parent->alphaBD / 255;

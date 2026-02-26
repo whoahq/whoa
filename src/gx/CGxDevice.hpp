@@ -38,6 +38,13 @@ struct ShaderConstants {
 
 class CGxDevice {
     public:
+        // Structs
+        struct TextureTarget {
+            CGxTex* m_texture;
+            uint32_t m_plane;
+            void* m_apiSpecific;
+        };
+
         // Static variables
         static uint32_t s_alphaRef[];
         static C3Vector s_pointScaleIdentity;
@@ -101,12 +108,12 @@ class CGxDevice {
         uint32_t m_appMasterEnables = 0;
         uint32_t m_hwMasterEnables = 0;
         TSList<CGxPool, TSGetLink<CGxPool>> m_poolList;
-        CGxBuf* m_bufLocked[GxPoolTargets_Last];
+        CGxBuf* m_bufLocked[GxPoolTargets_Last] = {};
         CGxPool* m_vertexPool = nullptr;
         CGxPool* m_indexPool = nullptr;
-        CGxBuf* m_streamBufs[GxPoolTargets_Last];
+        CGxBuf* m_streamBufs[GxPoolTargets_Last] = {};
         CGxVertexAttrib m_primVertexFormatAttrib[GxVertexBufferFormats_Last];
-        CGxBuf* m_primVertexFormatBuf[GxVertexBufferFormats_Last];
+        CGxBuf* m_primVertexFormatBuf[GxVertexBufferFormats_Last] = {};
         uint32_t m_primVertexMask = 0;
         uint32_t m_primVertexDirty = 0;
         EGxVertexBufferFormat m_primVertexFormat = GxVertexBufferFormats_Last;
@@ -116,6 +123,9 @@ class CGxDevice {
         int32_t m_primIndexDirty = 0;
         TSFixedArray<CGxAppRenderState> m_appRenderStates;
         TSFixedArray<CGxStateBom> m_hwRenderStates;
+        // TODO
+        TextureTarget m_textureTarget[GxBuffers_Last] = {};
+        // TODO
         uint32_t m_baseMipLevel = 0; // TODO placeholder
 
         // Virtual member functions
@@ -173,6 +183,7 @@ class CGxDevice {
         void PrimVertexFormat(CGxBuf*, CGxVertexAttrib*, uint32_t);
         void PrimVertexMask(uint32_t);
         void PrimVertexPtr(CGxBuf*, EGxVertexBufferFormat);
+        void RenderTargetGet(EGxBuffer buffer, CGxTex*& gxTex);
         void RsGet(EGxRenderState, int32_t&);
         void RsSet(EGxRenderState, int32_t);
         void RsSet(EGxRenderState, void*);

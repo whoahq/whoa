@@ -924,6 +924,10 @@ CGxPool* CGxDevice::PoolCreate(EGxPoolTarget target, EGxPoolUsage usage, uint32_
     return pool;
 }
 
+void CGxDevice::RenderTargetGet(EGxBuffer buffer, CGxTex*& gxTex) {
+    gxTex = this->m_textureTarget[buffer].m_texture;
+}
+
 void CGxDevice::RsGet(EGxRenderState which, int32_t& value) {
     value = static_cast<int32_t>(this->m_appRenderStates[which].m_value);
 }

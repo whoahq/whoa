@@ -1,0 +1,10 @@
+#ifndef UI_GAME_C_G_QUEST_POI_FRAME_SCRIPT_HPP
+#define UI_GAME_C_G_QUEST_POI_FRAME_SCRIPT_HPP
+
+#include "ui/Types.hpp"
+
+#define NUM_CG_QUEST_POI_FRAME_SCRIPT_METHODS 14
+
+extern FrameScript_Method CGQuestPOIFrameMethods[NUM_CG_QUEST_POI_FRAME_SCRIPT_METHODS];
+
+#endif

@@ -24,3 +24,7 @@ uint32_t CGContainer::TotalFields() {
 uint32_t CGContainer::TotalFieldsSaved() {
     return CGContainer::GetBaseOffsetSaved() + 72;
 }
+
+CGContainerData* CGContainer::Container() const {
+    return this->m_cont;
+}

@@ -6,23 +6,31 @@
 #include "object/Types.hpp"
 #include <cstdint>
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid);
+CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid);
 
-uint64_t ClntObjMgrGetActivePlayer();
+WOWGUID ClntObjMgrGetActivePlayer();
+
+void ClntObjMgrFreeObject(CGObject_C* object);
 
 ClntObjMgr* ClntObjMgrGetCurrent();
 
 uint32_t ClntObjMgrGetMapID();
 
+PLAYER_TYPE ClntObjMgrGetPlayerType();
+
 void ClntObjMgrInitializeShared();
 
 void ClntObjMgrInitializeStd(uint32_t mapID);
+
+void ClntObjMgrLinkInNewObject(CGObject_C* object);
+
+CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* fileName, int32_t lineNumber);
 
 void ClntObjMgrPop();
 
 void ClntObjMgrPush(ClntObjMgr* mgr);
 
-void ClntObjMgrSetActivePlayer(uint64_t guid);
+void ClntObjMgrSetActivePlayer(WOWGUID guid);
 
 void ClntObjMgrSetHandlers();
 

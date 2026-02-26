@@ -5,6 +5,12 @@
 
 int32_t FrameScript_Object::s_objectTypes = 0;
 
+FrameScript_Object::ScriptIx::~ScriptIx() {
+    if (this->luaRef) {
+        luaL_unref(FrameScript_GetContext(), LUA_REGISTRYINDEX, this->luaRef);
+    }
+}
+
 int32_t FrameScript_Object::CreateScriptMetaTable(lua_State* L, void (*a2)(lua_State* L)) {
     lua_createtable(L, 0, 0);
     lua_pushstring(L, "__index");
@@ -24,15 +30,36 @@ void FrameScript_Object::FillScriptMethodTable(lua_State *L, FrameScript_Method 
     }
 }
 
-FrameScript_Object::~FrameScript_Object() {
-    if (this->m_onEvent.luaRef) {
-        luaL_unref(FrameScript_GetContext(), LUA_REGISTRYINDEX, this->m_onEvent.luaRef);
-    }
-}
-
 const char* FrameScript_Object::GetDisplayName() {
     const char* name = this->GetName();
     return name ? name : "<unnamed>";
+}
+
+int32_t FrameScript_Object::GetScript(lua_State* L) {
+    if (!lua_isstring(L, 2)) {
+        luaL_error(L, "Usage: %s:GetScript(\"type\")", this->GetDisplayName());
+        return 0;
+    }
+
+    auto name = lua_tostring(L, 2);
+    ScriptData data;
+
+    auto script = this->GetScriptByName(name, data);
+
+    if (!script) {
+        luaL_error(L, "%s doesn't have a \"%s\" script", this->GetDisplayName(), lua_tostring(L, 2));
+        return 0;
+    }
+
+    // TODO taint management
+
+    if (script->luaRef > 0) {
+        lua_rawgeti(L, LUA_REGISTRYINDEX, script->luaRef);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 FrameScript_Object::ScriptIx* FrameScript_Object::GetScriptByName(const char* name, FrameScript_Object::ScriptData& data) {
@@ -164,6 +191,25 @@ int32_t FrameScript_Object::SetScript(lua_State* L) {
     // TODO taint tracking
 
     return 0;
+}
+
+void FrameScript_Object::UnregisterScriptEvent(const char* name) {
+    auto event = FrameScript::s_scriptEventsHash.Ptr(name);
+
+    if (!event) {
+        return;
+    }
+
+    if (event->pendingSignalCount) {
+        for (auto node = event->registerListeners.Head(); node; node = event->registerListeners.Next(node)) {
+            if (node->listener == this) {
+                event->registerListeners.DeleteNode(node);
+                break;
+            }
+        }
+    }
+
+    FrameScript_UnregisterScriptEvent(this, event);
 }
 
 void FrameScript_Object::UnregisterScriptObject(const char* name) {

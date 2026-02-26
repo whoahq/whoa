@@ -22,6 +22,8 @@ class ClientConnection : public RealmConnection {
 
         // Virtual member functions
         virtual int32_t HandleConnect();
+        virtual void HandleCharacterCreate(uint8_t result);
+        virtual void HandleCharacterDelete(uint8_t result);
 
         // Member functions
         ClientConnection(RealmResponse* realmResponse)

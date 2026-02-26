@@ -13,14 +13,18 @@
 #include "db/rec/ChrClassesRec.hpp"
 #include "db/rec/ChrRacesRec.hpp"
 #include "db/rec/CreatureDisplayInfoRec.hpp"
+#include "db/rec/CreatureDisplayInfoExtraRec.hpp"
 #include "db/rec/CreatureModelDataRec.hpp"
+#include "db/rec/CreatureSoundDataRec.hpp"
 #include "db/rec/FactionGroupRec.hpp"
 #include "db/rec/FactionTemplateRec.hpp"
 #include "db/rec/ItemDisplayInfoRec.hpp"
 #include "db/rec/ItemVisualsRec.hpp"
 #include "db/rec/MapRec.hpp"
+#include "db/rec/PaperDollItemFrameRec.hpp"
 #include "db/rec/SoundEntriesRec.hpp"
 #include "db/rec/SoundEntriesAdvancedRec.hpp"
+#include "db/rec/UnitBloodLevelsRec.hpp"
 
 extern WowClientDB<AchievementRec> g_achievementDB;
 extern WowClientDB<AreaTableRec> g_areaTableDB;
@@ -33,14 +37,18 @@ extern WowClientDB<CharacterFacialHairStylesRec> g_characterFacialHairStylesDB;
 extern WowClientDB<ChrClassesRec> g_chrClassesDB;
 extern WowClientDB<ChrRacesRec> g_chrRacesDB;
 extern WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
+extern WowClientDB<CreatureDisplayInfoExtraRec> g_creatureDisplayInfoExtraDB;
 extern WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
+extern WowClientDB<CreatureSoundDataRec> g_creatureSoundDataDB;
 extern WowClientDB<FactionGroupRec> g_factionGroupDB;
 extern WowClientDB<FactionTemplateRec> g_factionTemplateDB;
 extern WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 extern WowClientDB<ItemVisualsRec> g_itemVisualsDB;
 extern WowClientDB<MapRec> g_mapDB;
+extern WowClientDB<PaperDollItemFrameRec> g_paperDollItemFrameDB;
 extern WowClientDB<SoundEntriesRec> g_soundEntriesDB;
 extern WowClientDB<SoundEntriesAdvancedRec> g_soundEntriesAdvancedDB;
+extern WowClientDB<UnitBloodLevelsRec> g_unitBloodLevelsDB;
 
 void ClientDBInitialize();
 

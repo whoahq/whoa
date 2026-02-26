@@ -15,4 +15,6 @@ void SynthesizePaint(EvtContext* context);
 
 void SynthesizePoll(EvtContext* context);
 
+void SynthesizeTick(EvtContext* context, uint32_t currTime, float elapsedSec);
+
 #endif

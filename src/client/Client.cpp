@@ -18,6 +18,7 @@
 #include "sound/Interface.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
+#include "ui/Game.hpp"
 #include "util/Random.hpp"
 #include "world/World.hpp"
 #include <bc/Debug.hpp>
@@ -28,6 +29,8 @@
 CVar* Client::g_accountNameVar;
 CVar* Client::g_accountListVar;
 HEVENTCONTEXT Client::g_clientEventContext;
+
+CGameTime g_clientGameTime;
 
 static CVar* s_desktopGammaCvar;
 static CVar* s_gammaCvar;
@@ -69,10 +72,28 @@ void BaseInitializeGlobal() {
     PropInitialize();
 }
 
+int32_t ClientGameTimeTickHandler(const void* data, void* param) {
+    STORM_ASSERT(data);
+
+    g_clientGameTime.GameTimeUpdate(static_cast<const EVENT_DATA_IDLE*>(data)->elapsedSec);
+
+    return 1;
+}
+
+void ClientInitializeGameTime() {
+    ClientServices::SetMessageHandler(SMSG_GAME_SPEED_SET, &ReceiveNewGameSpeed, nullptr);
+    ClientServices::SetMessageHandler(SMSG_LOGIN_SET_TIME_SPEED, &ReceiveNewTimeSpeed, nullptr);
+    ClientServices::SetMessageHandler(SMSG_GAME_TIME_UPDATE, &ReceiveGameTimeUpdate, nullptr);
+    ClientServices::SetMessageHandler(SMSG_SERVERTIME, &ReceiveServerTime, nullptr);
+    ClientServices::SetMessageHandler(SMSG_GAME_TIME_SET, &ReceiveNewGameTime, nullptr);
+
+    // TODO initialize s_forcedChangeCallbacks
+}
+
 int32_t ClientIdle(const void* data, void* param) {
-    // TODO
-    // ClientGameTimeTickHandler(data, param);
-    // Player_C_ZoneUpdateHandler(data, param);
+    ClientGameTimeTickHandler(data, nullptr);
+
+    // TODO Player_C_ZoneUpdateHandler(data, nullptr);
 
     return 1;
 }
@@ -85,7 +106,12 @@ void ClientInitializeGame(uint32_t mapId, C3Vector position) {
 
     // TODO
 
+    CGGameUI::InitializeGame();
+
+    // TODO
+
     EventRegister(EVENT_ID_IDLE, ClientIdle);
+    ClientInitializeGameTime();
 
     // TODO
 
@@ -520,8 +546,9 @@ void WowClientDestroy() {
 }
 
 void WowClientInit() {
+    EventRegister(EVENT_ID_TICK, reinterpret_cast<EVENTHANDLERFUNC>(&CWorld::OnTick));
+
     // TODO
-    // EventRegister(EVENT_ID_5, (int)sub_4020E0);
     // _cfltcvt_init_0();
 
     ClientRegisterConsoleCommands();

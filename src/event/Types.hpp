@@ -12,7 +12,7 @@ enum EVENTID {
     EVENT_ID_FOCUS              = 2,
     EVENT_ID_CLOSE              = 3,
     EVENT_ID_DESTROY            = 4,
-    EVENT_ID_5                  = 5,
+    EVENT_ID_TICK               = 5,
     EVENT_ID_IDLE               = 6,
     EVENT_ID_POLL               = 7,
     EVENT_ID_INITIALIZE         = 8,
@@ -257,6 +257,11 @@ struct EVENT_DATA_MOUSE {
 struct EVENT_DATA_SIZE {
     int32_t w;
     int32_t h;
+};
+
+struct EVENT_DATA_TICK {
+    float tickTimeSec;
+    uint32_t curTimeMs;
 };
 
 #endif

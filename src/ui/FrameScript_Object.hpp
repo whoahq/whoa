@@ -14,6 +14,7 @@ class FrameScript_Object {
         struct ScriptIx {
             int32_t luaRef = 0;
             const char* unk = nullptr;
+            ~ScriptIx();
         };
 
         class ScriptFunction {
@@ -34,7 +35,7 @@ class FrameScript_Object {
         ScriptIx m_onEvent;
 
         // Virtual member functions
-        virtual ~FrameScript_Object();
+        virtual ~FrameScript_Object() = default;
         virtual char* GetName() = 0;
         virtual int32_t GetScriptMetaTable() = 0;
         virtual ScriptIx* GetScriptByName(const char* name, ScriptData& data);
@@ -42,10 +43,12 @@ class FrameScript_Object {
 
         // Member functions
         const char* GetDisplayName();
+        int32_t GetScript(lua_State* L);
         int32_t RegisterScriptEvent(const char* name);
         void RegisterScriptObject(const char* name);
         void RunScript(ScriptIx const& script, int32_t argCount, const char* a4);
         int32_t SetScript(lua_State* L);
+        void UnregisterScriptEvent(const char* name);
         void UnregisterScriptObject(const char* name);
 };
 

@@ -25,10 +25,12 @@
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/Interface.hpp"
-#include "ui/ScriptFunctions.hpp"
+#include "ui/Key.hpp"
+#include "ui/ScriptFunctionsSystem.hpp"
 #include "ui/game/CGVideoOptions.hpp"
 #include "ui/simple/CSimpleModelFFX.hpp"
 #include "ui/simple/CSimpleTop.hpp"
+#include "ui/simple/ScriptMethods.hpp"
 #include "util/Filesystem.hpp"
 #include "util/Locale.hpp"
 #include "util/Log.hpp"
@@ -411,6 +413,11 @@ int32_t CGlueMgr::Idle(const void* a1, void* a2) {
         break;
     }
 
+    case IDLE_CREATE_CHARACTER: {
+        CGlueMgr::PollCreateCharacter(msg, complete, result);
+        break;
+    }
+
     case IDLE_DELETE_CHARACTER: {
         CGlueMgr::PollDeleteCharacter(msg, complete, result);
         break;
@@ -781,6 +788,37 @@ void CGlueMgr::PollCharacterList(const char* msg, int32_t complete, int32_t resu
     }
 }
 
+void CGlueMgr::PollCreateCharacter(const char* msg, int32_t complete, int32_t result) {
+    FrameScript_SignalEvent(UPDATE_STATUS_DIALOG, "%s", msg);
+
+    if (CGlueMgr::HandleBattlenetDisconnect()) {
+        CGlueMgr::SetIdleState(IDLE_NONE);
+    }
+
+    if (!complete) {
+        return;
+    }
+
+    // Error
+
+    if (result == 0) {
+        FrameScript_SignalEvent(OPEN_STATUS_DIALOG, "%s%s", "OKAY", msg);
+
+        CGlueMgr::SetIdleState(IDLE_NONE);
+
+        return;
+    }
+
+    // Success
+
+    CGlueMgr::SetIdleState(IDLE_NONE);
+
+    FrameScript_SignalEvent(CLOSE_STATUS_DIALOG, nullptr);
+    FrameScript_SignalEvent(SELECT_LAST_CHARACTER, nullptr);
+
+    CGlueMgr::SetScreen("charselect");
+}
+
 void CGlueMgr::PollDeleteCharacter(const char* msg, int32_t complete, int32_t result) {
     FrameScript_SignalEvent(UPDATE_STATUS_DIALOG, "%s", msg);
 
@@ -1006,51 +1044,53 @@ void CGlueMgr::Resume() {
 
     DeleteInterfaceFiles();
 
-    MD5_CTX md5;
-    unsigned char digest1[16];
-    unsigned char digest2[16];
+    uint8_t digest1[16];
 
-    int32_t v8;
-    unsigned char* v9;
-    unsigned char* v10;
-
-    MD5Init(&md5);
-
-    switch (FrameXML_CheckSignature("Interface\\GlueXML\\GlueXML.toc", 0, InterfaceKey, digest1)) {
-        case 0:
+    switch (FrameXML_CheckSignature("Interface\\GlueXML\\GlueXML.toc", nullptr, InterfaceKey, digest1)) {
+        case 0: {
             status.Add(STATUS_WARNING, "GlueXML missing signature");
             ClientPostClose(9);
-            return;
 
-        case 1:
+            return;
+        }
+
+        case 1: {
             status.Add(STATUS_WARNING, "GlueXML has corrupt signature");
             ClientPostClose(9);
-            return;
 
-        case 2:
+            return;
+        }
+
+        case 2: {
             status.Add(STATUS_WARNING, "GlueXML is modified or corrupt");
             ClientPostClose(9);
+
             return;
+        }
 
-        case 3:
-            FrameXML_FreeHashNodes();
-            FrameXML_CreateFrames("Interface\\GlueXML\\GlueXML.toc", 0, &md5, &status);
-
-            MD5Final(digest2, &md5);
-
-            v8 = 16;
-            v9 = digest2;
-            v10 = digest1;
-
+        case 3: {
+            // Success
             break;
+        }
 
-        default:
+        default: {
             ClientPostClose(9);
+
             return;
+        }
     }
 
-    // TODO
-    // - some kind of digest validation?
+    MD5_CTX md5;
+    MD5Init(&md5);
+
+    FrameXML_FreeHashNodes();
+
+    FrameXML_CreateFrames("Interface\\GlueXML\\GlueXML.toc", nullptr, &md5, &status);
+
+    uint8_t digest2[16];
+    MD5Final(digest2, &md5);
+
+    // TODO digest validation
 
     FrameScript_SignalEvent(22, nullptr);
 
@@ -1145,7 +1185,7 @@ void CGlueMgr::StatusDialogClick() {
         }
 
         case IDLE_REALM_LIST:
-        case IDLE_5:
+        case IDLE_CREATE_CHARACTER:
         case IDLE_DELETE_CHARACTER:
         case IDLE_ENTER_WORLD: {
             ClientServices::Connection()->Cancel(2);
@@ -1200,6 +1240,10 @@ void CGlueMgr::Suspend() {
         delete CGlueMgr::m_simpleTop;
         CGlueMgr::m_simpleTop = nullptr;
     }
+
+    // TODO
+
+    SystemUnregisterFunctions();
 
     // TODO
 

@@ -12,14 +12,18 @@ WowClientDB<CharacterFacialHairStylesRec> g_characterFacialHairStylesDB;
 WowClientDB<ChrClassesRec> g_chrClassesDB;
 WowClientDB<ChrRacesRec> g_chrRacesDB;
 WowClientDB<CreatureDisplayInfoRec> g_creatureDisplayInfoDB;
+WowClientDB<CreatureDisplayInfoExtraRec> g_creatureDisplayInfoExtraDB;
 WowClientDB<CreatureModelDataRec> g_creatureModelDataDB;
+WowClientDB<CreatureSoundDataRec> g_creatureSoundDataDB;
 WowClientDB<FactionGroupRec> g_factionGroupDB;
 WowClientDB<FactionTemplateRec> g_factionTemplateDB;
 WowClientDB<ItemDisplayInfoRec> g_itemDisplayInfoDB;
 WowClientDB<ItemVisualsRec> g_itemVisualsDB;
 WowClientDB<MapRec> g_mapDB;
+WowClientDB<PaperDollItemFrameRec> g_paperDollItemFrameDB;
 WowClientDB<SoundEntriesRec> g_soundEntriesDB;
 WowClientDB<SoundEntriesAdvancedRec> g_soundEntriesAdvancedDB;
+WowClientDB<UnitBloodLevelsRec> g_unitBloodLevelsDB;
 
 void LoadDB(WowClientDB_Base* db, const char* filename, int32_t linenumber) {
     db->Load(filename, linenumber);
@@ -37,14 +41,18 @@ void StaticDBLoadAll(void (*loadFn)(WowClientDB_Base*, const char*, int32_t)) {
     loadFn(&g_chrClassesDB, __FILE__, __LINE__);
     loadFn(&g_chrRacesDB, __FILE__, __LINE__);
     loadFn(&g_creatureDisplayInfoDB, __FILE__, __LINE__);
+    loadFn(&g_creatureDisplayInfoExtraDB, __FILE__, __LINE__);
     loadFn(&g_creatureModelDataDB, __FILE__, __LINE__);
+    loadFn(&g_creatureSoundDataDB, __FILE__, __LINE__);
     loadFn(&g_factionGroupDB, __FILE__, __LINE__);
     loadFn(&g_factionTemplateDB, __FILE__, __LINE__);
     loadFn(&g_itemDisplayInfoDB, __FILE__, __LINE__);
     loadFn(&g_itemVisualsDB, __FILE__, __LINE__);
     loadFn(&g_mapDB, __FILE__, __LINE__);
+    loadFn(&g_paperDollItemFrameDB, __FILE__, __LINE__);
     loadFn(&g_soundEntriesDB, __FILE__, __LINE__);
     loadFn(&g_soundEntriesAdvancedDB, __FILE__, __LINE__);
+    loadFn(&g_unitBloodLevelsDB, __FILE__, __LINE__);
 };
 
 void ClientDBInitialize() {

@@ -24,3 +24,7 @@ uint32_t CGGameObject::TotalFields() {
 uint32_t CGGameObject::TotalFieldsSaved() {
     return CGGameObject::GetBaseOffsetSaved() + 4;
 }
+
+CGGameObjectData* CGGameObject::GameObject() const {
+    return this->m_gameObj;
+}
