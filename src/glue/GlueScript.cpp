@@ -224,8 +224,7 @@ int32_t Script_ShowScanningNotice(lua_State* L) {
 int32_t Script_ScanningAccepted(lua_State* L) {
     if (CGlueMgr::m_acceptedScanning) {
         lua_pushnumber(L, 1.0);
-    }
-    else {
+    } else {
         lua_pushnil(L);
     }
 
