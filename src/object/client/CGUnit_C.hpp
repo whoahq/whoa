@@ -49,16 +49,16 @@ class CGUnit_C : public CGObject_C, public CGUnit {
 
     private:
         // Private member variables
-        CMovementData_C* m_movement;
+        CMovementData_C* m_movement = &m_localMovement;
         // TODO
         CMovementData_C m_localMovement;
         // TODO
-        CreatureDisplayInfoRec* m_displayInfo;
-        CreatureDisplayInfoExtraRec* m_displayInfoExtra;
-        CreatureModelDataRec* m_modelData;
-        CreatureSoundDataRec* m_soundData;
+        CreatureDisplayInfoRec* m_displayInfo = nullptr;
+        CreatureDisplayInfoExtraRec* m_displayInfoExtra = nullptr;
+        CreatureModelDataRec* m_modelData = nullptr;
+        CreatureSoundDataRec* m_soundData = nullptr;
         // TODO
-        UnitBloodLevelsRec* m_bloodRec;
+        UnitBloodLevelsRec* m_bloodRec = nullptr;
         // TODO
         int32_t m_localDisplayID = 0;
         // TODO
