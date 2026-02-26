@@ -38,6 +38,7 @@
 #include <common/MD5.hpp>
 #include <cstdio>
 
+int32_t CGlueMgr::m_acceptedContest = 1; // TODO
 int32_t CGlueMgr::m_acceptedEULA = 1; // TODO
 int32_t CGlueMgr::m_acceptedTerminationWithoutNotice;
 int32_t CGlueMgr::m_acceptedTOS = 1; // TODO
