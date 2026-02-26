@@ -4,6 +4,7 @@
 #include "object/client/CClientObjCreate.hpp"
 #include "object/client/CGObject_C.hpp"
 #include "object/client/CGUnit.hpp"
+#include "object/client/CMovementData_C.hpp"
 #include "object/Types.hpp"
 #include "util/GUID.hpp"
 
@@ -48,6 +49,9 @@ class CGUnit_C : public CGObject_C, public CGUnit {
 
     private:
         // Private member variables
+        CMovementData_C* m_movement;
+        // TODO
+        CMovementData_C m_localMovement;
         // TODO
         CreatureDisplayInfoRec* m_displayInfo;
         CreatureDisplayInfoExtraRec* m_displayInfoExtra;

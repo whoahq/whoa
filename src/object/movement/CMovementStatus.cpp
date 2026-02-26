@@ -48,7 +48,7 @@ CDataStore& operator>>(CDataStore& msg, CMovementStatus& move) {
     msg.Get(move.uint14);
     msg.Get(move.uint0);
 
-    msg >> move.position18;
+    msg >> move.position28;
     msg.Get(move.facing34);
 
     if (move.moveFlags & 0x200) {

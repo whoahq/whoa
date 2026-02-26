@@ -96,7 +96,11 @@ const char* CGUnit_C::GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, U
     return raceRec->m_name;
 }
 
-CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time, objCreate) {
+CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate)
+    : CGObject_C(time, objCreate)
+    , m_movement(&this->m_localMovement)
+    , m_localMovement(objCreate.move.status.position28, objCreate.move.status.facing34, this->GetGUID(), this)
+{
     // TODO
 
     this->RefreshDataPointers();
