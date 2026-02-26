@@ -1,6 +1,7 @@
 #ifndef OBJECT_CLIENT_CG_ITEM_HPP
 #define OBJECT_CLIENT_CG_ITEM_HPP
 
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct ItemEnchantment {
@@ -10,10 +11,10 @@ struct ItemEnchantment {
 };
 
 struct CGItemData {
-    uint64_t owner;
-    uint64_t containedIn;
-    uint64_t creator;
-    uint64_t giftCreator;
+    WOWGUID owner;
+    WOWGUID containedIn;
+    WOWGUID creator;
+    WOWGUID giftCreator;
     uint32_t stackCount;
     int32_t expiration;
     int32_t spellCharges[5];
@@ -37,9 +38,13 @@ class CGItem {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGItemData* m_item;
         uint32_t* m_itemSaved;
+
+        // Protected member functions
+        CGItemData* Item() const;
 };
 
 #endif

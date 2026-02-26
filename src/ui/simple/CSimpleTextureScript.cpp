@@ -19,7 +19,25 @@ int32_t CSimpleTexture_GetDrawLayer(lua_State* L) {
 }
 
 int32_t CSimpleTexture_SetDrawLayer(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleTexture::GetObjectType();
+    auto texture = static_cast<CSimpleTexture*>(FrameScript_GetObjectThis(L, type));
+
+    if (!lua_isstring(L, 2)) {
+        luaL_error(L, "Usage: %s:SetDrawLayer(\"layer\")", texture->GetDisplayName());
+        return 0;
+    }
+
+    auto drawlayerStr = lua_tostring(L, 2);
+    int32_t drawlayer = texture->m_drawlayer;
+
+    if (!StringToDrawLayer(drawlayerStr, drawlayer)) {
+        luaL_error(L, "Usage: %s:SetDrawLayer(\"layer\")", texture->GetDisplayName());
+        return 0;
+    }
+
+    texture->SetFrame(texture->m_parent, drawlayer, texture->m_shown);
+
+    return 0;
 }
 
 int32_t CSimpleTexture_GetBlendMode(lua_State* L) {
@@ -97,11 +115,29 @@ int32_t CSimpleTexture_Hide(lua_State* L) {
 }
 
 int32_t CSimpleTexture_IsVisible(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleTexture::GetObjectType();
+    auto texture = static_cast<CSimpleTexture*>(FrameScript_GetObjectThis(L, type));
+
+    if (texture->IsVisible()) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleTexture_IsShown(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    auto type = CSimpleTexture::GetObjectType();
+    auto texture = static_cast<CSimpleTexture*>(FrameScript_GetObjectThis(L, type));
+
+    if (texture->IsShown()) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t CSimpleTexture_GetTexture(lua_State* L) {

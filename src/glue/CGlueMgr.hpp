@@ -20,7 +20,7 @@ class CGlueMgr {
             IDLE_ACCOUNT_LOGIN      = 2,
             IDLE_CHARACTER_LIST     = 3,
             IDLE_REALM_LIST         = 4,
-            IDLE_5                  = 5,
+            IDLE_CREATE_CHARACTER   = 5,
             IDLE_DELETE_CHARACTER   = 6,
             IDLE_7                  = 7,
             IDLE_8                  = 8,
@@ -32,6 +32,7 @@ class CGlueMgr {
         };
 
         // Static variables
+        static int32_t m_acceptedContest;
         static int32_t m_acceptedEULA;
         static int32_t m_acceptedScanning;
         static int32_t m_acceptedTerminationWithoutNotice;
@@ -81,6 +82,7 @@ class CGlueMgr {
         static int32_t OnKickReasonMsg(void* param, NETMESSAGE msgId, uint32_t time, CDataStore* msg);
         static void PollAccountLogin(int32_t errorCode, const char* msg, int32_t complete, int32_t result, WOWCS_OPS op);
         static void PollCharacterList(const char* msg, int32_t complete, int32_t result, int32_t errorCode);
+        static void PollCreateCharacter(const char* msg, int32_t complete, int32_t result);
         static void PollDeleteCharacter(const char* msg, int32_t complete, int32_t result);
         static void PollEnterWorld();
         static void PollLoginServerLogin();

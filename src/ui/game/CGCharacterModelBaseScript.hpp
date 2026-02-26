@@ -1,0 +1,10 @@
+#ifndef UI_GAME_C_G_CHARACTER_MODEL_BASE_SCRIPT_HPP
+#define UI_GAME_C_G_CHARACTER_MODEL_BASE_SCRIPT_HPP
+
+#include "ui/Types.hpp"
+
+#define NUM_CG_CHARACTER_MODEL_BASE_SCRIPT_METHODS 4
+
+extern FrameScript_Method CGCharacterModelBaseMethods[NUM_CG_CHARACTER_MODEL_BASE_SCRIPT_METHODS];
+
+#endif

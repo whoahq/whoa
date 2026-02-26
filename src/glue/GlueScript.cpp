@@ -17,7 +17,13 @@
 #include <cstdint>
 
 int32_t Script_IsShiftKeyDown(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (EventIsKeyDown(KEY_LSHIFT) || EventIsKeyDown(KEY_RSHIFT)) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_GetBuildInfo(lua_State* L) {
@@ -198,7 +204,13 @@ int32_t Script_ShowTerminationWithoutNoticeNotice(lua_State* L) {
 }
 
 int32_t Script_TerminationWithoutNoticeAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGlueMgr::m_acceptedTerminationWithoutNotice) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_AcceptTerminationWithoutNotice(lua_State* L) {
@@ -229,7 +241,13 @@ int32_t Script_ShowContestNotice(lua_State* L) {
 }
 
 int32_t Script_ContestAccepted(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    if (CGlueMgr::m_acceptedContest) {
+        lua_pushnumber(L, 1.0);
+    } else {
+        lua_pushnil(L);
+    }
+
+    return 1;
 }
 
 int32_t Script_AcceptContest(lua_State* L) {
@@ -525,36 +543,6 @@ int32_t Script_ScanDLLContinueAnyway(lua_State* L) {
 int32_t Script_IsScanDLLFinished(lua_State* L) {
     // TODO
     lua_pushboolean(L, 1);
-
-    return 1;
-}
-
-int32_t Script_IsWindowsClient(lua_State* L) {
-#if defined(WHOA_SYSTEM_WIN)
-    lua_pushnumber(L, 1.0);
-#else
-    lua_pushnil(L);
-#endif
-
-    return 1;
-}
-
-int32_t Script_IsMacClient(lua_State* L) {
-#if defined(WHOA_SYSTEM_MAC)
-    lua_pushnumber(L, 1.0);
-#else
-    lua_pushnil(L);
-#endif
-
-    return 1;
-}
-
-int32_t Script_IsLinuxClient(lua_State* L) {
-#if defined(WHOA_SYSTEM_LINUX)
-    lua_pushnumber(L, 1.0);
-#else
-    lua_pushnil(L);
-#endif
 
     return 1;
 }

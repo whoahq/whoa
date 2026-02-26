@@ -98,6 +98,21 @@ enum TextureImageMode {
     ImageMode_Desaturate    = 1
 };
 
+enum TOOLTIP_ANCHORPOINT {
+    TOOLTIP_ANCHOR_LEFT         = 0,
+    TOOLTIP_ANCHOR_RIGHT        = 1,
+    TOOLTIP_ANCHOR_BOTTOMLEFT   = 2,
+    TOOLTIP_ANCHOR_BOTTOM       = 3,
+    TOOLTIP_ANCHOR_BOTTOMRIGHT  = 4,
+    TOOLTIP_ANCHOR_TOPLEFT      = 5,
+    TOOLTIP_ANCHOR_TOP          = 6,
+    TOOLTIP_ANCHOR_TOPRIGHT     = 7,
+    TOOLTIP_ANCHOR_CURSOR       = 8,
+    TOOLTIP_ANCHOR_NONE         = 9,
+    TOOLTIP_ANCHOR_PRESERVE     = 10,
+    TOOLTIP_ANCHOR_CURSOR_RIGHT = 11,
+};
+
 struct FRAMEPRIORITY {
     CSimpleFrame* frame;
     uint32_t priority;

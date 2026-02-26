@@ -1,5 +1,21 @@
 #include "object/client/CGDynamicObject_C.hpp"
 
+CGDynamicObject_C::CGDynamicObject_C(uint32_t time, CClientObjCreate& objCreate) : CGObject_C(time, objCreate) {
+    // TODO
+}
+
+CGDynamicObject_C::~CGDynamicObject_C() {
+    // TODO
+}
+
+void CGDynamicObject_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+
+    this->CGObject_C::PostInit(time, init, a4);
+
+    // TODO
+}
+
 void CGDynamicObject_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGObject_C::SetStorage(storage, saved);
 

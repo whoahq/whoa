@@ -17,9 +17,13 @@ class CGGameObject {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+    protected:
+        // Protected member variables
         CGGameObjectData* m_gameObj;
         uint32_t* m_gameObjSaved;
+
+        // Protected member functions
+        CGGameObjectData* GameObject() const;
 };
 
 #endif

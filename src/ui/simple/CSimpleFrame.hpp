@@ -6,6 +6,7 @@
 #include "ui/CScriptRegion.hpp"
 #include "ui/Types.hpp"
 #include "ui/simple/CSimpleRegion.hpp"
+#include <storm/Hash.hpp>
 #include <storm/List.hpp>
 #include <cstdint>
 
@@ -16,6 +17,10 @@ class CMouseEvent;
 class CSimpleTitleRegion;
 class CSimpleTop;
 struct lua_State;
+
+struct FRAMEATTR : TSHashObject<FRAMEATTR, HASHKEY_STRI> {
+    int32_t luaRef;
+};
 
 class CSimpleFrame : public CScriptRegion {
     public:
@@ -71,6 +76,7 @@ class CSimpleFrame : public CScriptRegion {
         ScriptIx m_onAttributeChange;
         ScriptIx m_onEnable;
         ScriptIx m_onDisable;
+        TSHashTable<FRAMEATTR, HASHKEY_STRI> m_attributes;
         int32_t m_drawenabled[NUM_SIMPLEFRAME_DRAWLAYERS];
         CBackdropGenerator* m_backdrop = nullptr;
         STORM_EXPLICIT_LIST(CSimpleRegion, m_regionLink) m_regions;
@@ -122,9 +128,12 @@ class CSimpleFrame : public CScriptRegion {
         // Member functions
         CSimpleFrame(CSimpleFrame* parent);
         void AddFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
+        int32_t AttributeChangesAllowed();
         void DisableDrawLayer(uint32_t drawlayer);
+        void DisableEvent(CSimpleEventType eventType);
         void EnableDrawLayer(uint32_t drawlayer);
         void EnableEvent(CSimpleEventType eventType, int32_t priority);
+        bool GetAttribute(const char* name, int32_t& luaRef);
         int32_t GetHitRect(CRect& rect);
         void Hide();
         void LoadXML_Attributes(const XMLNode* node, CStatus* status);
@@ -138,6 +147,7 @@ class CSimpleFrame : public CScriptRegion {
         void RegisterForEvents(int32_t a2);
         void RegisterRegion(CSimpleRegion* region);
         void RemoveFrameRegion(CSimpleRegion* region, uint32_t drawlayer);
+        void RunOnAttributeChangedScript(const char* name, int32_t luaRef);
         void RunOnCharScript(const char* chr);
         void RunOnEnableScript();
         void RunOnEnterScript(int32_t a2);
@@ -151,6 +161,7 @@ class CSimpleFrame : public CScriptRegion {
         void RunOnShowScript();
         void RunOnSizeChangedScript(float width, float height);
         void RunOnUpdateScript(float elapsedSec);
+        void SetAttribute(const char* name, int32_t luaRef);
         void SetBackdrop(CBackdropGenerator* backdrop);
         void SetBeingScrolled(int32_t a2, int32_t a3);
         void SetFrameAlpha(uint8_t alpha);

@@ -1604,6 +1604,10 @@ void CM2Model::LinkToCallbackListTail() {
     this->m_shared->m_callbackListTail = &this->m_callbackNext;
 }
 
+void CM2Model::OptimizeVisibleGeometry() {
+    // TODO
+}
+
 int32_t CM2Model::ProcessCallbacks() {
     // TODO
     return 1;

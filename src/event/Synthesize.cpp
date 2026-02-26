@@ -91,3 +91,17 @@ void SynthesizePoll(EvtContext* context) {
 
     IEvtQueueDispatch(context, EVENT_ID_POLL, nullptr);
 }
+
+void SynthesizeTick(EvtContext* context, uint32_t currTime, float elapsedSec) {
+    context->m_critsect.Enter();
+    bool closed = context->m_schedState == EvtContext::SCHEDSTATE_CLOSED;
+    context->m_critsect.Leave();
+
+    if (closed) {
+        return;
+    }
+
+    EVENT_DATA_TICK data = { elapsedSec, currTime };
+
+    IEvtQueueDispatch(context, EVENT_ID_TICK, &data);
+}

@@ -11,6 +11,7 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "object/client/CGUnit_C.hpp"
 #include "object/client/MessageHandlers.hpp"
+#include "object/client/Util.hpp"
 #include "util/Unimplemented.hpp"
 #include <common/ObjectAlloc.hpp>
 #include <storm/Memory.hpp>
@@ -66,15 +67,15 @@ void MirrorInitialize() {
     // TODO
 }
 
-void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
+CGObject_C* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, WOWGUID guid) {
     auto playerGUID = ClntObjMgrGetActivePlayer();
 
     // Heap allocate player object for current player
     if (guid == playerGUID) {
-        return STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved());
+        return static_cast<CGObject_C*>(STORM_ALLOC(sizeof(CGPlayer_C) + CGPlayer::GetDataSize() + CGPlayer::GetDataSizeSaved()));
     }
 
-    // TODO GarbageCollect(typeID, 10000);
+    GarbageCollect(typeID, 10000);
 
     uint32_t memHandle;
     void* mem;
@@ -84,12 +85,43 @@ void* ClntObjMgrAllocObject(OBJECT_TYPE_ID typeID, uint64_t guid) {
     }
 
     // TODO pointer should be fetched via ObjectPtr
-    static_cast<CGObject_C*>(mem)->m_memHandle = memHandle;
+    auto object = static_cast<CGObject_C*>(mem);
+    object->m_memHandle = memHandle;
 
-    return mem;
+    return object;
 }
 
-uint64_t ClntObjMgrGetActivePlayer() {
+void ClntObjMgrFreeObject(CGObject_C* object) {
+    auto playerGUID = ClntObjMgrGetActivePlayer();
+    auto isActivePlayer = object->GetGUID() == playerGUID;
+
+    switch (object->GetType()) {
+        case TYPE_OBJECT:
+        case HIER_TYPE_ITEM:
+        case HIER_TYPE_CONTAINER:
+        case HIER_TYPE_UNIT:
+        case HIER_TYPE_PLAYER:
+        case HIER_TYPE_GAMEOBJECT:
+        case HIER_TYPE_DYNAMICOBJECT:
+        case HIER_TYPE_CORPSE: {
+            object->~CGObject_C();
+
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+
+    if (isActivePlayer) {
+        STORM_FREE(object);
+    } else {
+        ObjectFree(s_objHeapId[object->GetTypeID()], object->m_memHandle);
+    }
+}
+
+WOWGUID ClntObjMgrGetActivePlayer() {
     if (!s_curMgr) {
         return 0;
     }
@@ -109,6 +141,10 @@ uint32_t ClntObjMgrGetMapID() {
     return s_curMgr->m_mapID;
 }
 
+PLAYER_TYPE ClntObjMgrGetPlayerType() {
+    return s_curMgr->m_type;
+}
+
 void ClntObjMgrInitializeShared() {
     if (!s_heapsAllocated) {
         for (int32_t i = ID_ITEM; i < NUM_CLIENT_OBJECT_TYPES; i++) {
@@ -126,7 +162,7 @@ void ClntObjMgrInitializeShared() {
 void ClntObjMgrInitializeStd(uint32_t mapID) {
     // TODO last instance time
 
-    auto mgr = STORM_NEW(ClntObjMgr);
+    auto mgr = STORM_NEW(ClntObjMgr)(PLAYER_NORMAL);
 
     g_clientConnection->SetObjMgr(mgr);
     mgr->m_net = g_clientConnection;
@@ -136,6 +172,29 @@ void ClntObjMgrInitializeStd(uint32_t mapID) {
     ClntObjMgrSetHandlers();
 
     mgr->m_mapID = mapID;
+}
+
+void ClntObjMgrLinkInNewObject(CGObject_C* object) {
+    CHashKeyGUID key(object->GetGUID());
+    s_curMgr->m_objects.Insert(object, object->GetGUID(), key);
+}
+
+CGObject_C* ClntObjMgrObjectPtr(WOWGUID guid, OBJECT_TYPE type, const char* fileName, int32_t lineNumber) {
+    if (!s_curMgr || !guid) {
+        return nullptr;
+    }
+
+    auto object = FindActiveObject(guid);
+
+    if (!object) {
+        return nullptr;
+    }
+
+    if (!(object->GetType() & type)) {
+        return nullptr;
+    }
+
+    return object;
 }
 
 void ClntObjMgrPop() {
@@ -156,7 +215,7 @@ void ClntObjMgrPush(ClntObjMgr* mgr) {
     s_curMgr = mgr;
 }
 
-void ClntObjMgrSetActivePlayer(uint64_t guid) {
+void ClntObjMgrSetActivePlayer(WOWGUID guid) {
     s_curMgr->m_activePlayer = guid;
 }
 

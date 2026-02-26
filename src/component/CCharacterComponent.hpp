@@ -10,6 +10,8 @@
 class CACHEENTRY;
 class CCharacterComponent;
 class CharSectionsRec;
+class CreatureDisplayInfoRec;
+class CreatureModelDataRec;
 class ItemDisplayInfoRec;
 
 struct BlpPalPixel;
@@ -51,6 +53,7 @@ class CCharacterComponent {
         static int32_t AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool sheathed, bool shield, bool a7, int32_t a8);
         static void AddLink(CM2Model* parent, GEOCOMPONENTLINKS link, char const* modelPath, char const* texturePath, int32_t visualID, const ItemDisplayInfoRec* displayRec);
         static CCharacterComponent* AllocComponent();
+        static void ApplyMonsterGeosets(CM2Model* model, const CreatureDisplayInfoRec* displayInfoRec);
         static void ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
         static void ComponentOpenFingers(CM2Model* model, COMP_HAND_SLOT handSlot);
         static HTEXTURE CreateTexture(const char* fileName, CStatus* status);
@@ -68,6 +71,7 @@ class CCharacterComponent {
         static void PasteTransparent4Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs);
         static void PasteTransparent8Bit(void* srcTexture, const BlpPalPixel* srcPal, MipBits* dstMips, const C2iVector& dstPos, uint32_t dstWidth, const C2iVector& srcPos, const C2iVector& srcSize, TCTEXTUREINFO& srcInfo, int32_t srcMipLevel, int32_t dstMipLevelOfs);
         static void RemoveLinkpt(CM2Model* model, GEOCOMPONENTLINKS link);
+        static void ReplaceMonsterSkin(CM2Model* model, const CreatureDisplayInfoRec* displayInfoRec, const CreatureModelDataRec* modelDataRec);
         static void UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels);
 
         // Member variables

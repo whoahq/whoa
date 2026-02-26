@@ -121,6 +121,10 @@ bool ComponentCompressCallback(CVar* var, const char* oldValue, const char* valu
     return true;
 }
 
+void ReplaceParticleColor(CM2Model* model, int32_t particleColorID) {
+    // TODO
+}
+
 int32_t CCharacterComponent::AddHandItem(CM2Model* model, const ItemDisplayInfoRec* displayRec, INVENTORY_SLOTS invSlot, SHEATHE_TYPE sheatheType, bool sheathed, bool shield, bool a7, int32_t visualID) {
     if (!model || !displayRec || invSlot > INVSLOT_TABARD) {
         return -1;
@@ -245,6 +249,26 @@ CCharacterComponent* CCharacterComponent::AllocComponent() {
     component->m_memHandle = memHandle;
 
     return component;
+}
+
+void CCharacterComponent::ApplyMonsterGeosets(CM2Model* model, const CreatureDisplayInfoRec* displayInfoRec) {
+    if (!model || !displayInfoRec || !displayInfoRec->m_creatureGeosetData) {
+        return;
+    }
+
+    for (int32_t group = 100, dataOfs = 0; group < 900; group += 100, dataOfs += 4) {
+        auto section = (displayInfoRec->m_creatureGeosetData >> dataOfs) & 0xF;
+
+        if (section) {
+            // Hide all sections in group
+            model->SetGeometryVisible(group, group + 99, false);
+
+            // Show matching section
+            model->SetGeometryVisible(group + section, group + section, true);
+        }
+    }
+
+    model->OptimizeVisibleGeometry();
 }
 
 void CCharacterComponent::ComponentCloseFingers(CM2Model* model, COMP_HAND_SLOT handSlot) {
@@ -787,6 +811,54 @@ void CCharacterComponent::RemoveLinkpt(CM2Model* model, GEOCOMPONENTLINKS link) 
             model->DetachAllChildrenById(link);
         }
     }
+}
+
+void CCharacterComponent::ReplaceMonsterSkin(CM2Model* model, const CreatureDisplayInfoRec* displayInfoRec, const CreatureModelDataRec* modelDataRec) {
+    if (!model || !displayInfoRec || !modelDataRec) {
+        return;
+    }
+
+    CStatus status;
+    char texturePath[STORM_MAX_PATH];
+
+    // Copy model path to use as base path for texture
+    auto src = modelDataRec->m_modelName;
+    auto dst = texturePath;
+    while (*src) {
+        *dst++ = *src++;
+    }
+    *dst = '\0';
+
+    // Locate start of model file name
+    auto lastSlash = strrchr(texturePath, '\\');
+    auto modelFileName = lastSlash ? lastSlash + 1 : texturePath;
+
+    auto textureFlags = CGxTexFlags(GxTex_LinearMipLinear, 1, 1, 0, 0, 0, 1);
+
+    for (uint32_t i = 0; i < 3; i++) {
+        auto textureName = displayInfoRec->m_textureVariation[i];
+
+        if (textureName[0] == '\0') {
+            continue;
+        }
+
+        // Replace model file name with texture name
+        src = textureName;
+        dst = modelFileName;
+        while (*src) {
+            *dst++ = *src++;
+        }
+        *dst = '\0';
+
+        auto texture = TextureCreate(texturePath, textureFlags, &status, 0);
+
+        if (texture) {
+            model->ReplaceTexture(11 + i, texture);
+            HandleClose(texture);
+        }
+    }
+
+    ReplaceParticleColor(model, displayInfoRec->m_particleColorID);
 }
 
 void CCharacterComponent::UpdateBaseTexture(EGxTexCommand cmd, uint32_t width, uint32_t height, uint32_t depth, uint32_t mipLevel, void* userArg, uint32_t& texelStrideInBytes, const void*& texels) {

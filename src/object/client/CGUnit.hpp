@@ -1,24 +1,25 @@
 #ifndef OBJECT_CLIENT_CG_UNIT_HPP
 #define OBJECT_CLIENT_CG_UNIT_HPP
 
+#include "util/GUID.hpp"
 #include <cstdint>
 
 struct CGUnitData {
-    uint64_t charm;
-    uint64_t summon;
-    uint64_t critter;
-    uint64_t charmedBy;
-    uint64_t summonedBy;
-    uint64_t createdBy;
-    uint64_t target;
-    uint64_t channelObject;
+    WOWGUID charm;
+    WOWGUID summon;
+    WOWGUID critter;
+    WOWGUID charmedBy;
+    WOWGUID summonedBy;
+    WOWGUID createdBy;
+    WOWGUID target;
+    WOWGUID channelObject;
     int32_t channelSpell;
     int32_t pad1;
     int32_t health;
     int32_t power[7];
     int32_t maxHealth;
     int32_t maxPower[7];
-    int32_t powerRegenFlatModifier[7];
+    float powerRegenFlatModifier[7];
     int32_t powerRegenInterruptedFlatModifier[7];
     int32_t level;
     int32_t factionTemplate;
@@ -33,8 +34,8 @@ struct CGUnitData {
     int32_t displayID;
     int32_t nativeDisplayID;
     int32_t mountDisplayID;
-    uint32_t minDamage;
-    uint32_t maxDamage;
+    float minDamage;
+    float maxDamage;
     uint32_t minOffhandDamage;
     uint32_t maxOffhandDamage;
     int32_t pad2;
@@ -43,7 +44,7 @@ struct CGUnitData {
     uint32_t petExperience;
     uint32_t petNextLevelExperience;
     uint32_t dynamicFlags;
-    int32_t modCastingSpeed;
+    float modCastingSpeed;
     int32_t createdBySpell;
     uint32_t npcFlags;
     uint32_t emoteState;
@@ -62,12 +63,12 @@ struct CGUnitData {
     int32_t rangedAttackPower;
     int32_t rangedAttackPowerMods;
     int32_t rangedAttackPowerMultiplier;
-    int32_t minRangedDamage;
-    int32_t maxRangedDamage;
+    float minRangedDamage;
+    float maxRangedDamage;
     int32_t powerCostModifier[7];
     int32_t powerCostMultiplier[7];
     int32_t maxHealthModifier;
-    int32_t hoverHeight;
+    float hoverHeight;
     int32_t pad4;
 };
 
@@ -81,9 +82,17 @@ class CGUnit {
         static uint32_t TotalFields();
         static uint32_t TotalFieldsSaved();
 
-        // Public member variables
+        // Public member functions
+        int32_t GetDisplayID() const;
+        int32_t GetNativeDisplayID() const;
+
+    protected:
+        // Protected member variables
         CGUnitData* m_unit;
         uint32_t* m_unitSaved;
+
+        // Protected member functions
+        CGUnitData* Unit() const;
 };
 
 #endif

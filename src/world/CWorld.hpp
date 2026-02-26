@@ -1,9 +1,13 @@
 #ifndef WORLD_C_WORLD_HPP
 #define WORLD_C_WORLD_HPP
 
+#include "event/Event.hpp"
+#include "world/Types.hpp"
 #include <tempest/Vector.hpp>
 #include <cstdint>
 
+class CM2Model;
+class CM2Scene;
 class Weather;
 
 class CWorld {
@@ -44,14 +48,46 @@ class CWorld {
             Enable_HwPcf = 0x2
         };
 
-        // Static variables
+        // Public static variables
         static uint32_t s_enables;
         static uint32_t s_enables2;
         static Weather* s_weather;
 
-        // Static functions
-        static void Initialize(void);
-        static void LoadMap(const char* mapName, const C3Vector& position, int32_t zoneID);
+        // Public static functions
+        static HWORLDOBJECT AddObject(CM2Model* model, void* handler, void* handlerParam, uint64_t param64, uint32_t param32, uint32_t objFlags);
+        static uint32_t GetCurTimeMs();
+        static float GetCurTimeSec();
+        static float GetFarClip();
+        static uint32_t GetGameTimeFixed();
+        static float GetGameTimeSec();
+        static CM2Scene* GetM2Scene();
+        static float GetNearClip();
+        static uint32_t GetTickTimeFixed();
+        static uint32_t GetTickTimeMs();
+        static float GetTickTimeSec();
+        static void Initialize();
+        static void LoadMap(const char* mapName, const C3Vector& position, int32_t mapID);
+        static int32_t OnTick(const EVENT_DATA_TICK* data, void* param);
+        static void SetFarClip(float farClip);
+        static void SetUpdateTime(float tickTimeSec, uint32_t curTimeMs);
+        static void Update(const C3Vector& cameraPos, const C3Vector& cameraTarget, const C3Vector& targetPos);
+
+    private:
+        // Private static variables
+        static uint32_t s_curTimeMs;
+        static float s_curTimeSec;
+        static float s_farClip;
+        static uint32_t s_gameTimeFixed;
+        static float s_gameTimeSec;
+        static CM2Scene* s_m2Scene;
+        static float s_nearClip;
+        static float s_prevFarClip;
+        static uint32_t s_tickTimeFixed;
+        static uint32_t s_tickTimeMs;
+        static float s_tickTimeSec;
+
+        // Private static functions
+        static uint32_t GetFixedPrecisionTime(float timeSec);
 };
 
 #endif

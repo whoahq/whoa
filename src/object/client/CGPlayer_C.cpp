@@ -1,13 +1,94 @@
 #include "object/client/CGPlayer_C.hpp"
 #include "db/Db.hpp"
 #include "object/Types.hpp"
+#include "object/client/ObjMgr.hpp"
+#include "ui/FrameScript.hpp"
+#include "ui/Game.hpp"
 #include <storm/Error.hpp>
+
+CGPlayer_C* CGPlayer_C::GetActivePtr() {
+    return static_cast<CGPlayer_C*>(
+        ClntObjMgrObjectPtr(ClntObjMgrGetActivePlayer(), TYPE_PLAYER, __FILE__, __LINE__)
+    );
+}
+
+CGPlayer_C::CGPlayer_C(uint32_t time, CClientObjCreate& objCreate) : CGUnit_C(time, objCreate) {
+    // TODO
+}
+
+CGPlayer_C::~CGPlayer_C() {
+    // TODO
+}
+
+uint32_t CGPlayer_C::GetMoney() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->CGPlayer::GetMoney();
+}
+
+uint32_t CGPlayer_C::GetNextLevelXP() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->CGPlayer::GetNextLevelXP();
+}
+
+uint32_t CGPlayer_C::GetXP() const {
+    if (this->GetGUID() != ClntObjMgrGetActivePlayer()) {
+        return 0;
+    }
+
+    return this->CGPlayer::GetXP();
+}
+
+void CGPlayer_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
+    // TODO
+
+    this->CGUnit_C::PostInit(time, init, a4);
+
+    // TODO
+
+    if (this->GetGUID() == ClntObjMgrGetActivePlayer()) {
+        this->PostInitActivePlayer();
+    } else {
+        this->UpdatePartyMemberState();
+    }
+
+    // TODO
+}
+
+void CGPlayer_C::PostInitActivePlayer() {
+    // TODO
+
+    if (ClntObjMgrGetPlayerType() == PLAYER_NORMAL) {
+        // TODO
+
+        FrameScript_SignalEvent(SCRIPT_ACTIONBAR_SLOT_CHANGED, "%d", 0);
+    }
+
+    // TODO
+
+    if (ClntObjMgrGetPlayerType() == PLAYER_NORMAL) {
+        // TODO
+
+        CGGameUI::EnterWorld();
+    }
+
+    // TODO
+}
 
 void CGPlayer_C::SetStorage(uint32_t* storage, uint32_t* saved) {
     this->CGUnit_C::SetStorage(storage, saved);
 
     this->m_player = reinterpret_cast<CGPlayerData*>(&storage[CGPlayer::GetBaseOffset()]);
     this->m_playerSaved = &saved[CGPlayer::GetBaseOffsetSaved()];
+}
+
+void CGPlayer_C::UpdatePartyMemberState() {
+    // TODO
 }
 
 uint32_t Player_C_GetDisplayId(uint32_t race, uint32_t sex) {
