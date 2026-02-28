@@ -12,6 +12,8 @@ class CPassenger {
             , m_position(position)
             , m_facing(0.0f)
             , m_guid(guid) {};
+        float GetFacing() const;
+        float GetFacing(float facing) const;
         C3Vector GetPosition() const;
         C3Vector GetPosition(const C3Vector& position) const;
 

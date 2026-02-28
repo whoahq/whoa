@@ -136,6 +136,10 @@ int32_t CGUnit_C::GetDisplayID() const {
     return this->CGUnit::GetDisplayID();
 }
 
+float CGUnit_C::GetFacing() const {
+    return this->CGUnit::GetFacing();
+}
+
 int32_t CGUnit_C::GetLocalDisplayID() const {
     return this->m_localDisplayID;
 }

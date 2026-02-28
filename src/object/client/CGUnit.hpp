@@ -89,6 +89,7 @@ class CGUnit {
         CGUnit(CMovement_C& move)
             : m_move(&move) {};
         int32_t GetDisplayID() const;
+        float GetFacing() const;
         int32_t GetNativeDisplayID() const;
         C3Vector GetPosition() const;
 

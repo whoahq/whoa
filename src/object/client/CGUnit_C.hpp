@@ -30,6 +30,8 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         // TODO
         virtual C3Vector GetPosition() const;
         // TODO
+        virtual float GetFacing() const;
+        // TODO
         virtual int32_t GetModelFileName(const char*& name) const;
         // TODO
         virtual int32_t CanHighlight();

@@ -30,6 +30,10 @@ int32_t CGUnit::GetDisplayID() const {
     return this->Unit()->displayID;
 }
 
+float CGUnit::GetFacing() const {
+    return this->m_move->GetFacing();
+}
+
 int32_t CGUnit::GetNativeDisplayID() const {
     return this->Unit()->nativeDisplayID;
 }
