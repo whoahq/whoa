@@ -1,5 +1,6 @@
 #include "object/client/CGUnit.hpp"
 #include "object/client/CGObject.hpp"
+#include "object/client/CMovement_C.hpp"
 
 uint32_t CGUnit::GetBaseOffset() {
     return CGObject::TotalFields();
@@ -31,6 +32,10 @@ int32_t CGUnit::GetDisplayID() const {
 
 int32_t CGUnit::GetNativeDisplayID() const {
     return this->Unit()->nativeDisplayID;
+}
+
+C3Vector CGUnit::GetPosition() const {
+    return this->m_move->GetPosition();
 }
 
 CGUnitData* CGUnit::Unit() const {

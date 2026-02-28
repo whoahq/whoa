@@ -175,6 +175,10 @@ int32_t CGUnit_C::GetModelFileName(const char*& name) const {
     return modelDataRec->m_modelName ? true : false;
 }
 
+C3Vector CGUnit_C::GetPosition() const {
+    return this->CGUnit::GetPosition();
+}
+
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
 

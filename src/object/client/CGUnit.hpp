@@ -2,6 +2,7 @@
 #define OBJECT_CLIENT_CG_UNIT_HPP
 
 #include "util/GUID.hpp"
+#include <tempest/Vector.hpp>
 #include <cstdint>
 
 class CMovement_C;
@@ -89,6 +90,7 @@ class CGUnit {
             : m_move(&move) {};
         int32_t GetDisplayID() const;
         int32_t GetNativeDisplayID() const;
+        C3Vector GetPosition() const;
 
     protected:
         // Protected member variables

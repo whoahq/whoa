@@ -28,6 +28,8 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         // Virtual public member functions
         virtual ~CGUnit_C();
         // TODO
+        virtual C3Vector GetPosition() const;
+        // TODO
         virtual int32_t GetModelFileName(const char*& name) const;
         // TODO
         virtual int32_t CanHighlight();
