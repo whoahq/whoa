@@ -98,7 +98,8 @@ const char* CGUnit_C::GetDisplayRaceNameFromRecord(const ChrRacesRec* raceRec, U
 
 CGUnit_C::CGUnit_C(uint32_t time, CClientObjCreate& objCreate)
     : CGObject_C(time, objCreate)
-    , m_localMovement(objCreate.move.status.position28, objCreate.move.status.facing34, this->GetGUID(), this)
+    , CGUnit(this->m_localMove)
+    , m_localMove(objCreate.move.status.position28, objCreate.move.status.facing34, this->GetGUID(), this)
 {
     // TODO
 

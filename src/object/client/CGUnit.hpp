@@ -4,6 +4,8 @@
 #include "util/GUID.hpp"
 #include <cstdint>
 
+class CMovement_C;
+
 struct CGUnitData {
     WOWGUID charm;
     WOWGUID summon;
@@ -83,6 +85,8 @@ class CGUnit {
         static uint32_t TotalFieldsSaved();
 
         // Public member functions
+        CGUnit(CMovement_C& move)
+            : m_move(&move) {};
         int32_t GetDisplayID() const;
         int32_t GetNativeDisplayID() const;
 
@@ -90,6 +94,7 @@ class CGUnit {
         // Protected member variables
         CGUnitData* m_unit;
         uint32_t* m_unitSaved;
+        CMovement_C* m_move;
 
         // Protected member functions
         CGUnitData* Unit() const;
