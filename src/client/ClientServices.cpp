@@ -317,7 +317,7 @@ void ClientServices::InitLoginServerCVars(int32_t force, const char* locale) {
             "realmList",
             "Address of realm list server",
             0x0,
-            "us.logon.worldofwarcraft.com:3724",
+            "logon.chromiecraft.com:3724",
             nullptr,
             NET,
             false,
