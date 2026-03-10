@@ -32,3 +32,7 @@ C3Vector CPassenger::GetPosition(const C3Vector& position) const {
 
     return position;
 }
+
+WOWGUID CPassenger::GetTransportGUID() const {
+    return this->m_transportGUID;
+}

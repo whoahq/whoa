@@ -1,10 +1,12 @@
 #include "ui/game/CGCamera.hpp"
-#include "ui/game/Types.hpp"
 #include "console/CVar.hpp"
+#include "object/Client.hpp"
+#include "object/client/CVehicleCamera_C.hpp"
+#include "ui/game/Types.hpp"
 #include "world/World.hpp"
+#include <algorithm>
 #include <storm/String.hpp>
 #include <tempest/Math.hpp>
-#include <algorithm>
 
 static CVar* s_cameraView;
 
@@ -75,8 +77,23 @@ int32_t CGCamera::HasModel() const {
 }
 
 C33Matrix CGCamera::ParentToWorld() const {
-    // TODO
-    return {};
+    auto relativeTo = ClntObjMgrObjectPtr(this->m_relativeTo, TYPE_OBJECT, __FILE__, __LINE__);
+
+    if (!relativeTo) {
+        return {};
+    }
+
+    float facing;
+
+    if (relativeTo->IsA(TYPE_UNIT)) {
+        facing = static_cast<CGUnit_C*>(relativeTo)->GetRawSmoothFacing();
+        auto transport = ClntObjMgrObjectPtr(relativeTo->GetTransportGUID(), TYPE_OBJECT, __FILE__, __LINE__);
+        CVehicleCamera_C::ConvertSmoothFacingFromRawToWorld(facing, transport);
+    } else {
+        facing = relativeTo->GetFacing();
+    }
+
+    return C33Matrix::RotationAroundZ(facing);
 }
 
 C3Vector CGCamera::Right() const {

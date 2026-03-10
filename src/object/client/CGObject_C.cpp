@@ -111,6 +111,10 @@ C3Vector CGObject_C::GetPosition() const {
     return { 0.0f, 0.0f, 0.0f };
 }
 
+WOWGUID CGObject_C::GetTransportGUID() const {
+    return 0;
+}
+
 int32_t CGObject_C::IsInReenable() {
     return this->m_inReenable;
 }

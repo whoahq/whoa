@@ -183,6 +183,14 @@ C3Vector CGUnit_C::GetPosition() const {
     return this->CGUnit::GetPosition();
 }
 
+float CGUnit_C::GetRawSmoothFacing() const {
+    return this->m_smoothFacing;
+}
+
+WOWGUID CGUnit_C::GetTransportGUID() const {
+    return this->m_localMove.GetTransportGUID();
+}
+
 void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
     // TODO
 

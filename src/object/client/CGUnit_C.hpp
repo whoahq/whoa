@@ -32,6 +32,8 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         // TODO
         virtual float GetFacing() const;
         // TODO
+        virtual WOWGUID GetTransportGUID() const;
+        // TODO
         virtual int32_t GetModelFileName(const char*& name) const;
         // TODO
         virtual int32_t CanHighlight();
@@ -42,6 +44,7 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         CGUnit_C(uint32_t time, CClientObjCreate& objCreate);
         int32_t GetDisplayID() const;
         CreatureModelDataRec* GetModelData() const;
+        float GetRawSmoothFacing() const;
         void PostInit(uint32_t time, const CClientObjCreate& init, bool a4);
         void PostMovementUpdate(const CClientMoveUpdate& move, int32_t activeMover);
         void SetStorage(uint32_t* storage, uint32_t* saved);
@@ -64,6 +67,8 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         UnitBloodLevelsRec* m_bloodRec = nullptr;
         // TODO
         int32_t m_localDisplayID = 0;
+        // TODO
+        float m_smoothFacing;
         // TODO
 };
 
