@@ -42,6 +42,10 @@ C3Vector CGUnit::GetPosition() const {
     return this->m_move->GetPosition();
 }
 
+float CGUnit::GetRawFacing() const {
+    return this->m_move->GetRawFacing();
+}
+
 CGUnitData* CGUnit::Unit() const {
     return this->m_unit;
 }

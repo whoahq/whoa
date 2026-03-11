@@ -33,6 +33,10 @@ C3Vector CPassenger::GetPosition(const C3Vector& position) const {
     return position;
 }
 
+float CPassenger::GetRawFacing() const {
+    return this->m_facing;
+}
+
 WOWGUID CPassenger::GetTransportGUID() const {
     return this->m_transportGUID;
 }

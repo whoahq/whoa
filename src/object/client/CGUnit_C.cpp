@@ -183,6 +183,10 @@ C3Vector CGUnit_C::GetPosition() const {
     return this->CGUnit::GetPosition();
 }
 
+float CGUnit_C::GetRawFacing() const {
+    return this->CGUnit::GetRawFacing();
+}
+
 float CGUnit_C::GetRawSmoothFacing() const {
     return this->m_smoothFacing;
 }

@@ -111,6 +111,10 @@ C3Vector CGObject_C::GetPosition() const {
     return { 0.0f, 0.0f, 0.0f };
 }
 
+float CGObject_C::GetRawFacing() const {
+    return this->GetFacing();
+}
+
 WOWGUID CGObject_C::GetTransportGUID() const {
     return 0;
 }

@@ -16,6 +16,7 @@ class CPassenger {
         float GetFacing(float facing) const;
         C3Vector GetPosition() const;
         C3Vector GetPosition(const C3Vector& position) const;
+        float GetRawFacing() const;
         WOWGUID GetTransportGUID() const;
 
     protected:

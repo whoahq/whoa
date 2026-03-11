@@ -31,6 +31,7 @@ class CGUnit_C : public CGObject_C, public CGUnit {
         virtual C3Vector GetPosition() const;
         // TODO
         virtual float GetFacing() const;
+        virtual float GetRawFacing() const;
         // TODO
         virtual WOWGUID GetTransportGUID() const;
         // TODO

@@ -39,6 +39,7 @@ class CGObject_C : public CGObject, public TSHashObject<CGObject_C, CHashKeyGUID
         virtual C3Vector GetPosition() const;
         // TODO
         virtual float GetFacing() const;
+        virtual float GetRawFacing() const;
         // TODO
         virtual WOWGUID GetTransportGUID() const;
         // TODO

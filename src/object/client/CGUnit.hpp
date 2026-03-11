@@ -92,6 +92,7 @@ class CGUnit {
         float GetFacing() const;
         int32_t GetNativeDisplayID() const;
         C3Vector GetPosition() const;
+        float GetRawFacing() const;
 
     protected:
         // Protected member variables
