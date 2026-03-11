@@ -1214,4 +1214,17 @@ struct CHARACTER_INFO {
     uint8_t firstLogin;
 };
 
+struct CHARACTER_CREATE_INFO {
+    char name[48];
+    uint8_t raceID;
+    uint8_t classID;
+    uint8_t sexID;
+    uint8_t skinID;
+    uint8_t faceID;
+    uint8_t hairStyleID;
+    uint8_t hairColorID;
+    uint8_t facialHairStyleID;
+    uint8_t outfitID;
+};
+
 #endif
