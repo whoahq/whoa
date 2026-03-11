@@ -1,10 +1,11 @@
 #include "object/client/CGUnit_C.hpp"
 #include "component/CCharacterComponent.hpp"
+#include "db/Db.hpp"
 #include "model/Model2.hpp"
 #include "object/client/ObjMgr.hpp"
-#include "db/Db.hpp"
 #include "ui/Game.hpp"
 #include <storm/Error.hpp>
+#include <tempest/Math.hpp>
 
 WOWGUID CGUnit_C::s_activeMover;
 
@@ -210,6 +211,10 @@ void CGUnit_C::PostInit(uint32_t time, const CClientObjCreate& init, bool a4) {
             this->m_model->m_flag4 = (this->m_modelData->m_flags & 0x200) ? true : false;
         }
     }
+
+    // TODO
+
+    this->m_smoothFacing = CMath::normalizeangle0to2pi(this->GetRawFacing());
 
     // TODO
 }
