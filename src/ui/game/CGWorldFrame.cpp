@@ -98,6 +98,10 @@ void CGWorldFrame::OnWorldUpdate() {
 
     // TODO
 
+    CGCamera::UpdateCallback(nullptr, this->m_camera);
+
+    // TODO
+
     this->m_camera->SetupWorldProjection(this->m_screenRect);
 
     // TODO
