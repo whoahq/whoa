@@ -77,6 +77,7 @@ class CGxDevice {
 #endif
 #if defined(WHOA_SYSTEM_MAC)
         static CGxDevice* NewGLL();
+        static CGxDevice* NewMTL();
 #endif
         static CGxDevice* NewOpenGl();
         static void OpenGlAdapterFormats(TSGrowableArray<CGxFormat>& adapterFormats);
