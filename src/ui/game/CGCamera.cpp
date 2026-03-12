@@ -1,4 +1,5 @@
 #include "ui/game/CGCamera.hpp"
+#include "common/Time.hpp"
 #include "console/CVar.hpp"
 #include "object/Client.hpp"
 #include "object/client/CVehicleCamera_C.hpp"
@@ -39,10 +40,56 @@ bool ValidateCameraView(CVar* var, const char* oldValue, const char* value, void
 
 }
 
+int32_t CGCamera::UpdateCallback(const void*, void* param) {
+    auto camera = static_cast<CGCamera*>(param);
+
+    if (!camera) {
+        return true;
+    }
+
+    auto timestamp = OsGetAsyncTimeMsPrecise();
+
+    camera->m_nearZ = CWorld::GetNearClip();
+    camera->m_farZ = CWorld::GetFarClip();
+
+    // Model camera
+
+    if (camera->HasModel()) {
+        camera->CalcModelCamera(timestamp);
+        camera->CheckUnderwater();
+
+        return true;
+    }
+
+    // Target camera
+
+    auto target = ClntObjMgrObjectPtr(camera->m_target, TYPE_OBJECT, __FILE__, __LINE__);
+
+    if (target) {
+        camera->CalcTargetCamera(target, timestamp);
+        camera->CheckUnderwater();
+
+        return true;
+    }
+
+    // Unknown camera
+
+    auto object90 = ClntObjMgrObjectPtr(camera->guid90, TYPE_OBJECT, __FILE__, __LINE__);
+
+    if (object90) {
+        // TODO
+
+        return true;
+    }
+
+    return true;
+}
+
 CGCamera::CGCamera() : CSimpleCamera(CWorld::GetNearClip(), CWorld::GetFarClip(), 90.0f * CMath::DEG2RAD) {
     this->m_model = nullptr;
 
     this->m_target = 0;
+    this->guid90 = 0;
     this->m_relativeTo = 0;
 
     this->m_view = s_cameraView->GetInt();
@@ -53,6 +100,18 @@ CGCamera::CGCamera() : CSimpleCamera(CWorld::GetNearClip(), CWorld::GetFarClip()
     this->m_roll = 0.0f;
 
     this->m_fovOffset = 0.0f;
+}
+
+void CGCamera::CalcModelCamera(uint32_t timestamp) {
+    // TODO
+}
+
+void CGCamera::CalcTargetCamera(CGObject_C* target, uint32_t timestamp) {
+    // TODO
+}
+
+void CGCamera::CheckUnderwater() {
+    // TODO
 }
 
 float CGCamera::FOV() const {

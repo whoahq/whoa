@@ -4,6 +4,7 @@
 #include "ui/simple/CSimpleCamera.hpp"
 #include "util/GUID.hpp"
 
+class CGObject_C;
 class CM2Model;
 
 class CGCamera : public CSimpleCamera {
@@ -18,6 +19,9 @@ class CGCamera : public CSimpleCamera {
         // Public static variables
         static CameraViewData s_cameraViewDataDefault[];
 
+        // Public static functions
+        static int32_t UpdateCallback(const void*, void* param);
+
         // Virtual public member functions
         virtual ~CGCamera() = default;
         virtual float FOV() const;
@@ -27,6 +31,9 @@ class CGCamera : public CSimpleCamera {
 
         // Public member functions
         CGCamera();
+        void CalcModelCamera(uint32_t timestamp);
+        void CalcTargetCamera(CGObject_C* target, uint32_t timestamp);
+        void CheckUnderwater();
         const WOWGUID& GetTarget() const;
         int32_t HasModel() const;
         C33Matrix ParentToWorld() const;
@@ -38,6 +45,7 @@ class CGCamera : public CSimpleCamera {
         CM2Model* m_model;
         // TODO
         WOWGUID m_target;
+        WOWGUID guid90;
         // TODO
         WOWGUID m_relativeTo;
         // TODO
