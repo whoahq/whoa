@@ -24,6 +24,13 @@ if(WHOA_SYSTEM_LINUX)
     list(APPEND PRIVATE_SOURCES ${LINUX_SOURCES})
 endif()
 
+if(WHOA_SYSTEM_WEB)
+    file(GLOB WEB_SOURCES
+        "gui/web/*.cpp"
+    )
+    list(APPEND PRIVATE_SOURCES ${WEB_SOURCES})
+endif()
+
 add_library(client STATIC
     ${PRIVATE_SOURCES}
 )

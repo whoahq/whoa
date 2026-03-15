@@ -16,6 +16,10 @@
 #include <winsock2.h>
 #endif
 
+#if defined(WHOA_SYSTEM_WEB)
+struct sockaddr_in;
+#endif
+
 class CDataStore;
 class WowConnectionNet;
 class WowConnectionResponse;

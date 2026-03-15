@@ -8,6 +8,9 @@ class WowConnection;
 
 class WowConnectionResponse {
     public:
+        // Virtual destructor
+        virtual ~WowConnectionResponse() = default;
+
         // Virtual member functions
         virtual void WCMessageReady(WowConnection* conn, uint32_t timeStamp, CDataStore* msg) = 0;
         virtual void WCConnected(WowConnection* conn, WowConnection* inbound, uint32_t timeStamp, const NETCONNADDR* addr) = 0;
