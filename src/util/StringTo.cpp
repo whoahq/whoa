@@ -112,12 +112,12 @@ bool StringToBOOL(lua_State* L, int32_t idx, int32_t def) {
 }
 
 int32_t StringToDrawLayer(const char* string, int32_t& layer) {
-    struct drawlayer {
+    struct LayerEntry {
         int32_t layer;
         const char* string;
     };
 
-    static drawlayer array_drawlayer[5] = {
+    static LayerEntry layerMap[] = {
         { 0, "BACKGROUND" },
         { 1, "BORDER" },
         { 2, "ARTWORK" },
@@ -125,9 +125,9 @@ int32_t StringToDrawLayer(const char* string, int32_t& layer) {
         { 4, "HIGHLIGHT" }
     };
 
-    for (int32_t i = 0; i < 5; i++) {
-        if (!SStrCmpI(array_drawlayer[i].string, string, 0x7FFFFFFFu)) {
-            layer = array_drawlayer[i].layer;
+    for (const auto& entry : layerMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            layer = entry.layer;
             return 1;
         }
     }
