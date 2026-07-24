@@ -141,7 +141,7 @@ int32_t StringToJustify(const char* string, uint32_t& justify) {
         const char* string;
     };
 
-    static JustifyEntry justifyMap[6] = {
+    static JustifyEntry justifyMap[] = {
         { 0x1,  "LEFT" },
         { 0x2,  "CENTER" },
         { 0x4,  "RIGHT" },
@@ -150,9 +150,9 @@ int32_t StringToJustify(const char* string, uint32_t& justify) {
         { 0x20, "BOTTOM" }
     };
 
-    for (int32_t i = 0; i < 5; i++) {
-        if (!SStrCmpI(justifyMap[i].string, string, 0x7FFFFFFFu)) {
-            justify = justifyMap[i].value;
+    for (const auto& entry : justifyMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            justify = entry.value;
             return 1;
         }
     }
