@@ -52,6 +52,31 @@ if(WHOA_SYSTEM_LINUX)
     )
 endif()
 
+if(WHOA_SYSTEM_WEB)
+    file(GLOB PRIVATE_SOURCES "web/*.cpp")
+
+    add_executable(Whoa ${PRIVATE_SOURCES})
+
+    target_link_libraries(Whoa
+        PRIVATE
+            client
+            event
+            gx
+            net
+            util
+    )
+
+    set_target_properties(Whoa PROPERTIES SUFFIX ".html")
+
+    target_link_options(Whoa PRIVATE
+        "SHELL:--shell-file ${CMAKE_CURRENT_SOURCE_DIR}/web/shell.html"
+        -sASYNCIFY
+        -sASYNCIFY_STACK_SIZE=524288
+        -sALLOW_MEMORY_GROWTH
+        "-sASYNCIFY_IMPORTS=['__syscall_openat','__syscall_stat64','__syscall_lstat64','__syscall_fstat64']"
+    )
+endif()
+
 target_include_directories(Whoa
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src

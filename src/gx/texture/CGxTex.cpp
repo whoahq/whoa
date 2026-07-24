@@ -1,6 +1,7 @@
 #include "gx/texture/CGxTex.hpp"
 #include "gx/Gx.hpp"
 #include <algorithm>
+#include <cstring>
 
 CGxTexFlags::CGxTexFlags(EGxTexFilter filter, uint32_t wrapU, uint32_t wrapV, uint32_t force, uint32_t generateMipMaps, uint32_t renderTarget, uint32_t maxAnisotropy) {
     this->m_filter = filter;
@@ -46,6 +47,13 @@ CGxTex::CGxTex(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t de
     this->m_needsUpdate = 1;
     this->m_needsFlagUpdate = 1;
     this->m_needsCreation = 1;
+
+    if (name && name[0]) {
+        std::strncpy(this->m_name, name, sizeof(this->m_name) - 1);
+        this->m_name[sizeof(this->m_name) - 1] = '\0';
+    } else {
+        this->m_name[0] = '\0';
+    }
 
     // TODO remaining constructor logic
 }

@@ -193,3 +193,11 @@ void EventUnregisterEx(EVENTID id, EVENTHANDLERFUNC handler, void* param, uint32
         }
     }
 }
+
+#if defined(WHOA_SYSTEM_WEB)
+void EventProcessFrame() {
+    // Process one frame of the scheduler
+    // This is the non-blocking version of EventDoMessageLoop for web
+    SchedulerMainProcess();
+}
+#endif

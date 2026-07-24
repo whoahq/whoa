@@ -20,6 +20,17 @@ if(WHOA_SYSTEM_MAC OR WHOA_SYSTEM_LINUX)
     list(APPEND PRIVATE_SOURCES ${BSD_SOURCES})
 endif()
 
+if(WHOA_SYSTEM_WEB)
+    list(REMOVE_ITEM PRIVATE_SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/connection/WowConnection.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/connection/WowConnectionNet.cpp
+    )
+    file(GLOB WEB_SOURCES
+        "connection/web/*.cpp"
+    )
+    list(APPEND PRIVATE_SOURCES ${WEB_SOURCES})
+endif()
+
 add_library(net STATIC
     ${PRIVATE_SOURCES}
 )
@@ -44,5 +55,12 @@ if(WHOA_SYSTEM_WIN)
         PUBLIC
             ws2_32
             wsock32
+    )
+endif()
+
+if(WHOA_SYSTEM_WEB)
+    target_link_options(net
+        PUBLIC
+            -lwebsocket.js
     )
 endif()

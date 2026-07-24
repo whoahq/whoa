@@ -7,6 +7,8 @@
 #include <storm/Error.hpp>
 #include <storm/Memory.hpp>
 #include <algorithm>
+#include <cstdarg>
+#include <cstdio>
 #include <cstring>
 #include <limits>
 #include <new>
@@ -179,7 +181,16 @@ int32_t CGxDevice::GLLAdapterMonitorModes(TSGrowableArray<CGxMonitorMode>& monit
 #endif
 
 void CGxDevice::Log(const char* format, ...) {
-    // TODO
+    va_list args;
+    va_start(args, format);
+    char buffer[1024];
+    vsnprintf(buffer, sizeof(buffer), format, args);
+    va_end(args);
+#if defined(__EMSCRIPTEN__)
+    printf("[GxDevice] %s\n", buffer);
+#else
+    fprintf(stderr, "[GxDevice] %s\n", buffer);
+#endif
 }
 
 void CGxDevice::Log(const CGxFormat& format) {
