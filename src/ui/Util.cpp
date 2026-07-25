@@ -1,6 +1,5 @@
 #include "ui/Util.hpp"
 #include "util/Lua.hpp"
-#include <type_traits>
 #include <storm/String.hpp>
 
 const char* LanguageProcess(const char* string) {
@@ -10,30 +9,30 @@ const char* LanguageProcess(const char* string) {
 
 int32_t StringToBlendMode(const char* string, EGxBlend& blend) {
     struct BlendEntry {
-        EGxBlend value;
         const char* string;
+        EGxBlend value;
     };
 
     static BlendEntry blendMap[] = {
-        { GxBlend_Opaque,   "DISABLE" },
-        { GxBlend_Alpha,    "BLEND" },
-        { GxBlend_AlphaKey, "ALPHAKEY" },
-        { GxBlend_Add,      "ADD" },
-        { GxBlend_Mod,      "MOD" }
+        { "DISABLE",    GxBlend_Opaque },
+        { "BLEND",      GxBlend_Alpha },
+        { "ALPHAKEY",   GxBlend_AlphaKey },
+        { "ADD",        GxBlend_Add },
+        { "MOD",        GxBlend_Mod },
     };
 
-    for (int32_t i = 0; i < std::extent<decltype(blendMap)>::value; i++) {
-        if (!SStrCmpI(blendMap[i].string, string, 0x7FFFFFFFu)) {
-            blend = blendMap[i].value;
-            return 1;
+    for (const auto& entry : blendMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            blend = entry.value;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t StringToBOOL(const char* string) {
-    return StringToBOOL(string, 0);
+    return StringToBOOL(string, false);
 }
 
 bool StringToBOOL(const char* string, int32_t def) {
@@ -65,11 +64,11 @@ bool StringToBOOL(const char* string, int32_t def) {
             return true;
 
         default:
-            if (!SStrCmpI(string, "off", 0x7FFFFFFFu) || !SStrCmpI(string, "disabled", 0x7FFFFFFFu)) {
+            if (!SStrCmpI(string, "off") || !SStrCmpI(string, "disabled")) {
                 return false;
             }
 
-            if (!SStrCmpI(string, "on", 0x7FFFFFFFu) || !SStrCmpI(string, "enabled", 0x7FFFFFFFu)) {
+            if (!SStrCmpI(string, "on") || !SStrCmpI(string, "enabled")) {
                 return true;
             }
 
@@ -78,33 +77,22 @@ bool StringToBOOL(const char* string, int32_t def) {
 }
 
 bool StringToBOOL(lua_State* L, int32_t idx, int32_t def) {
-    bool result;
-    const char* str;
-
     switch (lua_type(L, idx)) {
         case LUA_TNIL:
-            result = false;
-            break;
+            return false;
 
         case LUA_TBOOLEAN:
-            result = lua_toboolean(L, idx);
-            break;
+            return lua_toboolean(L, idx);
 
         case LUA_TNUMBER:
-            result = lua_tonumber(L, idx) != 0;
-            break;
+            return lua_tonumber(L, idx) != 0;
 
         case LUA_TSTRING:
-            str = lua_tostring(L, idx);
-            result = StringToBOOL(str, def);
-            break;
+            return StringToBOOL(lua_tostring(L, idx), def);
 
         default:
-            result = def;
-            break;
+            return def;
     }
-
-    return result;
 }
 
 uint64_t StringToClickAction(const char* string) {
@@ -112,27 +100,27 @@ uint64_t StringToClickAction(const char* string) {
         return 0;
     }
 
-    if (!SStrCmpI(string, "LeftButtonDown", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "LeftButtonDown")) {
         return 1;
     }
 
-    if (!SStrCmpI(string, "LeftButtonUp", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "LeftButtonUp")) {
         return 0x80000000;
     }
 
-    if (!SStrCmpI(string, "MiddleButtonDown", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "MiddleButtonDown")) {
         return 2;
     }
 
-    if (!SStrCmpI(string, "MiddleButtonUp", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "MiddleButtonUp")) {
         return 0;
     }
 
-    if (!SStrCmpI(string, "RightButtonDown", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "RightButtonDown")) {
         return 4;
     }
 
-    if (!SStrCmpI(string, "RightButtonUp", STORM_MAX_STR)) {
+    if (!SStrCmpI(string, "RightButtonUp")) {
         return 0;
     }
 
@@ -143,126 +131,126 @@ uint64_t StringToClickAction(const char* string) {
 
 int32_t StringToDrawLayer(const char* string, int32_t& layer) {
     struct LayerEntry {
-        int32_t layer;
         const char* string;
+        int32_t layer;
     };
 
     static LayerEntry layerMap[] = {
-        { 0, "BACKGROUND" },
-        { 1, "BORDER" },
-        { 2, "ARTWORK" },
-        { 3, "OVERLAY" },
-        { 4, "HIGHLIGHT" }
+        { "BACKGROUND", DRAWLAYER_BACKGROUND },
+        { "BORDER",     DRAWLAYER_BACKGROUND_BORDER },
+        { "ARTWORK",    DRAWLAYER_ARTWORK },
+        { "OVERLAY",    DRAWLAYER_ARTWORK_OVERLAY },
+        { "HIGHLIGHT",  DRAWLAYER_HIGHLIGHT },
     };
 
     for (const auto& entry : layerMap) {
-        if (!SStrCmpI(entry.string, string)) {
+        if (!SStrCmpI(string, entry.string)) {
             layer = entry.layer;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t StringToFramePoint(const char* string, FRAMEPOINT& point) {
     struct FramePointEntry {
-        FRAMEPOINT value;
         const char* string;
+        FRAMEPOINT value;
     };
 
     static FramePointEntry framePointMap[] = {
-        { FRAMEPOINT_BOTTOM,        "BOTTOM" },
-        { FRAMEPOINT_BOTTOMLEFT,    "BOTTOMLEFT" },
-        { FRAMEPOINT_BOTTOMRIGHT,   "BOTTOMRIGHT" },
-        { FRAMEPOINT_CENTER,        "CENTER" },
-        { FRAMEPOINT_TOP,           "TOP" },
-        { FRAMEPOINT_TOPRIGHT,      "TOPRIGHT" },
-        { FRAMEPOINT_TOPLEFT,       "TOPLEFT" },
-        { FRAMEPOINT_LEFT,          "LEFT" },
-        { FRAMEPOINT_RIGHT,         "RIGHT" }
+        { "BOTTOM",         FRAMEPOINT_BOTTOM },
+        { "BOTTOMLEFT",     FRAMEPOINT_BOTTOMLEFT },
+        { "BOTTOMRIGHT",    FRAMEPOINT_BOTTOMRIGHT },
+        { "CENTER",         FRAMEPOINT_CENTER },
+        { "TOP",            FRAMEPOINT_TOP },
+        { "TOPRIGHT",       FRAMEPOINT_TOPRIGHT },
+        { "TOPLEFT",        FRAMEPOINT_TOPLEFT },
+        { "LEFT",           FRAMEPOINT_LEFT },
+        { "RIGHT",          FRAMEPOINT_RIGHT },
     };
 
-    for (int32_t i = 0; i < std::extent<decltype(framePointMap)>::value; i++) {
-        if (!SStrCmpI(framePointMap[i].string, string, 0x7FFFFFFFu)) {
-            point = framePointMap[i].value;
-            return 1;
+    for (const auto& entry : framePointMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            point = entry.value;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t StringToFrameStrata(const char* string, FRAME_STRATA& strata) {
     struct FrameStrataEntry {
-        FRAME_STRATA value;
         const char* string;
+        FRAME_STRATA value;
     };
 
     // FRAME_STRATA_WORLD is hardcoded
     static FrameStrataEntry frameStrataMap[] = {
-        { FRAME_STRATA_BACKGROUND,      "BACKGROUND" },
-        { FRAME_STRATA_LOW,             "LOW" },
-        { FRAME_STRATA_MEDIUM,          "MEDIUM" },
-        { FRAME_STRATA_HIGH,            "HIGH" },
-        { FRAME_STRATA_DIALOG,          "DIALOG" },
-        { FRAME_STRATA_FULLSCREEN,      "FULLSCREEN" },
-        { FRAME_STRATA_FULLSCREEN_DIALOG, "FULLSCREEN_DIALOG" },
-        { FRAME_STRATA_TOOLTIP,         "TOOLTIP" }
+        { "BACKGROUND",         FRAME_STRATA_BACKGROUND },
+        { "LOW",                FRAME_STRATA_LOW },
+        { "MEDIUM",             FRAME_STRATA_MEDIUM },
+        { "HIGH",               FRAME_STRATA_HIGH },
+        { "DIALOG",             FRAME_STRATA_DIALOG },
+        { "FULLSCREEN",         FRAME_STRATA_FULLSCREEN },
+        { "FULLSCREEN_DIALOG",  FRAME_STRATA_FULLSCREEN_DIALOG },
+        { "TOOLTIP",            FRAME_STRATA_TOOLTIP },
     };
 
-    for (int32_t i = 0; i < std::extent<decltype(frameStrataMap)>::value; i++) {
-        if (!SStrCmpI(frameStrataMap[i].string, string, 0x7FFFFFFFu)) {
-            strata = frameStrataMap[i].value;
-            return 1;
+    for (const auto& entry : frameStrataMap) {
+        if (!SStrCmpI(entry.string, string)) {
+            strata = entry.value;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t StringToJustify(const char* string, uint32_t& justify) {
     struct JustifyEntry {
-        uint32_t value;
         const char* string;
+        uint32_t value;
     };
 
     static JustifyEntry justifyMap[] = {
-        { 0x1,  "LEFT" },
-        { 0x2,  "CENTER" },
-        { 0x4,  "RIGHT" },
-        { 0x8,  "TOP" },
-        { 0x10, "MIDDLE" },
-        { 0x20, "BOTTOM" }
+        { "LEFT",   0x1 },
+        { "CENTER", 0x2 },
+        { "RIGHT",  0x4 },
+        { "TOP",    0x8 },
+        { "MIDDLE", 0x10 },
+        { "BOTTOM", 0x20 },
     };
 
     for (const auto& entry : justifyMap) {
         if (!SStrCmpI(entry.string, string)) {
             justify = entry.value;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
 
 int32_t StringToOrientation(const char* string, ORIENTATION& orientation) {
     struct OrientationEntry {
-        ORIENTATION value;
         const char* string;
+        ORIENTATION value;
     };
 
     static OrientationEntry orientationMap[] = {
-        { ORIENTATION_HORIZONTAL,   "HORIZONTAL"    },
-        { ORIENTATION_VERTICAL,     "VERTICAL"      },
+        { "HORIZONTAL", ORIENTATION_HORIZONTAL },
+        { "VERTICAL",   ORIENTATION_VERTICAL },
     };
 
-    for (auto& entry : orientationMap) {
+    for (const auto& entry : orientationMap) {
         if (!SStrCmpI(entry.string, string)) {
             orientation = entry.value;
-            return 1;
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
