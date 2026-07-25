@@ -1,7 +1,9 @@
 #include "app/mac/View.h"
 #include "app/mac/EngineGLLayerView.h"
+#include "app/mac/EngineMTLLayerView.h"
 #include "app/mac/WindowCallbacks.h"
 #include "gx/gll/GLWindow.h"
+#include "gx/Device.hpp"
 
 GLWindowCallbacks EngineViewCallbacks = {
     &MacOnResized,
@@ -23,5 +25,9 @@ void AssignEngineViewCallbacks(GLWindowCallbacks* callbacks) {
 }
 
 Class GetEngineViewClass() {
+    if (GxDevApi() == GxApi_Metal) {
+        return [EngineMTLLayerView class];
+    }
+
     return [EngineGLLayerView class];
 }

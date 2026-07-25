@@ -18,6 +18,7 @@
 
 #if defined(WHOA_SYSTEM_MAC)
     #include "gx/gll/CGxDeviceGLL.hpp"
+    #include "gx/mtl/CGxDeviceMTL.hpp"
     #include "gx/mac/Display.hpp"
     #include <ApplicationServices/ApplicationServices.h>
     #include <OpenGL/OpenGL.h>
@@ -117,6 +118,8 @@ int32_t CGxDevice::AdapterFormats(EGxApi api, TSGrowableArray<CGxFormat>& adapte
         CGxDevice::OpenGlAdapterFormats(adapterFormats);
     } else if (api == GxApi_GLL) {
         CGxDevice::GLLAdapterFormats(adapterFormats);
+    } else if (api == GxApi_Metal) {
+        CGxDevice::OpenGlAdapterFormats(adapterFormats);
     }
 
 #elif defined(WHOA_SYSTEM_LINUX)
@@ -227,6 +230,11 @@ CGxDevice* CGxDevice::NewD3d9Ex() {
 CGxDevice* CGxDevice::NewGLL() {
     auto m = SMemAlloc(sizeof(CGxDeviceGLL), __FILE__, __LINE__, 0x0);
     return new (m) CGxDeviceGLL();
+}
+
+CGxDevice* CGxDevice::NewMTL() {
+    auto m = SMemAlloc(sizeof(CGxDeviceMTL), __FILE__, __LINE__, 0x0);
+    return new (m) CGxDeviceMTL();
 }
 #endif
 
