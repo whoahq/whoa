@@ -4,9 +4,9 @@
 #include "ui/FrameXML.hpp"
 #include "ui/LoadXML.hpp"
 #include "ui/Types.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFontScript.hpp"
 #include "util/CStatus.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <storm/String.hpp>
 

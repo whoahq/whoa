@@ -1,10 +1,10 @@
 #include "ui/simple/CSimpleSlider.hpp"
 #include "math/Utils.hpp"
 #include "ui/LoadXML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleSliderScript.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <tempest/Math.hpp>
 

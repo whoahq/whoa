@@ -1,7 +1,7 @@
 #include "ui/simple/CSimpleCheckboxScript.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleCheckbox.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 

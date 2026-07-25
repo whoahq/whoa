@@ -3,12 +3,12 @@
 #include "ui/CBackdropGenerator.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/FrameXML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFont.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <storm/Memory.hpp>
 #include <algorithm>

@@ -12,7 +12,6 @@
 #include "ui/simple/CSimpleFrame.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <storm/String.hpp>
 

@@ -3,10 +3,10 @@
 #include "gx/Coordinate.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsShared.hpp"
+#include "ui/Util.hpp"
 #include "ui/game/CGGameUI.hpp"
 #include "ui/game/Types.hpp"
 #include "ui/simple/CSimpleTop.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
 namespace {

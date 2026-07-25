@@ -9,7 +9,6 @@
 #include "ui/Util.hpp"
 #include "ui/simple/CSimpleFrame.hpp"
 #include "ui/simple/CSimpleTextureScript.hpp"
-#include "util/StringTo.hpp"
 #include <algorithm>
 #include <climits>
 #include <common/XML.hpp>

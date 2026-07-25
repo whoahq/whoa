@@ -2,11 +2,11 @@
 #include "gx/Coordinate.hpp"
 #include "ui/CScriptRegion.hpp"
 #include "ui/FrameScript_Object.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 #include <tempest/Rect.hpp>

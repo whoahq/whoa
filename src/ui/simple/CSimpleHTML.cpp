@@ -1,11 +1,11 @@
 #include "ui/simple/CSimpleHTML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFontedFrameFont.hpp"
 #include "ui/simple/CSimpleHTMLScript.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/CStatus.hpp"
 #include "util/SFile.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 
 int32_t CSimpleHTML::s_metatable;

@@ -2,6 +2,7 @@
 #include "gx/Coordinate.hpp"
 #include "gx/Gx.hpp"
 #include "ui/LoadXML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleEditBoxScript.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFontedFrameFont.hpp"
@@ -10,7 +11,6 @@
 #include "util/Byte.hpp"
 #include "util/CStatus.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <storm/String.hpp>
 #include <storm/Unicode.hpp>

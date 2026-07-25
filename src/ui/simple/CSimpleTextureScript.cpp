@@ -1,8 +1,8 @@
 #include "ui/simple/CSimpleTextureScript.hpp"
 #include "ui/Types.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 

@@ -1,8 +1,8 @@
 #include "ui/simple/CSimpleCheckbox.hpp"
 #include "ui/LoadXML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleCheckboxScript.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 
 int32_t CSimpleCheckbox::s_metatable;

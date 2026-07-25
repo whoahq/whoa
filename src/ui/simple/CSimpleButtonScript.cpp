@@ -1,11 +1,11 @@
 #include "ui/simple/CSimpleButtonScript.hpp"
 #include "gx/Coordinate.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleButton.hpp"
 #include "ui/simple/CSimpleFont.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleTexture.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 

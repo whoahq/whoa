@@ -4,7 +4,6 @@
 #include "ui/LoadXML.hpp"
 #include "ui/Util.hpp"
 #include "util/CStatus.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <storm/Error.hpp>
 

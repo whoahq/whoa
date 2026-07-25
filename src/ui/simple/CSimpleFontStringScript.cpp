@@ -1,8 +1,8 @@
 #include "ui/simple/CSimpleFontStringScript.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFont.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>
 

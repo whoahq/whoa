@@ -3,9 +3,9 @@
 #include "db/Db.hpp"
 #include "glue/CGlueMgr.hpp"
 #include "glue/CRealmList.hpp"
-#include "util/StringTo.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/Types.hpp"
+#include "ui/Util.hpp"
 #include "util/Lua.hpp"
 #include "util/Unimplemented.hpp"
 #include <cstdint>

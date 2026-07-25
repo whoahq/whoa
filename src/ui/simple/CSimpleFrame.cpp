@@ -8,6 +8,7 @@
 #include "ui/FrameScript_Object.hpp"
 #include "ui/FrameXML.hpp"
 #include "ui/LoadXML.hpp"
+#include "ui/Util.hpp"
 #include "ui/simple/CSimpleFontString.hpp"
 #include "ui/simple/CSimpleFrameScript.hpp"
 #include "ui/simple/CSimpleRender.hpp"
@@ -16,7 +17,6 @@
 #include "ui/simple/CSimpleTitleRegion.hpp"
 #include "ui/simple/CSimpleTop.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include <common/XML.hpp>
 #include <storm/Error.hpp>
 #include <storm/String.hpp>

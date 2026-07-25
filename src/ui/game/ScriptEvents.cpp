@@ -3,12 +3,12 @@
 #include "object/Client.hpp"
 #include "ui/FrameScript.hpp"
 #include "ui/ScriptFunctionsSystem.hpp"
+#include "ui/Util.hpp"
 #include "ui/game/CGGameUI.hpp"
 #include "ui/game/ScriptUtil.hpp"
 #include "ui/game/Types.hpp"
 #include "util/GUID.hpp"
 #include "util/Lua.hpp"
-#include "util/StringTo.hpp"
 #include "util/Unimplemented.hpp"
 
 #define NUM_SCRIPT_EVENTS 722
