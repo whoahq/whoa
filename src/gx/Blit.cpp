@@ -33,8 +33,8 @@ void Blit_uint16_uint16(const C2iVector& size, const void* in, uint32_t inStride
         return;
     }
 
-    const char* in_ = reinterpret_cast<const char*>(in);
-    char* out_ = reinterpret_cast<char*>(out);
+    auto in_ = static_cast<const char*>(in);
+    auto out_ = static_cast<char*>(out);
 
     for (int32_t i = 0; i < size.y; i++) {
         memcpy(out_, in_, 2 * size.x);
@@ -49,8 +49,8 @@ void Blit_uint32_uint32(const C2iVector& size, const void* in, uint32_t inStride
         return;
     }
 
-    const char* in_ = reinterpret_cast<const char*>(in);
-    char* out_ = reinterpret_cast<char*>(out);
+    auto in_ = static_cast<const char*>(in);
+    auto out_ = static_cast<char*>(out);
 
     for (int32_t i = 0; i < size.y; i++) {
         memcpy(out_, in_, 4 * size.x);
@@ -180,13 +180,10 @@ void Blit_Dxt1_Rgb565(const C2iVector& size, const void* in, uint32_t inStride, 
 }
 
 void Blit_Dxt1_Dxt1(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
-    const char* in_ = static_cast<const char*>(in);
-    char* out_ = static_cast<char*>(out);
-
     int32_t v6 = std::max(size.x, 4);
     int32_t v7 = std::max(size.y, 4);
 
-    memcpy(out_, in_, (4 * v6 * v7) >> 3);
+    memcpy(out, in, (4 * v6 * v7) >> 3);
 }
 
 void Blit_Dxt3_Argb8888(const C2iVector& size, const void* in, uint32_t inStride, void* out, uint32_t outStride) {
@@ -201,13 +198,13 @@ void Blit_Dxt35_Dxt35(const C2iVector& size, const void* in, uint32_t inStride, 
     int32_t v5 = std::max(size.x, 4);
     int32_t v6 = std::max(size.y / 4, 1);
 
-    const char* in_ = static_cast<const char*>(in);
-    char* out_ = static_cast<char*>(out);
-
     if (inStride == v5 * 4 && outStride == v5 * 4) {
-        memcpy(out_, in_, v5 * v6 * 4);
+        memcpy(out, in, v5 * v6 * 4);
         return;
     }
+
+    auto in_ = static_cast<const char*>(in);
+    auto out_ = static_cast<char*>(out);
 
     for (int32_t i = v6; i > 0; i--) {
         memcpy(out_, in_, v5 * 4);
