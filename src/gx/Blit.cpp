@@ -37,7 +37,7 @@ void Blit_uint16_uint16(const C2iVector& size, const void* in, uint32_t inStride
     char* out_ = reinterpret_cast<char*>(out);
 
     for (int32_t i = 0; i < size.y; i++) {
-        memcpy(out, in, 2 * size.x);
+        memcpy(out_, in_, 2 * size.x);
         in_ += inStride;
         out_ += outStride;
     }
