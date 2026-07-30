@@ -33,6 +33,7 @@ class ClientServices : public LoginResponse {
         // Static functions
         static void ConnectToSelectedServer();
         static ClientConnection* Connection();
+        static uint32_t CharacterValidateName(const char* name);
         static void Disconnect();
         static const char* GetCurrentLoginPortal();
         static const char* GetCurrentLoginServer();
