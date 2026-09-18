@@ -120,7 +120,8 @@ int32_t Script_GetDebugStats(lua_State* L) {
 }
 
 int32_t Script_IsDebugBuild(lua_State* L) {
-    WHOA_UNIMPLEMENTED(0);
+    lua_pushboolean(L, 0);
+    return 1;
 }
 
 int32_t Script_RegisterCVar(lua_State* L) {
