@@ -120,7 +120,11 @@ int32_t Script_GetDebugStats(lua_State* L) {
 }
 
 int32_t Script_IsDebugBuild(lua_State* L) {
+#if defined(NDEBUG)
     lua_pushboolean(L, 0);
+#else
+    lua_pushboolean(L, 1);
+#endif
     return 1;
 }
 
