@@ -146,6 +146,22 @@ void IEvtSchedulerProcess() {
             // dword_141B3C8 = 0;
         }
     #endif
+
+    #if defined(WHOA_SYSTEM_WEB)
+        // Web builds use a callback-based main loop (emscripten_set_main_loop)
+        // This function should not be called - use EventProcessFrame() instead
+        Event::s_startEvent.Set();
+
+        PropSelectContext(0);
+
+        uintptr_t v0 = SGetCurrentThreadId();
+        char v2[64];
+        SStrPrintf(v2, 64, "Engine %x", v0);
+
+        OsCallInitialize(v2);
+
+        // Don't block - the main loop callback will call SchedulerMainProcess
+    #endif
 }
 
 void IEvtSchedulerShutdown() {

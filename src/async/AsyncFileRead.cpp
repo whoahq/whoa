@@ -39,6 +39,7 @@ void AsyncFileReadCreateThread(CAsyncQueue* queue, const char* queueName) {
     thread->queue = queue;
     thread->currentObject = nullptr;
 
+    printf("AsyncFileReadCreateThread: Creating thread '%s' for queue=%p\n", queueName, static_cast<void*>(queue));
     SThread::Create(AsyncFileReadThread, thread, thread->thread, const_cast<char*>(queueName), 0);
 }
 
@@ -147,6 +148,7 @@ uint32_t AsyncFileReadThread(void* param) {
             AsyncFileRead::s_queueLock.Leave();
 
             int32_t tries = 10;
+            int32_t readSuccess = 0;
             while (1) {
                 if (SFile::IsStreamingMode() && object->file) {
                     // TODO
@@ -154,6 +156,7 @@ uint32_t AsyncFileReadThread(void* param) {
                 }
 
                 if (SFile::Read(object->file, object->buffer, object->size, nullptr, nullptr, nullptr)) {
+                    readSuccess = 1;
                     break;
                 }
 

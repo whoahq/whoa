@@ -26,6 +26,7 @@ class CGxPool : public TSLinkedNode<CGxPool> {
             , m_usage(usage)
             , m_size(size)
             , m_apiSpecific(nullptr)
+            , m_mem(nullptr)
             , unk1C(0)
             , m_hint(hint)
             , m_name(name)

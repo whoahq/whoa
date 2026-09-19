@@ -53,6 +53,10 @@ void EventPostClose();
 
 void EventPostCloseEx(HEVENTCONTEXT contextHandle);
 
+#if defined(WHOA_SYSTEM_WEB)
+void EventProcessFrame();
+#endif
+
 void EventRegister(EVENTID id, int32_t (*handler)(const void*, void*));
 
 void EventRegisterEx(EVENTID id, int32_t (*handler)(const void*, void*), void* param, float priority);

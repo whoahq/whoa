@@ -156,7 +156,8 @@ void FillInSolidTexture(const CImVector& color, CTexture* texture) {
         gxTexFlags,
         userArg,
         GxuUpdateSingleColorTexture,
-        GxTex_Argb8888
+        GxTex_Argb8888,
+        "SolidColor"
     );
 
     if (color.a < 0xFE) {
@@ -252,7 +253,7 @@ int32_t GxTexCreate(const CGxTexParms& parms, CGxTex*& texId) {
         parms.flags,
         parms.userArg,
         parms.userFunc,
-        "",
+        parms.name,
         texId
     );
 }
@@ -329,7 +330,7 @@ void TextureFreeGxTex(CGxTex* texId) {
     GxTexDestroy(texId);
 }
 
-CGxTex* TextureAllocGxTex(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t depth, EGxTexFormat format, CGxTexFlags flags, void* userArg, TEXTURE_CALLBACK* userFunc, EGxTexFormat dataFormat) {
+CGxTex* TextureAllocGxTex(EGxTexTarget target, uint32_t width, uint32_t height, uint32_t depth, EGxTexFormat format, CGxTexFlags flags, void* userArg, TEXTURE_CALLBACK* userFunc, EGxTexFormat dataFormat, const char* name) {
     CGxTexParms gxTexParms;
 
     gxTexParms.height = height;
@@ -342,6 +343,7 @@ CGxTex* TextureAllocGxTex(EGxTexTarget target, uint32_t width, uint32_t height, 
     gxTexParms.userFunc = userFunc;
     gxTexParms.flags = flags;
     gxTexParms.flags.m_generateMipMaps = 0;
+    gxTexParms.name = name ? name : "";
 
     CGxTexParms gxTexParms2;
 
@@ -718,7 +720,8 @@ int32_t PumpBlpTextureAsync(CTexture* texture, void* buf) {
             texture->gxTexFlags,
             texture,
             &UpdateBlpTextureAsync,
-            texture->dataFormat
+            texture->dataFormat,
+            texture->filename
         );
 
         texture->gxTex = gxTex;
@@ -1005,7 +1008,7 @@ HTEXTURE TextureCreate(EGxTexTarget target, uint32_t width, uint32_t height, uin
 
     texFlags.m_maxAnisotropy = texFlags.m_filter == GxTex_Anisotropic ? CTexture::s_maxAnisotropy : 1;
 
-    texture->gxTex = TextureAllocGxTex(target, width, height, depth, format, texFlags, userArg, userFunc, dataFormat);
+    texture->gxTex = TextureAllocGxTex(target, width, height, depth, format, texFlags, userArg, userFunc, dataFormat, a10 ? a10 : "UniqueTexture");
     texture->dataFormat = dataFormat;
     texture->gxWidth = width;
     texture->gxHeight = height;

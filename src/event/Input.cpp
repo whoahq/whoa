@@ -632,6 +632,7 @@ const char* KeyCodeToString(KEY key) {
     return "UNKNOWN";
 }
 
+#if !defined(WHOA_SYSTEM_WEB)
 void OsInputInitialize() {
     #if defined(WHOA_SYSTEM_WIN)
         Input::s_numlockState = GetAsyncKeyState(144);
@@ -656,6 +657,7 @@ bool OsInputIsUsingCocoaEventLoop() {
 
     return true;
 }
+#endif
 
 void OsInputPostEvent(OSINPUT id, int32_t param0, int32_t param1, int32_t param2, int32_t param3) {
     // TODO

@@ -58,7 +58,7 @@ if(WHOA_SYSTEM_WIN)
         else()
             set_target_properties(fmod PROPERTIES
                 IMPORTED_IMPLIB ${FMOD_DIR}/win-x86_64/lib/fmod_vc.lib
-                IMPORTED_LOCATION FMOD_DIR}/win-x86_64/lib/fmod.dll
+                IMPORTED_LOCATION ${FMOD_DIR}/win-x86_64/lib/fmod.dll
                 INTERFACE_INCLUDE_DIRECTORIES ${FMOD_DIR}/win-x86_64/inc
             )
             install(FILES ${FMOD_DIR}/win-x86_64/lib/fmod.dll DESTINATION "bin")

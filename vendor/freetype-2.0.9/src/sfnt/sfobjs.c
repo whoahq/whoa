@@ -242,7 +242,7 @@
     }
 
     /* check that we have a valid TrueType file */
-    error = sfnt->load_sfnt_header( face, stream, face_index, &sfnt_header );
+    error = sfnt->load_sfnt_header( face, stream, (FT_Long)face_index, &sfnt_header );
     if ( error )
       goto Exit;
 
