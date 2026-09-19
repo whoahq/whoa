@@ -125,6 +125,7 @@ int32_t Script_IsDebugBuild(lua_State* L) {
 #else
     lua_pushboolean(L, 1);
 #endif
+
     return 1;
 }
 
