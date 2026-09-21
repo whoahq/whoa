@@ -229,6 +229,7 @@ class CGxDeviceD3d : public CGxDevice {
     LPDIRECT3DDEVICE9 m_d3dDevice = nullptr;
     D3DCAPS9 m_d3dCaps;
     int32_t m_d3dIsHwDevice = 0;
+    uint32_t m_d3dStereoEnabled = 0;
     LPDIRECT3DVERTEXDECLARATION9 m_d3dVertexDecl[GxVertexBufferFormats_Last] = { 0 };
     D3DDISPLAYMODE m_desktopDisplayMode;
     int32_t m_inScene;

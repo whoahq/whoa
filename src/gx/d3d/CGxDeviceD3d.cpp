@@ -2032,8 +2032,7 @@ void CGxDeviceD3d::ShaderCreate(CGxShader* shaders[], EGxShTarget target, const 
 }
 
 int32_t CGxDeviceD3d::StereoEnabled() {
-    // TODO
-    return 0;
+    return this->m_d3dStereoEnabled == 1;
 }
 
 void CGxDeviceD3d::XformSetProjection(const C44Matrix& matrix) {
