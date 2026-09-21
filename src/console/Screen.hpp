@@ -19,6 +19,7 @@ class CONSOLELINE : public TSLinkedNode<CONSOLELINE> {
 
         // Member functions
         ~CONSOLELINE();
+        void Backspace();
 };
 
 void ConsoleScreenAnimate(float elapsedSec);
