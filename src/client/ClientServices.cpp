@@ -160,6 +160,11 @@ ClientConnection* ClientServices::Connection() {
     return ClientServices::s_currentConnection;
 }
 
+uint32_t ClientServices::CharacterValidateName(const char* name) {
+    // TODO
+    return 87;
+}
+
 void ClientServices::Disconnect() {
     ClientServices::Connection()->Disconnect();
 }
